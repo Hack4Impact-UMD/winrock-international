@@ -1,10 +1,12 @@
 # 🚀 Winrock International Repository 🚀
 
-## Table of Contents
+## 📚 Table of Contents
+- [Project Set Up](#%EF%B8%8F-project-set-up)
+- [System Design](#-system-design)
 
 ---
 
-### Project Set Up
+### 🛠️ Project Set Up
 This section is important, so make sure to go through these steps to ensure your set up is correct. Reach out to Tech Leads should there be any issues that arise.
 #### 🌐 Folder/Directory Set Up
 1. Ensure you have SSH key set up completed (documentation for this can be found [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)).
@@ -34,7 +36,7 @@ npm run dev  # start the development server
 
 ---
 
-### System Design
+### 🧩 System Design
 A more detailed document on how the project is structured is linked here: Coming soon...
 
 For your reference, the full, most recent design as of now is below - will be updated if there are any future changes.
