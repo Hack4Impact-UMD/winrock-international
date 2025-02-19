@@ -3,6 +3,7 @@
 ## 📚 Table of Contents
 - [Project Set Up](#%EF%B8%8F-project-set-up)
 - [System Design](#-system-design)
+- [PR Instructions](#-pr-logistics)
 
 ---
 
@@ -61,10 +62,15 @@ winrock-international/
 │── README.md   
           
 ```
+---
+### 📥 PR Logistics
+We require that you create your own branch based off of 'main' and make your changes there. When you're done, though, you need to create a Pull Request (PR).
+{I NEED TO FINISH THIS}
 
 
-### Running the code
+---
 
-Running backend: ```uvicorn src.app:app --reload```
+### Miscellaneous
+⭐️ When deploying firebase cloud functions, use the command ```firebase deploy --only functions```. This is **ONLY** when it is approved by TLs - do NOT deploy to firebase until PR is approved.
+More will be added here as the project progresses.
 
-Running frontend: ```npm run dev```
