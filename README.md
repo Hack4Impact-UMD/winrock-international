@@ -36,7 +36,7 @@ npm run dev  # start the development server
    firebase login
    ```
    
-   If you have multiple firebase accounts, make sure to use the following commands to switch to your terpmail(or the email you have listed)
+   If you have multiple firebase accounts, make sure to use the following commands to switch to your terpmail (or the email you have listed)
    ```
    firebase login:add example@terpmail.umd.edu
    firebase login:list
