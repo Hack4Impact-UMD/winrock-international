@@ -29,6 +29,13 @@ npm run dev  # start the development server
    npm install -g firebase-tools
    firebase login
    ```
+   
+   If you have multiple firebase accounts, make sure to use the following commands to switch to your terpmail(or the email you have listed)
+   ```
+   firebase login:add example@terpmail.umd.edu
+   firebase login:list
+   firebase login:use example@terpmail.umd.edu
+   ```
 2. Install dependencies
    ```
    cd functions
