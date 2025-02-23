@@ -9,7 +9,7 @@ Welcome to the Winrock International/Hack4Impact-UMD repository! This is where w
 
 3️⃣ [PR Instructions](#-pr-logistics)
 
-4️⃣ [Miscellaneous](%EF%B8%8F-miscellaneous)
+4️⃣ [Miscellaneous](#%EF%B8%8F-miscellaneous)
 
 ---
 
