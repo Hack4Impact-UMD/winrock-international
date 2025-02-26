@@ -1,19 +1,23 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import { db } from './firebaseInit';
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import { ProjectSubmission, projectSubmissionConverter } from "./ProjectSubmission";
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+// https://firebase.google.com/docs/firestore
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+/* Project submission form functions */
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+const projectSubmissionForm = collection(db, 'project-submission-form');
+
+export async function createProjectSubmission(data: ProjectSubmission) {
+    const docRef = await addDoc(projectSubmissionForm, projectSubmissionConverter.toFirestore(data));
+    console.log("Document written with ID " + docRef.id);
+}
+
+export async function getAllProjectSubmissions() {
+    const allProjectSubmissions = await getDocs(projectSubmissionForm);
+    allProjectSubmissions.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+    })
+}
+
+// TODO: Finish get and delete functions
