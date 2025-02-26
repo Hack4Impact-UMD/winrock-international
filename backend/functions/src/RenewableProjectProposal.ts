@@ -1,5 +1,6 @@
-// Represents data from a response to the project submission form
-export class ProjectSubmission {
+// Represents data from a response to the renewable energy
+// project proposal form
+export class RenewableProjectProposal {
     // TODO: Make sure these fields are all correct
     afterEmissionFactor!: string;
     afterEnergyConsumption!: number;
@@ -23,13 +24,13 @@ export class ProjectSubmission {
     vendorSiteSAPName!: string;
     volumeOfMaterial!: number;
 
-    constructor(init?: Partial<ProjectSubmission>) {
+    constructor(init?: Partial<RenewableProjectProposal>) {
         Object.assign(this, init);
     }
 }
 
-// Convert a ProjectSubmission to and from the Firestore key-value format
-export const projectSubmissionConverter = {
-    toFirestore: (data: ProjectSubmission) => Object.assign({}, data),
-    fromFirestore: (snapshot: any, options: any) => new ProjectSubmission(snapshot.data(options))
+// Convert a RenewableProjectProposal to and from the Firestore key-value format
+export const renewableProjectProposalConverter = {
+    toFirestore: (data: RenewableProjectProposal) => Object.assign({}, data),
+    fromFirestore: (snapshot: any, options: any) => new RenewableProjectProposal(snapshot.data(options))
 };

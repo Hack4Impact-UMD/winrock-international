@@ -1,21 +1,21 @@
 import { db } from './firebaseInit';
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import { ProjectSubmission, projectSubmissionConverter } from "./ProjectSubmission";
+import { RenewableProjectProposal, renewableProjectProposalConverter } from "./RenewableProjectProposal";
 
 // https://firebase.google.com/docs/firestore
 
-/* Project submission form functions */
+/* Renewable project proposal form functions */
 
-const projectSubmissionForm = collection(db, 'project-submission-form');
+const renewableProjectProposalForm = collection(db, 'project-submission-form');
 
-export async function createProjectSubmission(data: ProjectSubmission) {
-    const docRef = await addDoc(projectSubmissionForm, projectSubmissionConverter.toFirestore(data));
+export async function createRenewableProjectProposal(data: RenewableProjectProposal) {
+    const docRef = await addDoc(renewableProjectProposalForm, renewableProjectProposalConverter.toFirestore(data));
     console.log("Document written with ID " + docRef.id);
 }
 
-export async function getAllProjectSubmissions() {
-    const allProjectSubmissions = await getDocs(projectSubmissionForm);
-    allProjectSubmissions.forEach((doc) => {
+export async function getAllRenewableProjectProposals() {
+    const allRenewableProjectProposals = await getDocs(renewableProjectProposalForm);
+    allRenewableProjectProposals.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
     })
 }
