@@ -2,44 +2,30 @@
 // project proposal form
 class RenewableProjectProposal {
     afterEmissionFactor?: string;
-    afterEnergyConsumption?: number;
+    afterEnergyConsumption?: string;
     afterSourceOfEnergy?: string;
     beforeEmissionFactor?: string;
-    beforeEnergyConsumption!: number;
+    beforeEnergyConsumption!: string;
     beforeSourceOfEnergy!: string;
     commentsAndSourceOfEmissionFactor?: string;
     impactEvidence?: string;
-    impactReductionOnGHGEmission?: number;
+    impactReductionOnGHGEmission?: string;
     impactTiming?: string;
     levelTwoCategory!: string;
     parentVendorName!: string;
-    projectImplementationYear?: number;
+    projectImplementationYear?: string;
     projectSpecificActivities?: string;
     projectType?: string;
     spendCategory!: string;
-    vendorCode?: number;
+    vendorCode?: string;
     vendorSiteCity!: string;
     vendorSiteCountry!: string;
     vendorSiteSAPName?: string;
-    volumeOfMaterial!: number;
+    volumeOfMaterial!: string;
 
     constructor(init?: Partial<RenewableProjectProposal>) {
         Object.assign(this, init);
     }
 }
-
-/**
- * Convert a renewableProjectProposal between JSON string
- * format and Firestore key-value format
- */
-export const renewableProjectProposalConverter = {
-    toFirestore: (data: string) => {
-        return {};
-    },
-
-    fromFirestore: (snapshot: any, options: any) => {
-
-    }
-};
 
 export default RenewableProjectProposal;
