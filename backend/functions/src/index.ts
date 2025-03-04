@@ -1,6 +1,6 @@
-import { db } from './firebaseInit';
+import { db } from "../../../frontend/src/firebaseConfig.ts";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import { RenewableProjectProposal, renewableProjectProposalConverter } from "./RenewableProjectProposal";
+import { RenewableProjectProposal, renewableProjectProposalConverter } from "./RenewableProjectProposal.js";
 
 // https://firebase.google.com/docs/firestore
 
