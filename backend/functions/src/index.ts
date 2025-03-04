@@ -2,11 +2,9 @@ import { db } from "../../../frontend/src/firebaseConfig.ts";
 import { onRequest } from "firebase-functions/v2/https";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import * as logger from "firebase-functions/logger";
-import RenewableProjectProposal from "./RenewableProjectProposal.ts";
+import RenewableProjectProposal, { renewableProjectProposalConverter } from "./RenewableProjectProposal.ts";
 
 // https://firebase.google.com/docs/firestore
-
-/* Renewable project proposal form functions */
 
 const renewableProjectProposalFormId = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
 
@@ -16,22 +14,24 @@ const renewableProjectProposalFormId = "project-proposal-form/GG9KZ21emgEDELo9kv
  */
 const createRenewableProjectProposal = onRequest(async (request, response) => {
     try {
-        // TODO: Create a mapper to receive a renewableProjectProposal as a JSON string and convert it to Firestore format
+        // TODO: Finish renewableProjectProposalConverter in RenewableProjectProposal.ts
+        // to receive a renewableProjectProposal as a JSON string and convert it to Firestore format
         const renewableProjectProposal = request.query.renewableProjectProposal as string;
         if (!renewableProjectProposal) {
             response.status(400).send({ error: "Missing renewableProjectProposal parameter" });
             return;
         }
         
-        await addDoc(collection(db, renewableProjectProposalFormId), { renewableProjectProposal }); // TODO: Change second param later to toFirestore(renewableProjectProposal)
+        await addDoc(collection(db, renewableProjectProposalFormId), renewableProjectProposalConverter.toFirestore(renewableProjectProposal));
         response.status(200).send({ success: "Document created successfully"});
-    } catch (e) {
-        console.log("Error creating renewableProjectProposal: " + e);
+    } catch (error) {
+        logger.error("Error creating renewableProjectProposal", error);
+        response.status(500).send({ error: "Internal Server Error" });
     }
 });
 
 /**
- * Fetch all renewableProjectProposals from the database
+ * Fetch all renewableProjectProposals from the database.
  */
 const getAllRenewableProjectProposals = onRequest(async (request, response) => {
     try {
