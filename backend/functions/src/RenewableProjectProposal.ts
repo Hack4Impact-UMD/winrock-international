@@ -1,6 +1,6 @@
 // Represents data from a response to the renewable energy
 // project proposal form
-export class RenewableProjectProposal {
+class RenewableProjectProposal {
     // TODO: Make sure these fields are all correct
     afterEmissionFactor!: string;
     afterEnergyConsumption!: number;
@@ -29,8 +29,14 @@ export class RenewableProjectProposal {
     }
 }
 
-// Convert a RenewableProjectProposal to and from the Firestore key-value format
 export const renewableProjectProposalConverter = {
-    toFirestore: (data: RenewableProjectProposal) => Object.assign({}, data),
-    fromFirestore: (snapshot: any, options: any) => new RenewableProjectProposal(snapshot.data(options))
+    toFirestore: (data: string) => {
+
+    },
+
+    fromFirestore: (snapshot: any, options: any) => {
+
+    }
 };
+
+export default RenewableProjectProposal;
