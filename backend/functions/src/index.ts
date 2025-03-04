@@ -23,7 +23,7 @@ const createRenewableProjectProposal = onRequest(async (request, response) => {
         }
         
         await addDoc(collection(db, renewableProjectProposalFormId), renewableProjectProposalConverter.toFirestore(renewableProjectProposal));
-        response.status(200).send({ success: "Document created successfully"});
+        response.status(200).send({ message: "Document created successfully" });
     } catch (error) {
         logger.error("Error creating renewableProjectProposal", error);
         response.status(500).send({ error: "Internal Server Error" });

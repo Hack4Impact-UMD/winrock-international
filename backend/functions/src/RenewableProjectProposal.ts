@@ -1,26 +1,26 @@
 // Represents data from a response to the renewable energy
 // project proposal form
 class RenewableProjectProposal {
-    afterEmissionFactor!: string;
-    afterEnergyConsumption!: number;
-    afterSourceOfEnergy!: string;
-    beforeEmissionFactor!: string;
+    afterEmissionFactor?: string;
+    afterEnergyConsumption?: number;
+    afterSourceOfEnergy?: string;
+    beforeEmissionFactor?: string;
     beforeEnergyConsumption!: number;
     beforeSourceOfEnergy!: string;
-    commentsAndSourceOfEmissionFactor!: string;
-    impactEvidence!: string;
-    impactReductionOnGHGEmission!: number;
-    impactTiming!: string;
+    commentsAndSourceOfEmissionFactor?: string;
+    impactEvidence?: string;
+    impactReductionOnGHGEmission?: number;
+    impactTiming?: string;
     levelTwoCategory!: string;
     parentVendorName!: string;
-    projectImplementationYear!: number;
-    projectSpecificActivities!: string;
-    projectType!: string;
+    projectImplementationYear?: number;
+    projectSpecificActivities?: string;
+    projectType?: string;
     spendCategory!: string;
-    vendorCode!: number;
+    vendorCode?: number;
     vendorSiteCity!: string;
     vendorSiteCountry!: string;
-    vendorSiteSAPName!: string;
+    vendorSiteSAPName?: string;
     volumeOfMaterial!: number;
 
     constructor(init?: Partial<RenewableProjectProposal>) {
