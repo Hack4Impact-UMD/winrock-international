@@ -2,8 +2,8 @@ import * as firestore from "firebase/firestore";
 import * as logger from "firebase-functions/logger";
 import { onRequest } from "firebase-functions/v2/https";
 
-import { db } from "../../../frontend/src/firebaseConfig.ts";
-import RenewableProjectProposal from "./RenewableProjectProposal.ts";
+import { db } from "../../../frontend/src/firebaseConfig.js";
+import RenewableProjectProposal from "./RenewableProjectProposal.js";
 
 // https://firebase.google.com/docs/firestore
 
