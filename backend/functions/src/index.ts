@@ -73,4 +73,32 @@ const getAllRenewableProjectProposals = onRequest(async (request, response) => {
     }
 });
 
-export { createRenewableProjectProposal, getRenewableProjectProposal, getAllRenewableProjectProposals };
+/**
+ * Delete a renewableProjectProposal document by documentID.
+ */
+const deleteRenewableProjectProposal = onRequest(async (request, response) => {
+    try {
+        const documentID = request.query.documentID as string;
+        if (!documentID) {
+            response.status(400).send({ error: "Missing documentID parameter" });
+            return;
+        }
+
+        const documentRef = firestore.doc(db, renewableProjectProposalFormID, documentID);
+        const documentSnapshot = await firestore.getDoc(documentRef);
+
+        if (!documentSnapshot.exists()) {
+            response.status(404).send({ error: `renewableProjectProposal with ID ${documentID} not found` });
+            return;
+        }
+
+        await firestore.deleteDoc(documentRef);
+        response.status(200).send({ message: `renewableProjectProposal with ID ${documentID} deleted successfully` });
+    } catch (error) {
+        logger.error("Error deleting this Renewable Project Porposal", error);
+        response.status(500).send({ error: "Internal Server Error" });
+    }
+});
+
+
+export { createRenewableProjectProposal, getRenewableProjectProposal, getAllRenewableProjectProposals, deleteRenewableProjectProposal };
