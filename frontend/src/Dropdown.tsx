@@ -12,12 +12,10 @@ const Dropdown = (props: DropdownProps) => {
 	const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
 	const toggleDropDown = () => {
-		console.log("Hello");
 		setShowDropdown(!showDropdown);
 	};
 
 	const selectOption = (option: string) => {
-		console.log("Selected Option:", option);
 		setSelectedOption(option);
 		setShowDropdown(false);
 	};
