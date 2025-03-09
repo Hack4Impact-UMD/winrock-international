@@ -1,3 +1,37 @@
 .question {
 	font-size: 1.5rem;
+	text-align: left;
+}
+
+.dropdownContainer {
+	display: flex;
+	flex-direction: column;
+	
+}
+
+.dropdownButton {
+	background-color: white;
+	color: black;
+	text-align: left;
+	width: 10rem;
+	border-radius: 0.4rem;
+	border-color: black;
+}
+
+.dropdownMenu {
+	text-align: left;
+	width: 10rem;
+	margin-top: 0.2rem;
+	border-radius: 0.4rem;
+	background-color: white;
+	color: black;
+}
+
+.dropdownItem {
+	padding-left: 1rem;
+	padding: 0.5rem;
+}
+
+.dropdownItem:hover {
+	background-color: #C1C7CE;
 }
