@@ -11,7 +11,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentPage, totalPages }) =>
    const progress = Math.min(Math.max(((currentPage - 1) / totalPages) * 100, 0), 100)
 
    return (
-      <>
+      <div className='progressBar'>
          <div
             style={{
                height: `40px`,
@@ -27,7 +27,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentPage, totalPages }) =>
                }}
             />
          </div>
-      </>
+      </div>
    )
 }
 
