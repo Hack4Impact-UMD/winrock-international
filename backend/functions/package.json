@@ -1,5 +1,6 @@
 {
   "name": "functions",
+  "type": "module",
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",
@@ -28,4 +29,5 @@
     "typescript": "^4.9.0"
   },
   "private": true
+  
 }
