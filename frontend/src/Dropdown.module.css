@@ -16,6 +16,10 @@
 	width: 10rem;
 	border-radius: 0.4rem;
 	border-color: black;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .dropdownMenu {
@@ -25,6 +29,7 @@
 	border-radius: 0.4rem;
 	background-color: white;
 	color: black;
+	overflow: hidden;
 }
 
 .dropdownItem {
@@ -34,4 +39,10 @@
 
 .dropdownItem:hover {
 	background-color: #C1C7CE;
+}
+
+.chevron {
+	width: 1rem;
+	rotate: 180deg;
+	transition: rotate 0.3s linear;
 }
