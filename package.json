@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "css": "^3.0.0",
+    "firebase": "^11.4.0",
+    "firebase-functions": "^6.3.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "styled-jsx": "^5.1.6"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0"
+  }
+}
