@@ -1,11 +1,12 @@
 
 import { useState } from "react";
-import styles from "./Dropdown.module.css"
-import chevron from "./assets/chevron-up-svgrepo-com.svg"
+import styles from "../css-modules/Dropdown.module.css"
+import chevron from "../assets/chevron-up-svgrepo-com.svg"
 
-interface DropdownProps {
-	question: string;
-	options: string[];
+export interface DropdownProps {
+	id: string,
+	question: string,
+	options: string[]
 }
 
 const Dropdown = (props: DropdownProps) => {
