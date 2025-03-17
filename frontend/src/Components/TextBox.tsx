@@ -5,7 +5,7 @@ interface TextBoxProps {
   title: string;                    // The question title
   placeholder?: string;             // Placeholder text for the textarea
   onChange?: (value: string) => void; // Function to send the input value elsewhere
-  className?: string;               
+  className?: string;
 }
 
 const TextBox: React.FC<TextBoxProps> = ({
@@ -21,7 +21,7 @@ const TextBox: React.FC<TextBoxProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setValue(newValue);
-    
+
     if (onChange) {
       onChange(newValue);
     }
@@ -34,13 +34,13 @@ const TextBox: React.FC<TextBoxProps> = ({
       marginBottom: '1rem',
       width: '100%'
     } as CSSProperties,
-    
+
     title: {
       fontWeight: 600,
       fontSize: '1rem',
       marginBottom: '0.5rem'
     } as CSSProperties,
-    
+
     input: {
       padding: '0.75rem',
       border: '1px solid #ccc',
@@ -57,7 +57,7 @@ const TextBox: React.FC<TextBoxProps> = ({
     <div style={styles.container} className={className}>
       {/* Question title */}
       <label style={styles.title}>{title}</label>
-      
+
       {/* Text input area */}
       <textarea
         value={value}
