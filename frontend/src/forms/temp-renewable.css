@@ -1,0 +1,36 @@
+/*
+Temporary styling for RenewableProposalForm
+until we switch to reusable question components.
+*/
+
+.renewable-proposal-form {
+    max-width: 30rem;
+    padding: 3rem;
+    font-family: sans-serif;
+}
+
+.question {
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+    margin-bottom: 2rem;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select, textarea {
+    padding: .5rem;
+}
+
+textarea {
+    min-height: 5rem;
+    resize: vertical;
+}
+
+.required label::after {
+    content: " *";
+    color: red;
+    font-weight: bold;
+}
