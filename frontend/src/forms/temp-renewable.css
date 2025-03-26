@@ -34,3 +34,10 @@ textarea {
     color: red;
     font-weight: bold;
 }
+
+.submit {
+    padding: .5rem 1rem;
+    border-radius: 12px;
+    background: lightgreen;
+    font-weight: bold;
+}

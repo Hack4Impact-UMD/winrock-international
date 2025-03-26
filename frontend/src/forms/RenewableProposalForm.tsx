@@ -1,8 +1,13 @@
 import { useState } from "react";
-
+import * as firestore from "firebase/firestore";
 import "./temp-renewable.css";
 
+import { db } from "../../src/firebaseConfig.js";
+
 function RenewableProposalForm() {
+    const renewableProjectProposalFormID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
+    const renewableProjectProposalForm = firestore.collection(db, renewableProjectProposalFormID);
+
     const [parentVendorName, setParentVendorName] = useState("");
     const [vendorCode, setVendorCode] = useState("");
     const [vendorSiteSAPName, setVendorSiteSAPName] = useState("");
@@ -14,6 +19,32 @@ function RenewableProposalForm() {
     const [projectDescription, setProjectDescription] = useState("");
     const [projectImplementationYear, setProjectImplementationYear] = useState("");
     const [impactEvidence, setImpactEvidence] = useState("");
+
+    /**
+     * Save a new renewableProjectProposal document with the user-inputted
+     * fields into the renewableProjectProposalForm collection.
+    */
+    async function handleSubmit() {
+        try {
+            const documentObj = {
+                parentVendorName: parentVendorName,
+                vendorCode: vendorCode,
+                vendorSiteSAPName: vendorSiteSAPName,
+                spendCategory: spendCategory,
+                level2Category: level2Category,
+                vendorSiteCountry: vendorSiteCountry,
+                vendorSiteCity: vendorSiteCity,
+                projectType: projectType,
+                projectDescription: projectDescription,
+                projectImplementationYear: projectImplementationYear,
+                impactEvidence: impactEvidence
+            }
+            const documentRef = await firestore.addDoc(renewableProjectProposalForm, documentObj); // addDoc() auto-generates an ID for the doc
+            console.log(`renewableProjectProposal submitted successfully with ID ${documentRef.id}`)
+        } catch (error) {
+            console.error("Error submitting renewableProjectProposal", error);
+        }
+    }
 
     return (
         /* Replace the inner divs with question components later on */ 
@@ -141,6 +172,13 @@ function RenewableProposalForm() {
                     <option value="energy-efficiency">Energy Efficiency</option>
                 </select>
             </div>
+
+            <button
+                className="submit"
+                onClick={async () => await handleSubmit()}
+            >
+                Submit
+            </button>
         </div>
     );
 }
