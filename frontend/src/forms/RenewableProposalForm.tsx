@@ -20,6 +20,9 @@ function RenewableProposalForm() {
     const [projectImplementationYear, setProjectImplementationYear] = useState("");
     const [impactEvidence, setImpactEvidence] = useState("");
 
+    const [impactEvidenceDropdownLabel, setImpactEvidenceDropdownLabel] = useState("");
+    const [displayImpactEvidenceTextbox, setDisplayImpactEvidenceTextbox] = useState(false);
+
     /**
      * Save a new renewableProjectProposal document with the user-inputted
      * fields into the renewableProjectProposalForm collection.
@@ -90,11 +93,11 @@ function RenewableProposalForm() {
                     value={spendCategory}
                     onChange={(e) => setSpendCategory(e.target.value)}
                 >
-                    <option value="" disabled>Select...</option>
-                    <option value="ingredients">Ingredients</option>
-                    <option value="commodities">Commodities</option>
-                    <option value="packaging">Packaging</option>
-                    <option value="logistics">Logistics</option>
+                    <option value="" disabled>-- select --</option>
+                    <option value="Ingredients">Ingredients</option>
+                    <option value="Commodities">Commodities</option>
+                    <option value="Packaging">Packaging</option>
+                    <option value="Logistics">Logistics</option>
                 </select>
             </div>
 
@@ -105,11 +108,11 @@ function RenewableProposalForm() {
                     value={level2Category}
                     onChange={(e) => setLevel2Category(e.target.value)}
                 >
-                    <option value="" disabled>Select...</option>
-                    <option value="amino-acids">Amino Acids</option>
-                    <option value="cereals-and-grains">Cereals & Grains</option>
-                    <option value="flexibles">Flexibles</option>
-                    <option value="warehousing-services">Warehousing Services</option>
+                    <option value="" disabled>-- select --</option>
+                    <option value="Amino Acids">Amino Acids</option>
+                    <option value="Cereals & Grains">Cereals & Grains</option>
+                    <option value="Flexibles">Flexibles</option>
+                    <option value="Warehousing Services">Warehousing Services</option>
                 </select>
             </div>
 
@@ -163,18 +166,32 @@ function RenewableProposalForm() {
             </div>
 
             <div className="question dropdown-question required">
-                <label htmlFor="impact-evidence">How do you plan to evidence the project impact?</label>
+                <label htmlFor="impact-evidence-dropdown">How do you plan to evidence the project impact?</label>
                 <select
-                    id="impact-evidence"
-                    value={impactEvidence}
-                    onChange={(e) => setImpactEvidence(e.target.value)}
+                    id="impact-evidence-dropdown"
+                    value={impactEvidenceDropdownLabel}
+                    onChange={(e) => {
+                        setImpactEvidenceDropdownLabel(e.target.value);
+                        if (e.target.value === "other") {
+                            setImpactEvidence("");
+                            setDisplayImpactEvidenceTextbox(true);
+                        } else {
+                            setImpactEvidence(e.target.value);
+                            setDisplayImpactEvidenceTextbox(false);
+                        }
+                    }}
                 >
-                    <option value="" disabled>Select...</option>
-                    <option value="co2-reduction">CO2 Reduction</option>
-                    <option value="water-saving">Water Saving</option>
-                    <option value="waste-reduction">Waste Reduction</option>
-                    <option value="energy-efficiency">Energy Efficiency</option>
+                    <option value="" disabled>-- select --</option>
+                    <option value="Project implementation partner (2nd/3rd party)">Project implementation partner (2nd/3rd party)</option>
+                    <option value="Electronic metering tool">Electronic metering tool</option>
+                    <option value="other">Other (please describe)</option>
                 </select>
+                {displayImpactEvidenceTextbox &&
+                    <textarea
+                        id="impact-evidence-textbox"
+                        value={impactEvidence}
+                        onChange={(e) => setImpactEvidence(e.target.value)}
+                    />}
             </div>
 
             <button
