@@ -6,7 +6,8 @@ import chevron from "../assets/chevron-up-svgrepo-com.svg"
 export interface DropdownProps {
 	id: string,
 	question: string,
-	options: string[]
+	options: string[],
+	onSelect: (selected: string) => void
 }
 
 const Dropdown = (props: DropdownProps) => {
@@ -20,6 +21,7 @@ const Dropdown = (props: DropdownProps) => {
 	const selectOption = (option: string) => {
 		setSelectedOption(option);
 		setShowDropdown(false);
+		props.onSelect(option);
 	};
 
 	return (

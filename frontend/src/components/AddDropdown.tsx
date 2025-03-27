@@ -3,10 +3,12 @@ import { DropdownProps } from "./Dropdown";
 import styles from "../css-modules/AddDropdown.module.css";
 
 interface AddDropdownProps {
-    onAdd: (props: DropdownProps) => void;
+    onAdd: (props: DropdownProps) => void,
+	handleSelect: (dropdownId: string, value: string) => void
 }
 
 const AddDropdown = (props: AddDropdownProps) => {
+	const [qId, setQId] = useState("");
     const [qTitle, setQTitle] = useState("");
     const [qOption1, setQOption1] = useState("");
 	const [qOption2, setQOption2] = useState("");
@@ -14,6 +16,10 @@ const AddDropdown = (props: AddDropdownProps) => {
 
     return (
         <div className={styles.addDropdownCont}>
+			<input
+                placeholder="Question id" value={qId}
+                onChange={(event) => setQId(event.target.value)}
+            ></input>
             <input
                 placeholder="Question title" value={qTitle}
                 onChange={(event) => setQTitle(event.target.value)}
@@ -35,14 +41,16 @@ const AddDropdown = (props: AddDropdownProps) => {
             <button
                 onClick={() =>
 				{
+					setQId("");
 					setQTitle("");
 					setQOption1("");
 					setQOption2("");
 					setQOption3("");
                     props.onAdd({
-                        id: "",
+                        id: qId,
                         question: qTitle,
                         options: [qOption1, qOption2, qOption3],
+						onSelect: (value) => props.handleSelect(qId, value)
                     })
 				}
                 }
