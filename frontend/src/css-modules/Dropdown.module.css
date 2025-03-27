@@ -6,7 +6,6 @@
 .dropdownContainer {
 	display: flex;
 	flex-direction: column;
-	
 }
 
 .dropdownButton {
@@ -20,6 +19,7 @@
 	flex-flow: row nowrap;
 	align-items: center;
 	justify-content: space-between;
+	margin-left: 0;
 }
 
 .dropdownMenu {
@@ -33,7 +33,6 @@
 }
 
 .dropdownItem {
-	padding-left: 1rem;
 	padding: 0.5rem;
 }
 
