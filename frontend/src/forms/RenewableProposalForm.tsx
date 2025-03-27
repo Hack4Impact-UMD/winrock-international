@@ -49,6 +49,10 @@ function RenewableProposalForm() {
     return (
         /* Replace the inner divs with question components later on */ 
         <div className="form renewable-proposal-form">
+            <h2>
+                Renewable Energy Project Proposal Form
+            </h2>
+            
             <div className="question text-question required">
                 <label htmlFor="parent-vendor-name">Parent Vendor Name</label>
                 <input
