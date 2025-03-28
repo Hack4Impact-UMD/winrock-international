@@ -1,35 +1,60 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import ProgressBar from './components/Progressbar'
+import NavigationButtons from './components/NavigationButtons'
 
 function App() {
-  const [count, setCount] = useState(0)
+   // State to keep track of the current page
+   const [currentPage, setCurrentPage] = useState(1)
+   const totalPages = 4
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+   const nextPage = () => {
+      if (currentPage < totalPages) {
+         setCurrentPage(currentPage + 1)
+      } else if (currentPage === totalPages) {
+         handleSubmit()
+      }
+   }
+
+   // Handle form submission
+   const handleSubmit = () => {
+      console.log('Form submitted!')
+   }
+
+   const prevPage = () => {
+      if (currentPage > 1) {
+         setCurrentPage(currentPage - 1)
+      }
+   }
+
+   const saveChanges = () => {
+      console.log('Changes saved')
+   }
+
+   const saveAndExit = () => {
+      console.log('Changes saved and exiting')
+   }
+
+   return (
+      <div className='App'>
+         <h1>Forestry Risk Assessment Form</h1>
+
+         <ProgressBar currentPage={currentPage} totalPages={totalPages} />
+
+         <NavigationButtons
+            onNext={nextPage} // Always provide the nextPage function
+            onBack={currentPage > 1 ? prevPage : undefined}
+            onSaveChanges={saveChanges}
+            onSaveAndExit={saveAndExit}
+            canGoNext={true} // Always enable the next/submit button
+            canGoBack={currentPage > 1}
+            nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
+            backLabel='Back'
+            className='form-navigation'
+            showSaveOptions={true}
+         />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+   )
 }
 
 export default App
