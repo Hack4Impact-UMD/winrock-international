@@ -1,0 +1,19 @@
+.titleHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 2rem 3rem;
+    width: 100%;
+}
+
+.title {
+    font-size: 1.95rem;
+    font-weight: 600;
+    letter-spacing: .05rem;
+}
+
+.description {
+    font-size: .89rem;
+    letter-spacing: .03rem;
+}
