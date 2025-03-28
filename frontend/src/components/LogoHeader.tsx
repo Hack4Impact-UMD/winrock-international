@@ -4,7 +4,7 @@ import logo from "../assets/winrock-international-logo.png";
 function LogoHeader() {
     return (
         <div className={styles.logoHeader}>
-            <img className={styles.logo} src={logo} />
+            <img className={styles.logo} src={logo} alt="Winrock International" />
         </div>
     )
 }

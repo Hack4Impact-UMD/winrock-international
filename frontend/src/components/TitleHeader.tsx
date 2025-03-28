@@ -9,11 +9,11 @@ function TitleHeader({ title, description }: TitleHeaderProps) {
     return (
         <div className={styles.titleHeader}>
             <p className={styles.title}>
-                { title }
+                {title}
             </p>
             {description &&
                 <p className={styles.description}>
-                    { description }
+                    {description}
                 </p>}
         </div>
     )
