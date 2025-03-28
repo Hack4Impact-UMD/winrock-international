@@ -1,8 +1,10 @@
 import { useState } from "react";
 import * as firestore from "firebase/firestore";
-import "./temp-renewable.css";
-
 import { db } from "../../src/firebaseConfig.js";
+
+import LogoHeader from "../components/LogoHeader.js";
+import SectionHeader from "../components/SectionHeader.js";
+import TitleHeader from "../components/TitleHeader.js";
 
 function RenewableProposalForm() {
     const renewableProjectProposalFormID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
@@ -50,12 +52,17 @@ function RenewableProposalForm() {
     }
 
     return (
-        /* Replace the inner divs with question components later on */ 
         <div className="form renewable-proposal-form">
-            <h2>
-                Renewable Energy Project Proposal Form
-            </h2>
-            
+            <LogoHeader />
+            <TitleHeader
+                title="Renewable Energy Project Proposal Form"
+                description="This is an intake form for renewable energy/energy reduction projects to support Nestlé's
+                             goal of achieving Net Zero GHG emissions by 2050."
+            />
+            <br /> {/* ProgressBar will go here */}
+
+            <SectionHeader label="Generic Information" />
+
             <div className="question text-question required">
                 <label htmlFor="parent-vendor-name">Parent Vendor Name</label>
                 <input
