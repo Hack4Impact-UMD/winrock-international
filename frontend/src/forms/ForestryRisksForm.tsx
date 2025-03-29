@@ -3,6 +3,7 @@ import LogoHeader from '../components/LogoHeader'
 import TitleHeader from '../components/TitleHeader'
 import ProgressBar from '../components/Progressbar'
 import NavigationButtons from '../components/NavigationButtons'
+import SectionHeader from '../components/SectionHeader'
 
 function ForestryRisksForm() {
    // State to keep track of the current page
@@ -44,7 +45,7 @@ function ForestryRisksForm() {
             description='Some spiel about what this form is about and just to provide some further information about what’s happening?'
          />
          <ProgressBar currentPage={currentPage} totalPages={totalPages} />
-
+         <SectionHeader label='Risk Assessment' />
          <NavigationButtons
             onNext={nextPage} // Always provide the nextPage function
             onBack={currentPage > 1 ? prevPage : undefined}
