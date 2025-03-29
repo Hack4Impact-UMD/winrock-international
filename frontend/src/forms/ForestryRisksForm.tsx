@@ -4,6 +4,7 @@ import TitleHeader from '../components/TitleHeader'
 import ProgressBar from '../components/Progressbar'
 import NavigationButtons from '../components/NavigationButtons'
 import SectionHeader from '../components/SectionHeader'
+import '../css-modules/ForestryRisksForm.css'
 
 function ForestryRisksForm() {
    // State to keep track of the current page
@@ -38,7 +39,7 @@ function ForestryRisksForm() {
    }
 
    return (
-      <>
+      <div className='forestryRisksForm'>
          <LogoHeader />
          <TitleHeader
             title='Risk and Co-Benefit Form'
@@ -58,7 +59,7 @@ function ForestryRisksForm() {
             className='form-navigation'
             showSaveOptions={true}
          />
-      </>
+      </div>
    )
 }
 

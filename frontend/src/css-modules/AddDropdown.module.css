@@ -1,0 +1,26 @@
+
+input {
+	font-size: 16px;
+	color: black;
+	background-color: white;
+	padding: 10px;
+	margin: 10px;
+	border-radius: 10px;
+	border: none;
+}
+
+button {
+	margin: 10px;
+}
+
+.dropdownOptionsCont {
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+.addDropdownCont {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: flex-start;
+	width: 50rem;
+}
