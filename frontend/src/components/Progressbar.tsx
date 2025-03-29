@@ -1,4 +1,5 @@
 import React from 'react'
+import '../css-modules/ProgressBar.css'
 
 interface ProgressBarProps {
    currentPage: number
@@ -6,26 +7,47 @@ interface ProgressBarProps {
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ currentPage, totalPages }) => {
-   // Calculate progress based on current page and total pages in form
-   // e.g., if on page 4 of 5, progress should be 3/5 = 60%
-   const progress = Math.min(Math.max(((currentPage - 1) / totalPages) * 100, 0), 100)
+   // Create an array to represent the steps
+   const steps = Array.from({ length: totalPages }, (_, i) => i + 1)
 
    return (
-      <div className='progressBar'>
-         <div
-            style={{
-               height: `40px`,
-               width: '100%',
-               backgroundColor: '#C1C7CE',
-            }}
-         >
+      <div className='progress-container'>
+         <div className='progress-steps'>
+            {/* Line connecting the steps */}
+            <div className='progress-line' />
+
+            {/* Green line showing progress */}
             <div
-               style={{
-                  height: '40%',
-                  width: `${progress}%`,
-                  backgroundColor: '#55AC2E',
-               }}
+               className='progress-line-completed'
+               style={{ width: `${((currentPage - 1) / (totalPages - 1)) * 100}%` }}
             />
+
+            {/* Step circles */}
+            {steps.map(step => (
+               <div
+                  key={step}
+                  className='progress-step'
+                  style={{ backgroundColor: step <= currentPage ? '#31AB48' : '#C1C7CE' }}
+               >
+                  {step < currentPage ? (
+                     // Checkmark svg
+                     <svg
+                        width='14'
+                        height='14'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        xmlns='http://www.w3.org/2000/svg'
+                     >
+                        <path
+                           d='M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z'
+                           fill='white'
+                        />
+                     </svg>
+                  ) : step === currentPage ? (
+                     <div className='progress-step-current-indicator'></div>
+                  ) : null}
+               </div>
+            ))}
          </div>
       </div>
    )

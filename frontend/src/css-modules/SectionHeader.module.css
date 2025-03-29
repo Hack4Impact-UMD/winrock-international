@@ -1,0 +1,13 @@
+.sectionHeader {
+   display: flex;
+   flex-direction: column;
+   padding: 0.8rem 2rem;
+   background: #005293;
+}
+
+.label {
+   font-size: 1.5rem;
+   font-weight: 500;
+   letter-spacing: 0.1rem;
+   color: white;
+}
