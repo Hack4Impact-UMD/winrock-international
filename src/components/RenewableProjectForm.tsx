@@ -41,7 +41,11 @@ interface FormData {
     socialBenefits: string;
 }
 
-function RenewableProjectForm() {
+interface RenewableProjectFormProps {
+    userEmail: string;
+}
+
+function RenewableProjectForm({ userEmail }: RenewableProjectFormProps) {
     const [formData, setFormData] = useState<FormData>({
         projectName: '',
         projectLocation: '',

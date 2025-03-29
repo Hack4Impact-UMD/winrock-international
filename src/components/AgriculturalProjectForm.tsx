@@ -36,9 +36,16 @@ interface FormData {
     communityParticipation: string;
     knowledgeTransfer: string;
     socialImpact: string;
+
+    // Supplier Assignment
+    assignedSupplier: string;
 }
 
-function AgriculturalProjectForm() {
+interface AgriculturalProjectFormProps {
+    userEmail: string;
+}
+
+function AgriculturalProjectForm({ userEmail }: AgriculturalProjectFormProps) {
     const [formData, setFormData] = useState<FormData>({
         projectName: '',
         projectLocation: '',
@@ -62,6 +69,7 @@ function AgriculturalProjectForm() {
         communityParticipation: '',
         knowledgeTransfer: '',
         socialImpact: '',
+        assignedSupplier: '',
     });
 
     const handleChange = (field: keyof FormData, value: string) => {
@@ -168,6 +176,18 @@ function AgriculturalProjectForm() {
                     onChange={(value: string) => handleChange('farmerTraining', value)}
                     multiline
                     rows={3}
+                />
+            </Paper>
+
+            <Paper sx={{ p: 3, mb: 3 }}>
+                <Typography variant="h5" gutterBottom>
+                    Supplier Assignment
+                </Typography>
+                <FreeResponseQuestion
+                    questionName="Assigned Supplier Email"
+                    value={formData.assignedSupplier}
+                    onChange={(value: string) => handleChange('assignedSupplier', value)}
+                    placeholder="Enter supplier email (must end with @supplier.com)"
                 />
             </Paper>
         </Box>

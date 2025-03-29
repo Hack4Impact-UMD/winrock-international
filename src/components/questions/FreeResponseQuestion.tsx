@@ -1,5 +1,6 @@
 import React from 'react';
-import { TextField, TextFieldProps } from '@mui/material';
+import { TextField } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 interface FreeResponseQuestionProps {
     questionName: string;
@@ -7,6 +8,7 @@ interface FreeResponseQuestionProps {
     onChange: (value: string) => void;
     multiline?: boolean;
     rows?: number;
+    placeholder?: string;
 }
 
 function FreeResponseQuestion({
@@ -15,17 +17,22 @@ function FreeResponseQuestion({
     onChange,
     multiline = false,
     rows = 1,
+    placeholder
 }: FreeResponseQuestionProps) {
     return (
-        <TextField
-            fullWidth
-            label={questionName}
-            value={value}
-            onChange={(e: { target: { value: string } }) => onChange(e.target.value)}
-            multiline={multiline}
-            rows={rows}
-            sx={{ mb: 2 }}
-        />
+        <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>
+                {questionName}
+            </Typography>
+            <TextField
+                fullWidth
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                multiline={multiline}
+                rows={rows}
+                placeholder={placeholder}
+            />
+        </Box>
     );
 }
 

@@ -130,7 +130,6 @@ export type ActionCodeSettings = {
   iOS?: { bundleId: string };
   url: string;
   dynamicLinkDomain?: string;
-  linkDomain?: string;
 };
 
 export type AdditionalUserInfo = {

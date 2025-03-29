@@ -40,7 +40,11 @@ interface FormData {
     marketAccess: string;
 }
 
-function ForestryRisksForm() {
+interface ForestryRisksFormProps {
+    userEmail: string;
+}
+
+function ForestryRisksForm({ userEmail }: ForestryRisksFormProps) {
     const [formData, setFormData] = useState<FormData>({
         forestType: '',
         managementPlan: '',

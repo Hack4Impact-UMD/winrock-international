@@ -34,7 +34,11 @@ interface FormData {
     socialAcceptance: string;
 }
 
-function TechEnergyRisksForm() {
+interface TechEnergyRisksFormProps {
+    userEmail: string;
+}
+
+function TechEnergyRisksForm({ userEmail }: TechEnergyRisksFormProps) {
     const [formData, setFormData] = useState<FormData>({
         technologyReadiness: '',
         systemReliability: '',
