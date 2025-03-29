@@ -6,46 +6,57 @@ import LogoHeader from "../components/LogoHeader.js";
 import SectionHeader from "../components/SectionHeader.js";
 import TitleHeader from "../components/TitleHeader.js";
 
-function RenewableProposalForm() {
-    const renewableProjectProposalFormID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
-    const renewableProjectProposalForm = firestore.collection(db, renewableProjectProposalFormID);
+interface RenewableProposalFormData {
+    parentVendorName: string;
+    vendorCode: string;
+    vendorSiteSAPName: string;
+    spendCategory: string;
+    level2Category: string;
+    vendorSiteCity: string;
+    vendorSiteCountry: string;
+    projectType: string;
+    projectDescription: string;
+    projectImplementationYear: string;
+    impactEvidence: string;
+}
 
-    const [parentVendorName, setParentVendorName] = useState("");
-    const [vendorCode, setVendorCode] = useState("");
-    const [vendorSiteSAPName, setVendorSiteSAPName] = useState("");
-    const [spendCategory, setSpendCategory] = useState("");
-    const [level2Category, setLevel2Category] = useState("");
-    const [vendorSiteCountry, setVendorSiteCountry] = useState("");
-    const [vendorSiteCity, setVendorSiteCity] = useState("");
-    const [projectType, setProjectType] = useState("");
-    const [projectDescription, setProjectDescription] = useState("");
-    const [projectImplementationYear, setProjectImplementationYear] = useState("");
-    const [impactEvidence, setImpactEvidence] = useState("");
+function RenewableProposalForm() {
+    const collectionID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
+    const collectionRef = firestore.collection(db, collectionID);
+    const [submissionObj, setSubmissionObj] = useState<RenewableProposalFormData>({
+        parentVendorName: '',
+        vendorCode: '',
+        vendorSiteSAPName: '',
+        spendCategory: '',
+        level2Category: '',
+        vendorSiteCountry: '',
+        vendorSiteCity: '',
+        projectType: '',
+        projectDescription: '',
+        projectImplementationYear: '',
+        impactEvidence: ''
+    });
 
     const [impactEvidenceDropdownLabel, setImpactEvidenceDropdownLabel] = useState("");
     const [displayImpactEvidenceTextbox, setDisplayImpactEvidenceTextbox] = useState(false);
 
+    // Used to change the submissionObj's fields dynamically
+    function handleChange(field: keyof RenewableProposalFormData, value: string) {
+        setSubmissionObj((prev: RenewableProposalFormData) => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
     /**
-     * Save a new renewableProjectProposal document with the user-inputted
+     * Save a new renewableProjectProposal submission with the user-inputted
      * fields into the renewableProjectProposalForm collection.
     */
     async function handleSubmit() {
         try {
-            const documentObj = {
-                parentVendorName: parentVendorName,
-                vendorCode: vendorCode,
-                vendorSiteSAPName: vendorSiteSAPName,
-                spendCategory: spendCategory,
-                level2Category: level2Category,
-                vendorSiteCountry: vendorSiteCountry,
-                vendorSiteCity: vendorSiteCity,
-                projectType: projectType,
-                projectDescription: projectDescription,
-                projectImplementationYear: projectImplementationYear,
-                impactEvidence: impactEvidence
-            }
-            const documentRef = await firestore.addDoc(renewableProjectProposalForm, documentObj); // addDoc() auto-generates an ID for the doc
-            console.log(`renewableProjectProposal submitted successfully with ID ${documentRef.id}`)
+            console.log(submissionObj);
+            const submissionRef = await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
+            console.log(`renewableProjectProposal submitted successfully with ID ${submissionRef.id}`)
         } catch (error) {
             console.error("Error submitting renewableProjectProposal", error);
         }
@@ -68,8 +79,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="parent-vendor-name"
-                    value={parentVendorName}
-                    onChange={(e) => setParentVendorName(e.target.value)}
+                    value={submissionObj.parentVendorName}
+                    onChange={(e) => handleChange("parentVendorName", e.target.value)}
                 />
             </div>
 
@@ -78,8 +89,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="vendor-code"
-                    value={vendorCode}
-                    onChange={(e) => setVendorCode(e.target.value)}
+                    value={submissionObj.vendorCode}
+                    onChange={(e) => handleChange("vendorCode", e.target.value)}
                 />
             </div>
 
@@ -88,8 +99,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="vendor-site-sap-name"
-                    value={vendorSiteSAPName}
-                    onChange={(e) => setVendorSiteSAPName(e.target.value)}
+                    value={submissionObj.vendorSiteSAPName}
+                    onChange={(e) => handleChange("vendorSiteSAPName", e.target.value)}
                 />
             </div>
 
@@ -97,8 +108,8 @@ function RenewableProposalForm() {
                 <label htmlFor="spend-category">Spend Category</label>
                 <select
                     id="spend-category"
-                    value={spendCategory}
-                    onChange={(e) => setSpendCategory(e.target.value)}
+                    value={submissionObj.spendCategory}
+                    onChange={(e) => handleChange("spendCategory", e.target.value)}
                 >
                     <option value="" disabled>-- select --</option>
                     <option value="Ingredients">Ingredients</option>
@@ -112,8 +123,8 @@ function RenewableProposalForm() {
                 <label htmlFor="level-2-category">Level 2 Category</label>
                 <select
                     id="level-2-category"
-                    value={level2Category}
-                    onChange={(e) => setLevel2Category(e.target.value)}
+                    value={submissionObj.level2Category}
+                    onChange={(e) => handleChange("level2Category", e.target.value)}
                 >
                     <option value="" disabled>-- select --</option>
                     <option value="Amino Acids">Amino Acids</option>
@@ -128,8 +139,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="vendor-site-country"
-                    value={vendorSiteCountry}
-                    onChange={(e) => setVendorSiteCountry(e.target.value)}
+                    value={submissionObj.vendorSiteCountry}
+                    onChange={(e) => handleChange("vendorSiteCountry", e.target.value)}
                 />
             </div>
 
@@ -138,8 +149,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="vendor-site-city"
-                    value={vendorSiteCity}
-                    onChange={(e) => setVendorSiteCity(e.target.value)}
+                    value={submissionObj.vendorSiteCity}
+                    onChange={(e) => handleChange("vendorSiteCity", e.target.value)}
                 />
             </div>
 
@@ -148,8 +159,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="project-type"
-                    value={projectType}
-                    onChange={(e) => setProjectType(e.target.value)}
+                    value={submissionObj.projectType}
+                    onChange={(e) => handleChange("projectType", e.target.value)}
                 />
             </div>
 
@@ -157,8 +168,8 @@ function RenewableProposalForm() {
                 <label htmlFor="project-description">Provide a brief description of the project's specific activities.</label>
                 <textarea
                     id="project-description"
-                    value={projectDescription}
-                    onChange={(e) => setProjectDescription(e.target.value)}
+                    value={submissionObj.projectDescription}
+                    onChange={(e) => handleChange("projectDescription", e.target.value)}
                 />
             </div>
 
@@ -167,8 +178,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="project-implementation-year"
-                    value={projectImplementationYear}
-                    onChange={(e) => setProjectImplementationYear(e.target.value)}
+                    value={submissionObj.projectImplementationYear}
+                    onChange={(e) => handleChange("projectImplementationYear", e.target.value)}
                 />
             </div>
 
@@ -180,10 +191,10 @@ function RenewableProposalForm() {
                     onChange={(e) => {
                         setImpactEvidenceDropdownLabel(e.target.value);
                         if (e.target.value === "other") {
-                            setImpactEvidence("");
+                            handleChange("impactEvidence", "");
                             setDisplayImpactEvidenceTextbox(true);
                         } else {
-                            setImpactEvidence(e.target.value);
+                            handleChange("impactEvidence", e.target.value);
                             setDisplayImpactEvidenceTextbox(false);
                         }
                     }}
@@ -196,8 +207,8 @@ function RenewableProposalForm() {
                 {displayImpactEvidenceTextbox &&
                     <textarea
                         id="impact-evidence-textbox"
-                        value={impactEvidence}
-                        onChange={(e) => setImpactEvidence(e.target.value)}
+                        value={submissionObj.impactEvidence}
+                        onChange={(e) => handleChange("impactEvidence", e.target.value)}
                     />}
             </div>
 
