@@ -1,6 +1,6 @@
 .progress-container {
    padding: 20px 0;
-   width: 1259px;
+   width: 75rem;
    align-self: center;
 }
 
@@ -13,7 +13,7 @@
 
 .progress-line {
    position: absolute;
-   height: 3px;
+   height: 0.19rem;
    width: 100%;
    background-color: #c1c7ce;
    z-index: 1;
@@ -21,15 +21,15 @@
 
 .progress-line-completed {
    position: absolute;
-   height: 3px;
+   height: 0.19rem;
    background-color: #31ab48;
    z-index: 2;
    transition: width 0.3s ease;
 }
 
 .progress-step {
-   width: 36px;
-   height: 36px;
+   width: 1.5rem;
+   height: 1.5rem;
    border-radius: 50%;
    display: flex;
    justify-content: center;
@@ -41,8 +41,8 @@
 }
 
 .progress-step-current-indicator {
-   width: 12px;
-   height: 12px;
+   width: 0.6rem;
+   height: 0.6rem;
    border-radius: 50%;
    background-color: white;
 }

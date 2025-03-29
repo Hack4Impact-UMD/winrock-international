@@ -1,7 +1,6 @@
 .titleHeader {
    display: flex;
    flex-direction: column;
-   width: 1920px;
    gap: 0.8rem;
    padding: 2rem 3.2rem 0;
 }
