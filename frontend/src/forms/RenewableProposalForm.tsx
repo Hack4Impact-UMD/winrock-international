@@ -187,7 +187,7 @@ function RenewableProposalForm() {
                 question="How do you plan to evidence the project impact?"
                 options={["Project implementation partner (2nd/3rd party)", "Electronic metering tool", "Other (please describe)"]}
                 onSelect={(value) => {
-                    if (value === "other") {
+                    if (value === "Other (please describe)") {
                         handleChange("impactEvidence", "");
                         setDisplayImpactEvidenceTextbox(true);
                     } else {
@@ -198,7 +198,7 @@ function RenewableProposalForm() {
             />
             {displayImpactEvidenceTextbox &&
                 <TextBox
-                    title="n"
+                    title=""
                     onChange={(value) => handleChange("impactEvidence", value)}
                 />}
 
