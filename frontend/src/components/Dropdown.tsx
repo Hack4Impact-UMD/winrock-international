@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import styles from "../css-modules/Dropdown.module.css"
 import chevron from "../assets/chevron-up-svgrepo-com.svg"
@@ -7,7 +6,8 @@ export interface DropdownProps {
 	id: string,
 	question: string,
 	options: string[],
-	onSelect: (selected: string) => void
+	onSelect: (selected: string) => void,
+	documentLink?: string  // Optional document link
 }
 
 const Dropdown = (props: DropdownProps) => {
@@ -27,6 +27,16 @@ const Dropdown = (props: DropdownProps) => {
 	return (
 		<div className={styles.dropdownContainer}>
 			<h3 className={styles.question}>{props.question}</h3>
+			{props.documentLink && (
+				<a 
+					href={props.documentLink} 
+					target="_blank" 
+					rel="noopener noreferrer"
+					className={styles.documentLink}
+				>
+					View Document
+				</a>
+			)}
 			<button
 				className={styles.dropdownButton}
 				onClick={toggleDropDown}

@@ -45,3 +45,15 @@
 	rotate: 180deg;
 	transition: rotate 0.3s linear;
 }
+
+.documentLink {
+	display: inline-block;
+	margin-bottom: 0.5rem;
+	color: #31AB48;
+	text-decoration: none;
+	font-size: 0.9rem;
+}
+
+.documentLink:hover {
+	text-decoration: underline;
+}
