@@ -1,0 +1,48 @@
+.progress-container {
+    padding: 20px 0;
+    width: 75rem;
+    align-self: center;
+ }
+ 
+ .progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+ }
+ 
+ .progress-line {
+    position: absolute;
+    height: 0.19rem;
+    width: 100%;
+    background-color: #c1c7ce;
+    z-index: 1;
+ }
+ 
+ .progress-line-completed {
+    position: absolute;
+    height: 0.19rem;
+    background-color: #31ab48;
+    z-index: 2;
+    transition: width 0.3s ease;
+ }
+ 
+ .progress-step {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+    z-index: 3;
+    position: relative;
+ }
+ 
+ .progress-step-current-indicator {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background-color: white;
+ }

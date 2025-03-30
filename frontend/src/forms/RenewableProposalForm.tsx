@@ -3,348 +3,288 @@ import * as firestore from "firebase/firestore";
 import { db } from "../../src/firebaseConfig.js";
 
 import LogoHeader from "../components/LogoHeader.js";
-import SectionHeader from "../components/SectionHeader.js";
 import TitleHeader from "../components/TitleHeader.js";
+import ProgressBar from "../components/ProgressBar.js";
+import SectionHeader from "../components/SectionHeader.js";
+import TextBox from "../components/TextBox.js";
+import Dropdown from "../components/Dropdown.js";
+import NavigationButtons from "../components/NavigationButtons.js";
+
+interface RenewableProposalFormData {
+    // Generic Information
+    parentVendorName: string;
+    vendorCode: string;
+    vendorSiteSAPName: string;
+    spendCategory: string;
+    level2Category: string;
+    vendorSiteCity: string;
+    vendorSiteCountry: string;
+    projectType: string;
+    projectDescription: string;
+    projectImplementationYear: string;
+    impactEvidence: string;
+    emissionFactor: string;
+    volumeDelivered: string;
+
+    // Energy Consumption: Before Intervention
+    beforeSourceOfEnergy: string;
+    beforeEnergyConsumption: string;
+    beforeEmissionFactor: string;
+
+    // Energy Consumption: After Intervention is Completed
+    afterSourceOfEnergy: string;
+    afterEnergyConsumption: string;
+    afterEmissionFactor: string;
+
+    // Calculations
+    impactReduction: string;
+    impactTiming: string;
+}
 
 function RenewableProposalForm() {
-    const renewableProjectProposalFormID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
-    const renewableProjectProposalForm = firestore.collection(db, renewableProjectProposalFormID);
+    const collectionID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
+    const collectionRef = firestore.collection(db, collectionID);
+    const [submissionObj, setSubmissionObj] = useState<RenewableProposalFormData>({
+        parentVendorName: '',
+        vendorCode: '',
+        vendorSiteSAPName: '',
+        spendCategory: '',
+        level2Category: '',
+        vendorSiteCountry: '',
+        vendorSiteCity: '',
+        projectType: '',
+        projectDescription: '',
+        projectImplementationYear: '',
+        impactEvidence: '',
+        emissionFactor: '',
+        volumeDelivered: '',
+        beforeSourceOfEnergy: '',
+        beforeEnergyConsumption: '',
+        beforeEmissionFactor: '',
+        afterSourceOfEnergy: '',
+        afterEnergyConsumption: '',
+        afterEmissionFactor: '',
+        impactReduction: '',
+        impactTiming: '',
+    });
 
-    const [parentVendorName, setParentVendorName] = useState("");
-    const [vendorCode, setVendorCode] = useState("");
-    const [vendorSiteSAPName, setVendorSiteSAPName] = useState("");
-    const [spendCategory, setSpendCategory] = useState("");
-    const [level2Category, setLevel2Category] = useState("");
-    const [vendorSiteCountry, setVendorSiteCountry] = useState("");
-    const [vendorSiteCity, setVendorSiteCity] = useState("");
-    const [projectType, setProjectType] = useState("");
-    const [projectDescription, setProjectDescription] = useState("");
-    const [projectImplementationYear, setProjectImplementationYear] = useState("");
-    const [impactEvidence, setImpactEvidence] = useState("");
-
-    const [impactEvidenceDropdownLabel, setImpactEvidenceDropdownLabel] = useState("");
     const [displayImpactEvidenceTextbox, setDisplayImpactEvidenceTextbox] = useState(false);
+ 
+    // Used to change the submissionObj's fields dynamically
+    function handleChange(field: keyof RenewableProposalFormData, value: string) {
+        setSubmissionObj((prev: RenewableProposalFormData) => ({
+            ...prev,
+            [field]: value
+        }));
+    };
 
-    //Added in the second half of form here
-    const [emissionFactor, setEmissionFactor] = useState("");
-    const [volumeDelivered, setVolumeDelivered] = useState("");
-    const [sourceEnergy, setSourceEnergy] = useState("");
-    const [energyConsumption, setEnergyConsumption] = useState("");
-    const [sourceEnergyAfterInt, setSourceEnergyAfterInt] = useState("");
-    const [energyConsumptionAfterInt, setEnergyConsumptionAfterInt] = useState("");
-    const [emissionFactorAfterInt, setEmissionFactorAfterInt] = useState("");
-    const [impactReduction, setImpactReduction] = useState("");
-    const [impactTiming, setImpactTiming] = useState("");
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = 1;
+  
     /**
      * Save a new renewableProjectProposal document with the user-inputted
      * fields into the renewableProjectProposalForm collection.
     */
     async function handleSubmit() {
         try {
-            const documentObj = {
-                parentVendorName: parentVendorName,
-                vendorCode: vendorCode,
-                vendorSiteSAPName: vendorSiteSAPName,
-                spendCategory: spendCategory,
-                level2Category: level2Category,
-                vendorSiteCountry: vendorSiteCountry,
-                vendorSiteCity: vendorSiteCity,
-                projectType: projectType,
-                projectDescription: projectDescription,
-                projectImplementationYear: projectImplementationYear,
-                impactEvidence: impactEvidence,
-
-                //second half
-                emissionFactor: emissionFactor,
-                volumeDelivered: volumeDelivered,
-                sourceEnergy: sourceEnergy,
-                energyConsumption: energyConsumption,
-                sourceEnergyAfterInt: sourceEnergyAfterInt,
-                energyConsumptionAfterInt: energyConsumptionAfterInt,
-                emissionFactorAfterInt: emissionFactorAfterInt,
-                impactReduction: impactReduction,
-                impactTiming: impactTiming
-            }
-            const documentRef = await firestore.addDoc(renewableProjectProposalForm, documentObj); // addDoc() auto-generates an ID for the doc
-            console.log(`renewableProjectProposal submitted successfully with ID ${documentRef.id}`)
+            await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
         } catch (error) {
             console.error("Error submitting renewableProjectProposal", error);
         }
     }
+  
+     const saveChanges = () => {
+        console.log('Changes saved');
+     }
+  
+     const saveAndExit = () => {
+        console.log('Changes saved and exiting');
+     }
 
     return (
         <div className="form renewable-proposal-form">
             <LogoHeader />
             <TitleHeader
                 title="Renewable Energy Project Proposal Form"
-                description="This is an intake form for renewable energy/energy reduction projects to support Nestlé's
+                description="This is an intake form for renewable energy and energy reduction projects to support Nestlé's
                              goal of achieving Net Zero GHG emissions by 2050."
             />
-            <br /> {/* ProgressBar will go here */}
+
+            {/* TODO: Fix the display for 1 page, or split this form into more pages. */}
+            <ProgressBar
+                currentPage={currentPage}
+                totalPages={totalPages}
+            />
 
             <SectionHeader label="Generic Information" />
 
-            <div className="question text-question required">
-                <label htmlFor="parent-vendor-name">Parent Vendor Name</label>
-                <input
-                    type="text"
-                    id="parent-vendor-name"
-                    value={parentVendorName}
-                    onChange={(e) => setParentVendorName(e.target.value)}
-                />
-            </div>
+            {/* TODO: Add an ID field to TextBox.tsx later? */}
+            <TextBox
+                className="required"
+                title="Parent Vendor Name"
+                onChange={(value) => handleChange("parentVendorName", value)}
+            />
 
-            <div className="question text-question">
-                <label htmlFor="vendor-code">Vendor Code</label>
-                <input
-                    type="text"
-                    id="vendor-code"
-                    value={vendorCode}
-                    onChange={(e) => setVendorCode(e.target.value)}
-                />
-            </div>
+            <TextBox
+                title="Vendor Code"
+                onChange={((value) => handleChange("vendorCode", value))}
+            />
 
-            <div className="question text-question">
-                <label htmlFor="vendor-site-sap-name">Vendor Site SAP Name</label>
-                <input
-                    type="text"
-                    id="vendor-site-sap-name"
-                    value={vendorSiteSAPName}
-                    onChange={(e) => setVendorSiteSAPName(e.target.value)}
-                />
-            </div>
+            <TextBox
+                title="Vendor Site SAP Name"
+                onChange={((value) => handleChange("vendorSiteSAPName", value))}
+            />
 
-            <div className="question dropdown-question required">
-                <label htmlFor="spend-category">Spend Category</label>
-                <select
-                    id="spend-category"
-                    value={spendCategory}
-                    onChange={(e) => setSpendCategory(e.target.value)}
-                >
-                    <option value="" disabled>-- select --</option>
-                    <option value="Ingredients">Ingredients</option>
-                    <option value="Commodities">Commodities</option>
-                    <option value="Packaging">Packaging</option>
-                    <option value="Logistics">Logistics</option>
-                </select>
-            </div>
+            {/* TODO: This question is required;
+                add a className field to Dropdown.tsx later? */}
+            <Dropdown
+                id="TBD"
+                question="Spend Category"
+                options={["Ingredients", "Commodities", "Packaging", "Logistics"]}
+                onSelect={(value) => handleChange("spendCategory", value)}
+            />
 
-            <div className="question dropdown-question required">
-                <label htmlFor="level-2-category">Level 2 Category</label>
-                <select
-                    id="level-2-category"
-                    value={level2Category}
-                    onChange={(e) => setLevel2Category(e.target.value)}
-                >
-                    <option value="" disabled>-- select --</option>
-                    <option value="Amino Acids">Amino Acids</option>
-                    <option value="Cereals & Grains">Cereals & Grains</option>
-                    <option value="Flexibles">Flexibles</option>
-                    <option value="Warehousing Services">Warehousing Services</option>
-                </select>
-            </div>
+            {/* TODO: This question is required;
+                add a className field to Dropdown.tsx later? */}
+            <Dropdown
+                id="TBD"
+                question="Level 2 Category"
+                options={["Amino Acids", "Cereals & Grains", "Flexibles", "Warehousing Services"]}
+                onSelect={(value) => handleChange("level2Category", value)}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="vendor-site-country">Vendor Site Country</label>
-                <input
-                    type="text"
-                    id="vendor-site-country"
-                    value={vendorSiteCountry}
-                    onChange={(e) => setVendorSiteCountry(e.target.value)}
-                />
-            </div>
+            <TextBox
+                className="required"
+                title="Vendor Site Country"
+                onChange={((value) => handleChange("vendorSiteCountry", value))}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="vendor-site-city">Vendor Site City</label>
-                <input
-                    type="text"
-                    id="vendor-site-city"
-                    value={vendorSiteCity}
-                    onChange={(e) => setVendorSiteCity(e.target.value)}
-                />
-            </div>
+            {/* This was a Dropdown in the Excel form, but we changed it
+                to a TextBox because we don't know the vendor cities. */}
+            <TextBox
+                className="required"
+                title="Vendor Site City"
+                onChange={((value) => handleChange("vendorSiteCity", value))}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="project-type">Project Type</label>
-                <input
-                    type="text"
-                    id="project-type"
-                    value={projectType}
-                    onChange={(e) => setProjectType(e.target.value)}
-                />
-            </div>
+            <TextBox
+                title="Project Type"
+                onChange={((value) => handleChange("projectType", value))}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="project-description">Provide a brief description of the project's specific activities.</label>
-                <textarea
-                    id="project-description"
-                    value={projectDescription}
-                    onChange={(e) => setProjectDescription(e.target.value)}
-                />
-            </div>
+            <TextBox
+                title="Project Description"
+                onChange={((value) => handleChange("projectDescription", value))}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="project-implementation-year">Project Implementation Year</label>
-                <input
-                    type="text"
-                    id="project-implementation-year"
-                    value={projectImplementationYear}
-                    onChange={(e) => setProjectImplementationYear(e.target.value)}
-                />
-            </div>
+            <TextBox
+                title="Project Implementation Year"
+                onChange={((value) => handleChange("projectImplementationYear", value))}
+            />
 
-            <div className="question dropdown-question required">
-                <label htmlFor="impact-evidence-dropdown">How do you plan to evidence the project impact?</label>
-                <select
-                    id="impact-evidence-dropdown"
-                    value={impactEvidenceDropdownLabel}
-                    onChange={(e) => {
-                        setImpactEvidenceDropdownLabel(e.target.value);
-                        if (e.target.value === "other") {
-                            setImpactEvidence("");
-                            setDisplayImpactEvidenceTextbox(true);
-                        } else {
-                            setImpactEvidence(e.target.value);
-                            setDisplayImpactEvidenceTextbox(false);
-                        }
-                    }}
-                >
-                    <option value="" disabled>-- select --</option>
-                    <option value="Project implementation partner (2nd/3rd party)">Project implementation partner (2nd/3rd party)</option>
-                    <option value="Electronic metering tool">Electronic metering tool</option>
-                    <option value="other">Other (please describe)</option>
-                </select>
-                {displayImpactEvidenceTextbox &&
-                    <textarea
-                        id="impact-evidence-textbox"
-                        value={impactEvidence}
-                        onChange={(e) => setImpactEvidence(e.target.value)}
-                    />}
-            </div>
+            <Dropdown
+                id="TBD"
+                question="How do you plan to evidence the project impact?"
+                options={["Project implementation partner (2nd/3rd party)", "Electronic metering tool", "Other (please describe)"]}
+                onSelect={(value) => {
+                    if (value === "other") {
+                        handleChange("impactEvidence", "");
+                        setDisplayImpactEvidenceTextbox(true);
+                    } else {
+                        handleChange("impactEvidence", value);
+                        setDisplayImpactEvidenceTextbox(false);
+                    }
+                }}
+            />
+            {displayImpactEvidenceTextbox &&
+                <TextBox
+                    title="n"
+                    onChange={(value) => handleChange("impactEvidence", value)}
+                />}
 
-            <div className="question text-question required">
-                <label htmlFor="emission-factor">Comment about the source of emission factor (Column Q and T)</label>
-                <textarea
-                    id="emission-factor"
-                    value={emissionFactor}
-                    onChange={(e) => setEmissionFactor(e.target.value)}
-                />
-            </div>
+            <TextBox
+                title="Please share any comments/remarks on the change in the source of energy (see below sections)"
+                onChange={((value) => handleChange("emissionFactor", value))}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="volume-delivered">Volume of Material Delivered to Nestle in 2022 in Metric Tons</label>
-                <input
-                    type="text"
-                    id="volume-delivered"
-                    value={volumeDelivered}
-                    onChange={(e) => setVolumeDelivered(e.target.value)}
-                />
-            </div>
-            <br></br>
+            <TextBox
+                className="required"
+                title="Volume of Material (Metric Tons) Delivered to Nestlé in 2022"
+                onChange={((value) => handleChange("volumeDelivered", value))}
+            />
+
             <SectionHeader label="Energy Consumption: Before Intervention" />
 
-            <div className="question dropdown-question required">
-                <label htmlFor="source-energy">Source of Energy</label>
-                <select
-                    id="source-energy"
-                    value={sourceEnergy}
-                    onChange={(e) => setSourceEnergy(e.target.value)}
-                >
-                    <option value="" disabled>-- select --</option>
-                    <option value="Coal">Coal</option>
-                    <option value="Natural Gas">Natural Gal</option>
-                    <option value="Electricity Grid">Electricity Grid</option>
-                </select>
-            </div>
+            {/* TODO: This question is required;
+                add a className field to Dropdown.tsx later? */}
+            <Dropdown
+                id="TBD"
+                question="Source of Energy (BEFORE Intervention)"
+                options={["Coal", "Natural Gas", "Electricity Grid"]}
+                onSelect={(value) => handleChange("beforeSourceOfEnergy", value)}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="energy-consumption">Share energy consumption (KWh/year) estimate for Nestle only</label>
-                <textarea
-                    id="energy-consumption"
-                    value={energyConsumption}
-                    onChange={(e) => setEnergyConsumption(e.target.value)}
-                />
-            </div>
+            <TextBox
+                className="required"
+                title="Share an energy consumption (KWh/year) estimate for Nestlé only (BEFORE intervention)"
+                onChange={((value) => handleChange("beforeEnergyConsumption", value))}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="emission-factor">Emission factor of energy BEFORE intervention (kgCO2 per KwH)</label>
-                <textarea
-                    id="emission-factor"
-                    value={emissionFactor}
-                    onChange={(e) => setEmissionFactor(e.target.value)}
-                />
-            </div>
-            <br></br>
+            <TextBox
+                title="Emission Factor of Energy (kgCO2/KwH) (BEFORE intervention)"
+                onChange={((value) => handleChange("beforeEmissionFactor", value))}
+            />
+
             <SectionHeader label="Energy Consumption: After Intervention is Completed" />
 
-            <div className="question dropdown-question required">
-                <label htmlFor="source-energy-after-intervention">Source of Energy</label>
-                <select
-                    id="source-energy-after-intervention"
-                    value={sourceEnergyAfterInt}
-                    onChange={(e) => setSourceEnergyAfterInt(e.target.value)}
-                >
-                    <option value="" disabled>-- select --</option>
-                    <option value="Biogass/Green Gas - Grid (external)">Biogass/Green Gas - Grid (external)</option>
-                    <option value="Solar">Solar</option>
-                    <option value="Renewable Electricity Certificate">Renewable Electricity Certificate</option>
-                </select>
-            </div>
+            {/* TODO: This question is not required;
+                add a className field to Dropdown.tsx later? */}
+            <Dropdown
+                id="TBD"
+                question="Source of Energy (AFTER Intervention)"
+                options={["Biogas/Green Gas - Grid (external)", "Solar", "Renewable Electricity Certificate"]}
+                onSelect={(value) => handleChange("afterSourceOfEnergy", value)}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="energy-consumption-after-int">Share energy consumption (KWh/year) estimate for Nestle only</label>
-                <textarea
-                    id="energy-consumption-after-int"
-                    value={energyConsumptionAfterInt}
-                    onChange={(e) => setEnergyConsumptionAfterInt(e.target.value)}
-                />
-            </div>
+            <TextBox
+                title="Share an energy consumption (KWh/year) estimate for Nestlé only (AFTER Intervention)"
+                onChange={((value) => handleChange("afterEmissionFactor", value))}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="emission-factor-after-int">Emission factor of energy AFTER intervention (kgCO2 per KwH)</label>
-                <textarea
-                    id="emission-factor-after-int"
-                    value={emissionFactorAfterInt}
-                    onChange={(e) => setEmissionFactorAfterInt(e.target.value)}
-                />
-            </div>
+            <TextBox
+                title="Emission Factor of Energy (kgCO2/KwH) (AFTER intervention)"
+                onChange={((value) => handleChange("afterEmissionFactor", value))}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="emission-factor-after-int">Impact reduction on GHG emission AFTER intervention attributed to Nestle only (tonsCO2e) based on annualized impact</label>
-                <textarea
-                    id="emission-factor-after-int"
-                    value={emissionFactorAfterInt}
-                    onChange={(e) => setEmissionFactorAfterInt(e.target.value)}
-                />
-            </div>
+            {/* TODO: This should be calculated using the formula from the Excel form,
+                with overwriting enabled. */}
+            <TextBox
+                title="Impact reduction on GHG emission (tonsCO2e) after intervention attributed to Nestlé only based on annualized impact"
+                onChange={((value) => handleChange("impactReduction", value))}
+            />
 
-            <div className="question text-question required">
-                <label htmlFor="impact-reduction">Emission factor of energy BEFORE intervention (kgCO2 per KwH)</label>
-                <textarea
-                    id="impact-reduction"
-                    value={impactReduction}
-                    onChange={(e) => setImpactReduction(e.target.value)}
-                />
-            </div>
+            {/* TODO: This should be calculated using the formula from the Excel form,
+                with overwriting disabled. */}
+            <TextBox
+                title="Impact Timing"
+                onChange={((value) => handleChange("impactTiming", value))}
+            />
 
-
-            <div className="question text-question required">
-                <label htmlFor="impact-timing">Emission factor of energy BEFORE intervention (kgCO2 per KwH)</label>
-                <textarea
-                    id="impact-timing"
-                    value={impactTiming}
-                    onChange={(e) => setImpactTiming(e.target.value)}
-                />
-            </div>
-
-            <br></br>
-            <button
-                className="submit"
-                onClick={async () => await handleSubmit()}
-            >
-                Submit
-            </button>
+            <NavigationButtons
+                className='renewable-proposal-form-navigation'
+                onNext={() => {
+                    if (currentPage < totalPages) {
+                        setCurrentPage(currentPage + 1);
+                    } else {
+                        handleSubmit();
+                    }
+                }}
+                onBack={() => {if (currentPage > 1) setCurrentPage(currentPage - 1)}}
+                onSaveChanges={saveChanges}
+                onSaveAndExit={saveAndExit}
+                canGoBack={currentPage > 1}
+                nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
+            />
         </div>
     );
 }
