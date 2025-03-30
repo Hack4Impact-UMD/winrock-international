@@ -6,57 +6,68 @@ import LogoHeader from "../components/LogoHeader.js";
 import SectionHeader from "../components/SectionHeader.js";
 import TitleHeader from "../components/TitleHeader.js";
 
-interface RenewableProposalFormData {
-    parentVendorName: string;
-    vendorCode: string;
-    vendorSiteSAPName: string;
-    spendCategory: string;
-    level2Category: string;
-    vendorSiteCity: string;
-    vendorSiteCountry: string;
-    projectType: string;
-    projectDescription: string;
-    projectImplementationYear: string;
-    impactEvidence: string;
-}
-
 function RenewableProposalForm() {
-    const collectionID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
-    const collectionRef = firestore.collection(db, collectionID);
-    const [submissionObj, setSubmissionObj] = useState<RenewableProposalFormData>({
-        parentVendorName: '',
-        vendorCode: '',
-        vendorSiteSAPName: '',
-        spendCategory: '',
-        level2Category: '',
-        vendorSiteCountry: '',
-        vendorSiteCity: '',
-        projectType: '',
-        projectDescription: '',
-        projectImplementationYear: '',
-        impactEvidence: ''
-    });
+    const renewableProjectProposalFormID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
+    const renewableProjectProposalForm = firestore.collection(db, renewableProjectProposalFormID);
+
+    const [parentVendorName, setParentVendorName] = useState("");
+    const [vendorCode, setVendorCode] = useState("");
+    const [vendorSiteSAPName, setVendorSiteSAPName] = useState("");
+    const [spendCategory, setSpendCategory] = useState("");
+    const [level2Category, setLevel2Category] = useState("");
+    const [vendorSiteCountry, setVendorSiteCountry] = useState("");
+    const [vendorSiteCity, setVendorSiteCity] = useState("");
+    const [projectType, setProjectType] = useState("");
+    const [projectDescription, setProjectDescription] = useState("");
+    const [projectImplementationYear, setProjectImplementationYear] = useState("");
+    const [impactEvidence, setImpactEvidence] = useState("");
 
     const [impactEvidenceDropdownLabel, setImpactEvidenceDropdownLabel] = useState("");
     const [displayImpactEvidenceTextbox, setDisplayImpactEvidenceTextbox] = useState(false);
 
-    // Used to change the submissionObj's fields dynamically
-    function handleChange(field: keyof RenewableProposalFormData, value: string) {
-        setSubmissionObj((prev: RenewableProposalFormData) => ({
-            ...prev,
-            [field]: value
-        }));
-    };
+    //Added in the second half of form here
+    const [emissionFactor, setEmissionFactor] = useState("");
+    const [volumeDelivered, setVolumeDelivered] = useState("");
+    const [sourceEnergy, setSourceEnergy] = useState("");
+    const [energyConsumption, setEnergyConsumption] = useState("");
+    const [sourceEnergyAfterInt, setSourceEnergyAfterInt] = useState("");
+    const [energyConsumptionAfterInt, setEnergyConsumptionAfterInt] = useState("");
+    const [emissionFactorAfterInt, setEmissionFactorAfterInt] = useState("");
+    const [impactReduction, setImpactReduction] = useState("");
+    const [impactTiming, setImpactTiming] = useState("");
 
     /**
-     * Save a new renewableProjectProposal submission with the user-inputted
+     * Save a new renewableProjectProposal document with the user-inputted
      * fields into the renewableProjectProposalForm collection.
     */
     async function handleSubmit() {
         try {
-            console.log(submissionObj);
-            const submissionRef = await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
-            console.log(`renewableProjectProposal submitted successfully with ID ${submissionRef.id}`)
+            const documentObj = {
+                parentVendorName: parentVendorName,
+                vendorCode: vendorCode,
+                vendorSiteSAPName: vendorSiteSAPName,
+                spendCategory: spendCategory,
+                level2Category: level2Category,
+                vendorSiteCountry: vendorSiteCountry,
+                vendorSiteCity: vendorSiteCity,
+                projectType: projectType,
+                projectDescription: projectDescription,
+                projectImplementationYear: projectImplementationYear,
+                impactEvidence: impactEvidence,
+
+                //second half
+                emissionFactor: emissionFactor,
+                volumeDelivered: volumeDelivered,
+                sourceEnergy: sourceEnergy,
+                energyConsumption: energyConsumption,
+                sourceEnergyAfterInt: sourceEnergyAfterInt,
+                energyConsumptionAfterInt: energyConsumptionAfterInt,
+                emissionFactorAfterInt: emissionFactorAfterInt,
+                impactReduction: impactReduction,
+                impactTiming: impactTiming
+            }
+            const documentRef = await firestore.addDoc(renewableProjectProposalForm, documentObj); // addDoc() auto-generates an ID for the doc
+            console.log(`renewableProjectProposal submitted successfully with ID ${documentRef.id}`)
         } catch (error) {
             console.error("Error submitting renewableProjectProposal", error);
         }
@@ -79,8 +90,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="parent-vendor-name"
-                    value={submissionObj.parentVendorName}
-                    onChange={(e) => handleChange("parentVendorName", e.target.value)}
+                    value={parentVendorName}
+                    onChange={(e) => setParentVendorName(e.target.value)}
                 />
             </div>
 
@@ -89,8 +100,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="vendor-code"
-                    value={submissionObj.vendorCode}
-                    onChange={(e) => handleChange("vendorCode", e.target.value)}
+                    value={vendorCode}
+                    onChange={(e) => setVendorCode(e.target.value)}
                 />
             </div>
 
@@ -99,8 +110,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="vendor-site-sap-name"
-                    value={submissionObj.vendorSiteSAPName}
-                    onChange={(e) => handleChange("vendorSiteSAPName", e.target.value)}
+                    value={vendorSiteSAPName}
+                    onChange={(e) => setVendorSiteSAPName(e.target.value)}
                 />
             </div>
 
@@ -108,8 +119,8 @@ function RenewableProposalForm() {
                 <label htmlFor="spend-category">Spend Category</label>
                 <select
                     id="spend-category"
-                    value={submissionObj.spendCategory}
-                    onChange={(e) => handleChange("spendCategory", e.target.value)}
+                    value={spendCategory}
+                    onChange={(e) => setSpendCategory(e.target.value)}
                 >
                     <option value="" disabled>-- select --</option>
                     <option value="Ingredients">Ingredients</option>
@@ -123,8 +134,8 @@ function RenewableProposalForm() {
                 <label htmlFor="level-2-category">Level 2 Category</label>
                 <select
                     id="level-2-category"
-                    value={submissionObj.level2Category}
-                    onChange={(e) => handleChange("level2Category", e.target.value)}
+                    value={level2Category}
+                    onChange={(e) => setLevel2Category(e.target.value)}
                 >
                     <option value="" disabled>-- select --</option>
                     <option value="Amino Acids">Amino Acids</option>
@@ -139,8 +150,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="vendor-site-country"
-                    value={submissionObj.vendorSiteCountry}
-                    onChange={(e) => handleChange("vendorSiteCountry", e.target.value)}
+                    value={vendorSiteCountry}
+                    onChange={(e) => setVendorSiteCountry(e.target.value)}
                 />
             </div>
 
@@ -149,8 +160,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="vendor-site-city"
-                    value={submissionObj.vendorSiteCity}
-                    onChange={(e) => handleChange("vendorSiteCity", e.target.value)}
+                    value={vendorSiteCity}
+                    onChange={(e) => setVendorSiteCity(e.target.value)}
                 />
             </div>
 
@@ -159,8 +170,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="project-type"
-                    value={submissionObj.projectType}
-                    onChange={(e) => handleChange("projectType", e.target.value)}
+                    value={projectType}
+                    onChange={(e) => setProjectType(e.target.value)}
                 />
             </div>
 
@@ -168,8 +179,8 @@ function RenewableProposalForm() {
                 <label htmlFor="project-description">Provide a brief description of the project's specific activities.</label>
                 <textarea
                     id="project-description"
-                    value={submissionObj.projectDescription}
-                    onChange={(e) => handleChange("projectDescription", e.target.value)}
+                    value={projectDescription}
+                    onChange={(e) => setProjectDescription(e.target.value)}
                 />
             </div>
 
@@ -178,8 +189,8 @@ function RenewableProposalForm() {
                 <input
                     type="text"
                     id="project-implementation-year"
-                    value={submissionObj.projectImplementationYear}
-                    onChange={(e) => handleChange("projectImplementationYear", e.target.value)}
+                    value={projectImplementationYear}
+                    onChange={(e) => setProjectImplementationYear(e.target.value)}
                 />
             </div>
 
@@ -191,10 +202,10 @@ function RenewableProposalForm() {
                     onChange={(e) => {
                         setImpactEvidenceDropdownLabel(e.target.value);
                         if (e.target.value === "other") {
-                            handleChange("impactEvidence", "");
+                            setImpactEvidence("");
                             setDisplayImpactEvidenceTextbox(true);
                         } else {
-                            handleChange("impactEvidence", e.target.value);
+                            setImpactEvidence(e.target.value);
                             setDisplayImpactEvidenceTextbox(false);
                         }
                     }}
@@ -207,11 +218,127 @@ function RenewableProposalForm() {
                 {displayImpactEvidenceTextbox &&
                     <textarea
                         id="impact-evidence-textbox"
-                        value={submissionObj.impactEvidence}
-                        onChange={(e) => handleChange("impactEvidence", e.target.value)}
+                        value={impactEvidence}
+                        onChange={(e) => setImpactEvidence(e.target.value)}
                     />}
             </div>
 
+            <div className="question text-question required">
+                <label htmlFor="emission-factor">Comment about the source of emission factor (Column Q and T)</label>
+                <textarea
+                    id="emission-factor"
+                    value={emissionFactor}
+                    onChange={(e) => setEmissionFactor(e.target.value)}
+                />
+            </div>
+
+            <div className="question text-question required">
+                <label htmlFor="volume-delivered">Volume of Material Delivered to Nestle in 2022 in Metric Tons</label>
+                <input
+                    type="text"
+                    id="volume-delivered"
+                    value={volumeDelivered}
+                    onChange={(e) => setVolumeDelivered(e.target.value)}
+                />
+            </div>
+            <br></br>
+            <SectionHeader label="Energy Consumption: Before Intervention" />
+
+            <div className="question dropdown-question required">
+                <label htmlFor="source-energy">Source of Energy</label>
+                <select
+                    id="source-energy"
+                    value={sourceEnergy}
+                    onChange={(e) => setSourceEnergy(e.target.value)}
+                >
+                    <option value="" disabled>-- select --</option>
+                    <option value="Coal">Coal</option>
+                    <option value="Natural Gas">Natural Gal</option>
+                    <option value="Electricity Grid">Electricity Grid</option>
+                </select>
+            </div>
+
+            <div className="question text-question required">
+                <label htmlFor="energy-consumption">Share energy consumption (KWh/year) estimate for Nestle only</label>
+                <textarea
+                    id="energy-consumption"
+                    value={energyConsumption}
+                    onChange={(e) => setEnergyConsumption(e.target.value)}
+                />
+            </div>
+
+            <div className="question text-question required">
+                <label htmlFor="emission-factor">Emission factor of energy BEFORE intervention (kgCO2 per KwH)</label>
+                <textarea
+                    id="emission-factor"
+                    value={emissionFactor}
+                    onChange={(e) => setEmissionFactor(e.target.value)}
+                />
+            </div>
+            <br></br>
+            <SectionHeader label="Energy Consumption: After Intervention is Completed" />
+
+            <div className="question dropdown-question required">
+                <label htmlFor="source-energy-after-intervention">Source of Energy</label>
+                <select
+                    id="source-energy-after-intervention"
+                    value={sourceEnergyAfterInt}
+                    onChange={(e) => setSourceEnergyAfterInt(e.target.value)}
+                >
+                    <option value="" disabled>-- select --</option>
+                    <option value="Biogass/Green Gas - Grid (external)">Biogass/Green Gas - Grid (external)</option>
+                    <option value="Solar">Solar</option>
+                    <option value="Renewable Electricity Certificate">Renewable Electricity Certificate</option>
+                </select>
+            </div>
+
+            <div className="question text-question required">
+                <label htmlFor="energy-consumption-after-int">Share energy consumption (KWh/year) estimate for Nestle only</label>
+                <textarea
+                    id="energy-consumption-after-int"
+                    value={energyConsumptionAfterInt}
+                    onChange={(e) => setEnergyConsumptionAfterInt(e.target.value)}
+                />
+            </div>
+
+            <div className="question text-question required">
+                <label htmlFor="emission-factor-after-int">Emission factor of energy AFTER intervention (kgCO2 per KwH)</label>
+                <textarea
+                    id="emission-factor-after-int"
+                    value={emissionFactorAfterInt}
+                    onChange={(e) => setEmissionFactorAfterInt(e.target.value)}
+                />
+            </div>
+
+            <div className="question text-question required">
+                <label htmlFor="emission-factor-after-int">Impact reduction on GHG emission AFTER intervention attributed to Nestle only (tonsCO2e) based on annualized impact</label>
+                <textarea
+                    id="emission-factor-after-int"
+                    value={emissionFactorAfterInt}
+                    onChange={(e) => setEmissionFactorAfterInt(e.target.value)}
+                />
+            </div>
+
+            <div className="question text-question required">
+                <label htmlFor="impact-reduction">Emission factor of energy BEFORE intervention (kgCO2 per KwH)</label>
+                <textarea
+                    id="impact-reduction"
+                    value={impactReduction}
+                    onChange={(e) => setImpactReduction(e.target.value)}
+                />
+            </div>
+
+
+            <div className="question text-question required">
+                <label htmlFor="impact-timing">Emission factor of energy BEFORE intervention (kgCO2 per KwH)</label>
+                <textarea
+                    id="impact-timing"
+                    value={impactTiming}
+                    onChange={(e) => setImpactTiming(e.target.value)}
+                />
+            </div>
+
+            <br></br>
             <button
                 className="submit"
                 onClick={async () => await handleSubmit()}
