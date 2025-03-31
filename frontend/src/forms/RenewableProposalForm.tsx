@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as firestore from "firebase/firestore";
 import { db } from "../../src/firebaseConfig.js";
 
@@ -42,6 +42,9 @@ interface RenewableProposalFormData {
 }
 
 function RenewableProposalForm() {
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = 1;
+
     const collectionID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
     const collectionRef = firestore.collection(db, collectionID);
     const [submissionObj, setSubmissionObj] = useState<RenewableProposalFormData>({
@@ -68,7 +71,63 @@ function RenewableProposalForm() {
         impactTiming: '',
     });
 
+    // Used for when the "other" option is selected in the impact evidence question
     const [displayImpactEvidenceTextbox, setDisplayImpactEvidenceTextbox] = useState(false);
+
+    useEffect(() => {
+        computeImpactReduction();
+    }, [submissionObj.afterEnergyConsumption, submissionObj.beforeEmissionFactor, submissionObj.afterEmissionFactor]);
+
+    useEffect(() => {
+        computeImpactTiming();
+    }, [submissionObj.projectImplementationYear]);
+
+    /**
+     * Computes the impact reduction after intervention based on
+     * the annualized impact given in the form.
+     * 
+     * Stores the computed value and returns it.
+     */
+    function computeImpactReduction(): string {
+        if (submissionObj.afterEnergyConsumption === '' || submissionObj.beforeEmissionFactor === ''
+            || submissionObj.afterEmissionFactor === '') {
+            return '';
+        }
+
+        const impactReduction =
+            (parseInt(submissionObj.afterEnergyConsumption)
+            * (parseFloat(submissionObj.beforeEmissionFactor) - parseFloat(submissionObj.afterEmissionFactor))
+            / 1000.0).toString();
+        
+        handleChange("impactReduction", impactReduction);
+        return impactReduction;
+    }
+
+    /**
+     * Stores and returns a string corresponding to the project
+     * implementation's timing.
+     */
+    function computeImpactTiming(): string {
+        if (submissionObj.projectImplementationYear === '') {
+            return '';
+        }
+
+        const maxReductionYear = new Date().getFullYear();
+        const minReductionYear = maxReductionYear - 5;
+        const year = parseInt(submissionObj.projectImplementationYear);
+        
+        let impactTiming: string;
+        if (year < minReductionYear) {
+            impactTiming = "Before Nestlé Baseline";
+        } else if (year >= maxReductionYear + 1) {
+            impactTiming = `Potential Reduction - ${maxReductionYear + 1} Onwards`;
+        } else {
+            impactTiming = `Reduction - ${minReductionYear}-${maxReductionYear}`;
+        }
+
+        handleChange("impactTiming", impactTiming);
+        return impactTiming;
+    }
  
     // Used to change the submissionObj's fields dynamically
     function handleChange(field: keyof RenewableProposalFormData, value: string) {
@@ -77,12 +136,9 @@ function RenewableProposalForm() {
             [field]: value
         }));
     };
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 1;
   
     /**
-     * Save a new renewableProjectProposal document with the user-inputted
+     * Insert a new renewableProjectProposal document with the user-inputted
      * fields into the renewableProjectProposalForm collection.
     */
     async function handleSubmit() {
@@ -93,13 +149,13 @@ function RenewableProposalForm() {
         }
     }
   
-     const saveChanges = () => {
+    const saveChanges = () => {
         console.log('Changes saved');
-     }
-  
-     const saveAndExit = () => {
+    }
+
+    const saveAndExit = () => {
         console.log('Changes saved and exiting');
-     }
+    }
 
     return (
         <div className="form renewable-proposal-form">
@@ -110,7 +166,6 @@ function RenewableProposalForm() {
                              goal of achieving Net Zero GHG emissions by 2050."
             />
 
-            {/* TODO: Fix the display for 1 page, or split this form into more pages. */}
             <ProgressBar
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -249,7 +304,7 @@ function RenewableProposalForm() {
 
             <TextBox
                 title="Share an energy consumption (KWh/year) estimate for Nestlé only (AFTER Intervention)"
-                onChange={(value) => handleChange("afterEmissionFactor", value)}
+                onChange={(value) => handleChange("afterEnergyConsumption", value)}
             />
 
             <TextBox
@@ -257,29 +312,24 @@ function RenewableProposalForm() {
                 onChange={(value) => handleChange("afterEmissionFactor", value)}
             />
 
-            {/* TODO: This should be calculated using the formula from the Excel form,
-                with overwriting enabled. */}
             <TextBox
-                title="Impact reduction on GHG emission (tonsCO2e) after intervention attributed to Nestlé only based on annualized impact"
+                title="Impact reduction on GHG emission (tonsCO2e) after intervention attributed to Nestlé only based on annualized impact,
+                       using the formula [energy consumption after] / ([emission factor before] - [emission factor after]); feel free to overwrite
+                       this field."
+                placeholder={submissionObj.impactReduction}
                 onChange={(value) => handleChange("impactReduction", value)}
             />
 
-            {/* TODO: This should be calculated using the formula from the Excel form,
-                with overwriting disabled. */}
+            {/* TODO: Disallow overwriting this field. */}
             <TextBox
                 title="Impact Timing"
+                placeholder={submissionObj.impactTiming}
                 onChange={(value) => handleChange("impactTiming", value)}
             />
 
             <NavigationButtons
                 className='renewable-proposal-form-navigation'
-                onNext={() => {
-                    if (currentPage < totalPages) {
-                        setCurrentPage(currentPage + 1);
-                    } else {
-                        handleSubmit();
-                    }
-                }}
+                onNext={() => currentPage < totalPages ? setCurrentPage(currentPage + 1) : handleSubmit()}
                 onBack={() => {if (currentPage > 1) setCurrentPage(currentPage - 1)}}
                 onSaveChanges={saveChanges}
                 onSaveAndExit={saveAndExit}

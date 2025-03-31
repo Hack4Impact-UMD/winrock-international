@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import styles from "../css-modules/Dropdown.module.css"
 import chevron from "../assets/chevron-up-svgrepo-com.svg"
@@ -30,7 +31,7 @@ const Dropdown = (props: DropdownProps) => {
 				className={styles.dropdownButton}
 				onClick={toggleDropDown}
 			>
-				<p>{selectedOption || "Select"}</p>
+				<p>{selectedOption || "Select an option"}</p>
 				<img src={chevron} className={styles.chevron} style={{rotate: showDropdown ? "0deg" : "180deg"}}></img>
 			</button>
 
