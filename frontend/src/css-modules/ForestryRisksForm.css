@@ -1,0 +1,9 @@
+.forestryRisksForm {
+   width: 100vw;
+   display: flex;
+   flex-direction: column;
+}
+
+.riskCategoryContainer {
+   padding: 3rem 10rem;
+}

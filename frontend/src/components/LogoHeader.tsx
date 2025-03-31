@@ -6,7 +6,7 @@ function LogoHeader() {
         <div className={styles.logoHeader}>
             <img className={styles.logo} src={logo} alt="Winrock International" />
         </div>
-    )
+    );
 }
 
 export default LogoHeader;
