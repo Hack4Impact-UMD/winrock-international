@@ -6,7 +6,7 @@ import NavigationButtons from './components/NavigationButtons'
 function App() {
    // State to keep track of the current page
    const [currentPage, setCurrentPage] = useState(1)
-   const totalPages = 4
+   const totalPages = 3
 
    const nextPage = () => {
       if (currentPage < totalPages) {
@@ -39,7 +39,11 @@ function App() {
       <div className='App'>
          <h1>Forestry Risk Assessment Form</h1>
 
-         <ProgressBar currentPage={currentPage} totalPages={totalPages} />
+         <ProgressBar
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageLabels={['Risk Form (Page 1)', 'Risk Form (Page 2)', 'Co-benefit form']}
+         />
 
          <NavigationButtons
             onNext={nextPage} // Always provide the nextPage function
