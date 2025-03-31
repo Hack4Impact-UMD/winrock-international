@@ -114,6 +114,7 @@ function RenewableProposalForm() {
             <ProgressBar
                 currentPage={currentPage}
                 totalPages={totalPages}
+                pageLabels={["Proposal Form (Page 1/1)"]}
             />
 
             <SectionHeader label="Generic Information" />
