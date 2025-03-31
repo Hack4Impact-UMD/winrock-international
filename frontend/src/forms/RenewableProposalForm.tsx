@@ -127,12 +127,12 @@ function RenewableProposalForm() {
 
             <TextBox
                 title="Vendor Code"
-                onChange={((value) => handleChange("vendorCode", value))}
+                onChange={(value) => handleChange("vendorCode", value)}
             />
 
             <TextBox
                 title="Vendor Site SAP Name"
-                onChange={((value) => handleChange("vendorSiteSAPName", value))}
+                onChange={(value) => handleChange("vendorSiteSAPName", value)}
             />
 
             {/* TODO: This question is required;
@@ -156,7 +156,7 @@ function RenewableProposalForm() {
             <TextBox
                 className="required"
                 title="Vendor Site Country"
-                onChange={((value) => handleChange("vendorSiteCountry", value))}
+                onChange={(value) => handleChange("vendorSiteCountry", value)}
             />
 
             {/* This was a Dropdown in the Excel form, but we changed it
@@ -164,22 +164,22 @@ function RenewableProposalForm() {
             <TextBox
                 className="required"
                 title="Vendor Site City"
-                onChange={((value) => handleChange("vendorSiteCity", value))}
+                onChange={(value) => handleChange("vendorSiteCity", value)}
             />
 
             <TextBox
                 title="Project Type"
-                onChange={((value) => handleChange("projectType", value))}
+                onChange={(value) => handleChange("projectType", value)}
             />
 
             <TextBox
                 title="Project Description"
-                onChange={((value) => handleChange("projectDescription", value))}
+                onChange={(value) => handleChange("projectDescription", value)}
             />
 
             <TextBox
                 title="Project Implementation Year"
-                onChange={((value) => handleChange("projectImplementationYear", value))}
+                onChange={(value) => handleChange("projectImplementationYear", value)}
             />
 
             <Dropdown
@@ -204,13 +204,13 @@ function RenewableProposalForm() {
 
             <TextBox
                 title="Please share any comments/remarks on the change in the source of energy (see below sections)"
-                onChange={((value) => handleChange("emissionFactor", value))}
+                onChange={(value) => handleChange("emissionFactor", value)}
             />
 
             <TextBox
                 className="required"
                 title="Volume of Material (Metric Tons) Delivered to Nestlé in 2022"
-                onChange={((value) => handleChange("volumeDelivered", value))}
+                onChange={(value) => handleChange("volumeDelivered", value)}
             />
 
             <SectionHeader label="Energy Consumption: Before Intervention" />
@@ -248,26 +248,26 @@ function RenewableProposalForm() {
 
             <TextBox
                 title="Share an energy consumption (KWh/year) estimate for Nestlé only (AFTER Intervention)"
-                onChange={((value) => handleChange("afterEmissionFactor", value))}
+                onChange={(value) => handleChange("afterEmissionFactor", value)}
             />
 
             <TextBox
                 title="Emission Factor of Energy (kgCO2/KwH) (AFTER intervention)"
-                onChange={((value) => handleChange("afterEmissionFactor", value))}
+                onChange={(value) => handleChange("afterEmissionFactor", value)}
             />
 
             {/* TODO: This should be calculated using the formula from the Excel form,
                 with overwriting enabled. */}
             <TextBox
                 title="Impact reduction on GHG emission (tonsCO2e) after intervention attributed to Nestlé only based on annualized impact"
-                onChange={((value) => handleChange("impactReduction", value))}
+                onChange={(value) => handleChange("impactReduction", value)}
             />
 
             {/* TODO: This should be calculated using the formula from the Excel form,
                 with overwriting disabled. */}
             <TextBox
                 title="Impact Timing"
-                onChange={((value) => handleChange("impactTiming", value))}
+                onChange={(value) => handleChange("impactTiming", value)}
             />
 
             <NavigationButtons
