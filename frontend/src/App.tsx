@@ -1,6 +1,6 @@
 
 import "./App.css";
-import AgricultureForm from "./pages/AgricultureForm";
+import AgricultureForm from "./components/AgricultureForm";
 
 function App() {
 

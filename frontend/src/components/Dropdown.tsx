@@ -31,7 +31,7 @@ const Dropdown = (props: DropdownProps) => {
 				className={styles.dropdownButton}
 				onClick={toggleDropDown}
 			>
-				<p>{selectedOption || "Select"}</p>
+				<p>{selectedOption || "Select an option"}</p>
 				<img src={chevron} className={styles.chevron} style={{rotate: showDropdown ? "0deg" : "180deg"}}></img>
 			</button>
 

@@ -3,15 +3,17 @@
     flex-direction: column;
     gap: .8rem;
     padding: 2rem 3.2rem 0;
+    margin-bottom: 2rem;
 }
 
 .title {
     font-size: 2rem;
     font-weight: 600;
-    letter-spacing: .09rem;
+    letter-spacing: .05rem;
 }
 
 .description {
     font-size: .93rem;
     letter-spacing: .03rem;
+    line-height: 1.5rem;
 }

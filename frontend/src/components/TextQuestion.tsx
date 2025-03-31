@@ -20,6 +20,7 @@ const TextQuestion: React.FC<TextQuestionProps> = ({ name, response }) => {
         value={userResponse}
         onChange={handleInputChange}
         className={styles.textarea}
+        placeholder="Enter text here"
       />
     </div>
   );

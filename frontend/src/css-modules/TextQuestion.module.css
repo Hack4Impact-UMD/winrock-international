@@ -2,22 +2,22 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    width: "100%";
+    width: 80%;
+    margin-bottom: 3rem;
+	margin-top: 3rem;
 }
 
-
 .label {
-    font-size: 1rem;
-    color: "#333",
+    font-size: .93rem;
+    letter-spacing: .05rem;
 }
 
 .textarea {
-    width: "100%";
     min-height: 4rem;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-radius: 0.25rem;
+    padding: 0.7rem;
+    font-size: 0.93rem;
+    border-radius: 0.4rem;
     border: 1px solid #ccc;
     resize: vertical;
-    font-family: "inherit";
+    letter-spacing: .05rem;
 }

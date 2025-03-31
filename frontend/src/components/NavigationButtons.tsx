@@ -1,5 +1,5 @@
 import React from 'react'
-import '../css-modules/NavigationButtons.module.css'
+import styles from '../css-modules/NavigationButtons.module.css'
 
 interface NavigationButtonsProps {
    onNext?: () => void
@@ -26,25 +26,25 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
    className = '',
    showSaveOptions = true,
 }) => {
-   const handleNextClick = (e: React.MouseEvent) => {
+   const handleNextClick = () => {
       if (onNext) {
          onNext()
       }
    }
 
-   const handleBackClick = (e: React.MouseEvent) => {
+   const handleBackClick = () => {
       if (onBack) {
          onBack()
       }
    }
 
-   const handleSaveChangesClick = (e: React.MouseEvent) => {
+   const handleSaveChangesClick = () => {
       if (onSaveChanges) {
          onSaveChanges()
       }
    }
 
-   const handleSaveAndExitClick = (e: React.MouseEvent) => {
+   const handleSaveAndExitClick = () => {
       if (onSaveAndExit) {
          onSaveAndExit()
       }
@@ -57,7 +57,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
          buttons.push(
             <button
                key='back'
-               className='navigation-button back-button'
+               className={`${styles.navigationButton} ${styles.backButton}`}
                onClick={handleBackClick}
                disabled={!canGoBack}
                aria-label={backLabel}
@@ -71,7 +71,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
          buttons.push(
             <button
                key='save-changes'
-               className='navigation-button save-button'
+               className={`${styles.navigationButton} ${styles.saveButton}`}
                onClick={handleSaveChangesClick}
                aria-label='Save Changes'
             >
@@ -84,7 +84,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
          buttons.push(
             <button
                key='save-exit'
-               className='navigation-button save-button'
+               className={`${styles.navigationButton} ${styles.saveButton}`}
                onClick={handleSaveAndExitClick}
                aria-label='Save and Exit'
             >
@@ -97,7 +97,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
          buttons.push(
             <button
                key='next'
-               className='navigation-button next-button'
+               className={`${styles.navigationButton} ${styles.nextButton}`}
                onClick={handleNextClick}
                disabled={!canGoNext}
                aria-label={nextLabel}
@@ -110,7 +110,8 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
       return buttons
    }
 
-   return <div className={`navigation-buttons ${className}`}>{getButtons()}</div>
+   return <div className={`${styles.navigationButtons} ${className}`}>{getButtons()}</div>;
+
 }
 
 export default NavigationButtons
