@@ -1,10 +1,11 @@
 .logoHeader {
-   display: flex;
-   flex-direction: column;
-   padding: 2rem 3.2rem 2.7rem;
-   align-items: end;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 3.2rem 2.7rem;
+    width: 100%;
+    align-items: end;
 }
 
 .logo {
-   width: 14rem;
+    width: 14rem;
 }
