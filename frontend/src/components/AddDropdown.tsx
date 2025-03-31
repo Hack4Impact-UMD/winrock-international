@@ -47,7 +47,7 @@ const AddDropdown = (props: AddDropdownProps) => {
 					setQOption2("");
 					setQOption3("");
                     props.onAdd({
-                        id: qId,
+						id: qId,
                         question: qTitle,
                         options: [qOption1, qOption2, qOption3],
 						onSelect: (value) => props.handleSelect(qId, value)

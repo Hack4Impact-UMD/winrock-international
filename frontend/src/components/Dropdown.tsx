@@ -4,6 +4,7 @@ import styles from "../css-modules/Dropdown.module.css"
 import chevron from "../assets/chevron-up-svgrepo-com.svg"
 
 export interface DropdownProps {
+	id: string,
 	question: string,
 	options: string[],
 	onSelect: (selected: string) => void
@@ -30,7 +31,7 @@ const Dropdown = (props: DropdownProps) => {
 				className={styles.dropdownButton}
 				onClick={toggleDropDown}
 			>
-				{selectedOption || "Select"}
+				<p>{selectedOption || "Select"}</p>
 				<img src={chevron} className={styles.chevron} style={{rotate: showDropdown ? "0deg" : "180deg"}}></img>
 			</button>
 

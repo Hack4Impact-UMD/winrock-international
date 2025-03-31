@@ -2,9 +2,11 @@
 	font-size: .93rem;
 	text-align: left;
 	letter-spacing: .03rem;
+	margin-bottom: 16px;
 }
 
 .dropdownContainer {
+	margin: 24px;
 	display: flex;
 	flex-direction: column;
 }
@@ -13,7 +15,8 @@
 	background-color: white;
 	color: black;
 	text-align: left;
-	width: 10rem;
+	height: 44px;
+	width: 290px;
 	border-radius: 0.4rem;
 	border-color: black;
 	display: flex;
@@ -23,11 +26,21 @@
 	margin-left: 0;
 }
 
+.dropdownButton p {
+	font-size: 0.8rem;
+	margin-left: 20px;
+}
+
+.dropdownButton img {
+	margin-right: 20px;
+}
+
 .dropdownMenu {
 	text-align: left;
-	width: 10rem;
+	width: 290px;
 	margin-top: 0.2rem;
-	border-radius: 0.4rem;
+	border-radius: 0.1rem;
+	box-shadow: 10px;
 	background-color: white;
 	color: black;
 	overflow: hidden;
