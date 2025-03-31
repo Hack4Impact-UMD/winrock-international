@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import * as firestore from "firebase/firestore";
-import { db } from "../../src/firebaseConfig.js";
+import { db } from "../../../src/firebaseConfig.js";
 
-import LogoHeader from "../components/LogoHeader.js";
-import TitleHeader from "../components/TitleHeader.js";
-import ProgressBar from "../components/ProgressBar.js";
-import SectionHeader from "../components/SectionHeader.js";
-import TextBox from "../components/TextBox.js";
-import Dropdown from "../components/Dropdown.js";
-import NavigationButtons from "../components/NavigationButtons.js";
+import LogoHeader from "../../components/LogoHeader.js";
+import TitleHeader from "../../components/TitleHeader.js";
+import ProgressBar from "../../components/ProgressBar.js";
+import SectionHeader from "../../components/SectionHeader.js";
+import TextBox from "../../components/TextBox.js";
+import Dropdown from "../../components/Dropdown.js";
+import NavigationButtons from "../../components/NavigationButtons.js";
 
 interface RenewableProposalFormData {
     // Generic Information
