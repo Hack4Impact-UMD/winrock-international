@@ -12,7 +12,7 @@ import '../css-modules/ForestryRisksForm.css'
 
 function ForestryRisksForm() {
    const [currentPage, setCurrentPage] = useState(1)
-   const totalPages = 4
+   const totalPages = 3
    const [dropdowns, setDropdowns] = useState<DropdownProps[]>([])
 
    const [selectedValues, setSelectedValues] = useState<{ [key: string]: string | null }>(
@@ -70,7 +70,11 @@ function ForestryRisksForm() {
             title='Risk and Co-Benefit Form'
             description='Some spiel about what this form is about and just to provide some further information about what’s happening?'
          />
-         <ProgressBar currentPage={currentPage} totalPages={totalPages} />
+         <ProgressBar
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageLabels={['Risk Form (Page 1)', 'Risk Form (Page 2)', 'Co-benefit form']}
+         />
          <SectionHeader label='Risk Assessment' />
 
          <Dropdown
@@ -109,9 +113,7 @@ function ForestryRisksForm() {
          <SectionHeader label='Sustainable Use and Management of Natural Resources​' />
          <Dropdown
             id={'sdfsdf'}
-            question={
-               'Has the project completed an Environmental Risk Assessment?'
-            }
+            question={'Has the project completed an Environmental Risk Assessment?'}
             options={['Yes', 'No', 'Not Applicable']}
             onSelect={value => handleSelect('sdfsdf', value)}
          />
@@ -171,7 +173,6 @@ function ForestryRisksForm() {
             response={''}
          />
 
-
          <SectionHeader label='Polution and Waste Control​' />
          <Dropdown
             id={'sdfsdf'}
@@ -220,7 +221,6 @@ function ForestryRisksForm() {
             id={'sdfsdf'}
             response={''}
          />
-
 
          <SectionHeader label='Protection and Restoration of Biodiversity and Ecosystems​​​' />
          <Dropdown
@@ -284,16 +284,17 @@ function ForestryRisksForm() {
             response={''}
          />
 
-
          <SectionHeader label='Human and Labor Rights​​​' />
          <Dropdown
             id={'sdfsdf'}
             question={
-               'Does this project align with Nestle\'s \"Responsible Sourcing Core Requirements\" framework for the protection of Human Rights? ​'
+               'Does this project align with Nestle\'s "Responsible Sourcing Core Requirements" framework for the protection of Human Rights? ​'
             }
             options={['Yes', 'No', 'Not Applicable']}
             onSelect={value => handleSelect('sdfsdf', value)}
-            documentLink={'https://www.nestle.com/sites/default/files/asset-library/documents/library/documents/suppliers/nestle-responsible-sourcing-standard-english.pdf'}
+            documentLink={
+               'https://www.nestle.com/sites/default/files/asset-library/documents/library/documents/suppliers/nestle-responsible-sourcing-standard-english.pdf'
+            }
          />
          <TextQuestion
             name={
@@ -319,9 +320,7 @@ function ForestryRisksForm() {
          />
          <Dropdown
             id={'sdfsdf'}
-            question={
-               'Are there assurances for stakeholder health and safety in place?​'
-            }
+            question={'Are there assurances for stakeholder health and safety in place?​'}
             options={['Yes', 'No', 'Not Applicable']}
             onSelect={value => handleSelect('sdfsdf', value)}
          />
@@ -393,7 +392,7 @@ function ForestryRisksForm() {
             }
             id={'sdfsdf'}
             response={''}
-         /> 
+         />
          <Dropdown
             id={'sdfsdf'}
             question={
@@ -423,7 +422,7 @@ function ForestryRisksForm() {
             }
             id={'sdfsdf'}
             response={''}
-         /> 
+         />
 
          <SectionHeader label='Safeguards​​​' />
          <Dropdown
@@ -441,17 +440,6 @@ function ForestryRisksForm() {
             id={'sdfsdf'}
             response={''}
          />
-
-
-
-         
-
-
-
-
-
-
-
 
          <NavigationButtons
             onNext={nextPage} // Always provide the nextPage function
