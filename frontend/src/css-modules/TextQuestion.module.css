@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: "100%";
+}
+
+
+.label {
+    font-size: 1rem;
+    color: "#333",
+}
+
+.textarea {
+    width: "100%";
+    min-height: 4rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+    resize: vertical;
+    font-family: "inherit";
+}

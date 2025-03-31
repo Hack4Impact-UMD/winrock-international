@@ -1,0 +1,55 @@
+.navigation-buttons {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 22px;
+ }
+ 
+ .navigation-button {
+    border-radius: 10px;
+    font-weight: 400;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    width: 140px;
+    height: 56px;
+    text-align: center;
+ }
+ 
+ .back-button {
+    background-color: #005293;
+    color: white;
+ }
+ 
+ .back-button:hover:not(:disabled) {
+    background-color: #003e6f;
+ }
+ 
+ .save-button {
+    background-color: white;
+    color: #1a4b8b;
+    border: 2px solid #005293;
+ }
+ 
+ .save-button:hover:not(:disabled) {
+    background-color: hsla(206, 100%, 22%, 0.3);
+ }
+ 
+ .next-button {
+    background-color: #005293;
+    color: white;
+ }
+ 
+ .next-button:hover:not(:disabled) {
+    background-color: #003e6f;
+ }
+ 
+ /* When the next button is displaying "Submit" text, we can add additional styling if needed */
+ .next-button[aria-label='Submit'] {
+    background-color: #005293;
+ }
+ 
+ .navigation-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+ }
