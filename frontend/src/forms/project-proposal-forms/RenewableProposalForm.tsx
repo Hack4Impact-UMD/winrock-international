@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import * as firestore from "firebase/firestore";
-import { db } from "../../../src/firebaseConfig.js";
+import { db } from "../../testFirebaseConfig.js";
 
 import LogoHeader from "../../components/headers/LogoHeader.js";
 import TitleHeader from "../../components/headers/TitleHeader.js";
@@ -8,7 +8,6 @@ import ProgressBar from "../../components/ProgressBar.js";
 import SectionHeader from "../../components/headers/SectionHeader.js";
 import TextQuestion from "../../components/questions/TextQuestion.js";
 import DropdownQuestion from "../../components/questions/DropdownQuestion.js";
-import Error from "../../components/Error.js";
 import NavigationButtons from "../../components/NavigationButtons.js";
 import ConfirmationPage from "../ConfirmationPage.js";
 
@@ -48,7 +47,7 @@ function RenewableProposalForm() {
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 1;
 
-    const collectionID = "project-proposal-form/GG9KZ21emgEDELo9kvTT/project-submission-form";
+    const collectionID = "renewable-proposal-form";
     const collectionRef = firestore.collection(db, collectionID);
     const [submissionObj, setSubmissionObj] = useState<RenewableProposalFormData>({
         parentVendorName: '',
