@@ -8,6 +8,7 @@ import ProgressBar from "../../components/ProgressBar.js";
 import SectionHeader from "../../components/headers/SectionHeader.js";
 import TextQuestion from "../../components/questions/TextQuestion.js";
 import DropdownQuestion from "../../components/questions/DropdownQuestion.js";
+import Error from "../../components/Error.js";
 import NavigationButtons from "../../components/NavigationButtons.js";
 import ConfirmationPage from "../ConfirmationPage.js";
 

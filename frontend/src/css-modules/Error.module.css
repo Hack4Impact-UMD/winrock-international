@@ -1,0 +1,12 @@
+.errorContainer {
+    display: block;
+    margin: auto;
+    padding-bottom: 2rem;
+    text-align: center;
+    width: 100vw;
+}
+
+.errorMessage {
+    color: #D20000;
+    font-size: 1.2rem;
+}

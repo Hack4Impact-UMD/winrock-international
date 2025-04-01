@@ -11,15 +11,10 @@
     font-weight: 500;
 }
 
-.required::after {
+.requiredLabel::after {
     content: " *";
     font-weight: bold;
     color: red;
-}
-
-.disabled {
-    background: #f0f0f0;
-    pointer-events: none;
 }
 
 .input {
@@ -27,8 +22,25 @@
     width: 100%;
     padding: 1rem;
     border-radius: 0.25rem;
-    border: 1px solid #C1C7CE;
     resize: vertical;
     font-size: 0.9rem;
     font-family: inherit;
 };
+
+.validInput {
+    border: 1px solid #C1C7CE;
+}
+
+.invalidInput {
+    border: solid 1px red;
+}
+
+.invalidInput::placeholder {
+    color: red;
+    opacity: 1;
+}
+
+.disabledInput {
+    background: #f0f0f0;
+    pointer-events: none;
+}

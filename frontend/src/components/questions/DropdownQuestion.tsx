@@ -12,16 +12,33 @@ interface DropdownQuestionProps {
 const DropdownQuestion = ({ label, options, onSelect, required = false }: DropdownQuestionProps) => {
 	const [showDropdown, setShowDropdown] = useState<boolean>(false);
 	const [selectedOption, setSelectedOption] = useState<string | null>(null);
+	const [isValid, setIsValid] = useState(true);
 
 	const toggleDropdownQuestion = () => {
-		setShowDropdown(!showDropdown);
+		setShowDropdown(true);
 	};
 
 	const selectOption = (option: string) => {
+		setIsValid(true);
+		
 		setSelectedOption(option);
 		setShowDropdown(false);
 		onSelect(option);
 	};
+
+	// Allow the user to backspace to clear a dropdown
+	// This is important for non-required dropdown questions
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+        if (event.key === "Backspace") {
+            setSelectedOption(null);
+        }
+    };
+
+	function validate() {
+		if (required && !selectedOption) {
+			setIsValid(false);
+		}
+	}
 
 	return (
 		<div className={styles.dropdownQuestion}>
@@ -29,8 +46,13 @@ const DropdownQuestion = ({ label, options, onSelect, required = false }: Dropdo
 				{label}
 			</h3>
 			<button
-				className={styles.dropdownButton}
+				className={`${styles.dropdownButton} ${isValid ? styles.validDropdownButton : styles.invalidDropdownButton}`}
 				onClick={toggleDropdownQuestion}
+				onBlur={() => {
+					setTimeout(() => setShowDropdown(false), 100); // clicking off the dropdown closes it
+					validate();
+				}}
+				onKeyDown={handleKeyDown}
 			>
 				<p>{selectedOption || "Select an option"}</p>
 				<img src={chevron} className={styles.chevron} style={{rotate: showDropdown ? "0deg" : "180deg"}}></img>

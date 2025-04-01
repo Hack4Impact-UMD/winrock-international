@@ -1,6 +1,7 @@
 .navigationButtons {
     display: flex;
     justify-content: center;
+    padding-bottom: 2rem;
     width: 100%;
     gap: 22px;
  }

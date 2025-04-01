@@ -36,14 +36,30 @@
 	justify-content: space-between;
 }
 
+.validDropdownButton {
+	border-color: black;
+}
+
+.invalidDropdownButton {
+	border-color: red;
+}
+
 .dropdownButton p {
 	font-size: .93rem;
 	margin-left: 1.25rem;
 	letter-spacing: .05rem;
 }
 
+.invalidDropdownButton p {
+	color: red;
+}
+
 .dropdownButton img {
 	margin-right: 1.25rem;
+}
+
+.invalidDropdownButton img {
+	color: red;
 }
 
 .dropdownMenu {

@@ -94,7 +94,7 @@ function ForestryRisksForm() {
    const [currentPage, setCurrentPage] = useState(1)
    const totalPages = 4
 
-   const collectionID = "agriculture-form/tTMuoxVae4Ut15QlAZIN/document-checklist";
+   const collectionID = "forestry-risks-form";
    const collectionRef = firestore.collection(db, collectionID);
    const [submissionObj, setSubmissionObj] = useState<ForestryRisksFormData>({
       riskAssessment: '',
