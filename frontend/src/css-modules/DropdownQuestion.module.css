@@ -1,90 +1,98 @@
 .dropdownQuestion {
-	position: relative;
-	padding: 0 8rem 3rem;
-	display: flex;
-	flex-direction: column;
-	width: 100%;
+   position: relative;
+   padding: 0 8rem 3rem;
+   display: flex;
+   flex-direction: column;
+   width: 100%;
 }
 
 .label {
-	font-size: 1.1rem;
-	text-align: left;
-	letter-spacing: .05rem;
-	line-height: 1.5rem;
-	margin-bottom: 1rem;
-	font-weight: 500;
+   font-size: 1.1rem;
+   text-align: left;
+   letter-spacing: 0.05rem;
+   line-height: 1.5rem;
+   margin-bottom: 1rem;
+   font-weight: 500;
 }
 
 .required::after {
-    content: " *";
-    font-weight: bold;
-    color: red;
+   content: ' *';
+   font-weight: bold;
+   color: red;
 }
 
 .dropdownButton {
-	background-color: white;
-	color: black;
-	text-align: left;
-	height: 2.75rem;
-	width: 18.125rem;
-	border-radius: 0.6rem;
-	border-color: black;
-	border-width: thin;
-	display: flex;
-	flex-flow: row nowrap;
-	align-items: center;
-	justify-content: space-between;
+   background-color: white;
+   color: black;
+   text-align: left;
+   height: 2.75rem;
+   width: 18.125rem;
+   border-radius: 0.6rem;
+   border-color: black;
+   border-width: thin;
+   display: flex;
+   flex-flow: row nowrap;
+   align-items: center;
+   justify-content: space-between;
 }
 
 .validDropdownButton {
-	border-color: black;
+   border-color: black;
 }
 
 .invalidDropdownButton {
-	border-color: red;
+   border-color: red;
 }
 
 .dropdownButton p {
-	font-size: .93rem;
-	margin-left: 1.25rem;
-	letter-spacing: .05rem;
+   font-size: 0.93rem;
+   margin-left: 1.25rem;
+   letter-spacing: 0.05rem;
 }
 
 .invalidDropdownButton p {
-	color: red;
+   color: red;
 }
 
 .dropdownButton img {
-	margin-right: 1.25rem;
+   margin-right: 1.25rem;
 }
 
 .invalidDropdownButton img {
-	color: red;
+   color: red;
 }
 
 .dropdownMenu {
-	position: absolute;
-	top: 5rem;
-	z-index: 100;
-	text-align: left;
-	width: 290px;
-	border-radius: 0.5rem;
-	box-shadow: 10px;
-	background-color: rgb(237, 237, 237);
-	color: black;
-	letter-spacing: .05rem;
+   position: absolute;
+   z-index: 100;
+   text-align: left;
+   width: 290px;
+   border-radius: 0.5rem;
+   box-shadow: 10px;
+   background-color: rgb(237, 237, 237);
+   color: black;
+   letter-spacing: 0.05rem;
 }
 
 .dropdownItem {
-	padding: 0.5rem;
+   background-color: white;
+   color: black;
+   text-align: left;
+   height: 2.75rem;
+   width: 18.125rem;
+   display: flex;
+   flex-flow: row nowrap;
+   align-items: center;
+   justify-content: space-between;
+   padding: 0.5rem 1.25rem;
 }
 
 .dropdownItem:hover {
-	background-color: #C1C7CE;
+   background-color: #e7eef4;
 }
 
 .chevron {
-	width: 1rem;
-	rotate: 180deg;
-	transition: rotate 0.3s linear;
+   width: 1rem;
+   rotate: 180deg;
+   transition: rotate 0.3s linear;
 }
