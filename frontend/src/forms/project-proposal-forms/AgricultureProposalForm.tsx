@@ -11,7 +11,7 @@ import TextQuestion from "../../components/questions/TextQuestion.js";
 import Dropdown from "../../components/questions/DropdownQuestion.js";
 import NavigationButtons from "../../components/NavigationButtons.js";
 
-interface RenewableProposalFormData {
+interface AgricultureProposalFormData {
     ingredientPrimary: string;
     ingredientSub: string;
     mainIntervention: string;

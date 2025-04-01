@@ -9,9 +9,14 @@ import NavigationButtons from '../../components/NavigationButtons.js'
 import SectionHeader from '../../components/headers/SectionHeader.js'
 import Dropdown from '../../components/questions/DropdownQuestion.js'
 import TextQuestion from '../../components/questions/TextQuestion.js'
+import RisksDropdownQuestion from '../../components/questions/RisksDropdownQuestion.js';
 import ConfirmationPage from '../ConfirmationPage.js'
 
-function ForestryRiskForm() {
+interface ForestryRisksFormData {
+
+}
+
+function ForestryRisksForm() {
    const title = "Forestry Risks and Co-Benefit Disclosure Form";
    const [currentPage, setCurrentPage] = useState(1)
    const [isSubmitted, setIsSubmitted] = useState(false)
@@ -96,19 +101,11 @@ const PageOne = ({ handleSelect }) => {
    return (
       <>
          <SectionHeader label='Risk Assessment' />
-         <Dropdown
-            question={
-               'Has the project completed a risk assessment following an approved standard? If so, how was the risk assessment conducted? What high-level risks were identified based on the geography or project activities?​'
-            }
+         <RisksDropdownQuestion
+            label="Has the project completed a risk assessment following an approved standard? If so, how was the risk assessment conducted? What high-level risks were identified based on the geography or project activities?"
             options={['Yes', 'No', 'Not Applicable']}
             onSelect={value => handleSelect('risk_assessment', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'risk_assessment_details'}
-            response={''}
+            onChange={()}
          />
 
          <SectionHeader label='Climate Change Adaptation' />
@@ -530,4 +527,4 @@ const CoBenefitForm = ({ handleSelect }) => {
    )
 }
 
-export default ForestryRiskForm
+export default ForestryRisksForm
