@@ -47,9 +47,9 @@ const DropdownQuestion = ({ label, options, onSelect, required = false }: Dropdo
 			</h3>
 			<button
 				className={`${styles.dropdownButton} ${isValid ? styles.validDropdownButton : styles.invalidDropdownButton}`}
-				onClick={toggleDropdownQuestion}
+				onMouseDown={toggleDropdownQuestion}
 				onBlur={() => {
-					setTimeout(() => setShowDropdown(false), 100); // clicking off the dropdown closes it
+					setShowDropdown(false); // clicking off the dropdown closes it
 					validate();
 				}}
 				onKeyDown={handleKeyDown}
@@ -64,7 +64,7 @@ const DropdownQuestion = ({ label, options, onSelect, required = false }: Dropdo
 						<div
 							key={option}
 							className={styles.dropdownItem}
-							onClick={() => selectOption(option)}
+							onMouseDown={() => selectOption(option)}
 						>
 							{option}
 						</div>
