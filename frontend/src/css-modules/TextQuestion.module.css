@@ -6,9 +6,20 @@
     padding: 0 8rem 3rem;
  }
 
-.title {
+.label {
     font-size: 1.1rem;
     font-weight: 500;
+}
+
+.required::after {
+    content: " *";
+    font-weight: bold;
+    color: red;
+}
+
+.disabled {
+    background: #f0f0f0;
+    pointer-events: none;
 }
 
 .input {

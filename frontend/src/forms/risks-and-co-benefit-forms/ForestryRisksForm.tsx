@@ -17,7 +17,7 @@ interface ForestryRisksFormData {
 }
 
 function ForestryRisksForm() {
-   const title = "Forestry Risks and Co-Benefit Disclosure Form";
+   const title = "Forestry Risks and Co-Benefit Form"
    const [currentPage, setCurrentPage] = useState(1)
    const [isSubmitted, setIsSubmitted] = useState(false)
    const totalPages = 4

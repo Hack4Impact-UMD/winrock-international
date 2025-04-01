@@ -1,15 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from "../../css-modules/TextQuestion.module.css";
 
 interface TextQuestionProps {
   label: string;
-  isRequired?: boolean;
-  isNumber?: boolean;
   onChange: (value: string) => void;
+  defaultValue?: string;
+  required?: boolean;
+  disableOverwrite?: boolean;
 }
 
-function TextQuestion({ label, isRequired = false, isNumber = false, onChange }: TextQuestionProps) {
-  const [value, setValue] = useState('');
+function TextQuestion({ label, onChange, defaultValue="", required = false, disableOverwrite = false }: TextQuestionProps) {
+  const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    setValue(defaultValue)
+  }, [defaultValue]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -23,14 +28,16 @@ function TextQuestion({ label, isRequired = false, isNumber = false, onChange }:
   // TODO: Add input validation
 
   return (
-    <div className={`${styles.container} ${isRequired ? "required" : ""}`}>
-      <label className={styles.title}>{label}</label>
+    <div className={styles.container}>
+      <label className={`${styles.label} ${required ? styles.required : ""}`}>
+        {label}
+      </label>
 
       <textarea
         value={value}
         onChange={handleChange}
-        placeholder={"Enter text here"}
-        className={styles.input}
+        placeholder="Enter text here"
+        className={`${styles.input} ${disableOverwrite ? styles.disabled : ""}`}
       />
     </div>
   );

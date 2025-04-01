@@ -10,48 +10,65 @@ import NavigationButtons from '../../components/NavigationButtons.js';
 import SectionHeader from '../../components/headers/SectionHeader.js';
 import DropdownQuestion from '../../components/questions/DropdownQuestion.js';
 import TextQuestion from '../../components/questions/TextQuestion.js';
+import ConfirmationPage from '../ConfirmationPage.js';
 
 interface TechEnergyRisksFormData {
 
 }
 
 const TechEnergyRisksForm: React.FC = () => {
+  const title = "Tech & Energy Risks and Co-Benefit Form";
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3;
 
-  const goToNextPage = () => {
+  function goToNextPage() {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
       window.scrollTo(0, 0);
     }
   };
 
-  const goToPreviousPage = () => {
+  function goToPreviousPage() {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
       window.scrollTo(0, 0);
     }
-  };
+  }
 
-  const saveChanges = () => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  /**
+   * Insert a new TechEnergyRisksForm submission with the user-inputted
+   * fields into the TechEnergyRisksForm collection.
+  */
+  async function handleSubmit() {
+      try {
+          await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
+          setIsSubmitted(true);
+      } catch (error) {
+          console.error("Error submitting RenewableProjectProposal", error);
+      }
+  }
+
+  function saveChanges() {
     console.log('Saving changes...');
-  };
+  }
 
-  const saveAndExit = () => {
+  function saveAndExit() {
     console.log('Saving and exiting...');
-  };
+  }
 
   // Common DropdownQuestion options
   const yesNoOptions = ['Yes', 'No', 'Not Applicable'];
 
   // Render different pages based on the current page
-  const renderCurrentPage = () => {
+  function renderCurrentPage() {
     switch (currentPage) {
       case 1:
         return (
           <>
             <div className="tech-energy-form-category">
-              <SectionHeader title="Risk Assessment" />
+              <SectionHeader label="Risk Assessment" />
               <div className="tech-energy-form-subcategory">
                 <DropdownQuestion 
                   id="risk-assessment"
@@ -318,14 +335,15 @@ const TechEnergyRisksForm: React.FC = () => {
     return "Some explanation about what this form is about and just to provide some further information about what's happening?";
   };
 
+  if (isSubmitted) {
+    return <ConfirmationPage formName={title}/>
+  }
+
   return (
     <div className="tech-energy-form">
-      {/* Logo header */}
       <LogoHeader />
-      
-      {/* Title header */}
       <TitleHeader 
-        title="Risks and Co-Benefit Disclosure Form" 
+        title={title}
         description={getTitleDescription()}
       />
       
@@ -337,12 +355,24 @@ const TechEnergyRisksForm: React.FC = () => {
         
         {/* Navigation buttons */}
         <NavigationButtons
-          onBack={goToPreviousPage}
-          onSave={saveChanges}
-          onSaveAndExit={saveAndExit}
-          onNext={goToNextPage}
-          showBack={currentPage > 1}
-          showSubmit={currentPage === totalPages}
+            onNext={() => {
+                if (currentPage < totalPages) {
+                    setCurrentPage(currentPage + 1);
+                    window.scroll(0, 0);
+                } else {
+                    handleSubmit();
+                }
+            }}
+            onBack={() => {
+              if (currentPage > 1) {
+                  setCurrentPage(currentPage - 1)
+                  window.scroll(0, 0);
+              }
+            }}
+            onSaveChanges={saveChanges}
+            onSaveAndExit={saveAndExit}
+            canGoBack={currentPage > 1}
+            nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
         />
       </form>
     </div>

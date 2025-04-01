@@ -6,13 +6,19 @@
 	width: 100%;
 }
 
-.question {
+.label {
 	font-size: 1.1rem;
 	text-align: left;
 	letter-spacing: .05rem;
 	line-height: 1.5rem;
 	margin-bottom: 1rem;
 	font-weight: 500;
+}
+
+.required::after {
+    content: " *";
+    font-weight: bold;
+    color: red;
 }
 
 .dropdownButton {

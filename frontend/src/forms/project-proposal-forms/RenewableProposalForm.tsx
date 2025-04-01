@@ -9,6 +9,7 @@ import SectionHeader from "../../components/headers/SectionHeader.js";
 import TextQuestion from "../../components/questions/TextQuestion.js";
 import DropdownQuestion from "../../components/questions/DropdownQuestion.js";
 import NavigationButtons from "../../components/NavigationButtons.js";
+import ConfirmationPage from "../ConfirmationPage.js";
 
 interface RenewableProposalFormData {
     // Generic Information
@@ -42,6 +43,7 @@ interface RenewableProposalFormData {
 }
 
 function RenewableProposalForm() {
+    const title = "Renewable Energy Project Proposal Form"
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 1;
 
@@ -83,15 +85,15 @@ function RenewableProposalForm() {
     }, [submissionObj.projectImplementationYear]);
 
     /**
-     * Computes the impact reduction after intervention based on
-     * the annualized impact given in the form.
+     * Sets impactReduction to the impact reduction after
+     * intervention based on the annualized impact given
+     * in the form.
      * 
-     * Stores the computed value and returns it.
      */
-    function computeImpactReduction(): string {
+    function computeImpactReduction(): void {
         if (submissionObj.afterEnergyConsumption === '' || submissionObj.beforeEmissionFactor === ''
             || submissionObj.afterEmissionFactor === '') {
-            return '';
+            return;
         }
 
         const impactReduction =
@@ -100,16 +102,15 @@ function RenewableProposalForm() {
             / 1000.0).toString();
         
         handleChange("impactReduction", impactReduction);
-        return impactReduction;
     }
 
     /**
-     * Stores and returns a string corresponding to the project
+     * Sets impactTiming to a string corresponding to the project
      * implementation's timing.
      */
-    function computeImpactTiming(): string {
+    function computeImpactTiming(): void {
         if (submissionObj.projectImplementationYear === '') {
-            return '';
+            return;
         }
 
         const maxReductionYear = new Date().getFullYear();
@@ -126,7 +127,6 @@ function RenewableProposalForm() {
         }
 
         handleChange("impactTiming", impactTiming);
-        return impactTiming;
     }
  
     // Used to change the submissionObj's fields dynamically
@@ -136,6 +136,8 @@ function RenewableProposalForm() {
             [field]: value
         }));
     };
+
+    const [isSubmitted, setIsSubmitted] = useState(false);
   
     /**
      * Insert a new RenewableProjectProposal document with the user-inputted
@@ -144,6 +146,7 @@ function RenewableProposalForm() {
     async function handleSubmit() {
         try {
             await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
+            setIsSubmitted(true);
         } catch (error) {
             console.error("Error submitting RenewableProjectProposal", error);
         }
@@ -158,11 +161,15 @@ function RenewableProposalForm() {
         console.log('Changes saved and exiting');
     }
 
+    if (isSubmitted) {
+        return <ConfirmationPage formName={title}/>
+    }
+
     return (
-        <div className="form renewable-proposal-form">
+        <>
             <LogoHeader />
             <TitleHeader
-                title="Renewable Energy Project Proposal Form"
+                title={title}
                 description="This is an intake form for renewable energy and energy reduction projects to support Nestlé's
                              goal of achieving Net Zero GHG emissions by 2050."
             />
@@ -177,8 +184,8 @@ function RenewableProposalForm() {
 
             <TextQuestion
                 label="Parent Vendor Name"
-                isRequired={true}
                 onChange={(value) => handleChange("parentVendorName", value)}
+                required={true}
             />
 
             <TextQuestion
@@ -194,28 +201,28 @@ function RenewableProposalForm() {
             <DropdownQuestion
                 label="Spend Category"
                 options={["Ingredients", "Commodities", "Packaging", "Logistics"]}
-                isRequired={true}
                 onSelect={(value: string) => handleChange("spendCategory", value)}
+                required={true}
             />
 
             <DropdownQuestion
                 label="Level 2 Category"
                 options={["Amino Acids", "Cereals & Grains", "Flexibles", "Warehousing Services"]}
-                isRequired={true}
                 onSelect={(value: string) => handleChange("level2Category", value)}
+                required={true}
             />
 
             <TextQuestion
                 label="Vendor Site Country"
-                isRequired={true}
                 onChange={(value: string) => handleChange("vendorSiteCountry", value)}
+                required={true}
             />
 
             {/* This was a DropdownQuestion in the Excel form, but we changed it
                 to a TextQuestion because we don't know the vendor cities. */}
             <TextQuestion
                 label="Vendor Site City"
-                isRequired={true}
+                required={true}
                 onChange={(value: string) => handleChange("vendorSiteCity", value)}
             />
 
@@ -260,8 +267,8 @@ function RenewableProposalForm() {
 
             <TextQuestion
                 label="Volume of Material (Metric Tons) Delivered to Nestlé in 2022"
-                isRequired={true}
                 onChange={(value: string) => handleChange("volumeDelivered", value)}
+                required={true}
             />
 
             <SectionHeader label="Energy Consumption: Before Intervention" />
@@ -269,14 +276,14 @@ function RenewableProposalForm() {
             <DropdownQuestion
                 label="Source of Energy (BEFORE Intervention)"
                 options={["Coal", "Natural Gas", "Electricity Grid"]}
-                isRequired={true}
                 onSelect={(value: string) => handleChange("beforeSourceOfEnergy", value)}
+                required={true}
             />
 
             <TextQuestion
                 label="Share an energy consumption (KWh/year) estimate for Nestlé only (BEFORE intervention)"
-                isRequired={true}
                 onChange={((value) => handleChange("beforeEnergyConsumption", value))}
+                required={true}
             />
 
             <TextQuestion
@@ -302,27 +309,44 @@ function RenewableProposalForm() {
                 onChange={(value: string) => handleChange("afterEmissionFactor", value)}
             />
 
+            <SectionHeader label="Calculations (Auto-Generated)" />
+
             <TextQuestion
-                label="Impact reduction on GHG emission (tonsCO2e) after intervention attributed to Nestlé only based on annualized impact,
-                       using the formula [energy consumption after] / ([emission factor before] - [emission factor after]); feel free to overwrite
+                label="Impact reduction on GHG emission (tonsCO2e) (after intervention attributed to Nestlé only based on annualized impact).
+                       Uses the formula [energy consumption after] / ([emission factor before] - [emission factor after]). Feel free to overwrite
                        this field."
                 onChange={(value: string) => handleChange("impactReduction", value)}
+                defaultValue={submissionObj.impactReduction}
             />
 
             <TextQuestion
-                label="Impact Timing"
-                onChange={(value: string) => handleChange("impactTiming", value)}
+                label="Impact Timing (based on Project Implementation Year)"
+                onChange={(_: string) => {}}
+                defaultValue={submissionObj.impactTiming}
+                disableOverwrite={true}
             />
 
             <NavigationButtons
-                onNext={() => currentPage < totalPages ? setCurrentPage(currentPage + 1) : handleSubmit()}
-                onBack={() => {if (currentPage > 1) setCurrentPage(currentPage - 1)}}
+                onNext={() => {
+                    if (currentPage < totalPages) {
+                        setCurrentPage(currentPage + 1);
+                        window.scroll(0, 0);
+                    } else {
+                        handleSubmit();
+                    }
+                }}
+                onBack={() => {
+                    if (currentPage > 1) {
+                        setCurrentPage(currentPage - 1)
+                        window.scroll(0, 0);
+                    }
+                }}
                 onSaveChanges={saveChanges}
                 onSaveAndExit={saveAndExit}
                 canGoBack={currentPage > 1}
                 nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
             />
-        </div>
+        </>
     );
 }
 
