@@ -138,14 +138,14 @@ function RenewableProposalForm() {
     };
   
     /**
-     * Insert a new renewableProjectProposal document with the user-inputted
-     * fields into the renewableProjectProposalForm collection.
+     * Insert a new RenewableProjectProposal document with the user-inputted
+     * fields into the RenewableProjectProposalForm collection.
     */
     async function handleSubmit() {
         try {
             await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
         } catch (error) {
-            console.error("Error submitting renewableProjectProposal", error);
+            console.error("Error submitting RenewableProjectProposal", error);
         }
     }
   

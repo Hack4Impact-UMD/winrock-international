@@ -1,7 +1,7 @@
 import DropdownQuestion from "./DropdownQuestion";
 import TextQuestion from "./TextQuestion";
 
-interface RisksDropdownQuestionProps {
+interface RCBDropdownQuestionProps {
 	label: string;
 	options: string[];
 	isRequired?: boolean;
@@ -9,7 +9,7 @@ interface RisksDropdownQuestionProps {
     onChange: (value: string) => void;
 }
 
-function RisksDropdownQuestion({ label, options, isRequired, onSelect, onChange }: RisksDropdownQuestionProps) {
+function RCBDropdownQuestion({ label, options, isRequired, onSelect, onChange }: RCBDropdownQuestionProps) {
     return (
         <>
             <DropdownQuestion
@@ -26,4 +26,4 @@ function RisksDropdownQuestion({ label, options, isRequired, onSelect, onChange 
     )
 }
 
-export default RisksDropdownQuestion;
+export default RCBDropdownQuestion;

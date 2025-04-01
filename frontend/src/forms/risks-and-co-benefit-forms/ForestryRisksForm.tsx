@@ -9,7 +9,7 @@ import NavigationButtons from '../../components/NavigationButtons.js'
 import SectionHeader from '../../components/headers/SectionHeader.js'
 import Dropdown from '../../components/questions/DropdownQuestion.js'
 import TextQuestion from '../../components/questions/TextQuestion.js'
-import RisksDropdownQuestion from '../../components/questions/RisksDropdownQuestion.js';
+import RCBDropdownQuestion from '../../components/questions/RCBDropdownQuestion.js';
 import ConfirmationPage from '../ConfirmationPage.js'
 
 interface ForestryRisksFormData {
@@ -101,7 +101,7 @@ const PageOne = ({ handleSelect }) => {
    return (
       <>
          <SectionHeader label='Risk Assessment' />
-         <RisksDropdownQuestion
+         <RCBDropdownQuestion
             label="Has the project completed a risk assessment following an approved standard? If so, how was the risk assessment conducted? What high-level risks were identified based on the geography or project activities?"
             options={['Yes', 'No', 'Not Applicable']}
             onSelect={value => handleSelect('risk_assessment', value)}

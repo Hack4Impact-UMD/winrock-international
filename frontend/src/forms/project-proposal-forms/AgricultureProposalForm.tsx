@@ -12,29 +12,144 @@ import Dropdown from "../../components/questions/DropdownQuestion.js";
 import NavigationButtons from "../../components/NavigationButtons.js";
 
 interface AgricultureProposalFormData {
+    // Ingredient/Crop Supplied
     ingredientPrimary: string;
     ingredientSub: string;
+
+    // General Project Activity Description
     mainIntervention: string;
+    projectDescription: string;
+
+    // Project Volumes in Relation to Nestlé
+    averageVolumePurchased: string;
+
+    // Project Geography
     mainCountry: string;
+    otherCountries?: string;
+    subNationalRegions?: string;
+
+    // Project Contracting Party and Project Partners
+    contractingParty: string;
+    contractingNameAndEmail: string;
+    projectPartnerOne?: string;
+    projectPartnerTwo?: string;
+    projectPartnerThree?: string;
+
+    // Planned Timeline
+    projectStartDate: string;
+    expectedDuration: string;
+    expectedFirstImpact: string;
+
+    // Connection to the Nestlé Value Chain
+    connectionToValueChain: string;
+    otherZones?: string;
+    physicalTraceability?: string;
+    ptAdditionalInformation?: string;
+    chainOfCustody: string;
+    cocAdditionalInformation?: string;
+
+    // Information related to Carbon credits (insets)
+    carbonCredits: string;
+    carbonStandard: string;
+    carbonCreditsVerified: string;
+    ccvSupplement: string;
+    carbonCreditsDoubleCount: string;
+    ccdcSupplement: string;
+    dateOfIssuance: string;
+
+    // Project Co-Financing and Benefit Sharing
+    coFinancingStructure: string;
+    cfsBreakdown: string;
+    benefitSharing: string;
+
+    // Information on GHG Benefits Estimates
+    ghgOption: string;
+    beforeEmissionFactor: string;
+    afterEmissionFactor: string;
+    emissionReductionEstimate: string;
+    emissionRemovalEstimate: string;
+
+    // Supplementary Information on GHG Emissions Benefits
+    ghgSheetAttached: string;
+    ghgBuffer?: string;
+    gbElaboration?: string;
 }
 
-const AgricultureForm = () => {
-    const [dropdownResponses, setDropdownResponses] = useState<{ [key: string]: string }>({});
+function AgricultureProposalForm() {
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = 1;
 
-    const handleSelect = (id: string, response: string) => {
-        setDropdownResponses({
-            ...dropdownResponses,
-            [id]: response
-        });
+    const collectionID = "agriculture-form/tTMuoxVae4Ut15QlAZIN/document-checklist";
+    const collectionRef = firestore.collection(db, collectionID);
+    const [submissionObj, setSubmissionObj] = useState<AgricultureProposalFormData>({
+        ingredientPrimary: '',
+        ingredientSub: '',
+        mainIntervention: '',
+        projectDescription: '',
+        averageVolumePurchased: '',
+        mainCountry: '',
+        otherCountries: '',
+        subNationalRegions: '',
+        contractingParty: '',
+        contractingNameAndEmail: '',
+        projectPartnerOne: '',
+        projectPartnerTwo: '',
+        projectPartnerThree: '',
+        projectStartDate: '',
+        expectedDuration: '',
+        expectedFirstImpact: '',
+        connectionToValueChain: '',
+        otherZones: '',
+        physicalTraceability: '',
+        ptAdditionalInformation: '',
+        chainOfCustody: '',
+        cocAdditionalInformation: '',
+        carbonCredits: '',
+        carbonStandard: '',
+        carbonCreditsVerified: '',
+        ccvSupplement: '',
+        carbonCreditsDoubleCount: '',
+        ccdcSupplement: '',
+        dateOfIssuance: '',
+        coFinancingStructure: '',
+        cfsBreakdown: '',
+        benefitSharing: '',
+        ghgOption: '',
+        beforeEmissionFactor: '',
+        afterEmissionFactor: '',
+        emissionReductionEstimate: '',
+        emissionRemovalEstimate: '',
+        ghgSheetAttached: '',
+        ghgBuffer: '',
+        gbElaboration: '',
+    });
+
+    // Used to change the submissionObj's fields dynamically
+    function handleChange(field: keyof AgricultureProposalFormData, value: string) {
+        setSubmissionObj((prev: AgricultureProposalFormData) => ({
+            ...prev,
+            [field]: value
+        }));
     };
 
-    async function saveDropdowns() {
-        for (const dropdownId in dropdownResponses) {
-            await firestore.setDoc(firestore.doc(db, "ag-form-testing", dropdownId), {
-                id: dropdownId,
-                response: dropdownResponses[dropdownId]
-            });
+    /**
+     * Insert a new AgricultureProjectProposal document with the user-inputted
+     * fields into the AgricultureProjectProposalForm collection.
+    */
+    async function handleSubmit() {
+        try {
+            await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
+        } catch (error) {
+            console.error("Error submitting AgricultureProjectProposal", error);
         }
+    }
+
+    const saveChanges = () => {
+        console.log('Changes saved');
+    }
+
+    const saveAndExit = () => {
+        console.log('Changes saved and exiting');
     }
 
     return (
@@ -45,9 +160,9 @@ const AgricultureForm = () => {
                 description="This project proposal form asks for comprehensive details including the specific ingredient, project activity, geographic location, project partners, timeline, connection to Nestle's value chain, GHG estimates calculation, costs, and benefit sharing."
             />
             <ProgressBar currentPage={1} totalPages={3} pageLabels={["Proposal Form", "Project Costs", "Document Checklist"]}/>
-            <SectionHeader
-                label="Ingredient/Crop Supplied"
-            />
+
+            <SectionHeader label="Ingredient/Crop Supplied" />
+
             <div className={styles.questionscontainer}>
                 <Dropdown
                     label="Please select the primary category of ingredient or crop you are supplying to Nestlé linked to this project?"
@@ -88,9 +203,8 @@ const AgricultureForm = () => {
                 />
             </div>
 
-            <SectionHeader
-                label="General Project Activity Description"
-            />
+            <SectionHeader label="General Project Activity Description" />
+
             <div className={styles.questionscontainer}>
                 <Dropdown
                     label="Please select the main intervention and description that best matches the project?"
@@ -119,9 +233,8 @@ const AgricultureForm = () => {
             </div>
 
 
-            <SectionHeader
-                label="Project Geography"
-            />
+            <SectionHeader label="Project Geography" />
+
             <div className={styles.questionscontainer}>
                 <Dropdown
                     label="What is the main country where the project is located?"
@@ -179,10 +292,8 @@ const AgricultureForm = () => {
                 />
             </div>
 
+            <SectionHeader label="Project Contracting Party and Project Partners" />
 
-            <SectionHeader
-                label="Project Contracting Party and Project Partners"
-            />
             <div className={styles.questionscontainer}>
                 <TextQuestion
                     label="What is the name of the contracting party (i.e., Nestlé Supplier)?"
@@ -206,7 +317,8 @@ const AgricultureForm = () => {
                 ></TextQuestion>
             </div>
 
-            <SectionHeader label="Planned Timeline"></SectionHeader>
+            <SectionHeader label="Planned Timeline" />
+
             <div className={styles.questionscontainer}>
                 <TextQuestion
                     label="What is the month and year that the project started or is planned to be started?"
@@ -222,7 +334,8 @@ const AgricultureForm = () => {
                 ></TextQuestion>
             </div>
 
-            <SectionHeader label="Connection to the Nestlé Value Chain"></SectionHeader>
+            <SectionHeader label="Connection to the Nestlé Value Chain" />
+
             <div className={styles.questionscontainer}>
                 <TextQuestion
                     label="What is the project's connection to the Nestlé value chain as defined by Nestlé's Supply Chain (Scope 3) and Sourcing Landscape Removals Framework?"
@@ -252,7 +365,8 @@ const AgricultureForm = () => {
             </div>
 
 
-            <SectionHeader label="Information related to Carbon credits (insets)"></SectionHeader>
+            <SectionHeader label="Information related to Carbon credits (insets)" />
+
             <div className={styles.questionscontainer}>
                 <Dropdown
                     label="Is your project intended to generate carbon inset credits?"
@@ -285,7 +399,8 @@ const AgricultureForm = () => {
                 ></TextQuestion>
             </div>
 
-            <SectionHeader label="Project Co-Financing and Benefit Sharing"></SectionHeader>
+            <SectionHeader label="Project Co-Financing and Benefit Sharing" />
+
             <div className={styles.questionscontainer}>
                 <TextQuestion
                     label="Please select the co-financing structure"
@@ -298,7 +413,8 @@ const AgricultureForm = () => {
                 ></TextQuestion>
             </div>
 
-            <SectionHeader label="Information on GHG Benefits Estimates"></SectionHeader>
+            <SectionHeader label="Information on GHG Benefits Estimates" />
+
             <div className={styles.questionscontainer}>
                 <Dropdown
                     label="Select one of the options below and add the values in the respective rows based on applicability (accounting approach used for project, availability of data, type and stage of project)"
@@ -319,7 +435,8 @@ const AgricultureForm = () => {
                 ></TextQuestion>
             </div>
 
-            <SectionHeader label="Supplementary Information on GHG Emissions Benefits"></SectionHeader>
+            <SectionHeader label="Supplementary Information on GHG Emissions Benefits" />
+
             <div className={styles.questionscontainer}>
                 <Dropdown
                     label="Is the GHG calculation sheet for the noted benefits attached with the project submission email?"
@@ -342,4 +459,4 @@ const AgricultureForm = () => {
     );
 };
 
-export default AgricultureForm;
+export default AgricultureProposalForm;
