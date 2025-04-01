@@ -7,7 +7,7 @@ import TitleHeader from "../../components/headers/TitleHeader.js";
 import ProgressBar from "../../components/ProgressBar.js";
 import SectionHeader from "../../components/headers/SectionHeader.js";
 import TextQuestion from "../../components/questions/TextQuestion.js";
-import Dropdown from "../../components/questions/DropdownQuestion.js";
+import DropdownQuestion from "../../components/questions/DropdownQuestion.js";
 import NavigationButtons from "../../components/NavigationButtons.js";
 import ConfirmationPage from "../ConfirmationPage.js";
 
@@ -142,6 +142,7 @@ function AgricultureProposalForm() {
     async function handleSubmit() {
         try {
             await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
+            setIsSubmitted(true);
         } catch (error) {
             console.error("Error submitting AgricultureProjectProposal", error);
         }
@@ -174,7 +175,7 @@ function AgricultureProposalForm() {
 
             <SectionHeader label="Ingredient/Crop Supplied" />
 
-            <Dropdown
+            <DropdownQuestion
                 label="Please select the primary category of ingredient or crop you are supplying to Nestlé linked to this project?"
                 options={["Acids & Alkalis", "Amino Acids", "Animal Fats", "Cereals & Grains", "Chicory", "Chocolate", "Chocolate Equivalent", "Cocoa", "Coffee",
                     "Colors", "Dairy Products", "Egg & Products", "Elaborated & Mixed Products", "Enzymes", "Fiber", "Fish/Seafood ByProd (PetCare)", "Flavor Enhancers",
@@ -185,7 +186,8 @@ function AgricultureProposalForm() {
                 onSelect={(value: string) => handleChange("ingredientPrimary", value)}
                 required={true}
             />
-            <Dropdown
+
+            <DropdownQuestion
                 label="Please select the sub-category of ingredient(s) or crop(s) you are supplying to Nestlé linked to this project?"
                 options={["Acid", "Alkali", "Buffer System", "Pre Mix", "Single", "Beef", "Lamb", "Pork", "Poultry", "Fish", "Amaranth", "Barley", "Buckwheat", "Corn", "Durum Wheat",
                     "Millet", "Mixed Grains", "Oat", "Quinoa", "Rice", "Rye", "Sorghum", "Spelt", "Triticale", "Wheat (not Durum)", "Wild Rice", "Brown Rice", "Dehydrated Root", "Extract", "Roasted Root",
@@ -216,7 +218,7 @@ function AgricultureProposalForm() {
 
             <SectionHeader label="General Project Activity Description" />
 
-            <Dropdown
+            <DropdownQuestion
                 label="Please select the main intervention and description that best matches the project?"
                 options={[
                     "Dairy & Livestock - Animal Productivity",
@@ -228,6 +230,7 @@ function AgricultureProposalForm() {
                 onSelect={(value: string) => handleChange("mainIntervention", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Please provide a short written description of the specific project activities that will be implemented."
                 onChange={(value: string) => handleChange("projectDescription", value)}
@@ -244,10 +247,9 @@ function AgricultureProposalForm() {
                 required={true}
             />
 
-
             <SectionHeader label="Project Geography" />
 
-            <Dropdown
+            <DropdownQuestion
                 label="What is the main country where the project is located?"
                 options={["Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra",
                     "Anglo Dutch Caribbean Region", "Angola", "Anguilla", "Antigua, Barbuda",
@@ -294,10 +296,12 @@ function AgricultureProposalForm() {
                 onSelect={(value: string) => handleChange("mainCountry", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="If the project is implemented in more than one country, please list the countries (If applicable)"
                 onChange={(value: string) => handleChange("otherCountries", value)}
             />
+
             <TextQuestion
                 label="What is the sub-national region or regions where the project is located? (If Applicable)"
                 onChange={(value: string) => handleChange("subNationalRegions", value)}
@@ -310,19 +314,23 @@ function AgricultureProposalForm() {
                 onChange={(value: string) => handleChange("contractingParty", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="What is full name and email of the key contact or key contacts at the contracting party?"
                 onChange={(value: string) => handleChange("contractingNameAndEmail", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Is another partner(s) involved with the project? If so, please name them and provide a brief description of their roles and responsibilities."
                 onChange={(value: string) => handleChange("projectPartnerOne", value)}
             />
+
             <TextQuestion
                 label="Second partner name, roles and responsibilities"
                 onChange={(value: string) => handleChange("projectPartnerTwo", value)}
             />
+
             <TextQuestion
                 label="Third partner name, roles and responsibilities"
                 onChange={(value: string) => handleChange("projectPartnerThree", value)}
@@ -335,11 +343,13 @@ function AgricultureProposalForm() {
                 onChange={(value: string) => handleChange("projectStartDate", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="What is the expected duration of project? (In Years)"
                 onChange={(value: string) => handleChange("expectedDuration", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="When do you expect the first reported impact (actual GHG emissions reduction or removal)?"
                 onChange={(value: string) => handleChange("expectedFirstImpact", value)}
@@ -353,64 +363,74 @@ function AgricultureProposalForm() {
                 onChange={(value: string) => handleChange("connectionToValueChain", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="If multiple zones, please describe here"
                 onChange={(value: string) => handleChange("otherZones", value)}
             />
-            <Dropdown
+
+            <DropdownQuestion
                 label="For projects with an associated commodity, can the material/product purchased by Nestlé be traced to a specific farm or plantation engaged in project activities?"
                 options={["Yes", "No"]}
                 onSelect={(value: string) => handleChange("physicalTraceability", value)}
             />
+
             <TextQuestion
                 label="Please provide additional relevant information here"
                 onChange={(value: string) => handleChange("ptAdditionalInfo", value)}
             />
+
             <TextQuestion
                 label="What chain of custody model is followed for this ingredient within Nestlé's supply chain?"
                 onChange={(value: string) => handleChange("chainOfCustody", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Please provide additional relevant information here"
                 onChange={(value: string) => handleChange("cocAdditionalInfo", value)}
             />
 
-
             <SectionHeader label="Information related to Carbon credits (insets)" />
 
-            <Dropdown
+            <DropdownQuestion
                 label="Is your project intended to generate carbon inset credits?"
                 options={["Yes", "No"]}
                 onSelect={(value: string) => handleChange("carbonCredits", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="What carbon standard is used to verify the credits generated?"
                 onChange={(value: string) => handleChange("carbonStandard", value)}
             />
-            <Dropdown
+
+            <DropdownQuestion
                 label="Is the quantification approach verified by 3rd party entities approved for use by crediting programs?"
                 options={["Yes", "No"]}
                 onSelect={(value: string) => handleChange("carbonCreditsVerified", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="If Yes: In short, describe the 3rd party verification and verifier here. If No: Describe the verification procedure to ensure the credibility and quality of these carbon credits."
                 onChange={(value: string) => handleChange("ccvSupplement", value)}
                 required={true}
             />
-            <Dropdown
+
+            <DropdownQuestion
                 label="Is there a mechanism in place to minimize the risk of double counting? (external registry/ledger, or contracts)"
                 options={["Yes", "No"]}
                 onSelect={(value: string) => handleChange("carbonCreditsDoubleCount", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="If Yes: Please provide a description of the registry here. If No: Please desribe if there is any other measure in place to prevent against double counting here."
                 onChange={(value: string) => handleChange("ccdcSupplement", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Date of issuance of credit/certificate"
                 onChange={(value: string) => handleChange("dateOfIssuance", value)}
@@ -424,11 +444,13 @@ function AgricultureProposalForm() {
                 onChange={(value: string) => handleChange("coFinancingStructure", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Please provide breakdown here, and any additional information if applicable."
                 onChange={(value: string) => handleChange("cfsBreakdown", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Does the project include benefit sharing? (if so, please explain the benefit sharing proposal)"
                 onChange={(value: string) => handleChange("benefitSharing", value)}
@@ -437,27 +459,31 @@ function AgricultureProposalForm() {
 
             <SectionHeader label="Information on GHG Benefits Estimates" />
 
-            <Dropdown
+            <DropdownQuestion
                 label="Select one of the options below and add the values in the respective rows based on applicability (accounting approach used for project, availability of data, type and stage of project)"
                 options={["Compare Before and After Emissions Factor", "Project Carbon Intensity/Carbon credit project"]}
                 onSelect={(value: string) => handleChange("ghgOption", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Emissions Factor BEFORE the Intervention (tCO2e/ ton of ingredient)"
                 onChange={(value: string) => handleChange("beforeEmissionFactor", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Emissions Factor AFTER the Intervention (tCO2e/ ton of ingredient)"
                 onChange={(value: string) => handleChange("afterEmissionFactor", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Emissions reduction estimate from the project (in tCO2e)"
                 onChange={(value: string) => handleChange("emissionReductionEstimate", value)}
                 required={true}
             />
+
             <TextQuestion
                 label="Emissions removal estimate from the project (in tCO2e)"
                 onChange={(value: string) => handleChange("emissionRemovalEstimate", value)}
@@ -466,16 +492,18 @@ function AgricultureProposalForm() {
 
             <SectionHeader label="Supplementary Information on GHG Emissions Benefits" />
 
-            <Dropdown
+            <DropdownQuestion
                 label="Is the GHG calculation sheet for the noted benefits attached with the project submission email?"
                 options={["Yes", "No"]}
                 onSelect={(value: string) => handleChange("ghgSheetAttached", value)}
             />
-            <Dropdown
+
+            <DropdownQuestion
                 label="If your project has emission removals, please confirm your project establishes a 20% emissions buffer for potential reversal of the emission removals? Please note: For removals projects, a 20% buffer must be considered on reported carbon removals to manage the reversal risk."
                 options={["Yes", "No"]}
                 onSelect={(value: string) => handleChange("ghgBuffer", value)}
             />
+            
             <TextQuestion
                 label="Please elaborate here - why you have/have not established a buffer."
                 onChange={(value: string) => handleChange("gbElaboration", value)}

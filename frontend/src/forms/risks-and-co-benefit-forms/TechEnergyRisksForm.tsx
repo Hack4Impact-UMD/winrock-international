@@ -271,7 +271,7 @@ const TechEnergyRisksForm: React.FC = () => {
             </div>
             
             <div className="tech-energy-form-category">
-              <SectionHeader title="Project Biodiversity and Environmental Co-Benefits" />
+              <SectionHeader label="Project Biodiversity and Environmental Co-Benefits" />
               <div className="tech-energy-form-subcategory">
                 <div className="tech-energy-form-description">
                   Enter information in this section that sheds light onto the project's potential co-benefits related to nature.

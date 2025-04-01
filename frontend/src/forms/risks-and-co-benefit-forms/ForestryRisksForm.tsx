@@ -7,37 +7,170 @@ import TitleHeader from '../../components/headers/TitleHeader.js'
 import ProgressBar from '../../components/ProgressBar.js'
 import NavigationButtons from '../../components/NavigationButtons.js'
 import SectionHeader from '../../components/headers/SectionHeader.js'
-import Dropdown from '../../components/questions/DropdownQuestion.js'
-import TextQuestion from '../../components/questions/TextQuestion.js'
-import RCBDropdownQuestion from '../../components/questions/RCBDropdownQuestion.js';
+import RisksDropdownQuestion from '../../components/questions/RisksDropdownQuestion.js';
+import CoBenefitsDropdownQuestion from '../../components/questions/CoBenefitsDropdownQuestion.js';
 import ConfirmationPage from '../ConfirmationPage.js'
 
 interface ForestryRisksFormData {
+   // Risk Assessment
+   riskAssessment: string;
+   riskAssessmentDetails: string;
 
+   // Climate Change Adaptation
+   climateChangeAdaptation: string;
+   climateChangeAdaptationDetails: string;
+
+   // Sustainable Use and Management of Natural Resources
+   environmentalRiskAssessment: string;
+   environmentalRiskAssessmentDetails: string;
+   businessContinuity: string;
+   businessContinuityDetails: string;
+   forestryManagementPlan: string;
+   forestryManagementPlanDetails: string;
+   rawMaterialCompliance: string;
+   rawMaterialComplianceDetails: string;
+
+   // Pollution and Waste Control
+   pollutionAvoidance: string;
+   pollutionAvoidanceDetails: string;
+   wasteMonitoring: string;
+   wasteMonitoringDetails: string;
+
+   // Transition to a Circular Economy​​
+   circularEconomy: string;
+   circularEconomyDetails: string;
+
+   // Protection and Restoration of Biodiversity and Ecosystems​
+   biodiversityImpact: string;
+   biodiversityImpactDetails: string;
+   landDisturbance: string;
+   landDisturbanceDetails: string;
+   invasiveSpecies: string;
+   invasiveSpeciesDetails: string;
+   soilErosion: string;
+   soilErosionDetails: string;
+
+   // Human and Labor Rights
+   protectionHumanRights: string;
+   protectionHumanRightsDetails: string;
+   formalDeclarations: string;
+   formalDeclarationsDetails: string;
+   stakeholderHealthSafety: string;
+   stakeholderHealthSafetyDetails: string;
+
+   // Community Impacts
+   indigenousPeople: string;
+   indigenousPeopleDetails: string;
+   reduceStakeholderRisk: string;
+   reduceStakeholderRiskDetails: string;
+   smallHolders: string;
+   smallHoldersDetails: string;
+   designedToInvest: string;
+   designedToInvestDetails: string;
+   effortsToMaintainEngagements: string;
+   effortsToMaintainEngagementsDetails: string;
+   negativeCommunityImpacts: string;
+   negativeCommunityImpactsDetails: string;
+
+   // Safeguards
+   effectiveSafeguards: string;
+   effectiveSafeguardsDetails: string;
+
+   // Project Water Co-Benefits​
+   waterCoBenefits: string;
+   waterCoBenefitsDetails: string;
+
+   // Project Biodiversity and Environmental Co-Benefits
+   biodiversityEnvironmentalCoBenefits: string;
+   biodiversityEnvironmentalCoBenefitsDetails: string;
+
+   // Project Community/Farmer Co-Benefits
+   communityFarmerCoBenefits: string;
+   communityFarmerCoBenefitsDetails: string;
 }
 
 function ForestryRisksForm() {
    const title = "Forestry Risks and Co-Benefit Form"
    const [currentPage, setCurrentPage] = useState(1)
-   const [isSubmitted, setIsSubmitted] = useState(false)
    const totalPages = 4
 
-   const nextPage = () => {
-      if (currentPage < totalPages) {
-         setCurrentPage(currentPage + 1)
-      } else if (currentPage === totalPages) {
-         handleSubmit()
-      }
-   }
+   const collectionID = "agriculture-form/tTMuoxVae4Ut15QlAZIN/document-checklist";
+   const collectionRef = firestore.collection(db, collectionID);
+   const [submissionObj, setSubmissionObj] = useState<ForestryRisksFormData>({
+      riskAssessment: '',
+      riskAssessmentDetails: '',
+      climateChangeAdaptation: '',
+      climateChangeAdaptationDetails: '',
+      environmentalRiskAssessment: '',
+      environmentalRiskAssessmentDetails: '',
+      businessContinuity: '',
+      businessContinuityDetails: '',
+      forestryManagementPlan: '',
+      forestryManagementPlanDetails: '',
+      rawMaterialCompliance: '',
+      rawMaterialComplianceDetails: '',
+      pollutionAvoidance: '',
+      pollutionAvoidanceDetails: '',
+      wasteMonitoring: '',
+      wasteMonitoringDetails: '',
+      circularEconomy: '',
+      circularEconomyDetails: '',
+      biodiversityImpact: '',
+      biodiversityImpactDetails: '',
+      landDisturbance: '',
+      landDisturbanceDetails: '',
+      invasiveSpecies: '',
+      invasiveSpeciesDetails: '',
+      soilErosion: '',
+      soilErosionDetails: '',
+      protectionHumanRights: '',
+      protectionHumanRightsDetails: '',
+      formalDeclarations: '',
+      formalDeclarationsDetails: '',
+      stakeholderHealthSafety: '',
+      stakeholderHealthSafetyDetails: '',
+      indigenousPeople: '',
+      indigenousPeopleDetails: '',
+      reduceStakeholderRisk: '',
+      reduceStakeholderRiskDetails: '',
+      smallHolders: '',
+      smallHoldersDetails: '',
+      designedToInvest: '',
+      designedToInvestDetails: '',
+      effortsToMaintainEngagements: '',
+      effortsToMaintainEngagementsDetails: '',
+      negativeCommunityImpacts: '',
+      negativeCommunityImpactsDetails: '',
+      effectiveSafeguards: '',
+      effectiveSafeguardsDetails: '',
+      waterCoBenefits: '',
+      waterCoBenefitsDetails: '',
+      biodiversityEnvironmentalCoBenefits: '',
+      biodiversityEnvironmentalCoBenefitsDetails: '',
+      communityFarmerCoBenefits: '',
+      communityFarmerCoBenefitsDetails: '',
+   })
 
-   const handleSubmit = () => {
-      console.log('Form submitted!')
-      setIsSubmitted(true)
-   }
+   // Used to change the submissionObj's fields dynamically
+   function handleChange(field: keyof ForestryRisksFormData, value: string) {
+      setSubmissionObj((prev: ForestryRisksFormData) => ({
+         ...prev,
+         [field]: value
+      }));
+   };
 
-   const prevPage = () => {
-      if (currentPage > 1) {
-         setCurrentPage(currentPage - 1)
+   const [isSubmitted, setIsSubmitted] = useState(false)
+
+   /**
+    * Insert a new ForestryRisksForm submission with the user-inputted
+    * fields into the ForestryRisksForm collection.
+   */
+   async function handleSubmit() {
+      try {
+         await firestore.addDoc(collectionRef, submissionObj) // addDoc() auto-generates an ID for the submission
+         setIsSubmitted(true)
+      } catch (error) {
+         console.error("Error submitting ForestryRisksForm", error)
       }
    }
 
@@ -47,12 +180,6 @@ function ForestryRisksForm() {
 
    const saveAndExit = () => {
       console.log('Changes saved and exiting')
-   }
-
-   // Function to handle dropdown selections
-   const handleSelect = (id, value) => {
-      console.log(`Selected ${value} for question ${id}`)
-      // Implement your state management here
    }
 
    if (isSubmitted) {
@@ -73,455 +200,241 @@ function ForestryRisksForm() {
          />
 
          {/* Render different pages based on currentPage state */}
-         {currentPage === 1 && <PageOne handleSelect={handleSelect} />}
+         {currentPage === 1 && <PageOne handleChange={handleChange} />}
 
-         {currentPage === 2 && <PageTwo handleSelect={handleSelect} />}
+         {currentPage === 2 && <PageTwo handleChange={handleChange} />}
          
-         {currentPage === 3 && <PageThree handleSelect={handleSelect} />}
+         {currentPage === 3 && <PageThree handleChange={handleChange} />}
 
-         {currentPage === 4 && <CoBenefitForm handleSelect={handleSelect} />}
+         {currentPage === 4 && <CoBenefitForm handleChange={handleChange} />}
 
          <NavigationButtons
-            onNext={nextPage}
-            onBack={currentPage > 1 ? prevPage : undefined}
+            onNext={() => {
+               if (currentPage < totalPages) {
+                   setCurrentPage(currentPage + 1);
+                   window.scroll(0, 0);
+               } else {
+                   handleSubmit();
+               }
+            }}
+            onBack={() => {
+                  if (currentPage > 1) {
+                     setCurrentPage(currentPage - 1)
+                     window.scroll(0, 0);
+                  }
+            }}
             onSaveChanges={saveChanges}
             onSaveAndExit={saveAndExit}
-            canGoNext={true}
             canGoBack={currentPage > 1}
             nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
-            backLabel='Back'
-            className='form-navigation'
-            showSaveOptions={true}
          />
       </div>
    )
 }
 
-const PageOne = ({ handleSelect }) => {
+interface PageProps {
+   handleChange: (field: keyof ForestryRisksFormData, value: string) => void;
+}
+
+const PageOne = ({ handleChange }: PageProps) => {
    return (
       <>
          <SectionHeader label='Risk Assessment' />
-         <RCBDropdownQuestion
-            label="Has the project completed a risk assessment following an approved standard? If so, how was the risk assessment conducted? What high-level risks were identified based on the geography or project activities?"
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('risk_assessment', value)}
-            onChange={()}
+
+         <RisksDropdownQuestion
+            label='Has the project completed a risk assessment following an approved standard? If so, how was the risk assessment conducted? What high-level risks were identified based on the geography or project activities?'
+            onSelect={(value: string) => handleChange('riskAssessment', value)}
+            onChange={(value: string) => handleChange('riskAssessmentDetails', value)}
          />
 
          <SectionHeader label='Climate Change Adaptation' />
-         <Dropdown
-            id={'climate_change_adaptation'}
-            question={
-               'Has the project been designed to minimize or avoid possible losses or impacts on business continuity for all stakeholders involved?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('climate_change_adaptation', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'climate_change_adaptation_details'}
-            response={''}
+
+         <RisksDropdownQuestion
+            label='Has the project been designed to minimize or avoid possible losses or impacts on business continuity for all stakeholders involved?'
+            onSelect={(value: string) => handleChange('climateChangeAdaptation', value)}
+            onChange={(value: string) => handleChange('climateChangeAdaptationDetails', value)}
          />
 
          <SectionHeader label='Sustainable Use and Management of Natural Resources​' />
-         <Dropdown
-            id={'environmental_risk_assessment'}
-            question={'Has the project completed an Environmental Risk Assessment?'}
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('environmental_risk_assessment', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'environmental_risk_assessment_details'}
-            response={''}
+
+         <RisksDropdownQuestion
+            label='Has the project completed an Environmental Risk Assessment?'
+            onSelect={(value: string) => handleChange('environmentalRiskAssessment', value)}
+            onChange={(value: string) => handleChange('environmentalRiskAssessmentDetails', value)}
          />
 
-         <Dropdown
-            id={'business_continuity'}
-            question={
-               'Has the project been designed to minimize or avoid possible losses or impacts on business continuity for all stakeholders involved?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('business_continuity', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'business_continuity_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Has the project been designed to minimize or avoid possible losses or impacts on business continuity for all stakeholders involved?'
+            onSelect={(value: string) => handleChange('businessContinuity', value)}
+            onChange={(value: string) => handleChange('businessContinuityDetails', value)}
          />
 
-         <Dropdown
-            id={'forestry_management_plan'}
-            question={
-               'Is there a forestry resource management plan in place (with regards to fire management, protection against deforestation, illegal logging and land conversion)?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('forestry_management_plan', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'forestry_management_plan_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Is there a forestry resource management plan in place (with regards to fire management, protection against deforestation, illegal logging and land conversion)?'
+            onSelect={(value: string) => handleChange('forestryManagementPlan', value)}
+            onChange={(value: string) => handleChange('forestryManagementPlanDetails', value)}
          />
 
-         <Dropdown
-            id={'raw_material_compliance'}
-            question={
-               'Does the project ensure that any raw material production (such as timber) adheres to the relevant legislation of the country of production, as well as forest-related regulations?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('raw_material_compliance', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'raw_material_compliance_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Does the project ensure that any raw material production (such as timber) adheres to the relevant legislation of the country of production, as well as forest-related regulations?'
+            onSelect={(value: string) => handleChange('rawMaterialCompliance', value)}
+            onChange={(value: string) => handleChange('rawMaterialComplianceDetails', value)}
          />
       </>
    )
 }
 
-const PageTwo = ({ handleSelect }) => {
+const PageTwo = ({ handleChange }: PageProps) => {
    return (
       <>
-         <SectionHeader label='Polution and Waste Control​' />
-         <Dropdown
-            id={'pollution_avoidance'}
-            question={
-               'Has the project been designed to avoid pollution release into the environment, such as pesticide use reduction and management?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('pollution_avoidance', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'pollution_avoidance_details'}
-            response={''}
+         <SectionHeader label='Pollution and Waste Control​' />
+
+         <RisksDropdownQuestion
+            label='Has the project been designed to avoid pollution release into the environment, such as pesticide use reduction and management?'
+            onSelect={(value: string) => handleChange('pollutionAvoidance', value)}
+            onChange={(value: string) => handleChange('pollutionAvoidanceDetails', value)}
          />
 
-         <Dropdown
-            id={'waste_monitoring'}
-            question={
-               'Is there active monitoring or regulatory inspections regarding waste streams generated by the project operations or systems?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('waste_monitoring', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'waste_monitoring_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Is there active monitoring or regulatory inspections regarding waste streams generated by the project operations or systems?'
+            onSelect={(value: string) => handleChange('wasteMonitoring', value)}
+            onChange={(value: string) => handleChange('wasteMonitoringDetails', value)}
          />
 
          <SectionHeader label='Transition to a Circular Economy​​' />
-         <Dropdown
-            id={'circular_economy'}
-            question={
-               'Has the project has been designed to not negatively impact the transition to a circular economy?​'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('circular_economy', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'circular_economy_details'}
-            response={''}
+
+         <RisksDropdownQuestion
+            label='Has the project has been designed to not negatively impact the transition to a circular economy?​'
+            onSelect={(value: string) => handleChange('circularEconomy', value)}
+            onChange={(value: string) => handleChange('circularEconomyDetails', value)}
          />
 
          <SectionHeader label='Protection and Restoration of Biodiversity and Ecosystems​​​' />
-         <Dropdown
-            id={'biodiversity_impact'}
-            question={
-               'Has the project been designed to not negatively impact biodiversity and habitats?​'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('biodiversity_impact', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'biodiversity_impact_details'}
-            response={''}
+
+         <RisksDropdownQuestion
+            label='Has the project been designed to not negatively impact biodiversity and habitats?​'
+            onSelect={(value: string) => handleChange('biodiversityImpact', value)}
+            onChange={(value: string) => handleChange('biodiversityImpactDetails', value)}
          />
 
-         <Dropdown
-            id={'land_disturbance'}
-            question={
-               'Has this project been designed to avoid any displacement or disturbance of natural land features?​'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('land_disturbance', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'land_disturbance_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Has this project been designed to avoid any displacement or disturbance of natural land features?​'
+            onSelect={(value: string) => handleChange('landDisturbance', value)}
+            onChange={(value: string) => handleChange('landDisturbanceDetails', value)}
          />
 
-         <Dropdown
-            id={'invasive_species'}
-            question={
-               'Has this project been designed to avoid the introduction of ecosystem invasive species?​'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('invasive_species', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'invasive_species_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Has this project been designed to avoid the introduction of ecosystem invasive species?​'
+            onSelect={(value: string) => handleChange('invasiveSpecies', value)}
+            onChange={(value: string) => handleChange('invasiveSpeciesDetails', value)}
          />
 
-         <Dropdown
-            id={'soil_erosion'}
-            question={
-               'Does this project deploy practices that avoid soil erosion and protects land integrity?​'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('soil_erosion', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'soil_erosion_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Does this project deploy practices that avoid soil erosion and protects land integrity?​'
+            onSelect={(value: string) => handleChange('soilErosion', value)}
+            onChange={(value: string) => handleChange('soilErosionDetails', value)}
          />
       </>
    )
 }
 
-const PageThree = ({ handleSelect }) => {
+const PageThree = ({ handleChange }: PageProps) => {
    return (
       <>
          <SectionHeader label = 'Human and Labor Rights' />
-         <Dropdown 
-            id = {"protection_human_rights"}
-            question={
-               'Does this project align with Nestle\'s "Responsible Sourcing Core Requirements" framework for the protection of Human Rights? '
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('protection_human_rights', value)}
-            documentLink={'https://www.nestle.com/sites/default/files/asset-library/documents/library/documents/suppliers/nestle-responsible-sourcing-standard-english.pdf'}
+
+         <RisksDropdownQuestion
+            label={'Does this project align with Nestle\'s "Responsible Sourcing Core Requirements" framework for the protection of Human Rights?'}
+            onSelect={(value: string) => handleChange('protectionHumanRights', value)}
+            onChange={(value: string) => handleChange('protectionHumanRightsDetails', value)}
          />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'protection_human_rights_details'}
-            response={''}
+         
+         <RisksDropdownQuestion
+            label='Are there formal declarations, accountability frameworks and/or third party inspections that ensure that no forced or child labor is involved in the proposed interventions?'
+            onSelect={(value: string) => handleChange('formalDeclarations', value)}
+            onChange={(value: string) => handleChange('formalDeclarationsDetails', value)}
          />
 
-         <Dropdown 
-            id = {"formal_declarations"}
-            question={
-               'Are there formal declarations, accountability frameworks and/or third party inspections that ensure that no forced or child labor is involved in the proposed interventions?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('formal_declarations', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'formal_declarations_deatils'}
-            response={''}
-         /> 
-
-         <Dropdown 
-            id = {"stakeholder_health_safety"}
-            question={
-               'Are there assurances for stakeholder health and safety in place?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('stakeholder_health_safety', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'stakeholder_health_safety_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Are there assurances for stakeholder health and safety in place?'
+            onSelect={(value: string) => handleChange('stakeholderHealthSafety', value)}
+            onChange={(value: string) => handleChange('stakeholderHealthSafetyDetails', value)}
          />
 
          <SectionHeader label = 'Community Impacts'/>
-         <Dropdown 
-            id = {"indigenous_people"}
-            question={
-               'Has this project been designed to respect and comply with applicable laws and human rights (statutory and/or customary)  regarding the acquisition, leasing and/or land use change of lands and natural resources of Indigenous peoples and local communities that are impacted or potentially impacted?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('indigenous_people', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'indigenous_people_details'}
-            response={''}
-         />
-         
-         <Dropdown 
-            id = {"reduce_stakeholder_risk"}
-            question={
-               'Has the project been designed to reduce the risk to stakeholder livelihoods (fair payments, incentives)?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('reduce_stakeholder_risk', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'reduce_stakeholder_risk_details'}
-            response={''}
+
+         <RisksDropdownQuestion
+            label='Has this project been designed to respect and comply with applicable laws and human rights (statutory and/or customary)  regarding the acquisition, leasing and/or land use change of lands and natural resources of Indigenous peoples and local communities that are impacted or potentially impacted?'
+            onSelect={(value: string) => handleChange('indigenousPeople', value)}
+            onChange={(value: string) => handleChange('indigenousPeopleDetails', value)}
          />
 
-         <Dropdown 
-            id = {"small_holders"}
-            question={
-               'Has this project been designed to involve and include small holders?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('small_holders', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'small_holders_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Has the project been designed to reduce the risk to stakeholder livelihoods (fair payments, incentives)?'
+            onSelect={(value: string) => handleChange('reduceStakeholderRisk', value)}
+            onChange={(value: string) => handleChange('reduceStakeholderRiskDetails', value)}
          />
 
-         <Dropdown 
-            id = {"designed_to_invest"}
-            question={
-               'Has this project been designed to invest in the capacity building of the involved stakeholders through training?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('designed_to_invest', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'designed_to_invest_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Has this project been designed to involve and include small holders?'
+            onSelect={(value: string) => handleChange('smallHolders', value)}
+            onChange={(value: string) => handleChange('smallHoldersDetails', value)}
          />
 
-         <Dropdown 
-            id = {"efforts_to_maintain_engagements"}
-            question={
-               'Is there effort to maintain ongoing engagements and participation of the community and involved farmers with regards to this project, including mechanisms to consider grievances?'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('efforts_to_maintain_engagements', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'efforts_to_maintain_engagements_details'}
-            response={''}
+         <RisksDropdownQuestion
+            label='Has this project been designed to invest in the capacity building of the involved stakeholders through training?'
+            onSelect={(value: string) => handleChange('designedToInvest', value)}
+            onChange={(value: string) => handleChange('designedToInvestDetails', value)}
          />
 
-         <Dropdown 
-            id = {"negative_community_impacts"}
-            question={
-               'Has this project been designed to minimize other potentially negative community impacts?​'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('negative_community_impacts', value)}
+         <RisksDropdownQuestion
+            label='Is there effort to maintain ongoing engagements and participation of the community and involved farmers with regards to this project, including mechanisms to consider grievances?'
+            onSelect={(value: string) => handleChange('effortsToMaintainEngagements', value)}
+            onChange={(value: string) => handleChange('effortsToMaintainEngagementsDetails', value)}
          />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'negative_community_impacts_details'}
-            response={''}
+
+         <RisksDropdownQuestion
+            label='Has this project been designed to minimize other potentially negative community impacts?​'
+            onSelect={(value: string) => handleChange('negativeCommunityImpacts', value)}
+            onChange={(value: string) => handleChange('negativeCommunityImpactsDetails', value)}
          />
 
          <SectionHeader label = 'Safeguards' />
-         <Dropdown 
-            id = {"effective_safeguards"}
-            question={
-               'Have effective safeguards been incorporated in the to design phase? ​'
-            }
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('effective_safeguards', value)}
-         />
-         <TextQuestion
-            name={
-               'Please provide details including if a mitigation plan is in place. If not applicable, please justify.'
-            }
-            id={'effective_safeguards_details'}
-            response={''}
-         />
 
-
+         <RisksDropdownQuestion
+            label='Have effective safeguards been incorporated in the to design phase?'
+            onSelect={(value: string) => handleChange('effectiveSafeguards', value)}
+            onChange={(value: string) => handleChange('negativeCommunityImpactsDetails', value)}
+         />
       </>
    )
 }
 
-const CoBenefitForm = ({ handleSelect }) => {
+const CoBenefitForm = ({ handleChange }: PageProps) => {
    return (
       <>
          <SectionHeader label='Project Water Co-Benefits​' />
-         <Dropdown
-            id={'water-co-benefits'}
-            question={'Is it expected that the project activities will improve resilience to potential water scarcity, water quality (urface or ground water), or water availability in the local community?'}
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('water-co-benefits', value)}
+
+         <CoBenefitsDropdownQuestion
+            label='Is it expected that the project activities will improve resilience to potential water scarcity, water quality (urface or ground water), or water availability in the local community?'
+            onSelect={(value: string) => handleChange('waterCoBenefits', value)}
+            onChange={(value: string) => handleChange('waterCoBenefitsDetails', value)}
          />
-         <TextQuestion
-            name={'(If yes, please describe how and how impactful)'}
-            id={'water-co-benefits_details'}
-            response={''}
-         />
+
          <SectionHeader label='Project Biodiversity and Environmental Co-Benefits​' />
-         <Dropdown
-            id={'biodiversity_environmental_co_benefits'}
-            question={'Is it expected that the project activities will improve overall species richness and diversity, threatened species, threatened or rare ecosystems, air quality, or soil erosion?​'}
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('biodiversity_environmental_co_benefits', value)}
+
+         <CoBenefitsDropdownQuestion
+            label='Is it expected that the project activities will improve overall species richness and diversity, threatened species, threatened or rare ecosystems, air quality, or soil erosion?​'
+            onSelect={(value: string) => handleChange('biodiversityEnvironmentalCoBenefits', value)}
+            onChange={(value: string) => handleChange('biodiversityEnvironmentalCoBenefitsDetails', value)}
          />
-         <TextQuestion
-            name={'(If yes, please describe how and how impactful)'}
-            id={'biodiversity_environmental_co_benefits_details'}
-            response={''}
-         />
+
          <SectionHeader label='Project Community/Farmer Co-Benefits​' />
-         <Dropdown
-            id={'community_farmer_co_benefits'}
-            question={'Is it expected that the project activities will improve farmer livelihoods or income generated, farmer resilience to climate change, farmer adaptation to climate change, local livelihoods or increased income generated, community resilience to climate change, orcommunity adaptation to climate change?​'}
-            options={['Yes', 'No', 'Not Applicable']}
-            onSelect={value => handleSelect('community_farmer_co_benefits', value)}
-         />
-         <TextQuestion
-            name={'(If yes, please describe how and how impactful)'}
-            id={'community_farmer_co_benefits_details'}
-            response={''}
+
+         <CoBenefitsDropdownQuestion
+            label='Is it expected that the project activities will improve farmer livelihoods or income generated, farmer resilience to climate change, farmer adaptation to climate change, local livelihoods or increased income generated, community resilience to climate change, orcommunity adaptation to climate change?​'
+            onSelect={(value: string) => handleChange('communityFarmerCoBenefits', value)}
+            onChange={(value: string) => handleChange('communityFarmerCoBenefitsDetails', value)}
          />
       </>
    )

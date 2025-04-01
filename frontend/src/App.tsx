@@ -13,10 +13,13 @@ function App() {
     return (
       <>
         <button onClick={() => setDisplayed(<AgricultureProposalForm />)}>
-          Agriculture Proposal Form
+          AgricultureProposalForm
         </button>
         <button onClick={() => setDisplayed(<RenewableProposalForm />)}>
-          Renewable Proposal Form
+          RenewableProposalForm
+        </button>
+        <button onClick={() => setDisplayed(<ForestryRisksForm />)}>
+          ForestryRisksForm
         </button>
       </>
     );
