@@ -1,4 +1,4 @@
-import styles from "../css-modules/SectionHeader.module.css";
+import styles from "../../css-modules/SectionHeader.module.css";
 
 interface SectionHeaderProps {
     label: string;

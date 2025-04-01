@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import * as firestore from "firebase/firestore";
 import { db } from "../../../src/firebaseConfig.js";
 
-import LogoHeader from "../../components/LogoHeader.js";
-import TitleHeader from "../../components/TitleHeader.js";
+import LogoHeader from "../../components/headers/LogoHeader.js";
+import TitleHeader from "../../components/headers/TitleHeader.js";
 import ProgressBar from "../../components/ProgressBar.js";
-import SectionHeader from "../../components/SectionHeader.js";
-import TextBox from "../../components/TextBox.js";
-import Dropdown from "../../components/Dropdown.js";
+import SectionHeader from "../../components/headers/SectionHeader.js";
+import TextQuestion from "../../components/questions/TextQuestion.js";
+import DropdownQuestion from "../../components/questions/DropdownQuestion.js";
 import NavigationButtons from "../../components/NavigationButtons.js";
 
 interface RenewableProposalFormData {
@@ -72,7 +72,7 @@ function RenewableProposalForm() {
     });
 
     // Used for when the "other" option is selected in the impact evidence question
-    const [displayImpactEvidenceTextbox, setDisplayImpactEvidenceTextbox] = useState(false);
+    const [displayImpactEvidenceTextQuestion, setDisplayImpactEvidenceTextQuestion] = useState(false);
 
     useEffect(() => {
         computeImpactReduction();
@@ -150,6 +150,7 @@ function RenewableProposalForm() {
     }
   
     const saveChanges = () => {
+        // TODO: localStorage?
         console.log('Changes saved');
     }
 
@@ -174,161 +175,146 @@ function RenewableProposalForm() {
 
             <SectionHeader label="Generic Information" />
 
-            {/* TODO: Add an ID field to TextBox.tsx later? */}
-            <TextBox
-                className="required"
-                title="Parent Vendor Name"
+            <TextQuestion
+                label="Parent Vendor Name"
+                isRequired={true}
                 onChange={(value) => handleChange("parentVendorName", value)}
             />
 
-            <TextBox
-                title="Vendor Code"
+            <TextQuestion
+                label="Vendor Code"
                 onChange={(value) => handleChange("vendorCode", value)}
             />
 
-            <TextBox
-                title="Vendor Site SAP Name"
+            <TextQuestion
+                label="Vendor Site SAP Name"
                 onChange={(value) => handleChange("vendorSiteSAPName", value)}
             />
 
-            {/* TODO: This question is required;
-                add a className field to Dropdown.tsx later? */}
-            <Dropdown
-                id="TBD"
-                question="Spend Category"
+            <DropdownQuestion
+                label="Spend Category"
                 options={["Ingredients", "Commodities", "Packaging", "Logistics"]}
-                onSelect={(value) => handleChange("spendCategory", value)}
+                isRequired={true}
+                onSelect={(value: string) => handleChange("spendCategory", value)}
             />
 
-            {/* TODO: This question is required;
-                add a className field to Dropdown.tsx later? */}
-            <Dropdown
-                id="TBD"
-                question="Level 2 Category"
+            <DropdownQuestion
+                label="Level 2 Category"
                 options={["Amino Acids", "Cereals & Grains", "Flexibles", "Warehousing Services"]}
-                onSelect={(value) => handleChange("level2Category", value)}
+                isRequired={true}
+                onSelect={(value: string) => handleChange("level2Category", value)}
             />
 
-            <TextBox
-                className="required"
-                title="Vendor Site Country"
-                onChange={(value) => handleChange("vendorSiteCountry", value)}
+            <TextQuestion
+                label="Vendor Site Country"
+                isRequired={true}
+                onChange={(value: string) => handleChange("vendorSiteCountry", value)}
             />
 
-            {/* This was a Dropdown in the Excel form, but we changed it
-                to a TextBox because we don't know the vendor cities. */}
-            <TextBox
-                className="required"
-                title="Vendor Site City"
-                onChange={(value) => handleChange("vendorSiteCity", value)}
+            {/* This was a DropdownQuestion in the Excel form, but we changed it
+                to a TextQuestion because we don't know the vendor cities. */}
+            <TextQuestion
+                label="Vendor Site City"
+                isRequired={true}
+                onChange={(value: string) => handleChange("vendorSiteCity", value)}
             />
 
-            <TextBox
-                title="Project Type"
-                onChange={(value) => handleChange("projectType", value)}
+            <TextQuestion
+                label="Project Type"
+                onChange={(value: string) => handleChange("projectType", value)}
             />
 
-            <TextBox
-                title="Project Description"
-                onChange={(value) => handleChange("projectDescription", value)}
+            <TextQuestion
+                label="Project Description"
+                onChange={(value: string) => handleChange("projectDescription", value)}
             />
 
-            <TextBox
-                title="Project Implementation Year"
-                onChange={(value) => handleChange("projectImplementationYear", value)}
+            <TextQuestion
+                label="Project Implementation Year"
+                onChange={(value: string) => handleChange("projectImplementationYear", value)}
             />
 
-            <Dropdown
-                id="TBD"
-                question="How do you plan to evidence the project impact?"
+            <DropdownQuestion
+                label="How do you plan to evidence the project impact?"
                 options={["Project implementation partner (2nd/3rd party)", "Electronic metering tool", "Other (please describe)"]}
-                onSelect={(value) => {
+                onSelect={(value: string) => {
                     if (value === "Other (please describe)") {
                         handleChange("impactEvidence", "");
-                        setDisplayImpactEvidenceTextbox(true);
+                        setDisplayImpactEvidenceTextQuestion(true);
                     } else {
                         handleChange("impactEvidence", value);
-                        setDisplayImpactEvidenceTextbox(false);
+                        setDisplayImpactEvidenceTextQuestion(false);
                     }
                 }}
             />
-            {displayImpactEvidenceTextbox &&
-                <TextBox
-                    title=""
-                    onChange={(value) => handleChange("impactEvidence", value)}
+            {displayImpactEvidenceTextQuestion &&
+                <TextQuestion
+                    label=""
+                    onChange={(value: string) => handleChange("impactEvidence", value)}
                 />}
 
-            <TextBox
-                title="Please share any comments/remarks on the change in the source of energy (see below sections)"
-                onChange={(value) => handleChange("emissionFactor", value)}
+            <TextQuestion
+                label="Please share any comments/remarks on the change in the source of energy (see below sections)"
+                onChange={(value: string) => handleChange("emissionFactor", value)}
             />
 
-            <TextBox
-                className="required"
-                title="Volume of Material (Metric Tons) Delivered to Nestlé in 2022"
-                onChange={(value) => handleChange("volumeDelivered", value)}
+            <TextQuestion
+                label="Volume of Material (Metric Tons) Delivered to Nestlé in 2022"
+                isRequired={true}
+                onChange={(value: string) => handleChange("volumeDelivered", value)}
             />
 
             <SectionHeader label="Energy Consumption: Before Intervention" />
 
-            {/* TODO: This question is required;
-                add a className field to Dropdown.tsx later? */}
-            <Dropdown
-                id="TBD"
-                question="Source of Energy (BEFORE Intervention)"
+            <DropdownQuestion
+                label="Source of Energy (BEFORE Intervention)"
                 options={["Coal", "Natural Gas", "Electricity Grid"]}
-                onSelect={(value) => handleChange("beforeSourceOfEnergy", value)}
+                isRequired={true}
+                onSelect={(value: string) => handleChange("beforeSourceOfEnergy", value)}
             />
 
-            <TextBox
-                className="required"
-                title="Share an energy consumption (KWh/year) estimate for Nestlé only (BEFORE intervention)"
+            <TextQuestion
+                label="Share an energy consumption (KWh/year) estimate for Nestlé only (BEFORE intervention)"
+                isRequired={true}
                 onChange={((value) => handleChange("beforeEnergyConsumption", value))}
             />
 
-            <TextBox
-                title="Emission Factor of Energy (kgCO2/KwH) (BEFORE intervention)"
+            <TextQuestion
+                label="Emission Factor of Energy (kgCO2/KwH) (BEFORE intervention)"
                 onChange={((value) => handleChange("beforeEmissionFactor", value))}
             />
 
             <SectionHeader label="Energy Consumption: After Intervention is Completed" />
 
-            {/* TODO: This question is not required;
-                add a className field to Dropdown.tsx later? */}
-            <Dropdown
-                id="TBD"
-                question="Source of Energy (AFTER Intervention)"
+            <DropdownQuestion
+                label="Source of Energy (AFTER Intervention)"
                 options={["Biogas/Green Gas - Grid (external)", "Solar", "Renewable Electricity Certificate"]}
-                onSelect={(value) => handleChange("afterSourceOfEnergy", value)}
+                onSelect={(value: string) => handleChange("afterSourceOfEnergy", value)}
             />
 
-            <TextBox
-                title="Share an energy consumption (KWh/year) estimate for Nestlé only (AFTER Intervention)"
-                onChange={(value) => handleChange("afterEnergyConsumption", value)}
+            <TextQuestion
+                label="Share an energy consumption (KWh/year) estimate for Nestlé only (AFTER Intervention)"
+                onChange={(value: string) => handleChange("afterEnergyConsumption", value)}
             />
 
-            <TextBox
-                title="Emission Factor of Energy (kgCO2/KwH) (AFTER intervention)"
-                onChange={(value) => handleChange("afterEmissionFactor", value)}
+            <TextQuestion
+                label="Emission Factor of Energy (kgCO2/KwH) (AFTER intervention)"
+                onChange={(value: string) => handleChange("afterEmissionFactor", value)}
             />
 
-            <TextBox
-                title="Impact reduction on GHG emission (tonsCO2e) after intervention attributed to Nestlé only based on annualized impact,
+            <TextQuestion
+                label="Impact reduction on GHG emission (tonsCO2e) after intervention attributed to Nestlé only based on annualized impact,
                        using the formula [energy consumption after] / ([emission factor before] - [emission factor after]); feel free to overwrite
                        this field."
-                placeholder={submissionObj.impactReduction}
-                onChange={(value) => handleChange("impactReduction", value)}
+                onChange={(value: string) => handleChange("impactReduction", value)}
             />
 
-            {/* TODO: Disallow overwriting this field. */}
-            <TextBox
-                title="Impact Timing"
-                placeholder={submissionObj.impactTiming}
-                onChange={(value) => handleChange("impactTiming", value)}
+            <TextQuestion
+                label="Impact Timing"
+                onChange={(value: string) => handleChange("impactTiming", value)}
             />
 
             <NavigationButtons
-                className='renewable-proposal-form-navigation'
                 onNext={() => currentPage < totalPages ? setCurrentPage(currentPage + 1) : handleSubmit()}
                 onBack={() => {if (currentPage > 1) setCurrentPage(currentPage - 1)}}
                 onSaveChanges={saveChanges}

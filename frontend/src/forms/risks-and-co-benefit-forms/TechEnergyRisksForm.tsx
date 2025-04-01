@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
+import * as firestore from "firebase/firestore";
+import { db } from "../../firebaseConfig.js";
 
 // Import components
-import LogoHeader from '../../components/LogoHeader';
-import TitleHeader from '../../components/TitleHeader';
-import ProgressBar from '../../components/ProgressBar';
-import NavigationButtons from '../../components/NavigationButtons';
-import SectionHeader from '../../components/SectionHeader';
-import Dropdown from '../../components/Dropdown';
-import TextQuestion from '../../components/TextQuestion';
+import LogoHeader from '../../components/headers/LogoHeader.js';
+import TitleHeader from '../../components/headers/TitleHeader.js';
+import ProgressBar from '../../components/ProgressBar.js';
+import NavigationButtons from '../../components/NavigationButtons.js';
+import SectionHeader from '../../components/headers/SectionHeader.js';
+import Dropdown from '../../components/questions/DropdownQuestion.js';
+import TextQuestion from '../../components/questions/TextQuestion.js';
 
-const WindrockForm: React.FC = () => {
+const TechEnergyRiskForm: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3;
 
@@ -344,4 +346,4 @@ const WindrockForm: React.FC = () => {
   );
 };
 
-export default WindrockForm;
+export default TechEnergyRiskForm;

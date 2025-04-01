@@ -1,18 +1,18 @@
-.dropdownContainer {
-	margin-bottom: 3rem;
-	margin-top: 3rem;
+.dropdownQuestion {
+	position: relative;
+	padding: 0 8rem 3rem;
 	display: flex;
 	flex-direction: column;
-	width: 80%;
+	width: 100%;
 }
 
 .question {
-	font-size: .93rem;
+	font-size: 1.1rem;
 	text-align: left;
 	letter-spacing: .05rem;
 	line-height: 1.5rem;
 	margin-bottom: 1rem;
-	font-weight: normal;
+	font-weight: 500;
 }
 
 .dropdownButton {
@@ -28,7 +28,6 @@
 	flex-flow: row nowrap;
 	align-items: center;
 	justify-content: space-between;
-	margin-left: 0;
 }
 
 .dropdownButton p {
@@ -42,14 +41,15 @@
 }
 
 .dropdownMenu {
+	position: absolute;
+	top: 5rem;
+	z-index: 100;
 	text-align: left;
 	width: 290px;
-	margin-top: 0.5rem;
 	border-radius: 0.5rem;
 	box-shadow: 10px;
 	background-color: rgb(237, 237, 237);
 	color: black;
-	overflow: hidden;
 	letter-spacing: .05rem;
 }
 

@@ -1,6 +1,7 @@
 .sectionHeader {
     display: flex;
     flex-direction: column;
+    margin-bottom: 3rem;
     padding: .8rem 2rem;
     background: #005293;
 }

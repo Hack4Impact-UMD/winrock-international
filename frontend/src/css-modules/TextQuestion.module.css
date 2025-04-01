@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0 8rem 3rem;
+ }
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.input {
+    display: flex;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #C1C7CE;
+    resize: vertical;
+    font-size: 0.9rem;
+    font-family: inherit;
+};

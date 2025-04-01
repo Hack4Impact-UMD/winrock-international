@@ -1,4 +1,4 @@
-import styles from "../css-modules/TitleHeader.module.css";
+import styles from "../../css-modules/TitleHeader.module.css";
 
 interface TitleHeaderProps {
     title: string;

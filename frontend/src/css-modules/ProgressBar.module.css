@@ -1,14 +1,14 @@
-.progress-container {
+.progressBarContainer {
    padding: 3rem 10rem;
 }
 
-.progress-steps {
+.progressSteps {
    display: flex;
    flex-direction: column;
    width: 100%;
 }
 
-.progress-bars {
+.progressBars {
    display: flex;
    position: relative;
    width: 100%;
@@ -16,7 +16,7 @@
    margin-bottom: 0.5rem;
 }
 
-.progress-bar {
+.progressBar {
    height: 1rem;
    flex: 1;
    position: relative;
@@ -25,17 +25,17 @@
 }
 
 /* Add space between bars */
-.progress-bar + .progress-bar {
+.progressBar + .progressBar {
    margin-left: 0.5rem;
 }
 
 /* Last bar needs rounded corners on both sides */
-.progress-bar:last-child {
+.progressBar:last-child {
    border-radius: 1rem;
 }
 
 /* For the concave/inverted part on the right of each bar (except the last) */
-.progress-bar:not(:last-child)::after {
+.progressBar:not(:last-child)::after {
    content: '';
    position: absolute;
    right: -0.25rem;
@@ -46,25 +46,25 @@
    z-index: 2;
 }
 
-.progress-bar-completed {
+.progressBarCompleted {
    background-color: #31ab48;
 }
 
-.progress-bar-current {
+.progressBarCurrent {
    background-color: #acd3b3;
 }
 
-.progress-bar-upcoming {
+.progressBarUpcoming {
    background-color: #c1c7ce;
 }
 
-.progress-labels {
+.progressLabels {
    display: flex;
    justify-content: space-between;
    width: 100%;
 }
 
-.progress-label {
+.progressLabel {
    font-size: 0.7rem;
    color: #333;
    flex: 1;

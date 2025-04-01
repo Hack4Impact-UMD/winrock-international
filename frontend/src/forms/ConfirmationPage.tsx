@@ -1,6 +1,10 @@
-import '../css-modules/ConfirmationPage.css'
+import '../styles/ConfirmationPage.css'
 
-const ConfirmationPage = () => {
+interface ConfirmationPageProps {
+   formName: string;
+}
+
+function ConfirmationPage({ formName }: ConfirmationPageProps) {
    return (
       <div className='form-completed-container'>
          <div className='completion-content'>
@@ -20,7 +24,7 @@ const ConfirmationPage = () => {
                </svg>
             </div>
             <h1 className='completion-title'>
-               Risks and Co-Benefit Disclosure Form completed
+               {formName} completed
             </h1>
             <p className='completion-message'>
                <i>Your response has been recorded. You may exit the page now.</i>

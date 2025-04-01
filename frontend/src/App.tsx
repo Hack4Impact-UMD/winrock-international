@@ -1,4 +1,4 @@
-import RenewableProposalForm from './forms/RenewableProposalForm';
+import RenewableProposalForm from './forms/project-proposal-forms/RenewableProposalForm';
 function App() {
   return (
       <RenewableProposalForm />

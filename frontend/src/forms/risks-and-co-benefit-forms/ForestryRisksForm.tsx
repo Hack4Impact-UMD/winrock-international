@@ -1,15 +1,18 @@
 import { useState } from 'react'
-import LogoHeader from '../../components/LogoHeader'
-import TitleHeader from '../../components/TitleHeader'
-import ProgressBar from '../../components/ProgressBar'
-import NavigationButtons from '../../components/NavigationButtons'
-import SectionHeader from '../../components/SectionHeader'
-import Dropdown from '../../components/Dropdown'
-import TextQuestion from '../../components/TextQuestion'
-import RisksFormConfirmationPage from '../components/RisksFormConfirmationPage'
-import '../css-modules/ForestryRisksForm.css'
+import * as firestore from "firebase/firestore";
+import { db } from "../../firebaseConfig.js";
 
-function ForestryRisksForm() {
+import LogoHeader from '../../components/headers/LogoHeader.js'
+import TitleHeader from '../../components/headers/TitleHeader.js'
+import ProgressBar from '../../components/ProgressBar.js'
+import NavigationButtons from '../../components/NavigationButtons.js'
+import SectionHeader from '../../components/headers/SectionHeader.js'
+import Dropdown from '../../components/questions/DropdownQuestion.js'
+import TextQuestion from '../../components/questions/TextQuestion.js'
+import ConfirmationPage from '../ConfirmationPage.js'
+
+function ForestryRiskForm() {
+   const title = "Forestry Risks and Co-Benefit Disclosure Form";
    const [currentPage, setCurrentPage] = useState(1)
    const [isSubmitted, setIsSubmitted] = useState(false)
    const totalPages = 4
@@ -48,14 +51,14 @@ function ForestryRisksForm() {
    }
 
    if (isSubmitted) {
-      return <RisksFormConfirmationPage />
+      return <ConfirmationPage formName={title}/>
    }
 
    return (
-      <div className='forestryRisksForm'>
+      <div className='forestryRiskForm'>
          <LogoHeader />
          <TitleHeader
-            title='Risks and Co-Benefit Disclosure Form'
+            title={title}
             description='Some spiel about what this form is about and just to provide some further information about whats happening'
          />
          <ProgressBar
@@ -94,7 +97,6 @@ const PageOne = ({ handleSelect }) => {
       <>
          <SectionHeader label='Risk Assessment' />
          <Dropdown
-            id={'risk_assessment'}
             question={
                'Has the project completed a risk assessment following an approved standard? If so, how was the risk assessment conducted? What high-level risks were identified based on the geography or project activities?​'
             }
@@ -528,4 +530,4 @@ const CoBenefitForm = ({ handleSelect }) => {
    )
 }
 
-export default ForestryRisksForm
+export default ForestryRiskForm

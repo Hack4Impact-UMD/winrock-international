@@ -1,5 +1,4 @@
-import React from 'react'
-import '../css-modules/ProgressBar.css'
+import styles from '../css-modules/ProgressBar.module.css'
 
 interface ProgressBarProps {
    currentPage: number
@@ -7,11 +6,7 @@ interface ProgressBarProps {
    pageLabels: string[]
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({
-   currentPage,
-   totalPages,
-   pageLabels,
-}) => {
+function ProgressBar({ currentPage, totalPages, pageLabels }: ProgressBarProps) {
    // Use provided pageLabels or default to the ones defined above
    // Ensure we have the right number of labels
    const labels =
@@ -22,20 +17,20 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
               .map((_, i) => pageLabels[i] || `Page ${i + 1}`)
 
    return (
-      <div className='progress-container'>
-         <div className='progress-steps'>
+      <div className={styles.progressBarContainer}>
+         <div className={styles.progressSteps}>
             {/* Progress bars */}
-            <div className='progress-bars'>
+            <div className={styles.progressBars}>
                {Array.from({ length: totalPages }, (_, index) => {
                   const pageNumber = index + 1
-                  let barClass = 'progress-bar'
+                  let barClass = styles.progressBar
 
                   if (pageNumber < currentPage) {
-                     barClass += ' progress-bar-completed'
+                     barClass += ` ${styles.progressBarCompleted}`
                   } else if (pageNumber === currentPage) {
-                     barClass += ' progress-bar-current'
+                     barClass += ` ${styles.progressBarCurrent}`
                   } else {
-                     barClass += ' progress-bar-upcoming'
+                     barClass += ` ${styles.progressBarUpcoming}`
                   }
 
                   return <div key={`bar-${pageNumber}`} className={barClass} />
@@ -43,9 +38,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
             </div>
 
             {/* Labels below bars */}
-            <div className='progress-labels'>
+            <div className={styles.progressLabels}>
                {labels.map((label, index) => (
-                  <div key={`label-${index + 1}`} className='progress-label'>
+                  <div key={`label-${index + 1}`} className={styles.progressLabel}>
                      {label}
                   </div>
                ))}
