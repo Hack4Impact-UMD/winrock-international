@@ -1,5 +1,5 @@
 .progressBarContainer {
-   padding: 3rem 10rem;
+   padding: 4.5rem 12rem;
 }
 
 .progressSteps {
@@ -12,12 +12,11 @@
    display: flex;
    position: relative;
    width: 100%;
-   height: 1rem;
-   margin-bottom: 0.5rem;
+   margin-bottom: 1.2rem;
 }
 
 .progressBar {
-   height: 1rem;
+   height: 1.1rem;
    flex: 1;
    position: relative;
    border-top-left-radius: 1rem;
@@ -65,7 +64,7 @@
 }
 
 .progressLabel {
-   font-size: 0.7rem;
+   font-size: 0.875rem;
    color: #333;
    flex: 1;
    text-align: left;

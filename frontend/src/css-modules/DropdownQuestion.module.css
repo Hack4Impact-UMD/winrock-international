@@ -1,18 +1,18 @@
 .dropdownQuestion {
    position: relative;
-   padding: 0 8rem 3rem;
+   padding: 4rem 12rem;
    display: flex;
    flex-direction: column;
    width: 100%;
 }
 
 .label {
-   font-size: 1.1rem;
+   font-size: 1.25rem;
    text-align: left;
-   letter-spacing: 0.05rem;
-   line-height: 1.5rem;
-   margin-bottom: 1rem;
-   font-weight: 500;
+   letter-spacing: 3%;
+   line-height: 1.875rem;
+   margin-bottom: 1.5rem;
+   font-weight: 600;
 }
 
 .required::after {

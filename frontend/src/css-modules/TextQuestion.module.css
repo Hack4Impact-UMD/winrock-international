@@ -1,46 +1,48 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 0 8rem 3rem;
- }
+   display: flex;
+   flex-direction: column;
+   gap: 0.5rem;
+   width: 100%;
+   padding: 0 12rem 2rem;
+}
 
 .label {
-    font-size: 1.1rem;
-    font-weight: 500;
+   font-size: 1.1rem;
+   font-weight: 400;
+   letter-spacing: 3%;
+   margin-bottom: 0.8rem;
 }
 
 .requiredLabel::after {
-    content: " *";
-    font-weight: bold;
-    color: red;
+   content: ' *';
+   font-weight: bold;
+   color: red;
 }
 
 .input {
-    display: flex;
-    width: 100%;
-    padding: 1rem;
-    border-radius: 0.25rem;
-    resize: vertical;
-    font-size: 0.9rem;
-    font-family: inherit;
-};
+   display: flex;
+   width: 100%;
+   padding: 1rem;
+   border-radius: 0.625rem;
+   resize: vertical;
+   font-size: 0.9rem;
+   font-family: inherit;
+}
 
 .validInput {
-    border: 1px solid #C1C7CE;
+   border: 1px solid #c1c7ce;
 }
 
 .invalidInput {
-    border: solid 1px red;
+   border: solid 1px red;
 }
 
 .invalidInput::placeholder {
-    color: red;
-    opacity: 1;
+   color: red;
+   opacity: 1;
 }
 
 .disabledInput {
-    background: #f0f0f0;
-    pointer-events: none;
+   background: #f0f0f0;
+   pointer-events: none;
 }
