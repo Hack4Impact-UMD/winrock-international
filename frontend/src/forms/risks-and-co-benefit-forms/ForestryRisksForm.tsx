@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import * as firestore from "firebase/firestore";
-import { db } from "../../firebaseConfig.js";
+import { db } from "../../testFirebaseConfig.js";
 
 import LogoHeader from '../../components/headers/LogoHeader.js'
 import TitleHeader from '../../components/headers/TitleHeader.js'

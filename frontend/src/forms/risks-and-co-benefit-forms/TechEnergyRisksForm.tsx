@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import * as firestore from "firebase/firestore";
-import { db } from "../../firebaseConfig.js";
+import { db } from "../../testFirebaseConfig.js";
 
 // Import components
 import LogoHeader from '../../components/headers/LogoHeader.js';

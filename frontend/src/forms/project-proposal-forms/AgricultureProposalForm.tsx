@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as firestore from "firebase/firestore";
-import { db } from "../../../src/firebaseConfig.js";
+import { db } from "../../testFirebaseConfig.js";
 
 import LogoHeader from "../../components/headers/LogoHeader.js";
 import TitleHeader from "../../components/headers/TitleHeader.js";
@@ -80,7 +80,7 @@ function AgricultureProposalForm() {
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 3;
 
-    const collectionID = "agriculture-form/tTMuoxVae4Ut15QlAZIN/document-checklist";
+    const collectionID = "agriculture-proposal-form";
     const collectionRef = firestore.collection(db, collectionID);
     const [submissionObj, setSubmissionObj] = useState<AgricultureProposalFormData>({
         ingredientPrimary: '',
