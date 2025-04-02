@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from '../css-modules/ProgressBar.module.css'
+import styles from '../css-modules/Progressbar.module.css'
 
 interface ProgressBarProps {
    currentPage: number

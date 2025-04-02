@@ -5,7 +5,7 @@ import NavigationButtons from "./NavigationButtons";
 import SectionHeader from "./SectionHeader";
 import TextQuestion from "./TextQuestion";
 import TitleHeader from "./TitleHeader";
-import ProgressBar from "./ProgressBar";
+import ProgressBar from "./Progressbar";
 import { db } from "../firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 import styles from "../css-modules/AgricultureForm.module.css";
