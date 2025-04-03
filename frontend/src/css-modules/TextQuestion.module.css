@@ -3,7 +3,16 @@
    flex-direction: column;
    gap: 0.5rem;
    width: 100%;
-   padding: 0 12rem 2rem;
+   padding: 4rem 12rem 0;
+}
+
+.noTopPadding {
+   padding: 0 12rem 0;
+}
+
+.smallContainer {
+   display: flex;
+   flex-direction: column;
 }
 
 .label {
@@ -14,9 +23,7 @@
 }
 
 .requiredLabel::after {
-   content: ' *';
-   font-weight: bold;
-   color: red;
+   content: '';
 }
 
 .input {
@@ -27,6 +34,24 @@
    resize: vertical;
    font-size: 0.9rem;
    font-family: inherit;
+}
+
+.smallInput {
+   height: 2.75rem;
+   width: 18.125rem;
+   resize: none;
+   display: flex;
+   font-size: .93rem;
+   letter-spacing: .05rem;
+   align-items: center;
+   padding: 0 1.25rem;
+   line-height: 2.75rem;
+}
+
+.smallInput::placeholder {
+   display: flex;
+   align-items: center;
+   color: #666;
 }
 
 .validInput {

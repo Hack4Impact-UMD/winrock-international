@@ -7,9 +7,19 @@ interface TextQuestionProps {
   defaultValue?: string;
   required?: boolean;
   disableOverwrite?: boolean;
+  size?: 'small' | 'large';
+  removeTopPadding?: boolean;
 }
 
-function TextQuestion({ label, onChange, defaultValue="", required = false, disableOverwrite = false }: TextQuestionProps) {
+function TextQuestion({ 
+  label, 
+  onChange, 
+  defaultValue="", 
+  required = false, 
+  disableOverwrite = false,
+  size = 'large',
+  removeTopPadding = false
+}: TextQuestionProps) {
   const [value, setValue] = useState(defaultValue);
   const [placeholder, setPlaceholder] = useState("Enter text here");
   const [isValid, setIsValid] = useState(true);
@@ -36,13 +46,13 @@ function TextQuestion({ label, onChange, defaultValue="", required = false, disa
   }
 
   return (
-    <div className={styles.container}>
-      <label className={`${styles.label} ${required ? styles.requiredLabel : ""}`}>
+    <div className={`${styles.container} ${size === 'small' ? styles.smallContainer : ''} ${removeTopPadding ? styles.noTopPadding : ''}`}>
+      <label className={`${styles.label} ${required ? styles.requiredLabel : ""} ${size === 'small' ? styles.smallLabel : ''}`}>
         {label}
       </label>
 
       <textarea
-        className={`${styles.input} ${isValid ? styles.validInput : styles.invalidInput} ${disableOverwrite ? styles.disabledInput : ""}`}
+        className={`${styles.input} ${isValid ? styles.validInput : styles.invalidInput} ${disableOverwrite ? styles.disabledInput : ""} ${size === 'small' ? styles.smallInput : ''}`}
         value={value}
         placeholder={placeholder}
         onChange={handleChange}

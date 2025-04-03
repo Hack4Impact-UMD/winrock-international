@@ -170,13 +170,6 @@ function ForestryRisksForm() {
     * fields into the ForestryRisksForm collection.
    */
    async function handleSubmit() {
-      for (const [_, v] of Object.entries(answers)) {
-         if (v.isRequired && v.value === '') {
-             setError("Cannot submit: You have not completed one or more sections in the form")
-             return
-         }
-      }
-
       // Convert the answers into a submission object
       const submissionObj: Record<string, string> = {}
       Object.keys(answers).forEach((field) => {
@@ -200,7 +193,9 @@ function ForestryRisksForm() {
    }
 
    if (isSubmitted) {
-      return <ConfirmationPage formName={title} />
+      return (
+         <ConfirmationPage formName={title} />
+      )
    }
 
    return (
@@ -208,7 +203,7 @@ function ForestryRisksForm() {
          <LogoHeader />
          <TitleHeader
             title={title}
-            description='Some spiel about what this form is about and just to provide some further information about whats happening'
+            description='Welcome to the Co-Benefit form. Please continue to enter information. '
          />
          <ProgressBar
             currentPage={currentPage}

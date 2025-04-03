@@ -182,7 +182,7 @@ function AgricultureProposalForm() {
             <LogoHeader />
             <TitleHeader
                 title={title}
-                description="This project proposal form asks for comprehensive details including the specific ingredient, project activity, geographic location, project partners, timeline, connection to Nestle's value chain, GHG estimates calculation, costs, and benefit sharing."
+                description='The project proposal form is used to record information critical to the completion of the validation process for your project. It requests information both technical and administrative in nature. These questions are split within ten key categories, each of which requests one or more pieces of key information to kick off the project validation process. In Columns F ("Guidance") of this tab defines key terms and describes information sought in the fields in Column D/E ("Supplier answers"). It also includes key guidance including relevant examples and links to helpful sources. Please complete all required fields. Required questions must be answered before a project validation may commence. Optional questions are welcomed and may lead to a faster validation process.' 					
             />
             <ProgressBar
                 currentPage={currentPage}

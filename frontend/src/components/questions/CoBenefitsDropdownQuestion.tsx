@@ -27,6 +27,7 @@ function CoBenefitsDropdownQuestion({ label, options=["Yes", "No", "Not Applicab
             <TextQuestion
                 label=""
                 onChange={onChange}
+                removeTopPadding={true}
             />
         </>
     )

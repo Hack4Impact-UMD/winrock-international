@@ -204,16 +204,19 @@ function RenewableProposalForm() {
                 label="Parent Vendor Name"
                 onChange={(value) => handleChange("parentVendorName", value)}
                 required={true}
+                size="small"
             />
 
             <TextQuestion
                 label="Vendor Code"
                 onChange={(value) => handleChange("vendorCode", value)}
+                size="small"
             />
 
             <TextQuestion
                 label="Vendor Site SAP Name"
                 onChange={(value) => handleChange("vendorSiteSAPName", value)}
+                size="small"
             />
 
             <DropdownQuestion
@@ -234,6 +237,7 @@ function RenewableProposalForm() {
                 label="Vendor Site Country"
                 onChange={(value: string) => handleChange("vendorSiteCountry", value)}
                 required={true}
+                size="small"
             />
 
             {/* This was a DropdownQuestion in the Excel form, but we changed it
@@ -242,11 +246,13 @@ function RenewableProposalForm() {
                 label="Vendor Site City"
                 required={true}
                 onChange={(value: string) => handleChange("vendorSiteCity", value)}
+                size="small"
             />
 
             <TextQuestion
                 label="Project Type"
                 onChange={(value: string) => handleChange("projectType", value)}
+                size="small"
             />
 
             <TextQuestion
@@ -257,6 +263,7 @@ function RenewableProposalForm() {
             <TextQuestion
                 label="Project Implementation Year"
                 onChange={(value: string) => handleChange("projectImplementationYear", value)}
+                size="small"
             />
 
             <DropdownQuestion
@@ -287,12 +294,13 @@ function RenewableProposalForm() {
                 label="Volume of Material (Metric Tons) Delivered to Nestlé in 2022"
                 onChange={(value: string) => handleChange("volumeDelivered", value)}
                 required={true}
+                size="small"
             />
 
             <SectionHeader label="Energy Consumption: Before Intervention" />
 
             <DropdownQuestion
-                label="Source of Energy (BEFORE Intervention)"
+                label="Source of Energy"
                 options={["Coal", "Natural Gas", "Electricity Grid"]}
                 onSelect={(value: string) => handleChange("beforeSourceOfEnergy", value)}
                 required={true}
@@ -302,17 +310,19 @@ function RenewableProposalForm() {
                 label="Share an energy consumption (KWh/year) estimate for Nestlé only (BEFORE intervention)"
                 onChange={((value) => handleChange("beforeEnergyConsumption", value))}
                 required={true}
+                size="small"
             />
 
             <TextQuestion
                 label="Emission Factor of Energy (kgCO2/KwH) (BEFORE intervention)"
                 onChange={((value) => handleChange("beforeEmissionFactor", value))}
+                size="small"
             />
 
             <SectionHeader label="Energy Consumption: After Intervention is Completed" />
 
             <DropdownQuestion
-                label="Source of Energy (AFTER Intervention)"
+                label="Source of Energy"
                 options={["Biogas/Green Gas - Grid (external)", "Solar", "Renewable Electricity Certificate"]}
                 onSelect={(value: string) => handleChange("afterSourceOfEnergy", value)}
             />
@@ -320,28 +330,44 @@ function RenewableProposalForm() {
             <TextQuestion
                 label="Share an energy consumption (KWh/year) estimate for Nestlé only (AFTER Intervention)"
                 onChange={(value: string) => handleChange("afterEnergyConsumption", value)}
+                size="small"
             />
 
             <TextQuestion
                 label="Emission Factor of Energy (kgCO2/KwH) (AFTER intervention)"
                 onChange={(value: string) => handleChange("afterEmissionFactor", value)}
+                size="small"
             />
 
-            <SectionHeader label="Calculations (Auto-Generated)" />
+            <SectionHeader label="Comments/Remarks" />
 
             <TextQuestion
-                label="Impact reduction on GHG emission (tonsCO2e) (after intervention attributed to Nestlé only based on annualized impact).
-                       Uses the formula [energy consumption after] / ([emission factor before] - [emission factor after]). Feel free to overwrite
-                       this field."
+                label="Source of Emission Factor (Please refer to Energy Consumption before and after intervention) "
                 onChange={(value: string) => handleChange("impactReduction", value)}
                 defaultValue={answers.impactReduction.value}
             />
 
+
+            <SectionHeader label="Impact" />
+            
+            <DropdownQuestion
+                label="Source of Energy"
+                options={["Biogas/Green Gas - Grid (external)", "Solar", "Renewable Electricity Certificate"]}
+                onSelect={(value: string) => handleChange("afterSourceOfEnergy", value)}
+            />
+
             <TextQuestion
-                label="Impact Timing (based on Project Implementation Year)"
-                onChange={(_: string) => {}}
+                label="Impact Reduction On GHG EmissionAfter Intervention - Attribute to Nestle only (tonsCO2e) based on an annualized impact"
+                onChange={(value: string) => handleChange("impactTiming", value)}
                 defaultValue={answers.impactTiming.value}
-                disableOverwrite={true}
+                size="small"
+            />
+
+            <TextQuestion
+                label="Impact Timing"
+                onChange={(value: string) => handleChange("impactReduction", value)}
+                defaultValue={answers.impactReduction.value}
+                size="small"
             />
 
             <NavigationButtons
