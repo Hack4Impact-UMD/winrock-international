@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import * as firestore from "firebase/firestore"
 import { db } from "../../testFirebaseConfig.js"
+import FormField from "../FormField.js"
 
 import LogoHeader from '../../components/headers/LogoHeader.js'
 import TitleHeader from '../../components/headers/TitleHeader.js'
@@ -10,83 +11,84 @@ import SectionHeader from '../../components/headers/SectionHeader.js'
 import RisksDropdownQuestion from '../../components/questions/RisksDropdownQuestion.js'
 import CoBenefitsDropdownQuestion from '../../components/questions/CoBenefitsDropdownQuestion.js'
 import ConfirmationPage from '../ConfirmationPage.js'
+import Error from '../../components/Error.js'
 
 interface ForestryRisksFormData {
    // Risk Assessment
-   riskAssessment: string;
-   riskAssessmentDetails: string;
+   riskAssessment: FormField;
+   riskAssessmentDetails: FormField;
 
    // Climate Change Adaptation
-   climateChangeAdaptation: string;
-   climateChangeAdaptationDetails: string;
+   climateChangeAdaptation: FormField;
+   climateChangeAdaptationDetails: FormField;
 
    // Sustainable Use and Management of Natural Resources
-   environmentalRiskAssessment: string;
-   environmentalRiskAssessmentDetails: string;
-   businessContinuity: string;
-   businessContinuityDetails: string;
-   forestryManagementPlan: string;
-   forestryManagementPlanDetails: string;
-   rawMaterialCompliance: string;
-   rawMaterialComplianceDetails: string;
+   environmentalRiskAssessment: FormField;
+   environmentalRiskAssessmentDetails: FormField;
+   businessContinuity: FormField;
+   businessContinuityDetails: FormField;
+   forestryManagementPlan: FormField;
+   forestryManagementPlanDetails: FormField;
+   rawMaterialCompliance: FormField;
+   rawMaterialComplianceDetails: FormField;
 
    // Pollution and Waste Control
-   pollutionAvoidance: string;
-   pollutionAvoidanceDetails: string;
-   wasteMonitoring: string;
-   wasteMonitoringDetails: string;
+   pollutionAvoidance: FormField;
+   pollutionAvoidanceDetails: FormField;
+   wasteMonitoring: FormField;
+   wasteMonitoringDetails: FormField;
 
    // Transition to a Circular Economy​​
-   circularEconomy: string;
-   circularEconomyDetails: string;
+   circularEconomy: FormField;
+   circularEconomyDetails: FormField;
 
    // Protection and Restoration of Biodiversity and Ecosystems​
-   biodiversityImpact: string;
-   biodiversityImpactDetails: string;
-   landDisturbance: string;
-   landDisturbanceDetails: string;
-   invasiveSpecies: string;
-   invasiveSpeciesDetails: string;
-   soilErosion: string;
-   soilErosionDetails: string;
+   biodiversityImpact: FormField;
+   biodiversityImpactDetails: FormField;
+   landDisturbance: FormField;
+   landDisturbanceDetails: FormField;
+   invasiveSpecies: FormField;
+   invasiveSpeciesDetails: FormField;
+   soilErosion: FormField;
+   soilErosionDetails: FormField;
 
    // Human and Labor Rights
-   protectionHumanRights: string;
-   protectionHumanRightsDetails: string;
-   formalDeclarations: string;
-   formalDeclarationsDetails: string;
-   stakeholderHealthSafety: string;
-   stakeholderHealthSafetyDetails: string;
+   protectionHumanRights: FormField;
+   protectionHumanRightsDetails: FormField;
+   formalDeclarations: FormField;
+   formalDeclarationsDetails: FormField;
+   stakeholderHealthSafety: FormField;
+   stakeholderHealthSafetyDetails: FormField;
 
    // Community Impacts
-   indigenousPeople: string;
-   indigenousPeopleDetails: string;
-   reduceStakeholderRisk: string;
-   reduceStakeholderRiskDetails: string;
-   smallHolders: string;
-   smallHoldersDetails: string;
-   designedToInvest: string;
-   designedToInvestDetails: string;
-   effortsToMaintainEngagements: string;
-   effortsToMaintainEngagementsDetails: string;
-   negativeCommunityImpacts: string;
-   negativeCommunityImpactsDetails: string;
+   indigenousPeople: FormField;
+   indigenousPeopleDetails: FormField;
+   reduceStakeholderRisk: FormField;
+   reduceStakeholderRiskDetails: FormField;
+   smallHolders: FormField;
+   smallHoldersDetails: FormField;
+   designedToInvest: FormField;
+   designedToInvestDetails: FormField;
+   effortsToMaintainEngagements: FormField;
+   effortsToMaintainEngagementsDetails: FormField;
+   negativeCommunityImpacts: FormField;
+   negativeCommunityImpactsDetails: FormField;
 
    // Safeguards
-   effectiveSafeguards: string;
-   effectiveSafeguardsDetails: string;
+   effectiveSafeguards: FormField;
+   effectiveSafeguardsDetails: FormField;
 
    // Project Water Co-Benefits​
-   waterCoBenefits: string;
-   waterCoBenefitsDetails: string;
+   waterCoBenefits: FormField;
+   waterCoBenefitsDetails: FormField;
 
    // Project Biodiversity and Environmental Co-Benefits
-   biodiversityEnvironmentalCoBenefits: string;
-   biodiversityEnvironmentalCoBenefitsDetails: string;
+   biodiversityEnvironmentalCoBenefits: FormField;
+   biodiversityEnvironmentalCoBenefitsDetails: FormField;
 
    // Project Community/Farmer Co-Benefits
-   communityFarmerCoBenefits: string;
-   communityFarmerCoBenefitsDetails: string;
+   communityFarmerCoBenefits: FormField;
+   communityFarmerCoBenefitsDetails: FormField;
 }
 
 function ForestryRisksForm() {
@@ -94,78 +96,87 @@ function ForestryRisksForm() {
    const [currentPage, setCurrentPage] = useState(1)
    const totalPages = 3
 
-   const collectionID = "forestry-risks-form";
-   const collectionRef = firestore.collection(db, collectionID);
+   const collectionID = "forestry-risks-form"
+   const collectionRef = firestore.collection(db, collectionID)
    const [submissionObj, setSubmissionObj] = useState<ForestryRisksFormData>({
-      riskAssessment: '',
-      riskAssessmentDetails: '',
-      climateChangeAdaptation: '',
-      climateChangeAdaptationDetails: '',
-      environmentalRiskAssessment: '',
-      environmentalRiskAssessmentDetails: '',
-      businessContinuity: '',
-      businessContinuityDetails: '',
-      forestryManagementPlan: '',
-      forestryManagementPlanDetails: '',
-      rawMaterialCompliance: '',
-      rawMaterialComplianceDetails: '',
-      pollutionAvoidance: '',
-      pollutionAvoidanceDetails: '',
-      wasteMonitoring: '',
-      wasteMonitoringDetails: '',
-      circularEconomy: '',
-      circularEconomyDetails: '',
-      biodiversityImpact: '',
-      biodiversityImpactDetails: '',
-      landDisturbance: '',
-      landDisturbanceDetails: '',
-      invasiveSpecies: '',
-      invasiveSpeciesDetails: '',
-      soilErosion: '',
-      soilErosionDetails: '',
-      protectionHumanRights: '',
-      protectionHumanRightsDetails: '',
-      formalDeclarations: '',
-      formalDeclarationsDetails: '',
-      stakeholderHealthSafety: '',
-      stakeholderHealthSafetyDetails: '',
-      indigenousPeople: '',
-      indigenousPeopleDetails: '',
-      reduceStakeholderRisk: '',
-      reduceStakeholderRiskDetails: '',
-      smallHolders: '',
-      smallHoldersDetails: '',
-      designedToInvest: '',
-      designedToInvestDetails: '',
-      effortsToMaintainEngagements: '',
-      effortsToMaintainEngagementsDetails: '',
-      negativeCommunityImpacts: '',
-      negativeCommunityImpactsDetails: '',
-      effectiveSafeguards: '',
-      effectiveSafeguardsDetails: '',
-      waterCoBenefits: '',
-      waterCoBenefitsDetails: '',
-      biodiversityEnvironmentalCoBenefits: '',
-      biodiversityEnvironmentalCoBenefitsDetails: '',
-      communityFarmerCoBenefits: '',
-      communityFarmerCoBenefitsDetails: ''
+      riskAssessment: new FormField('', true),
+      riskAssessmentDetails: new FormField('', true),
+      climateChangeAdaptation: new FormField('', true),
+      climateChangeAdaptationDetails: new FormField('', true),
+      environmentalRiskAssessment: new FormField('', true),
+      environmentalRiskAssessmentDetails: new FormField('', true),
+      businessContinuity: new FormField('', true),
+      businessContinuityDetails: new FormField('', true),
+      forestryManagementPlan: new FormField('', true),
+      forestryManagementPlanDetails: new FormField('', true),
+      rawMaterialCompliance: new FormField('', true),
+      rawMaterialComplianceDetails: new FormField('', true),
+      pollutionAvoidance: new FormField('', true),
+      pollutionAvoidanceDetails: new FormField('', true),
+      wasteMonitoring: new FormField('', true),
+      wasteMonitoringDetails: new FormField('', true),
+      circularEconomy: new FormField('', true),
+      circularEconomyDetails: new FormField('', true),
+      biodiversityImpact: new FormField('', true),
+      biodiversityImpactDetails: new FormField('', true),
+      landDisturbance: new FormField('', true),
+      landDisturbanceDetails: new FormField('', true),
+      invasiveSpecies: new FormField('', true),
+      invasiveSpeciesDetails: new FormField('', true),
+      soilErosion: new FormField('', true),
+      soilErosionDetails: new FormField('', true),
+      protectionHumanRights: new FormField('', true),
+      protectionHumanRightsDetails: new FormField('', true),
+      formalDeclarations: new FormField('', true),
+      formalDeclarationsDetails: new FormField('', true),
+      stakeholderHealthSafety: new FormField('', true),
+      stakeholderHealthSafetyDetails: new FormField('', true),
+      indigenousPeople: new FormField('', true),
+      indigenousPeopleDetails: new FormField('', true),
+      reduceStakeholderRisk: new FormField('', true),
+      reduceStakeholderRiskDetails: new FormField('', true),
+      smallHolders: new FormField('', true),
+      smallHoldersDetails: new FormField('', true),
+      designedToInvest: new FormField('', true),
+      designedToInvestDetails: new FormField('', true),
+      effortsToMaintainEngagements: new FormField('', true),
+      effortsToMaintainEngagementsDetails: new FormField('', true),
+      negativeCommunityImpacts: new FormField('', true),
+      negativeCommunityImpactsDetails: new FormField('', true),
+      effectiveSafeguards: new FormField('', true),
+      effectiveSafeguardsDetails: new FormField('', true),
+      waterCoBenefits: new FormField('', true),
+      waterCoBenefitsDetails: new FormField('', false),
+      biodiversityEnvironmentalCoBenefits: new FormField('', true),
+      biodiversityEnvironmentalCoBenefitsDetails: new FormField('', false),
+      communityFarmerCoBenefits: new FormField('', true),
+      communityFarmerCoBenefitsDetails: new FormField('', false)
    })
 
    // Used to change the submissionObj's fields dynamically
    function handleChange(field: keyof ForestryRisksFormData, value: string) {
+      const isRequired = submissionObj[field]!.isRequired
       setSubmissionObj((prev: ForestryRisksFormData) => ({
          ...prev,
-         [field]: value
-      }));
-   };
+         [field]: new FormField(value, isRequired)
+      }))
+   }
 
    const [isSubmitted, setIsSubmitted] = useState(false)
+   const [error, setError] = useState('')
 
    /**
     * Insert a new ForestryRisksForm submission with the user-inputted
     * fields into the ForestryRisksForm collection.
    */
    async function handleSubmit() {
+      for (const [_, v] of Object.entries(submissionObj)) {
+         if (v.isRequired && v.value === '') {
+             setError("Cannot submit: You have not completed one or more sections in the form")
+             return
+         }
+      }
+
       try {
          await firestore.addDoc(collectionRef, submissionObj) // addDoc() auto-generates an ID for the submission
          setIsSubmitted(true)
@@ -209,16 +220,16 @@ function ForestryRisksForm() {
          <NavigationButtons
             onNext={() => {
                if (currentPage < totalPages) {
-                   setCurrentPage(currentPage + 1);
-                   window.scroll(0, 0);
+                   setCurrentPage(currentPage + 1)
+                   window.scroll(0, 0)
                } else {
-                   handleSubmit();
+                   handleSubmit()
                }
             }}
             onBack={() => {
                   if (currentPage > 1) {
                      setCurrentPage(currentPage - 1)
-                     window.scroll(0, 0);
+                     window.scroll(0, 0)
                   }
             }}
             onSaveChanges={saveChanges}
@@ -226,6 +237,8 @@ function ForestryRisksForm() {
             canGoBack={currentPage > 1}
             nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
          />
+
+         <Error message={error} />
       </>
    )
 }

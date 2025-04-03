@@ -1,6 +1,7 @@
 import { useState } from "react";
 import * as firestore from "firebase/firestore";
 import { db } from "../../testFirebaseConfig.js";
+import FormField from "../FormField.js";
 
 import LogoHeader from "../../components/headers/LogoHeader.js";
 import TitleHeader from "../../components/headers/TitleHeader.js";
@@ -10,136 +11,146 @@ import TextQuestion from "../../components/questions/TextQuestion.js";
 import DropdownQuestion from "../../components/questions/DropdownQuestion.js";
 import NavigationButtons from "../../components/NavigationButtons.js";
 import ConfirmationPage from "../ConfirmationPage.js";
+import Error from "../../components/Error.js";
 
 interface AgricultureProposalFormData {
     // Ingredient/Crop Supplied
-    ingredientPrimary: string;
-    ingredientSub: string;
+    ingredientPrimary: FormField;
+    ingredientSub: FormField;
 
     // General Project Activity Description
-    mainIntervention: string;
-    projectDescription: string;
+    mainIntervention: FormField;
+    projectDescription: FormField;
 
     // Project Volumes in Relation to Nestlé
-    averageVolumePurchased: string;
+    averageVolumePurchased: FormField;
 
     // Project Geography
-    mainCountry: string;
-    otherCountries?: string;
-    subNationalRegions?: string;
+    mainCountry: FormField;
+    otherCountries?: FormField;
+    subNationalRegions?: FormField;
 
     // Project Contracting Party and Project Partners
-    contractingParty: string;
-    contractingNameAndEmail: string;
-    projectPartnerOne?: string;
-    projectPartnerTwo?: string;
-    projectPartnerThree?: string;
+    contractingParty: FormField;
+    contractingNameAndEmail: FormField;
+    projectPartnerOne?: FormField;
+    projectPartnerTwo?: FormField;
+    projectPartnerThree?: FormField;
 
     // Planned Timeline
-    projectStartDate: string;
-    expectedDuration: string;
-    expectedFirstImpact: string;
+    projectStartDate: FormField;
+    expectedDuration: FormField;
+    expectedFirstImpact: FormField;
 
     // Connection to the Nestlé Value Chain
-    connectionToValueChain: string;
-    otherZones?: string;
-    physicalTraceability?: string;
-    ptAdditionalInfo?: string;
-    chainOfCustody: string;
-    cocAdditionalInfo?: string;
+    connectionToValueChain: FormField;
+    otherZones?: FormField;
+    physicalTraceability?: FormField;
+    ptAdditionalInfo?: FormField;
+    chainOfCustody: FormField;
+    cocAdditionalInfo?: FormField;
 
     // Information related to Carbon credits (insets)
-    carbonCredits: string;
-    carbonStandard?: string;
-    carbonCreditsVerified: string;
-    ccvSupplement: string;
-    carbonCreditsDoubleCount: string;
-    ccdcSupplement: string;
-    dateOfIssuance: string;
+    carbonCredits: FormField;
+    carbonStandard?: FormField;
+    carbonCreditsVerified: FormField;
+    ccvSupplement: FormField;
+    carbonCreditsDoubleCount: FormField;
+    ccdcSupplement: FormField;
+    dateOfIssuance: FormField;
 
     // Project Co-Financing and Benefit Sharing
-    coFinancingStructure: string;
-    cfsBreakdown: string;
-    benefitSharing: string;
+    coFinancingStructure: FormField;
+    cfsBreakdown: FormField;
+    benefitSharing: FormField;
 
     // Information on GHG Benefits Estimates
-    ghgOption: string;
-    beforeEmissionFactor: string;
-    afterEmissionFactor: string;
-    emissionReductionEstimate: string;
-    emissionRemovalEstimate: string;
+    ghgOption: FormField;
+    beforeEmissionFactor: FormField;
+    afterEmissionFactor: FormField;
+    emissionReductionEstimate: FormField;
+    emissionRemovalEstimate: FormField;
 
     // Supplementary Information on GHG Emissions Benefits
-    ghgSheetAttached: string;
-    ghgBuffer?: string;
-    gbElaboration?: string;
+    ghgSheetAttached: FormField;
+    ghgBuffer?: FormField;
+    gbElaboration?: FormField;
 }
 
 function AgricultureProposalForm() {
     const title = "Agriculture Project Proposal Form"
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 3;
+    const totalPages = 1;
 
     const collectionID = "agriculture-proposal-form";
     const collectionRef = firestore.collection(db, collectionID);
     const [submissionObj, setSubmissionObj] = useState<AgricultureProposalFormData>({
-        ingredientPrimary: '',
-        ingredientSub: '',
-        mainIntervention: '',
-        projectDescription: '',
-        averageVolumePurchased: '',
-        mainCountry: '',
-        otherCountries: '',
-        subNationalRegions: '',
-        contractingParty: '',
-        contractingNameAndEmail: '',
-        projectPartnerOne: '',
-        projectPartnerTwo: '',
-        projectPartnerThree: '',
-        projectStartDate: '',
-        expectedDuration: '',
-        expectedFirstImpact: '',
-        connectionToValueChain: '',
-        otherZones: '',
-        physicalTraceability: '',
-        ptAdditionalInfo: '',
-        chainOfCustody: '',
-        cocAdditionalInfo: '',
-        carbonCredits: '',
-        carbonStandard: '',
-        carbonCreditsVerified: '',
-        ccvSupplement: '',
-        carbonCreditsDoubleCount: '',
-        ccdcSupplement: '',
-        dateOfIssuance: '',
-        coFinancingStructure: '',
-        cfsBreakdown: '',
-        benefitSharing: '',
-        ghgOption: '',
-        beforeEmissionFactor: '',
-        afterEmissionFactor: '',
-        emissionReductionEstimate: '',
-        emissionRemovalEstimate: '',
-        ghgSheetAttached: '',
-        ghgBuffer: '',
-        gbElaboration: ''
+        ingredientPrimary: new FormField('', true),
+        ingredientSub: new FormField('', true),
+        mainIntervention: new FormField('', true),
+        projectDescription: new FormField('', true),
+        averageVolumePurchased: new FormField('', true),
+        mainCountry: new FormField('', true),
+        otherCountries: new FormField('', false),
+        subNationalRegions: new FormField('', false),
+        contractingParty: new FormField('', true),
+        contractingNameAndEmail: new FormField('', true),
+        projectPartnerOne: new FormField('', false),
+        projectPartnerTwo: new FormField('', false),
+        projectPartnerThree: new FormField('', false),
+        projectStartDate: new FormField('', true),
+        expectedDuration: new FormField('', true),
+        expectedFirstImpact: new FormField('', true),
+        connectionToValueChain: new FormField('', true),
+        otherZones: new FormField('', false),
+        physicalTraceability: new FormField('', false),
+        ptAdditionalInfo: new FormField('', false),
+        chainOfCustody: new FormField('', true),
+        cocAdditionalInfo: new FormField('', false),
+        carbonCredits: new FormField('', true),
+        carbonStandard: new FormField('', false),
+        carbonCreditsVerified: new FormField('', true),
+        ccvSupplement: new FormField('', true),
+        carbonCreditsDoubleCount: new FormField('', true),
+        ccdcSupplement: new FormField('', true),
+        dateOfIssuance: new FormField('', true),
+        coFinancingStructure: new FormField('', true),
+        cfsBreakdown: new FormField('', true),
+        benefitSharing: new FormField('', true),
+        ghgOption: new FormField('', true),
+        beforeEmissionFactor: new FormField('', true),
+        afterEmissionFactor: new FormField('', true),
+        emissionReductionEstimate: new FormField('', true),
+        emissionRemovalEstimate: new FormField('', true),
+        ghgSheetAttached: new FormField('', false),
+        ghgBuffer: new FormField('', false),
+        gbElaboration: new FormField('', false)
     });
 
     // Used to change the submissionObj's fields dynamically
     function handleChange(field: keyof AgricultureProposalFormData, value: string) {
+        const isRequired = submissionObj[field]!.isRequired;
         setSubmissionObj((prev: AgricultureProposalFormData) => ({
             ...prev,
-            [field]: value
+            [field]: new FormField(value, isRequired)
         }));
     };
 
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [error, setError] = useState('');
 
     /**
      * Insert a new AgricultureProjectProposal document with the user-inputted
      * fields into the AgricultureProjectProposalForm collection.
     */
     async function handleSubmit() {
+        for (const [_, v] of Object.entries(submissionObj)) {
+            if (v.isRequired && v.value === '') {
+                setError("Cannot submit: You have not completed one or more sections in the form");
+                return;
+            }
+        }
+
         try {
             await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
             setIsSubmitted(true);
@@ -529,6 +540,8 @@ function AgricultureProposalForm() {
                 canGoBack={currentPage > 1}
                 nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
             />
+
+            <Error message={error} />
         </>
     );
 };

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import * as firestore from "firebase/firestore";
 import { db } from "../../testFirebaseConfig.js";
+import FormField from "../FormField.js";
 
 import LogoHeader from '../../components/headers/LogoHeader.js';
 import TitleHeader from '../../components/headers/TitleHeader.js';
@@ -10,71 +11,72 @@ import SectionHeader from '../../components/headers/SectionHeader.js';
 import RisksDropdownQuestion from '../../components/questions/RisksDropdownQuestion.js';
 import CoBenefitsDropdownQuestion from '../../components/questions/CoBenefitsDropdownQuestion.js';
 import ConfirmationPage from '../ConfirmationPage.js';
+import Error from '../../components/Error.js';
 
 interface TechEnergyRisksFormData {
   // Risk Assessment
-  riskAssessment: string;
-  riskAssessmentDetails: string;
+  riskAssessment: FormField;
+  riskAssessmentDetails: FormField;
 
   // Climate Change Adaptation
-  climateChange: string;
-  climateChangeDetails: string;
+  climateChange: FormField;
+  climateChangeDetails: FormField;
 
   // Technology Risks
-  technologyRisk: string;
-  technologyRiskDetails: string;
-  scalableTechnology: string;
-  scalableTechnologyDetails: string;
+  technologyRisk: FormField;
+  technologyRiskDetails: FormField;
+  scalableTechnology: FormField;
+  scalableTechnologyDetails: FormField;
 
   // Sustainable Use and Protection of Water Resources
-  waterManagement: string;
-  waterManagementDetails: string;
+  waterManagement: FormField;
+  waterManagementDetails: FormField;
 
   // Pollution & Waste Control
-  pollutionPrevention: string;
-  pollutionPreventionDetails: string;
-  wasteMonitoring: string;
-  wasteMonitoringDetails: string;
+  pollutionPrevention: FormField;
+  pollutionPreventionDetails: FormField;
+  wasteMonitoring: FormField;
+  wasteMonitoringDetails: FormField;
 
   // Transition to a Circular Economy
-  circularEconomy: string;
-  circularEconomyDetails: string;
+  circularEconomy: FormField;
+  circularEconomyDetails: FormField;
 
   // Protection and Restoration of Biodiversity and Ecosystems
-  biodiversityImpact: string;
-  biodiversityImpactDetails: string;
-  landFeatures: string;
-  landFeaturesDetails: string;
+  biodiversityImpact: FormField;
+  biodiversityImpactDetails: FormField;
+  landFeatures: FormField;
+  landFeaturesDetails: FormField;
 
   // Human and Labor Rights
-  responsibleSourcing: string;
-  responsibleSourcingDetails: string;
-  laborFrameworks: string;
-  laborFrameworksDetails: string;
-  farmerHealth: string;
-  farmerHealthDetails: string;
+  responsibleSourcing: FormField;
+  responsibleSourcingDetails: FormField;
+  laborFrameworks: FormField;
+  laborFrameworksDetails: FormField;
+  farmerHealth: FormField;
+  farmerHealthDetails: FormField;
 
   // Community Impacts
-  communityEngagement: string;
-  communityEngagementDetails: string;
-  negativeImpacts: string;
-  negativeImpactsDetails: string;
+  communityEngagement: FormField;
+  communityEngagementDetails: FormField;
+  negativeImpacts: FormField;
+  negativeImpactsDetails: FormField;
 
   // Safeguards
-  effectiveSafeguards: string;
-  effectiveSafeguardsDetails: string;
+  effectiveSafeguards: FormField;
+  effectiveSafeguardsDetails: FormField;
 
   // Project Water Co-Benefits
-  waterBenefits: string;
-  waterBenefitsDetails: string;
+  waterBenefits: FormField;
+  waterBenefitsDetails: FormField;
 
   // Project Biodiversity and Environmental Co-Benefits
-  biodiversityBenefits: string;
-  biodiversityBenefitsDetails: string;
+  biodiversityBenefits: FormField;
+  biodiversityBenefitsDetails: FormField;
 
   // Project Community/Farmer Co-Benefits
-  communityBenefits: string;
-  communityBenefitsDetails: string;
+  communityBenefits: FormField;
+  communityBenefitsDetails: FormField;
 }
 
 function TechEnergyRisksForm() {
@@ -85,61 +87,70 @@ function TechEnergyRisksForm() {
   const collectionID = "tech-energy-risks-form";
   const collectionRef = firestore.collection(db, collectionID);
   const [submissionObj, setSubmissionObj] = useState<TechEnergyRisksFormData>({
-    riskAssessment: '',
-    riskAssessmentDetails: '',
-    climateChange: '',
-    climateChangeDetails: '',
-    technologyRisk: '',
-    technologyRiskDetails: '',
-    scalableTechnology: '',
-    scalableTechnologyDetails: '',
-    waterManagement: '',
-    waterManagementDetails: '',
-    pollutionPrevention: '',
-    pollutionPreventionDetails: '',
-    wasteMonitoring: '',
-    wasteMonitoringDetails: '',
-    circularEconomy: '',
-    circularEconomyDetails: '',
-    biodiversityImpact: '',
-    biodiversityImpactDetails: '',
-    landFeatures: '',
-    landFeaturesDetails: '',
-    responsibleSourcing: '',
-    responsibleSourcingDetails: '',
-    laborFrameworks: '',
-    laborFrameworksDetails: '',
-    farmerHealth: '',
-    farmerHealthDetails: '',
-    communityEngagement: '',
-    communityEngagementDetails: '',
-    negativeImpacts: '',
-    negativeImpactsDetails: '',
-    effectiveSafeguards: '',
-    effectiveSafeguardsDetails: '',
-    waterBenefits: '',
-    waterBenefitsDetails: '',
-    biodiversityBenefits: '',
-    biodiversityBenefitsDetails: '',
-    communityBenefits: '',
-    communityBenefitsDetails: ''
+    riskAssessment: new FormField('', true),
+    riskAssessmentDetails: new FormField('', true),
+    climateChange: new FormField('', true),
+    climateChangeDetails: new FormField('', true),
+    technologyRisk: new FormField('', true),
+    technologyRiskDetails: new FormField('', true),
+    scalableTechnology: new FormField('', true),
+    scalableTechnologyDetails: new FormField('', true),
+    waterManagement: new FormField('', true),
+    waterManagementDetails: new FormField('', true),
+    pollutionPrevention: new FormField('', true),
+    pollutionPreventionDetails: new FormField('', true),
+    wasteMonitoring: new FormField('', true),
+    wasteMonitoringDetails: new FormField('', true),
+    circularEconomy: new FormField('', true),
+    circularEconomyDetails: new FormField('', true),
+    biodiversityImpact: new FormField('', true),
+    biodiversityImpactDetails: new FormField('', true),
+    landFeatures: new FormField('', true),
+    landFeaturesDetails: new FormField('', true),
+    responsibleSourcing: new FormField('', true),
+    responsibleSourcingDetails: new FormField('', true),
+    laborFrameworks: new FormField('', true),
+    laborFrameworksDetails: new FormField('', true),
+    farmerHealth: new FormField('', true),
+    farmerHealthDetails: new FormField('', true),
+    communityEngagement: new FormField('', true),
+    communityEngagementDetails: new FormField('', true),
+    negativeImpacts: new FormField('', true),
+    negativeImpactsDetails: new FormField('', true),
+    effectiveSafeguards: new FormField('', true),
+    effectiveSafeguardsDetails: new FormField('', true),
+    waterBenefits: new FormField('', true),
+    waterBenefitsDetails: new FormField('', false),
+    biodiversityBenefits: new FormField('', true),
+    biodiversityBenefitsDetails: new FormField('', false),
+    communityBenefits: new FormField('', true),
+    communityBenefitsDetails: new FormField('', false)
   })
 
   // Used to change the submissionObj's fields dynamically
   function handleChange(field: keyof TechEnergyRisksFormData, value: string) {
+    const isRequired = submissionObj[field]!.isRequired;
     setSubmissionObj((prev: TechEnergyRisksFormData) => ({
-        ...prev,
-        [field]: value
-    }));
+       ...prev,
+       [field]: new FormField(value, isRequired)
+    }))
   };
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   /**
   * Insert a new TechEnergyRisksForm submission with the user-inputted
   * fields into the TechEnergyRisksForm collection.
   */
   async function handleSubmit() {
+    for (const [_, v] of Object.entries(submissionObj)) {
+      if (v.isRequired && v.value === '') {
+        setError("Cannot submit: You have not completed one or more sections in the form");
+        return;
+      }
+    }
+
     try {
       await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
       setIsSubmitted(true);
@@ -200,6 +211,8 @@ function TechEnergyRisksForm() {
         canGoBack={currentPage > 1}
         nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
       />
+
+      <Error message={error} />
     </>
   )
 }
