@@ -115,5 +115,7 @@ We want to be able to quickly review your code and merge it into the codebase so
 ### ⭐️ Miscellaneous
 💡 When deploying firebase cloud functions, use the command ```firebase deploy --only functions```. This is **ONLY** when it is approved by TLs - do NOT deploy to firebase until PR is approved.
 
+💡 Examples of cloud functions/firebase functions can be found in src/cloud-functions
+
 More will be added here as the project progresses.
 
