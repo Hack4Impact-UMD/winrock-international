@@ -84,7 +84,7 @@ function AgricultureProposalForm() {
 
     const collectionID = "agriculture-proposal-form";
     const collectionRef = firestore.collection(db, collectionID);
-    const [submissionObj, setSubmissionObj] = useState<AgricultureProposalFormData>({
+    const [answers, setAnswers] = useState<AgricultureProposalFormData>({
         ingredientPrimary: new FormField('', true),
         ingredientSub: new FormField('', true),
         mainIntervention: new FormField('', true),
@@ -127,10 +127,10 @@ function AgricultureProposalForm() {
         gbElaboration: new FormField('', false)
     });
 
-    // Used to change the submissionObj's fields dynamically
+    // Used to change the answers dynamically
     function handleChange(field: keyof AgricultureProposalFormData, value: string) {
-        const isRequired = submissionObj[field]!.isRequired;
-        setSubmissionObj((prev: AgricultureProposalFormData) => ({
+        const isRequired = answers[field]!.isRequired;
+        setAnswers((prev: AgricultureProposalFormData) => ({
             ...prev,
             [field]: new FormField(value, isRequired)
         }));
@@ -144,12 +144,18 @@ function AgricultureProposalForm() {
      * fields into the AgricultureProjectProposalForm collection.
     */
     async function handleSubmit() {
-        for (const [_, v] of Object.entries(submissionObj)) {
+        for (const [_, v] of Object.entries(answers)) {
             if (v.isRequired && v.value === '') {
                 setError("Cannot submit: You have not completed one or more sections in the form");
                 return;
             }
         }
+
+        // Convert the answers into a submission object
+        const submissionObj: Record<string, string> = {}
+        Object.keys(answers).forEach((field) => {
+            submissionObj[field] = answers[field as keyof AgricultureProposalFormData]!.value;
+        });
 
         try {
             await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission

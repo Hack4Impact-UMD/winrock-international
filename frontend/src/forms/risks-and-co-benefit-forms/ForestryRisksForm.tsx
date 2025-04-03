@@ -98,7 +98,7 @@ function ForestryRisksForm() {
 
    const collectionID = "forestry-risks-form"
    const collectionRef = firestore.collection(db, collectionID)
-   const [submissionObj, setSubmissionObj] = useState<ForestryRisksFormData>({
+   const [answers, setAnswers] = useState<ForestryRisksFormData>({
       riskAssessment: new FormField('', true),
       riskAssessmentDetails: new FormField('', true),
       climateChangeAdaptation: new FormField('', true),
@@ -153,10 +153,10 @@ function ForestryRisksForm() {
       communityFarmerCoBenefitsDetails: new FormField('', false)
    })
 
-   // Used to change the submissionObj's fields dynamically
+   // Used to change the answers dynamically
    function handleChange(field: keyof ForestryRisksFormData, value: string) {
-      const isRequired = submissionObj[field]!.isRequired
-      setSubmissionObj((prev: ForestryRisksFormData) => ({
+      const isRequired = answers[field]!.isRequired
+      setAnswers((prev: ForestryRisksFormData) => ({
          ...prev,
          [field]: new FormField(value, isRequired)
       }))
@@ -170,12 +170,18 @@ function ForestryRisksForm() {
     * fields into the ForestryRisksForm collection.
    */
    async function handleSubmit() {
-      for (const [_, v] of Object.entries(submissionObj)) {
+      for (const [_, v] of Object.entries(answers)) {
          if (v.isRequired && v.value === '') {
              setError("Cannot submit: You have not completed one or more sections in the form")
              return
          }
       }
+
+      // Convert the answers into a submission object
+      const submissionObj: Record<string, string> = {}
+      Object.keys(answers).forEach((field) => {
+            submissionObj[field] = answers[field as keyof ForestryRisksFormData]!.value
+      })
 
       try {
          await firestore.addDoc(collectionRef, submissionObj) // addDoc() auto-generates an ID for the submission

@@ -86,7 +86,7 @@ function TechEnergyRisksForm() {
 
   const collectionID = "tech-energy-risks-form";
   const collectionRef = firestore.collection(db, collectionID);
-  const [submissionObj, setSubmissionObj] = useState<TechEnergyRisksFormData>({
+  const [answers, setAnswers] = useState<TechEnergyRisksFormData>({
     riskAssessment: new FormField('', true),
     riskAssessmentDetails: new FormField('', true),
     climateChange: new FormField('', true),
@@ -127,10 +127,10 @@ function TechEnergyRisksForm() {
     communityBenefitsDetails: new FormField('', false)
   })
 
-  // Used to change the submissionObj's fields dynamically
+  // Used to change the answers dynamically
   function handleChange(field: keyof TechEnergyRisksFormData, value: string) {
-    const isRequired = submissionObj[field]!.isRequired;
-    setSubmissionObj((prev: TechEnergyRisksFormData) => ({
+    const isRequired = answers[field]!.isRequired;
+    setAnswers((prev: TechEnergyRisksFormData) => ({
        ...prev,
        [field]: new FormField(value, isRequired)
     }))
@@ -144,12 +144,18 @@ function TechEnergyRisksForm() {
   * fields into the TechEnergyRisksForm collection.
   */
   async function handleSubmit() {
-    for (const [_, v] of Object.entries(submissionObj)) {
+    for (const [_, v] of Object.entries(answers)) {
       if (v.isRequired && v.value === '') {
-        setError("Cannot submit: You have not completed one or more sections in the form");
-        return;
+          setError("Cannot submit: You have not completed one or more sections in the form");
+          return;
       }
     }
+    
+    // Convert the answers into a submission object
+    const submissionObj: Record<string, string> = {}
+    Object.keys(answers).forEach((field) => {
+      submissionObj[field] = answers[field as keyof TechEnergyRisksFormData]!.value;
+    });
 
     try {
       await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission

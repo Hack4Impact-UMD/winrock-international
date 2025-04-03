@@ -51,7 +51,7 @@ function RenewableProposalForm() {
 
     const collectionID = "renewable-proposal-form";
     const collectionRef = firestore.collection(db, collectionID);
-    const [submissionObj, setSubmissionObj] = useState<RenewableProposalFormData>({
+    const [answers, setAnswers] = useState<RenewableProposalFormData>({
         parentVendorName: new FormField('', true),
         vendorCode: new FormField('', false),
         vendorSiteSAPName: new FormField('', false),
@@ -80,11 +80,11 @@ function RenewableProposalForm() {
 
     useEffect(() => {
         computeImpactReduction();
-    }, [submissionObj.afterEnergyConsumption, submissionObj.beforeEmissionFactor, submissionObj.afterEmissionFactor]);
+    }, [answers.afterEnergyConsumption, answers.beforeEmissionFactor, answers.afterEmissionFactor]);
 
     useEffect(() => {
         computeImpactTiming();
-    }, [submissionObj.projectImplementationYear]);
+    }, [answers.projectImplementationYear]);
 
     /**
      * Sets impactReduction to the impact reduction after
@@ -93,14 +93,14 @@ function RenewableProposalForm() {
      * 
      */
     function computeImpactReduction(): void {
-        if (submissionObj.afterEnergyConsumption.value === '' || submissionObj.beforeEmissionFactor.value === ''
-            || submissionObj.afterEmissionFactor.value === '') {
+        if (answers.afterEnergyConsumption.value === '' || answers.beforeEmissionFactor.value === ''
+            || answers.afterEmissionFactor.value === '') {
             return;
         }
 
         const impactReduction =
-            (parseInt(submissionObj.afterEnergyConsumption.value)
-            * (parseFloat(submissionObj.beforeEmissionFactor.value) - parseFloat(submissionObj.afterEmissionFactor.value))
+            (parseInt(answers.afterEnergyConsumption.value)
+            * (parseFloat(answers.beforeEmissionFactor.value) - parseFloat(answers.afterEmissionFactor.value))
             / 1000.0).toString();
         
         handleChange("impactReduction", impactReduction);
@@ -111,13 +111,13 @@ function RenewableProposalForm() {
      * implementation's timing.
      */
     function computeImpactTiming(): void {
-        if (submissionObj.projectImplementationYear.value === '') {
+        if (answers.projectImplementationYear.value === '') {
             return;
         }
 
         const maxReductionYear = new Date().getFullYear();
         const minReductionYear = maxReductionYear - 5;
-        const year = parseInt(submissionObj.projectImplementationYear.value);
+        const year = parseInt(answers.projectImplementationYear.value);
         
         let impactTiming: string;
         if (year < minReductionYear) {
@@ -131,10 +131,10 @@ function RenewableProposalForm() {
         handleChange("impactTiming", impactTiming);
     }
  
-    // Used to change the submissionObj's fields dynamically
+    // Used to change the answers fields dynamically
     function handleChange(field: keyof RenewableProposalFormData, value: string) {
-        const isRequired = submissionObj[field]!.isRequired;
-        setSubmissionObj((prev: RenewableProposalFormData) => ({
+        const isRequired = answers[field]!.isRequired;
+        setAnswers((prev: RenewableProposalFormData) => ({
             ...prev,
             [field]: new FormField(value, isRequired)
         }));
@@ -148,12 +148,18 @@ function RenewableProposalForm() {
      * fields into the RenewableProjectProposalForm collection.
     */
     async function handleSubmit() {
-        for (const [_, v] of Object.entries(submissionObj)) {
+        for (const [_, v] of Object.entries(answers)) {
             if (v.isRequired && v.value === '') {
                 setError("Cannot submit: You have not completed one or more sections in the form");
                 return;
             }
         }
+        
+        // Convert the answers into a submission object
+        const submissionObj: Record<string, string> = {}
+        Object.keys(answers).forEach((field) => {
+            submissionObj[field] = answers[field as keyof RenewableProposalFormData]!.value;
+        });
 
         try {
             await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
@@ -328,13 +334,13 @@ function RenewableProposalForm() {
                        Uses the formula [energy consumption after] / ([emission factor before] - [emission factor after]). Feel free to overwrite
                        this field."
                 onChange={(value: string) => handleChange("impactReduction", value)}
-                defaultValue={submissionObj.impactReduction.value}
+                defaultValue={answers.impactReduction.value}
             />
 
             <TextQuestion
                 label="Impact Timing (based on Project Implementation Year)"
                 onChange={(_: string) => {}}
-                defaultValue={submissionObj.impactTiming.value}
+                defaultValue={answers.impactTiming.value}
                 disableOverwrite={true}
             />
 
