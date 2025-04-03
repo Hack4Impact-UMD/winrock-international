@@ -70,7 +70,7 @@ function RenewableProposalForm() {
         afterEnergyConsumption: '',
         afterEmissionFactor: '',
         impactReduction: '',
-        impactTiming: '',
+        impactTiming: ''
     });
 
     // Used for when the "other" option is selected in the impact evidence question
@@ -162,7 +162,7 @@ function RenewableProposalForm() {
     }
 
     if (isSubmitted) {
-        return <ConfirmationPage formName={title}/>
+        return <ConfirmationPage formName={title} />
     }
 
     return (

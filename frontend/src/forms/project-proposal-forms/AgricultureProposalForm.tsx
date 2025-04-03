@@ -122,7 +122,7 @@ function AgricultureProposalForm() {
         emissionRemovalEstimate: '',
         ghgSheetAttached: '',
         ghgBuffer: '',
-        gbElaboration: '',
+        gbElaboration: ''
     });
 
     // Used to change the submissionObj's fields dynamically
@@ -157,7 +157,7 @@ function AgricultureProposalForm() {
     }
 
     if (isSubmitted) {
-        return <ConfirmationPage formName={title}/>
+        return <ConfirmationPage formName={title} />
     }
 
     return (

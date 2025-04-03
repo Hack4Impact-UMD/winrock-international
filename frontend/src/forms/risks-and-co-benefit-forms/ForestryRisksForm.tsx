@@ -1,14 +1,14 @@
 import { useState } from 'react'
-import * as firestore from "firebase/firestore";
-import { db } from "../../testFirebaseConfig.js";
+import * as firestore from "firebase/firestore"
+import { db } from "../../testFirebaseConfig.js"
 
 import LogoHeader from '../../components/headers/LogoHeader.js'
 import TitleHeader from '../../components/headers/TitleHeader.js'
 import ProgressBar from '../../components/ProgressBar.js'
 import NavigationButtons from '../../components/NavigationButtons.js'
 import SectionHeader from '../../components/headers/SectionHeader.js'
-import RisksDropdownQuestion from '../../components/questions/RisksDropdownQuestion.js';
-import CoBenefitsDropdownQuestion from '../../components/questions/CoBenefitsDropdownQuestion.js';
+import RisksDropdownQuestion from '../../components/questions/RisksDropdownQuestion.js'
+import CoBenefitsDropdownQuestion from '../../components/questions/CoBenefitsDropdownQuestion.js'
 import ConfirmationPage from '../ConfirmationPage.js'
 
 interface ForestryRisksFormData {
@@ -92,7 +92,7 @@ interface ForestryRisksFormData {
 function ForestryRisksForm() {
    const title = "Forestry Risks and Co-Benefit Form"
    const [currentPage, setCurrentPage] = useState(1)
-   const totalPages = 4
+   const totalPages = 3
 
    const collectionID = "forestry-risks-form";
    const collectionRef = firestore.collection(db, collectionID);
@@ -148,7 +148,7 @@ function ForestryRisksForm() {
       biodiversityEnvironmentalCoBenefits: '',
       biodiversityEnvironmentalCoBenefitsDetails: '',
       communityFarmerCoBenefits: '',
-      communityFarmerCoBenefitsDetails: '',
+      communityFarmerCoBenefitsDetails: ''
    })
 
    // Used to change the submissionObj's fields dynamically
@@ -183,11 +183,11 @@ function ForestryRisksForm() {
    }
 
    if (isSubmitted) {
-      return <ConfirmationPage formName={title}/>
+      return <ConfirmationPage formName={title} />
    }
 
    return (
-      <div className='forestryRiskForm'>
+      <>
          <LogoHeader />
          <TitleHeader
             title={title}
@@ -196,17 +196,15 @@ function ForestryRisksForm() {
          <ProgressBar
             currentPage={currentPage}
             totalPages={totalPages}
-            pageLabels={['Risk Form (Page 1)', 'Risk Form (Page 2)', 'Risk Form (Page 3)', 'Co-benefit Form']}
+            pageLabels={['Risk Form (Page 1)', 'Risk Form (Page 2)', 'Co-benefit Form']}
          />
 
          {/* Render different pages based on currentPage state */}
          {currentPage === 1 && <PageOne handleChange={handleChange} />}
 
          {currentPage === 2 && <PageTwo handleChange={handleChange} />}
-         
-         {currentPage === 3 && <PageThree handleChange={handleChange} />}
 
-         {currentPage === 4 && <CoBenefitForm handleChange={handleChange} />}
+         {currentPage === 3 && <PageThree handleChange={handleChange} />}
 
          <NavigationButtons
             onNext={() => {
@@ -228,7 +226,7 @@ function ForestryRisksForm() {
             canGoBack={currentPage > 1}
             nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
          />
-      </div>
+      </>
    )
 }
 
@@ -280,14 +278,8 @@ const PageOne = ({ handleChange }: PageProps) => {
             onSelect={(value: string) => handleChange('rawMaterialCompliance', value)}
             onChange={(value: string) => handleChange('rawMaterialComplianceDetails', value)}
          />
-      </>
-   )
-}
 
-const PageTwo = ({ handleChange }: PageProps) => {
-   return (
-      <>
-         <SectionHeader label='Pollution and Waste Control​' />
+         <SectionHeader label='Pollution and Waste Control' />
 
          <RisksDropdownQuestion
             label='Has the project been designed to avoid pollution release into the environment, such as pesticide use reduction and management?'
@@ -300,8 +292,14 @@ const PageTwo = ({ handleChange }: PageProps) => {
             onSelect={(value: string) => handleChange('wasteMonitoring', value)}
             onChange={(value: string) => handleChange('wasteMonitoringDetails', value)}
          />
+      </>
+   )
+}
 
-         <SectionHeader label='Transition to a Circular Economy​​' />
+const PageTwo = ({ handleChange }: PageProps) => {
+   return (
+      <>
+         <SectionHeader label='Transition to a Circular Economy' />
 
          <RisksDropdownQuestion
             label='Has the project has been designed to not negatively impact the transition to a circular economy?​'
@@ -334,13 +332,7 @@ const PageTwo = ({ handleChange }: PageProps) => {
             onSelect={(value: string) => handleChange('soilErosion', value)}
             onChange={(value: string) => handleChange('soilErosionDetails', value)}
          />
-      </>
-   )
-}
 
-const PageThree = ({ handleChange }: PageProps) => {
-   return (
-      <>
          <SectionHeader label = 'Human and Labor Rights' />
 
          <RisksDropdownQuestion
@@ -348,7 +340,7 @@ const PageThree = ({ handleChange }: PageProps) => {
             onSelect={(value: string) => handleChange('protectionHumanRights', value)}
             onChange={(value: string) => handleChange('protectionHumanRightsDetails', value)}
          />
-         
+
          <RisksDropdownQuestion
             label='Are there formal declarations, accountability frameworks and/or third party inspections that ensure that no forced or child labor is involved in the proposed interventions?'
             onSelect={(value: string) => handleChange('formalDeclarations', value)}
@@ -410,21 +402,40 @@ const PageThree = ({ handleChange }: PageProps) => {
    )
 }
 
-const CoBenefitForm = ({ handleChange }: PageProps) => {
+const PageThree = ({ handleChange }: PageProps) => {
    return (
       <>
-         <SectionHeader label='Project Water Co-Benefits​' />
+         <SectionHeader
+            label="Project Water Co-Benefits"
+            description="Enter information in this section that sheds light onto the project's potential co-benefits related to water quality or quantity."
+         />
 
          <CoBenefitsDropdownQuestion
-            label='Is it expected that the project activities will improve resilience to potential water scarcity, water quality (urface or ground water), or water availability in the local community?'
+            label="Is it expected that the project activities will improve?"
+            benefitItems={[
+               "resilience to potential water scarcity?",
+               "water quality?",
+               "Surface or ground water?",
+               "water availability in the local community?"
+            ]}
             onSelect={(value: string) => handleChange('waterCoBenefits', value)}
             onChange={(value: string) => handleChange('waterCoBenefitsDetails', value)}
          />
 
-         <SectionHeader label='Project Biodiversity and Environmental Co-Benefits​' />
+         <SectionHeader
+            label="Project Biodiversity and Environmental Co-Benefits​"
+            description="Enter information in this section that sheds light onto the project's potential co-benefits related to nature."
+         />
 
          <CoBenefitsDropdownQuestion
             label='Is it expected that the project activities will improve overall species richness and diversity, threatened species, threatened or rare ecosystems, air quality, or soil erosion?​'
+            benefitItems={[
+               "overall species richness and diversity?",
+               "threatened species?",
+               "threatened or rare ecosystems?",
+               "air quality?",
+               "soil erosion?"
+             ]}
             onSelect={(value: string) => handleChange('biodiversityEnvironmentalCoBenefits', value)}
             onChange={(value: string) => handleChange('biodiversityEnvironmentalCoBenefitsDetails', value)}
          />
@@ -432,7 +443,14 @@ const CoBenefitForm = ({ handleChange }: PageProps) => {
          <SectionHeader label='Project Community/Farmer Co-Benefits​' />
 
          <CoBenefitsDropdownQuestion
-            label='Is it expected that the project activities will improve farmer livelihoods or income generated, farmer resilience to climate change, farmer adaptation to climate change, local livelihoods or increased income generated, community resilience to climate change, orcommunity adaptation to climate change?​'
+            label="Is it expected that the project activities will improve?"
+            benefitItems={[
+               "farmer livelihoods or income generated?",
+               "farmer adaptation to climate change?",
+               "local livelihoods or increased income generated?",
+               "community resilience to climate change?",
+               "community adaptation to climate change?"
+            ]}
             onSelect={(value: string) => handleChange('communityFarmerCoBenefits', value)}
             onChange={(value: string) => handleChange('communityFarmerCoBenefitsDetails', value)}
          />

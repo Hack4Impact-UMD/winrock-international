@@ -1,3 +1,9 @@
+.sectionHeaderContainer {
+   display: flex;
+   flex-direction: column;
+   gap: 2rem;
+}
+
 .sectionHeader {
    display: flex;
    flex-direction: column;
@@ -12,4 +18,9 @@
    font-weight: 600;
    letter-spacing: 5%;
    color: white;
+}
+
+.description {
+   padding: 0 2.5rem;
+   font-style: italic;
 }

@@ -1,382 +1,395 @@
-import React, { useState } from 'react';
+import { useState } from 'react'
 import * as firestore from "firebase/firestore";
 import { db } from "../../testFirebaseConfig.js";
 
-// Import components
 import LogoHeader from '../../components/headers/LogoHeader.js';
 import TitleHeader from '../../components/headers/TitleHeader.js';
 import ProgressBar from '../../components/ProgressBar.js';
 import NavigationButtons from '../../components/NavigationButtons.js';
 import SectionHeader from '../../components/headers/SectionHeader.js';
-import DropdownQuestion from '../../components/questions/DropdownQuestion.js';
-import TextQuestion from '../../components/questions/TextQuestion.js';
+import RisksDropdownQuestion from '../../components/questions/RisksDropdownQuestion.js';
+import CoBenefitsDropdownQuestion from '../../components/questions/CoBenefitsDropdownQuestion.js';
 import ConfirmationPage from '../ConfirmationPage.js';
 
 interface TechEnergyRisksFormData {
+  // Risk Assessment
+  riskAssessment: string;
+  riskAssessmentDetails: string;
 
+  // Climate Change Adaptation
+  climateChange: string;
+  climateChangeDetails: string;
+
+  // Technology Risks
+  technologyRisk: string;
+  technologyRiskDetails: string;
+  scalableTechnology: string;
+  scalableTechnologyDetails: string;
+
+  // Sustainable Use and Protection of Water Resources
+  waterManagement: string;
+  waterManagementDetails: string;
+
+  // Pollution & Waste Control
+  pollutionPrevention: string;
+  pollutionPreventionDetails: string;
+  wasteMonitoring: string;
+  wasteMonitoringDetails: string;
+
+  // Transition to a Circular Economy
+  circularEconomy: string;
+  circularEconomyDetails: string;
+
+  // Protection and Restoration of Biodiversity and Ecosystems
+  biodiversityImpact: string;
+  biodiversityImpactDetails: string;
+  landFeatures: string;
+  landFeaturesDetails: string;
+
+  // Human and Labor Rights
+  responsibleSourcing: string;
+  responsibleSourcingDetails: string;
+  laborFrameworks: string;
+  laborFrameworksDetails: string;
+  farmerHealth: string;
+  farmerHealthDetails: string;
+
+  // Community Impacts
+  communityEngagement: string;
+  communityEngagementDetails: string;
+  negativeImpacts: string;
+  negativeImpactsDetails: string;
+
+  // Safeguards
+  effectiveSafeguards: string;
+  effectiveSafeguardsDetails: string;
+
+  // Project Water Co-Benefits
+  waterBenefits: string;
+  waterBenefitsDetails: string;
+
+  // Project Biodiversity and Environmental Co-Benefits
+  biodiversityBenefits: string;
+  biodiversityBenefitsDetails: string;
+
+  // Project Community/Farmer Co-Benefits
+  communityBenefits: string;
+  communityBenefitsDetails: string;
 }
 
-const TechEnergyRisksForm: React.FC = () => {
+function TechEnergyRisksForm() {
   const title = "Tech & Energy Risks and Co-Benefit Form";
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3;
 
-  function goToNextPage() {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-      window.scrollTo(0, 0);
-    }
-  };
+  const collectionID = "tech-energy-risks-form";
+  const collectionRef = firestore.collection(db, collectionID);
+  const [submissionObj, setSubmissionObj] = useState<TechEnergyRisksFormData>({
+    riskAssessment: '',
+    riskAssessmentDetails: '',
+    climateChange: '',
+    climateChangeDetails: '',
+    technologyRisk: '',
+    technologyRiskDetails: '',
+    scalableTechnology: '',
+    scalableTechnologyDetails: '',
+    waterManagement: '',
+    waterManagementDetails: '',
+    pollutionPrevention: '',
+    pollutionPreventionDetails: '',
+    wasteMonitoring: '',
+    wasteMonitoringDetails: '',
+    circularEconomy: '',
+    circularEconomyDetails: '',
+    biodiversityImpact: '',
+    biodiversityImpactDetails: '',
+    landFeatures: '',
+    landFeaturesDetails: '',
+    responsibleSourcing: '',
+    responsibleSourcingDetails: '',
+    laborFrameworks: '',
+    laborFrameworksDetails: '',
+    farmerHealth: '',
+    farmerHealthDetails: '',
+    communityEngagement: '',
+    communityEngagementDetails: '',
+    negativeImpacts: '',
+    negativeImpactsDetails: '',
+    effectiveSafeguards: '',
+    effectiveSafeguardsDetails: '',
+    waterBenefits: '',
+    waterBenefitsDetails: '',
+    biodiversityBenefits: '',
+    biodiversityBenefitsDetails: '',
+    communityBenefits: '',
+    communityBenefitsDetails: ''
+  })
 
-  function goToPreviousPage() {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-      window.scrollTo(0, 0);
-    }
-  }
+  // Used to change the submissionObj's fields dynamically
+  function handleChange(field: keyof TechEnergyRisksFormData, value: string) {
+    setSubmissionObj((prev: TechEnergyRisksFormData) => ({
+        ...prev,
+        [field]: value
+    }));
+  };
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   /**
-   * Insert a new TechEnergyRisksForm submission with the user-inputted
-   * fields into the TechEnergyRisksForm collection.
+  * Insert a new TechEnergyRisksForm submission with the user-inputted
+  * fields into the TechEnergyRisksForm collection.
   */
   async function handleSubmit() {
-      try {
-          await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
-          setIsSubmitted(true);
-      } catch (error) {
-          console.error("Error submitting RenewableProjectProposal", error);
-      }
-  }
-
-  function saveChanges() {
-    console.log('Saving changes...');
-  }
-
-  function saveAndExit() {
-    console.log('Saving and exiting...');
-  }
-
-  // Common DropdownQuestion options
-  const yesNoOptions = ['Yes', 'No', 'Not Applicable'];
-
-  // Render different pages based on the current page
-  function renderCurrentPage() {
-    switch (currentPage) {
-      case 1:
-        return (
-          <>
-            <div className="tech-energy-form-category">
-              <SectionHeader label="Risk Assessment" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="risk-assessment"
-                  question="Has the project completed a risk assessment following an approved standard?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="If so, how was the risk assessment conducted? What high-level risks were identified based on the geography or project activities? Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Climate Change Adaptation" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  question="Has the project been designed to minimize or avoid possible losses or impacts on business continuity for all stakeholders involved?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Technology Risks" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="technology-risk"
-                  question="Has the project been designed or the technology type selected to minimize technology risk (operational, failure avoidance, system lifetime, technology maturity)?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="scalable-technology"
-                  question="Has the project been designed with a solution or technology that can be scalable and replicable?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Sustainable Use and Protection of Water Resources" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="water-management"
-                  question="Is there a water use and protection management plan in place to reduce local water body degradation risk and ensure compliance with local regulations?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Pollution & Waste Control" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="pollution-prevention"
-                  question="Has the project been designed to avoid pollution release into the environment, such as wastewater and air pollution?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="waste-monitoring"
-                  question="Is there active monitoring or regulatory inspections regarding waste streams generated by the project operations or systems?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-          </>
-        );
-      
-      case 2:
-        return (
-          <>
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Transition to a Circular Economy" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="circular-economy"
-                  question="Has the project been designed to not negatively impact the transition to a circular economy? Is there utilization of by-products or recycled elements before, during or after the intervention?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Protection and Restoration of Biodiversity and Ecosystems" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="biodiversity-impact"
-                  question="Has the project been designed to not negatively impact biodiversity and habitats?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="land-features"
-                  question="Has the project been designed to avoid any displacement or disturbance of natural land features?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Human and Labor Rights" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="responsible-sourcing"
-                  question="Does this project align with Nestlé's 'Responsible Sourcing Core Requirements' framework for the protection of Human Rights? (Link to Document)"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="labor-frameworks"
-                  question="Are there formal declarations, accountability frameworks and/or third party inspections that ensure that no forced or child labor is involved in the proposed interventions?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="farmer-health"
-                  question="Are there assurances for farmer health and safety in place?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Community Impacts" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="community-engagement"
-                  question="Is there effort to maintain ongoing engagements and participation of the community with regards to this project, including mechanisms to consider grievances?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="negative-impacts"
-                  question="Has this project been designed to minimize other potentially negative community impacts?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Safeguards" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="effective-safeguards"
-                  question="Have effective safeguards been incorporated in the to design phase?"
-                  options={yesNoOptions}
-                  followUpPlaceholder="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
-                />
-              </div>
-            </div>
-          </>
-        );
-        
-      case 3:
-        return (
-          <>
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Project Water Co-Benefits" />
-              <div className="tech-energy-form-subcategory">
-                <div className="tech-energy-form-description">
-                  Enter information in this section that sheds light onto the project's potential co-benefits related to water quality or quantity.
-                </div>
-
-                <DropdownQuestion 
-                  id="water-benefits-DropdownQuestion"
-                  question="Is it expected that the project activities will improve?"
-                  options={yesNoOptions}
-                />
-                
-                <TextQuestion
-                  id="water-benefits"
-                  description="If Yes, please describe how and how impactful:"
-                  questionItems={[
-                    "resilience to potential water scarcity?",
-                    "water quality?",
-                    "Surface or ground water?",
-                    "water availability in the local community?"
-                  ]}
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader label="Project Biodiversity and Environmental Co-Benefits" />
-              <div className="tech-energy-form-subcategory">
-                <div className="tech-energy-form-description">
-                  Enter information in this section that sheds light onto the project's potential co-benefits related to nature.
-                </div>
-
-                <DropdownQuestion 
-                  id="biodiversity-benefits-DropdownQuestion"
-                  question="Is it expected that the project activities will improve?"
-                  options={yesNoOptions}
-                />
-                
-                <TextQuestion
-                  id="biodiversity-benefits"
-                  description="If Yes, please describe how and how impactful:"
-                  questionItems={[
-                    "overall species richness and diversity?",
-                    "threatened species?",
-                    "threatened or rare ecosystems?",
-                    "air quality?",
-                    "soil erosion?"
-                  ]}
-                />
-              </div>
-            </div>
-            
-            <div className="tech-energy-form-category">
-              <SectionHeader title="Project Community/Farmer Co-Benefits" />
-              <div className="tech-energy-form-subcategory">
-                <DropdownQuestion 
-                  id="community-benefits-DropdownQuestion"
-                  question="Is it expected that the project activities will improve?"
-                  options={yesNoOptions}
-                />
-                
-                <TextQuestion
-                  id="community-benefits"
-                  description="If Yes, please describe how and how impactful:"
-                  questionItems={[
-                    "farmer livelihoods or income generated?",
-                    "farmer adaptation to climate change?",
-                    "local livelihoods or increased income generated?",
-                    "community resilience to climate change?",
-                    "community adaptation to climate change?"
-                  ]}
-                />
-              </div>
-            </div>
-          </>
-        );
-        
-      default:
-        return null;
+    try {
+      await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting TechEnergyRisksForm", error);
     }
-  };
+  }
 
-  // Get the appropriate title description based on the current page
-  const getTitleDescription = () => {
-    if (currentPage === 3) {
-      return "Welcome to the Co-Benefit form. Please continue to enter information.";
-    }
-    return "Some explanation about what this form is about and just to provide some further information about what's happening?";
-  };
+  const saveChanges = () => {
+    console.log('Changes saved');
+  }
+
+  const saveAndExit = () => {
+    console.log('Changes saved and exiting');
+  }
 
   if (isSubmitted) {
-    return <ConfirmationPage formName={title}/>
+    return <ConfirmationPage formName={title} />
   }
 
   return (
-    <div className="tech-energy-form">
+    <>
       <LogoHeader />
-      <TitleHeader 
+      <TitleHeader
         title={title}
-        description={getTitleDescription()}
+        description='Some spiel about what this form is about and just to provide some further information about whats happening'
+      />
+      <ProgressBar
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageLabels={['Risk Form (Page 1)', 'Risk Form (Page 2)', 'Co-benefit Form']}
+      />
+
+      {/* Render different pages based on currentPage state */}
+      {currentPage === 1 && <PageOne handleChange={handleChange} />}
+
+      {currentPage === 2 && <PageTwo handleChange={handleChange} />}
+
+      {currentPage === 3 && <PageThree handleChange={handleChange} />}
+
+      <NavigationButtons
+        onNext={() => {
+            if (currentPage < totalPages) {
+              setCurrentPage(currentPage + 1);
+              window.scroll(0, 0);
+            } else {
+              handleSubmit();
+            }
+        }}
+        onBack={() => {
+          if (currentPage > 1) {
+            setCurrentPage(currentPage - 1)
+            window.scroll(0, 0);
+          }
+        }}
+        onSaveChanges={saveChanges}
+        onSaveAndExit={saveAndExit}
+        canGoBack={currentPage > 1}
+        nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
+      />
+    </>
+  )
+}
+
+interface PageProps {
+  handleChange: (field: keyof TechEnergyRisksFormData, value: string) => void;
+}
+
+const PageOne = ({ handleChange }: PageProps) => {
+  return (
+    <>
+      <SectionHeader label="Risk Assessment" />
+
+      <RisksDropdownQuestion
+        label="Has the project completed a risk assessment following an approved standard?"
+        onSelect={(value: string) => handleChange('riskAssessment', value)}
+        onChange={(value: string) => handleChange('riskAssessmentDetails', value)}
       />
       
-      {/* Progress bar */}
-      <ProgressBar steps={totalPages} currentStep={currentPage} />
+      <SectionHeader label="Climate Change Adaptation" />
+
+      <RisksDropdownQuestion
+        label="Has the project been designed to minimize or avoid possible losses or impacts on business continuity for all stakeholders involved?"
+        onSelect={(value: string) => handleChange('climateChange', value)}
+        onChange={(value: string) => handleChange('climateChangeDetails', value)}
+      />
       
-      <form className="tech-energy-form-content">
-        {renderCurrentPage()}
-        
-        {/* Navigation buttons */}
-        <NavigationButtons
-            onNext={() => {
-                if (currentPage < totalPages) {
-                    setCurrentPage(currentPage + 1);
-                    window.scroll(0, 0);
-                } else {
-                    handleSubmit();
-                }
-            }}
-            onBack={() => {
-              if (currentPage > 1) {
-                  setCurrentPage(currentPage - 1)
-                  window.scroll(0, 0);
-              }
-            }}
-            onSaveChanges={saveChanges}
-            onSaveAndExit={saveAndExit}
-            canGoBack={currentPage > 1}
-            nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
-        />
-      </form>
-    </div>
-  );
-};
+      <SectionHeader label="Technology Risks" />
+
+      <RisksDropdownQuestion
+        label="Has the project been designed or the technology type selected to minimize technology risk (operational, failure avoidance, system lifetime, technology maturity)?"
+        onSelect={(value: string) => handleChange('technologyRisk', value)}
+        onChange={(value: string) => handleChange('technologyRiskDetails', value)}
+      />
+
+      <RisksDropdownQuestion
+        label="Has the project been designed with a solution or technology that can be scalable and replicable?"
+        onSelect={(value: string) => handleChange('scalableTechnology', value)}
+        onChange={(value: string) => handleChange('scalableTechnologyDetails', value)}
+      />
+      
+      <SectionHeader label="Sustainable Use and Protection of Water Resources" />
+
+      <RisksDropdownQuestion
+        label="Has the project been designed with a solution or technology that can be scalable and replicable?"
+        onSelect={(value: string) => handleChange('waterManagement', value)}
+        onChange={(value: string) => handleChange('waterManagementDetails', value)}
+      />
+      
+      <SectionHeader label="Pollution & Waste Control" />
+
+      <RisksDropdownQuestion
+        label="Has the project been designed to avoid pollution release into the environment, such as wastewater and air pollution?"
+        onSelect={(value: string) => handleChange('pollutionPrevention', value)}
+        onChange={(value: string) => handleChange('pollutionPreventionDetails', value)}
+      />
+
+      <RisksDropdownQuestion
+        label="Is there active monitoring or regulatory inspections regarding waste streams generated by the project operations or systems?"
+        onSelect={(value: string) => handleChange('wasteMonitoring', value)}
+        onChange={(value: string) => handleChange('wasteMonitoringDetails', value)}
+      />
+    </>
+  )
+}
+
+const PageTwo = ({ handleChange }: PageProps) => {
+  return (
+    <>
+      <SectionHeader label="Transition to a Circular Economy" />
+
+      <RisksDropdownQuestion
+        label="Has the project been designed to not negatively impact the transition to a circular economy? Is there utilization of by-products or recycled elements before, during or after the intervention?"
+        onSelect={(value: string) => handleChange('circularEconomy', value)}
+        onChange={(value: string) => handleChange('circularEconomyDetails', value)}
+      />
+      
+      <SectionHeader label="Protection and Restoration of Biodiversity and Ecosystems" />
+
+      <RisksDropdownQuestion
+        label="Has the project been designed to not negatively impact biodiversity and habitats?"
+        onSelect={(value: string) => handleChange('biodiversityImpact', value)}
+        onChange={(value: string) => handleChange('biodiversityImpactDetails', value)}
+      />
+
+      <RisksDropdownQuestion
+        label="Has the project been designed to avoid any displacement or disturbance of natural land features?"
+        onSelect={(value: string) => handleChange('landFeatures', value)}
+        onChange={(value: string) => handleChange('landFeaturesDetails', value)}
+      />
+      
+      <SectionHeader label="Human and Labor Rights" />
+
+      <RisksDropdownQuestion
+        label="Does this project align with Nestlé's 'Responsible Sourcing Core Requirements' framework for the protection of Human Rights? (Link to Document)"
+        onSelect={(value: string) => handleChange('responsibleSourcing', value)}
+        onChange={(value: string) => handleChange('responsibleSourcingDetails', value)}
+      />
+
+      <RisksDropdownQuestion
+        label="Are there formal declarations, accountability frameworks and/or third party inspections that ensure that no forced or child labor is involved in the proposed interventions?"
+        onSelect={(value: string) => handleChange('laborFrameworks', value)}
+        onChange={(value: string) => handleChange('laborFrameworksDetails', value)}
+      />
+
+      <RisksDropdownQuestion
+        label="Are there assurances for farmer health and safety in place?"
+        onSelect={(value: string) => handleChange('farmerHealth', value)}
+        onChange={(value: string) => handleChange('farmerHealthDetails', value)}
+      />
+      
+      <SectionHeader label="Community Impacts" />
+
+      <RisksDropdownQuestion
+        label="Is there effort to maintain ongoing engagements and participation of the community with regards to this project, including mechanisms to consider grievances?"
+        onSelect={(value: string) => handleChange('communityEngagement', value)}
+        onChange={(value: string) => handleChange('communityEngagementDetails', value)}
+      />
+
+      <RisksDropdownQuestion
+        label="Has this project been designed to minimize other potentially negative community impacts?"
+        onSelect={(value: string) => handleChange('negativeImpacts', value)}
+        onChange={(value: string) => handleChange('negativeImpactsDetails', value)}
+      />
+
+      <SectionHeader label="Safeguards" />
+
+      <RisksDropdownQuestion
+        label="Have effective safeguards been incorporated in the to design phase?"
+        onSelect={(value: string) => handleChange('effectiveSafeguards', value)}
+        onChange={(value: string) => handleChange('effectiveSafeguardsDetails', value)}
+      />
+    </>
+  )
+}
+
+const PageThree = ({ handleChange }: PageProps) => {
+  return (
+    <>
+      <SectionHeader
+        label="Project Water Co-Benefits"
+        description="Enter information in this section that sheds light onto the project's potential co-benefits related to water quality or quantity."
+      />
+      
+      <CoBenefitsDropdownQuestion
+        label="Is it expected that the project activities will improve?"
+        benefitItems={[
+          "resilience to potential water scarcity?",
+          "water quality?",
+          "Surface or ground water?",
+          "water availability in the local community?"
+        ]}
+        onSelect={(value: string) => handleChange('waterBenefits', value)}
+        onChange={(value: string) => handleChange('waterBenefitsDetails', value)}
+      />
+      
+      <SectionHeader
+        label="Project Biodiversity and Environmental Co-Benefits"
+        description="Enter information in this section that sheds light onto the project's potential co-benefits related to nature."
+      />
+
+      <CoBenefitsDropdownQuestion
+        label="Is it expected that the project activities will improve?"
+        benefitItems={[
+          "overall species richness and diversity?",
+          "threatened species?",
+          "threatened or rare ecosystems?",
+          "air quality?",
+          "soil erosion?"
+        ]}
+        onSelect={(value: string) => handleChange('biodiversityBenefits', value)}
+        onChange={(value: string) => handleChange('biodiversityBenefitsDetails', value)}
+      />
+
+      <SectionHeader label="Project Community/Farmer Co-Benefits" />
+
+      <CoBenefitsDropdownQuestion
+        label="Is it expected that the project activities will improve?"
+        benefitItems={[
+          "farmer livelihoods or income generated?",
+          "farmer adaptation to climate change?",
+          "local livelihoods or increased income generated?",
+          "community resilience to climate change?",
+          "community adaptation to climate change?"
+        ]}
+        onSelect={(value: string) => handleChange('communityBenefits', value)}
+        onChange={(value: string) => handleChange('communityBenefitsDetails', value)}
+      />
+    </>
+  )
+}
 
 export default TechEnergyRisksForm;
