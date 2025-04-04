@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { RefObject, useRef, useState } from 'react'
 import * as firestore from "firebase/firestore"
 import { db } from "../../testFirebaseConfig.js"
 import FormField from "../FormField.js"
@@ -98,7 +98,7 @@ function ForestryRisksForm() {
 
    const collectionID = "forestry-risks-form"
    const collectionRef = firestore.collection(db, collectionID)
-   const [answers, setAnswers] = useState<ForestryRisksFormData>({
+   const answersRef = useRef<ForestryRisksFormData>({
       riskAssessment: new FormField('', true),
       riskAssessmentDetails: new FormField('', true),
       climateChangeAdaptation: new FormField('', true),
@@ -153,16 +153,12 @@ function ForestryRisksForm() {
       communityFarmerCoBenefitsDetails: new FormField('', false)
    })
 
-   // Used to change the answers dynamically
+   // Used to change the answersRef's dynamically
    function handleChange(field: keyof ForestryRisksFormData, value: string) {
-      const isRequired = answers[field]!.isRequired
-      setAnswers((prev: ForestryRisksFormData) => ({
-         ...prev,
-         [field]: new FormField(value, isRequired)
-      }))
+      answersRef.current[field]!.value = value;
    }
 
-   const [isSubmitted, setIsSubmitted] = useState(false)
+   const isSubmitted = useRef(false)
    const [error, setError] = useState('')
 
    /**
@@ -170,15 +166,16 @@ function ForestryRisksForm() {
     * fields into the ForestryRisksForm collection.
    */
    async function handleSubmit() {
-      // Convert the answers into a submission object
+      // Convert the answersRef into a submission object
       const submissionObj: Record<string, string> = {}
-      Object.keys(answers).forEach((field) => {
-            submissionObj[field] = answers[field as keyof ForestryRisksFormData]!.value
+      Object.keys(answersRef.current).forEach((field) => {
+            submissionObj[field] = answersRef.current[field as keyof ForestryRisksFormData]!.value
       })
 
       try {
+         console.log(submissionObj);
          await firestore.addDoc(collectionRef, submissionObj) // addDoc() auto-generates an ID for the submission
-         setIsSubmitted(true)
+         isSubmitted.current = true
       } catch (error) {
          console.error("Error submitting ForestryRisksForm", error)
       }
@@ -192,10 +189,8 @@ function ForestryRisksForm() {
       console.log('Changes saved and exiting')
    }
 
-   if (isSubmitted) {
-      return (
-         <ConfirmationPage formName={title} />
-      )
+   if (isSubmitted.current) {
+      return <ConfirmationPage formName={title} />
    }
 
    return (
@@ -212,11 +207,21 @@ function ForestryRisksForm() {
          />
 
          {/* Render different pages based on currentPage state */}
-         {currentPage === 1 && <PageOne handleChange={handleChange} />}
-
-         {currentPage === 2 && <PageTwo handleChange={handleChange} />}
-
-         {currentPage === 3 && <PageThree handleChange={handleChange} />}
+         {currentPage === 1 &&
+            <PageOne
+               handleChange={handleChange}
+               answersRef={answersRef}
+            />}
+         {currentPage === 2 &&
+            <PageTwo
+               handleChange={handleChange}
+               answersRef={answersRef}
+            />}
+         {currentPage === 3 &&
+            <PageThree
+               handleChange={handleChange}
+               answersRef={answersRef}
+            />}
 
          <NavigationButtons
             onNext={() => {
@@ -245,16 +250,19 @@ function ForestryRisksForm() {
 }
 
 interface PageProps {
+   answersRef: RefObject<ForestryRisksFormData>;
    handleChange: (field: keyof ForestryRisksFormData, value: string) => void;
 }
 
-const PageOne = ({ handleChange }: PageProps) => {
+const PageOne = ({ answersRef, handleChange }: PageProps) => {
    return (
       <>
          <SectionHeader label='Risk Assessment' />
 
          <RisksDropdownQuestion
             label='Has the project completed a risk assessment following an approved standard? If so, how was the risk assessment conducted? What high-level risks were identified based on the geography or project activities?'
+            controlledValues={[answersRef.current.riskAssessment.value,
+                               answersRef.current.riskAssessmentDetails.value]}
             onSelect={(value: string) => handleChange('riskAssessment', value)}
             onChange={(value: string) => handleChange('riskAssessmentDetails', value)}
          />
@@ -263,6 +271,8 @@ const PageOne = ({ handleChange }: PageProps) => {
 
          <RisksDropdownQuestion
             label='Has the project been designed to minimize or avoid possible losses or impacts on business continuity for all stakeholders involved?'
+            controlledValues={[answersRef.current.climateChangeAdaptation.value,
+                               answersRef.current.climateChangeAdaptationDetails.value]}
             onSelect={(value: string) => handleChange('climateChangeAdaptation', value)}
             onChange={(value: string) => handleChange('climateChangeAdaptationDetails', value)}
          />
@@ -271,24 +281,32 @@ const PageOne = ({ handleChange }: PageProps) => {
 
          <RisksDropdownQuestion
             label='Has the project completed an Environmental Risk Assessment?'
+            controlledValues={[answersRef.current.environmentalRiskAssessment.value,
+                               answersRef.current.environmentalRiskAssessmentDetails.value]}
             onSelect={(value: string) => handleChange('environmentalRiskAssessment', value)}
             onChange={(value: string) => handleChange('environmentalRiskAssessmentDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Has the project been designed to minimize or avoid possible losses or impacts on business continuity for all stakeholders involved?'
+            controlledValues={[answersRef.current.businessContinuity.value,
+                               answersRef.current.businessContinuityDetails.value]}
             onSelect={(value: string) => handleChange('businessContinuity', value)}
             onChange={(value: string) => handleChange('businessContinuityDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Is there a forestry resource management plan in place (with regards to fire management, protection against deforestation, illegal logging and land conversion)?'
+            controlledValues={[answersRef.current.forestryManagementPlan.value,
+                               answersRef.current.forestryManagementPlanDetails.value]}
             onSelect={(value: string) => handleChange('forestryManagementPlan', value)}
             onChange={(value: string) => handleChange('forestryManagementPlanDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Does the project ensure that any raw material production (such as timber) adheres to the relevant legislation of the country of production, as well as forest-related regulations?'
+            controlledValues={[answersRef.current.rawMaterialCompliance.value,
+                               answersRef.current.rawMaterialComplianceDetails.value]}
             onSelect={(value: string) => handleChange('rawMaterialCompliance', value)}
             onChange={(value: string) => handleChange('rawMaterialComplianceDetails', value)}
          />
@@ -297,12 +315,16 @@ const PageOne = ({ handleChange }: PageProps) => {
 
          <RisksDropdownQuestion
             label='Has the project been designed to avoid pollution release into the environment, such as pesticide use reduction and management?'
+            controlledValues={[answersRef.current.pollutionAvoidance.value,
+                               answersRef.current.pollutionAvoidanceDetails.value]}
             onSelect={(value: string) => handleChange('pollutionAvoidance', value)}
             onChange={(value: string) => handleChange('pollutionAvoidanceDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Is there active monitoring or regulatory inspections regarding waste streams generated by the project operations or systems?'
+            controlledValues={[answersRef.current.wasteMonitoring.value,
+                               answersRef.current.wasteMonitoringDetails.value]}
             onSelect={(value: string) => handleChange('wasteMonitoring', value)}
             onChange={(value: string) => handleChange('wasteMonitoringDetails', value)}
          />
@@ -310,13 +332,15 @@ const PageOne = ({ handleChange }: PageProps) => {
    )
 }
 
-const PageTwo = ({ handleChange }: PageProps) => {
+const PageTwo = ({ answersRef, handleChange }: PageProps) => {
    return (
       <>
          <SectionHeader label='Transition to a Circular Economy' />
 
          <RisksDropdownQuestion
             label='Has the project has been designed to not negatively impact the transition to a circular economy?​'
+            controlledValues={[answersRef.current.circularEconomy.value,
+                               answersRef.current.circularEconomyDetails.value]}
             onSelect={(value: string) => handleChange('circularEconomy', value)}
             onChange={(value: string) => handleChange('circularEconomyDetails', value)}
          />
@@ -325,24 +349,32 @@ const PageTwo = ({ handleChange }: PageProps) => {
 
          <RisksDropdownQuestion
             label='Has the project been designed to not negatively impact biodiversity and habitats?​'
+            controlledValues={[answersRef.current.biodiversityImpact.value,
+                               answersRef.current.biodiversityImpactDetails.value]}
             onSelect={(value: string) => handleChange('biodiversityImpact', value)}
             onChange={(value: string) => handleChange('biodiversityImpactDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Has this project been designed to avoid any displacement or disturbance of natural land features?​'
+            controlledValues={[answersRef.current.landDisturbance.value,
+                               answersRef.current.landDisturbanceDetails.value]}
             onSelect={(value: string) => handleChange('landDisturbance', value)}
             onChange={(value: string) => handleChange('landDisturbanceDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Has this project been designed to avoid the introduction of ecosystem invasive species?​'
+            controlledValues={[answersRef.current.invasiveSpecies.value,
+                               answersRef.current.invasiveSpeciesDetails.value]}
             onSelect={(value: string) => handleChange('invasiveSpecies', value)}
             onChange={(value: string) => handleChange('invasiveSpeciesDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Does this project deploy practices that avoid soil erosion and protects land integrity?​'
+            controlledValues={[answersRef.current.soilErosion.value,
+                               answersRef.current.soilErosionDetails.value]}
             onSelect={(value: string) => handleChange('soilErosion', value)}
             onChange={(value: string) => handleChange('soilErosionDetails', value)}
          />
@@ -351,18 +383,24 @@ const PageTwo = ({ handleChange }: PageProps) => {
 
          <RisksDropdownQuestion
             label={'Does this project align with Nestle\'s "Responsible Sourcing Core Requirements" framework for the protection of Human Rights?'}
+            controlledValues={[answersRef.current.protectionHumanRights.value,
+                               answersRef.current.protectionHumanRightsDetails.value]}
             onSelect={(value: string) => handleChange('protectionHumanRights', value)}
             onChange={(value: string) => handleChange('protectionHumanRightsDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Are there formal declarations, accountability frameworks and/or third party inspections that ensure that no forced or child labor is involved in the proposed interventions?'
+            controlledValues={[answersRef.current.formalDeclarations.value,
+                               answersRef.current.formalDeclarationsDetails.value]}
             onSelect={(value: string) => handleChange('formalDeclarations', value)}
             onChange={(value: string) => handleChange('formalDeclarationsDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Are there assurances for stakeholder health and safety in place?'
+            controlledValues={[answersRef.current.stakeholderHealthSafety.value,
+                               answersRef.current.stakeholderHealthSafetyDetails.value]}
             onSelect={(value: string) => handleChange('stakeholderHealthSafety', value)}
             onChange={(value: string) => handleChange('stakeholderHealthSafetyDetails', value)}
          />
@@ -371,36 +409,48 @@ const PageTwo = ({ handleChange }: PageProps) => {
 
          <RisksDropdownQuestion
             label='Has this project been designed to respect and comply with applicable laws and human rights (statutory and/or customary)  regarding the acquisition, leasing and/or land use change of lands and natural resources of Indigenous peoples and local communities that are impacted or potentially impacted?'
+            controlledValues={[answersRef.current.indigenousPeople.value,
+                               answersRef.current.indigenousPeopleDetails.value]}
             onSelect={(value: string) => handleChange('indigenousPeople', value)}
             onChange={(value: string) => handleChange('indigenousPeopleDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Has the project been designed to reduce the risk to stakeholder livelihoods (fair payments, incentives)?'
+            controlledValues={[answersRef.current.reduceStakeholderRisk.value,
+                               answersRef.current.reduceStakeholderRiskDetails.value]}
             onSelect={(value: string) => handleChange('reduceStakeholderRisk', value)}
             onChange={(value: string) => handleChange('reduceStakeholderRiskDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Has this project been designed to involve and include small holders?'
+            controlledValues={[answersRef.current.smallHolders.value,
+                               answersRef.current.smallHoldersDetails.value]}
             onSelect={(value: string) => handleChange('smallHolders', value)}
             onChange={(value: string) => handleChange('smallHoldersDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Has this project been designed to invest in the capacity building of the involved stakeholders through training?'
+            controlledValues={[answersRef.current.designedToInvest.value,
+                               answersRef.current.designedToInvestDetails.value]}
             onSelect={(value: string) => handleChange('designedToInvest', value)}
             onChange={(value: string) => handleChange('designedToInvestDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Is there effort to maintain ongoing engagements and participation of the community and involved farmers with regards to this project, including mechanisms to consider grievances?'
+            controlledValues={[answersRef.current.effortsToMaintainEngagements.value,
+                               answersRef.current.effortsToMaintainEngagementsDetails.value]}
             onSelect={(value: string) => handleChange('effortsToMaintainEngagements', value)}
             onChange={(value: string) => handleChange('effortsToMaintainEngagementsDetails', value)}
          />
 
          <RisksDropdownQuestion
             label='Has this project been designed to minimize other potentially negative community impacts?​'
+            controlledValues={[answersRef.current.negativeCommunityImpacts.value,
+                               answersRef.current.negativeCommunityImpactsDetails.value]}
             onSelect={(value: string) => handleChange('negativeCommunityImpacts', value)}
             onChange={(value: string) => handleChange('negativeCommunityImpactsDetails', value)}
          />
@@ -409,14 +459,16 @@ const PageTwo = ({ handleChange }: PageProps) => {
 
          <RisksDropdownQuestion
             label='Have effective safeguards been incorporated in the to design phase?'
+            controlledValues={[answersRef.current.effectiveSafeguards.value,
+                               answersRef.current.effectiveSafeguardsDetails.value]}
             onSelect={(value: string) => handleChange('effectiveSafeguards', value)}
-            onChange={(value: string) => handleChange('negativeCommunityImpactsDetails', value)}
+            onChange={(value: string) => handleChange('effectiveSafeguardsDetails', value)}
          />
       </>
    )
 }
 
-const PageThree = ({ handleChange }: PageProps) => {
+const PageThree = ({ answersRef, handleChange }: PageProps) => {
    return (
       <>
          <SectionHeader
@@ -426,6 +478,8 @@ const PageThree = ({ handleChange }: PageProps) => {
 
          <CoBenefitsDropdownQuestion
             label="Is it expected that the project activities will improve?"
+            controlledValues={[answersRef.current.waterCoBenefits.value,
+                               answersRef.current.waterCoBenefitsDetails.value]}
             benefitItems={[
                "resilience to potential water scarcity?",
                "water quality?",
@@ -443,6 +497,8 @@ const PageThree = ({ handleChange }: PageProps) => {
 
          <CoBenefitsDropdownQuestion
             label='Is it expected that the project activities will improve overall species richness and diversity, threatened species, threatened or rare ecosystems, air quality, or soil erosion?​'
+            controlledValues={[answersRef.current.biodiversityEnvironmentalCoBenefits.value,
+                               answersRef.current.biodiversityEnvironmentalCoBenefitsDetails.value]}
             benefitItems={[
                "overall species richness and diversity?",
                "threatened species?",
@@ -458,6 +514,8 @@ const PageThree = ({ handleChange }: PageProps) => {
 
          <CoBenefitsDropdownQuestion
             label="Is it expected that the project activities will improve?"
+            controlledValues={[answersRef.current.communityFarmerCoBenefits.value,
+                               answersRef.current.communityFarmerCoBenefitsDetails.value]}
             benefitItems={[
                "farmer livelihoods or income generated?",
                "farmer adaptation to climate change?",

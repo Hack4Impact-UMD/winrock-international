@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from '../../css-modules/DropdownQuestion.module.css'
 import chevron from '../../assets/chevron-up-svgrepo-com.svg'
 
 interface DropdownQuestionProps {
    label: string
    options: string[]
+   controlledValue: string;
    onSelect: (selected: string) => void
    required?: boolean
 }
@@ -12,12 +13,17 @@ interface DropdownQuestionProps {
 const DropdownQuestion = ({
    label,
    options,
+   controlledValue,
    onSelect,
    required = false,
 }: DropdownQuestionProps) => {
    const [showDropdown, setShowDropdown] = useState<boolean>(false)
-   const [selectedOption, setSelectedOption] = useState<string | null>(null)
+   const [selectedOption, setSelectedOption] = useState<string>(controlledValue)
    const [isValid, setIsValid] = useState(true)
+
+   useEffect(() => {
+       setSelectedOption(controlledValue)
+   }, [controlledValue]);
 
    const toggleDropdownQuestion = () => {
       setShowDropdown(true)
@@ -35,7 +41,7 @@ const DropdownQuestion = ({
    // This is important for non-required dropdown questions
    const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
       if (event.key === 'Backspace') {
-         setSelectedOption(null)
+         setSelectedOption('')
       }
    }
 

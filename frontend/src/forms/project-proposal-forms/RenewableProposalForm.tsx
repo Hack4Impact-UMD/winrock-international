@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as firestore from "firebase/firestore";
 import { db } from "../../testFirebaseConfig.js";
 import FormField from "../FormField.js";
@@ -51,7 +51,7 @@ function RenewableProposalForm() {
 
     const collectionID = "renewable-proposal-form";
     const collectionRef = firestore.collection(db, collectionID);
-    const [answers, setAnswers] = useState<RenewableProposalFormData>({
+    const answersRef = useRef<RenewableProposalFormData>({
         parentVendorName: new FormField('', true),
         vendorCode: new FormField('', false),
         vendorSiteSAPName: new FormField('', false),
@@ -80,11 +80,11 @@ function RenewableProposalForm() {
 
     useEffect(() => {
         computeImpactReduction();
-    }, [answers.afterEnergyConsumption, answers.beforeEmissionFactor, answers.afterEmissionFactor]);
+    }, [answersRef.current.afterEnergyConsumption, answersRef.current.beforeEmissionFactor, answersRef.current.afterEmissionFactor]);
 
     useEffect(() => {
         computeImpactTiming();
-    }, [answers.projectImplementationYear]);
+    }, [answersRef.current.projectImplementationYear]);
 
     /**
      * Sets impactReduction to the impact reduction after
@@ -93,14 +93,14 @@ function RenewableProposalForm() {
      * 
      */
     function computeImpactReduction(): void {
-        if (answers.afterEnergyConsumption.value === '' || answers.beforeEmissionFactor.value === ''
-            || answers.afterEmissionFactor.value === '') {
+        if (answersRef.current.afterEnergyConsumption.value === '' || answersRef.current.beforeEmissionFactor.value === ''
+            || answersRef.current.afterEmissionFactor.value === '') {
             return;
         }
 
         const impactReduction =
-            (parseInt(answers.afterEnergyConsumption.value)
-            * (parseFloat(answers.beforeEmissionFactor.value) - parseFloat(answers.afterEmissionFactor.value))
+            (parseInt(answersRef.current.afterEnergyConsumption.value)
+            * (parseFloat(answersRef.current.beforeEmissionFactor.value) - parseFloat(answersRef.current.afterEmissionFactor.value))
             / 1000.0).toString();
         
         handleChange("impactReduction", impactReduction);
@@ -111,13 +111,13 @@ function RenewableProposalForm() {
      * implementation's timing.
      */
     function computeImpactTiming(): void {
-        if (answers.projectImplementationYear.value === '') {
+        if (answersRef.current.projectImplementationYear.value === '') {
             return;
         }
 
         const maxReductionYear = new Date().getFullYear();
         const minReductionYear = maxReductionYear - 5;
-        const year = parseInt(answers.projectImplementationYear.value);
+        const year = parseInt(answersRef.current.projectImplementationYear.value);
         
         let impactTiming: string;
         if (year < minReductionYear) {
@@ -131,14 +131,14 @@ function RenewableProposalForm() {
         handleChange("impactTiming", impactTiming);
     }
  
-    // Used to change the answers fields dynamically
+    // Used to change the answersRef's fields dynamically
     function handleChange(field: keyof RenewableProposalFormData, value: string) {
-        const isRequired = answers[field]!.isRequired;
-        setAnswers((prev: RenewableProposalFormData) => ({
-            ...prev,
+        const isRequired = answersRef.current[field]!.isRequired;
+        answersRef.current = {
+            ...answersRef.current,
             [field]: new FormField(value, isRequired)
-        }));
-    };
+        }
+    }
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [error, setError] = useState('');
@@ -148,17 +148,17 @@ function RenewableProposalForm() {
      * fields into the RenewableProjectProposalForm collection.
     */
     async function handleSubmit() {
-        for (const [_, v] of Object.entries(answers)) {
+        for (const [_, v] of Object.entries(answersRef.current)) {
             if (v.isRequired && v.value === '') {
                 setError("Cannot submit: You have not completed one or more sections in the form");
                 return;
             }
         }
         
-        // Convert the answers into a submission object
+        // Convert the answersRef into a submission object
         const submissionObj: Record<string, string> = {}
-        Object.keys(answers).forEach((field) => {
-            submissionObj[field] = answers[field as keyof RenewableProposalFormData]!.value;
+        Object.keys(answersRef.current).forEach((field) => {
+            submissionObj[field] = answersRef.current[field as keyof RenewableProposalFormData]!.value;
         });
 
         try {
@@ -202,6 +202,7 @@ function RenewableProposalForm() {
 
             <TextQuestion
                 label="Parent Vendor Name"
+                controlledValue={answersRef.current.parentVendorName.value}
                 onChange={(value) => handleChange("parentVendorName", value)}
                 required={true}
                 size="small"
@@ -209,12 +210,14 @@ function RenewableProposalForm() {
 
             <TextQuestion
                 label="Vendor Code"
+                controlledValue={answersRef.current.vendorCode.value}
                 onChange={(value) => handleChange("vendorCode", value)}
                 size="small"
             />
 
             <TextQuestion
                 label="Vendor Site SAP Name"
+                controlledValue={answersRef.current.vendorSiteSAPName.value}
                 onChange={(value) => handleChange("vendorSiteSAPName", value)}
                 size="small"
             />
@@ -222,6 +225,7 @@ function RenewableProposalForm() {
             <DropdownQuestion
                 label="Spend Category"
                 options={["Ingredients", "Commodities", "Packaging", "Logistics"]}
+                controlledValue={answersRef.current.spendCategory.value}
                 onSelect={(value: string) => handleChange("spendCategory", value)}
                 required={true}
             />
@@ -229,12 +233,14 @@ function RenewableProposalForm() {
             <DropdownQuestion
                 label="Level 2 Category"
                 options={["Amino Acids", "Cereals & Grains", "Flexibles", "Warehousing Services"]}
+                controlledValue={answersRef.current.level2Category.value}
                 onSelect={(value: string) => handleChange("level2Category", value)}
                 required={true}
             />
 
             <TextQuestion
                 label="Vendor Site Country"
+                controlledValue={answersRef.current.vendorSiteCountry.value}
                 onChange={(value: string) => handleChange("vendorSiteCountry", value)}
                 required={true}
                 size="small"
@@ -244,24 +250,28 @@ function RenewableProposalForm() {
                 to a TextQuestion because we don't know the vendor cities. */}
             <TextQuestion
                 label="Vendor Site City"
-                required={true}
+                controlledValue={answersRef.current.vendorSiteCity.value}
                 onChange={(value: string) => handleChange("vendorSiteCity", value)}
+                required={true}
                 size="small"
             />
 
             <TextQuestion
                 label="Project Type"
+                controlledValue={answersRef.current.projectType.value}
                 onChange={(value: string) => handleChange("projectType", value)}
                 size="small"
             />
 
             <TextQuestion
                 label="Project Description"
+                controlledValue={answersRef.current.projectDescription.value}
                 onChange={(value: string) => handleChange("projectDescription", value)}
             />
 
             <TextQuestion
                 label="Project Implementation Year"
+                controlledValue={answersRef.current.projectImplementationYear.value}
                 onChange={(value: string) => handleChange("projectImplementationYear", value)}
                 size="small"
             />
@@ -269,6 +279,7 @@ function RenewableProposalForm() {
             <DropdownQuestion
                 label="How do you plan to evidence the project impact?"
                 options={["Project implementation partner (2nd/3rd party)", "Electronic metering tool", "Other (please describe)"]}
+                controlledValue={answersRef.current.parentVendorName.value}
                 onSelect={(value: string) => {
                     if (value === "Other (please describe)") {
                         handleChange("impactEvidence", "");
@@ -282,16 +293,19 @@ function RenewableProposalForm() {
             {displayImpactEvidenceTextQuestion &&
                 <TextQuestion
                     label=""
+                    controlledValue={answersRef.current.impactEvidence.value}
                     onChange={(value: string) => handleChange("impactEvidence", value)}
                 />}
 
             <TextQuestion
                 label="Please share any comments/remarks on the change in the source of energy (see below sections)"
+                controlledValue={answersRef.current.emissionFactor.value}
                 onChange={(value: string) => handleChange("emissionFactor", value)}
             />
 
             <TextQuestion
                 label="Volume of Material (Metric Tons) Delivered to Nestlé in 2022"
+                controlledValue={answersRef.current.volumeDelivered.value}
                 onChange={(value: string) => handleChange("volumeDelivered", value)}
                 required={true}
                 size="small"
@@ -302,12 +316,14 @@ function RenewableProposalForm() {
             <DropdownQuestion
                 label="Source of Energy"
                 options={["Coal", "Natural Gas", "Electricity Grid"]}
+                controlledValue={answersRef.current.beforeSourceOfEnergy.value}
                 onSelect={(value: string) => handleChange("beforeSourceOfEnergy", value)}
                 required={true}
             />
 
             <TextQuestion
                 label="Share an energy consumption (KWh/year) estimate for Nestlé only (BEFORE intervention)"
+                controlledValue={answersRef.current.beforeEnergyConsumption.value}
                 onChange={((value) => handleChange("beforeEnergyConsumption", value))}
                 required={true}
                 size="small"
@@ -315,6 +331,7 @@ function RenewableProposalForm() {
 
             <TextQuestion
                 label="Emission Factor of Energy (kgCO2/KwH) (BEFORE intervention)"
+                controlledValue={answersRef.current.beforeEmissionFactor.value}
                 onChange={((value) => handleChange("beforeEmissionFactor", value))}
                 size="small"
             />
@@ -324,17 +341,20 @@ function RenewableProposalForm() {
             <DropdownQuestion
                 label="Source of Energy"
                 options={["Biogas/Green Gas - Grid (external)", "Solar", "Renewable Electricity Certificate"]}
+                controlledValue={answersRef.current.afterSourceOfEnergy.value}
                 onSelect={(value: string) => handleChange("afterSourceOfEnergy", value)}
             />
 
             <TextQuestion
                 label="Share an energy consumption (KWh/year) estimate for Nestlé only (AFTER Intervention)"
+                controlledValue={answersRef.current.afterEnergyConsumption.value}
                 onChange={(value: string) => handleChange("afterEnergyConsumption", value)}
                 size="small"
             />
 
             <TextQuestion
                 label="Emission Factor of Energy (kgCO2/KwH) (AFTER intervention)"
+                controlledValue={answersRef.current.afterEmissionFactor.value}
                 onChange={(value: string) => handleChange("afterEmissionFactor", value)}
                 size="small"
             />
@@ -342,32 +362,10 @@ function RenewableProposalForm() {
             <SectionHeader label="Comments/Remarks" />
 
             <TextQuestion
-                label="Source of Emission Factor (Please refer to Energy Consumption before and after intervention) "
-                onChange={(value: string) => handleChange("impactReduction", value)}
-                defaultValue={answers.impactReduction.value}
-            />
-
-
-            <SectionHeader label="Impact" />
-            
-            <DropdownQuestion
-                label="Source of Energy"
-                options={["Biogas/Green Gas - Grid (external)", "Solar", "Renewable Electricity Certificate"]}
-                onSelect={(value: string) => handleChange("afterSourceOfEnergy", value)}
-            />
-
-            <TextQuestion
-                label="Impact Reduction On GHG EmissionAfter Intervention - Attribute to Nestle only (tonsCO2e) based on an annualized impact"
-                onChange={(value: string) => handleChange("impactTiming", value)}
-                defaultValue={answers.impactTiming.value}
-                size="small"
-            />
-
-            <TextQuestion
-                label="Impact Timing"
-                onChange={(value: string) => handleChange("impactReduction", value)}
-                defaultValue={answers.impactReduction.value}
-                size="small"
+                label="Impact Timing (based on Project Implementation Year)"
+                controlledValue={answersRef.current.impactTiming.value}
+                onChange={(_: string) => {}}
+                disableOverwrite={true}
             />
 
             <NavigationButtons

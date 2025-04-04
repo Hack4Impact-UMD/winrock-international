@@ -4,7 +4,7 @@ import styles from "../../css-modules/TextQuestion.module.css";
 interface TextQuestionProps {
   label: string;
   onChange: (value: string) => void;
-  defaultValue?: string;
+  controlledValue: string;
   required?: boolean;
   disableOverwrite?: boolean;
   size?: 'small' | 'large';
@@ -14,19 +14,19 @@ interface TextQuestionProps {
 function TextQuestion({ 
   label, 
   onChange, 
-  defaultValue="", 
+  controlledValue, 
   required = false, 
   disableOverwrite = false,
   size = 'large',
   removeTopPadding = false
 }: TextQuestionProps) {
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState(controlledValue);
   const [placeholder, setPlaceholder] = useState("Enter text here");
   const [isValid, setIsValid] = useState(true);
 
   useEffect(() => {
-    setValue(defaultValue)
-  }, [defaultValue]);
+    setValue(controlledValue)
+  }, [controlledValue]);
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const newValue = e.target.value;
@@ -39,7 +39,7 @@ function TextQuestion({
   };
 
   function validate() {
-    if (required && value === defaultValue) {
+    if (required && value === '') {
       setIsValid(false);
       setPlaceholder("This field is required");
     }
