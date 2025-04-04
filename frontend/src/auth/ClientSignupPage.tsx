@@ -2,7 +2,7 @@ import { auth } from "../firebaseConfig.js";
 import { User, createUserWithEmailAndPassword } from "firebase/auth";
 import "../styles/auth.css";
 
-interface StandardSignupInfo {
+interface ClientSignupInfo {
     firstName: string;
     lastName: string;
     email: string;
@@ -10,7 +10,7 @@ interface StandardSignupInfo {
 }
 
 // https://firebase.google.com/docs/auth/web/start
-async function handleStandardSignup({ firstName, lastName, email, password }: StandardSignupInfo) {
+async function handleClientSignup({ firstName, lastName, email, password }: ClientSignupInfo) {
     try {
         // Firebase automatically updates the user to be used throughout the app.
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -23,11 +23,11 @@ async function handleStandardSignup({ firstName, lastName, email, password }: St
     }
 }
 
-function StandardSignupPage() {
+function ClientSignupPage() {
     return (
         <>
         </>
     )
 }
 
-export default StandardSignupPage;
+export default ClientSignupPage;
