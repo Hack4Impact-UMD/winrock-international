@@ -1,7 +1,7 @@
 .form-completed-container {
     display: flex;
     justify-content: center;
-    min-height: calc(100vh - 100px); /* Subtract space for the header */
+    min-height: calc(100vh - 10rem - 20px); /* Subtract space for the header */
     padding: 20px;
     background-color: white;
  }

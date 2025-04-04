@@ -88,6 +88,10 @@
    padding: 0.5rem 1.25rem;
 }
 
+.selectedDropdownItem {
+   border-left: solid 4px var(--color-primary);
+}
+
 .dropdownItem:hover {
    background-color: #e7eef4;
 }

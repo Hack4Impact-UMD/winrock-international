@@ -1,6 +1,6 @@
 import { RefObject, useRef, useState } from 'react'
 import * as firestore from "firebase/firestore"
-import { db } from "../../testFirebaseConfig.js"
+import { db } from "../../firebaseConfig.js"
 import FormField from "../FormField.js"
 
 import LogoHeader from '../../components/headers/LogoHeader.js'
@@ -158,7 +158,7 @@ function ForestryRisksForm() {
       answersRef.current[field]!.value = value;
    }
 
-   const isSubmitted = useRef(false)
+   const [isSubmitted, setIsSubmitted] = useState(false)
    const [error, setError] = useState('')
 
    /**
@@ -166,6 +166,13 @@ function ForestryRisksForm() {
     * fields into the ForestryRisksForm collection.
    */
    async function handleSubmit() {
+      for (const [_, v] of Object.entries(answersRef.current)) {
+         if (v.isRequired && v.value === '') {
+             setError("Cannot submit: You have not completed one or more sections in the form")
+             return
+         }
+      }
+
       // Convert the answersRef into a submission object
       const submissionObj: Record<string, string> = {}
       Object.keys(answersRef.current).forEach((field) => {
@@ -173,11 +180,11 @@ function ForestryRisksForm() {
       })
 
       try {
-         console.log(submissionObj);
          await firestore.addDoc(collectionRef, submissionObj) // addDoc() auto-generates an ID for the submission
-         isSubmitted.current = true
+         setIsSubmitted(true)
       } catch (error) {
          console.error("Error submitting ForestryRisksForm", error)
+         setError("Server error. Please try again later.")
       }
    }
 
@@ -189,7 +196,7 @@ function ForestryRisksForm() {
       console.log('Changes saved and exiting')
    }
 
-   if (isSubmitted.current) {
+   if (isSubmitted) {
       return <ConfirmationPage formName={title} />
    }
 

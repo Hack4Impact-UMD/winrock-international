@@ -78,7 +78,9 @@ const DropdownQuestion = ({
                   {options.map(option => (
                      <div
                         key={option}
-                        className={styles.dropdownItem}
+                        className={`${styles.dropdownItem} ${
+                           selectedOption === option ? styles.selectedDropdownItem : ''
+                        }`}
                         onMouseDown={() => selectOption(option)}
                      >
                         {option}

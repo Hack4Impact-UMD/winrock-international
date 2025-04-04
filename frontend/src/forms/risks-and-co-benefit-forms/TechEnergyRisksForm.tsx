@@ -1,6 +1,6 @@
 import { RefObject, useRef, useState } from 'react'
 import * as firestore from "firebase/firestore";
-import { db } from "../../testFirebaseConfig.js";
+import { db } from "../../firebaseConfig.js";
 import FormField from "../FormField.js";
 
 import LogoHeader from '../../components/headers/LogoHeader.js';
@@ -84,7 +84,7 @@ function TechEnergyRisksForm() {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3;
 
-  const collectionID = "tech-energy-risks-form";
+  const collectionID = "tech-and-energy-form";
   const collectionRef = firestore.collection(db, collectionID);
   const answersRef = useRef<TechEnergyRisksFormData>({
     riskAssessment: new FormField('', true),
@@ -162,6 +162,7 @@ function TechEnergyRisksForm() {
       setIsSubmitted(true);
     } catch (error) {
       console.error("Error submitting TechEnergyRisksForm", error);
+      setError("Server error. Please try again later.");
     }
   }
 

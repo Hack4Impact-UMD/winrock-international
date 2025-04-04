@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import * as firestore from "firebase/firestore";
-import { db } from "../../testFirebaseConfig.js";
+import { db } from "../../firebaseConfig.js";
 import FormField from "../FormField.js";
 
 import LogoHeader from "../../components/headers/LogoHeader.js";
@@ -49,7 +49,7 @@ function RenewableProposalForm() {
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 1;
 
-    const collectionID = "renewable-proposal-form";
+    const collectionID = "project-proposal-form";
     const collectionRef = firestore.collection(db, collectionID);
     const answersRef = useRef<RenewableProposalFormData>({
         parentVendorName: new FormField('', true),
@@ -171,7 +171,6 @@ function RenewableProposalForm() {
     }
   
     const saveChanges = () => {
-        // TODO: localStorage?
         console.log('Changes saved');
     }
 
