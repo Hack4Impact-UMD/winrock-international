@@ -1,20 +1,12 @@
 import { auth } from "../firebaseConfig.js";
 import { User, signInWithEmailAndPassword } from "firebase/auth";
-
-// Winrock wants to sign up and log in via Outlook.
-// For clients, standard signup and login will suffice.
-
-// We can separate the standard and Outlook login flows into different components
+import "../styles/auth.css";
 
 interface StandardLoginInfo {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
-}
-
-interface OutlookLoginInfo {
-    // add fields
 }
 
 // https://firebase.google.com/docs/auth/web/start
@@ -30,13 +22,9 @@ async function handleStandardLogin({ email, password }: StandardLoginInfo) {
     }
 }
 
-async function handleOutlookLogin({}: OutlookLoginInfo) {
-
-}
-
-async function LogInPage() {
+function StandardLoginPage() {
     <>
     </>
 }
 
-export default LogInPage;
+export default StandardLoginPage;
