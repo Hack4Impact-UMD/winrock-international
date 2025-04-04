@@ -18,7 +18,7 @@
 }
 
 .backButton {
-   background-color: #005293;
+   background-color: var(--color-primary);
    color: white;
 }
 
@@ -29,7 +29,7 @@
 .saveButton {
    background-color: white;
    color: #1a4b8b;
-   border: 2px solid #005293;
+   border: 2px solid var(--color-primary);
 }
 
 .saveButton:hover:not(:disabled) {
@@ -37,7 +37,7 @@
 }
 
 .nextButton {
-   background-color: #005293;
+   background-color: var(--color-primary);
    color: white;
 }
 
@@ -47,7 +47,7 @@
 
 /* When the next button is displaying "Submit" text, we can add additional styling if needed */
 .nextButton[aria-label='Submit'] {
-   background-color: #005293;
+   background-color: var(--color-primary);
 }
 
 .navigationButton:disabled {
