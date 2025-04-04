@@ -1,7 +1,6 @@
 .sectionHeaderContainer {
    display: flex;
    flex-direction: column;
-   gap: 2rem;
 }
 
 .sectionHeader {
@@ -9,9 +8,9 @@
    flex-direction: column;
    justify-content: center;
    padding: 0 2.5rem;
-   margin-top: 3rem;
+   margin: 2.5rem 0;
    background: #005293;
-   height: 55px;
+   height: 3.125rem;
 }
 
 .label {
@@ -22,7 +21,7 @@
 }
 
 .description {
-   padding: 0 12rem;
+   padding: 1rem 12rem;
    font-style: italic;
-   font-size: 1.1rem;
+   font-size: 1rem;
 }

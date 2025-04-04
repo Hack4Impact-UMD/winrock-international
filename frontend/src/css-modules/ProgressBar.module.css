@@ -16,11 +16,11 @@
 }
 
 .progressBar {
-   height: 1.1rem;
+   height: 1.0625rem;
    flex: 1;
    position: relative;
-   border-top-left-radius: 1rem;
-   border-bottom-left-radius: 1rem;
+   border-top-left-radius: 1.5rem;
+   border-bottom-left-radius: 1.5rem;
 }
 
 /* Add space between bars */
@@ -28,7 +28,7 @@
    margin-left: 0.5rem;
 }
 
-/* Last bar needs rounded corners on both sides */
+
 .progressBar:last-child {
    border-radius: 1rem;
 }
@@ -46,7 +46,7 @@
 }
 
 .progressBarCompleted {
-   background-color: #31ab48;
+   background-color: var(--color-secondary);
 }
 
 .progressBarCurrent {
@@ -54,7 +54,7 @@
 }
 
 .progressBarUpcoming {
-   background-color: #c1c7ce;
+   background-color: var(--color-secondary);
 }
 
 .progressLabels {
@@ -68,4 +68,8 @@
    color: #333;
    flex: 1;
    text-align: left;
+}
+
+.dot {
+   border-radius: 50%;
 }

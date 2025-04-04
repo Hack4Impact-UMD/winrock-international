@@ -21,7 +21,7 @@
 	text-align: left;
 	height: 2.75rem;
 	width: 18.125rem;
-	border-radius: 0.6rem;
+	border-radius: var(--border-radius);
 	border-color: black;
 	border-width: thin;
 	display: flex;
@@ -65,4 +65,8 @@
 	width: 1rem;
 	rotate: 180deg;
 	transition: rotate 0.3s linear;
+}
+
+.option {
+	border-radius: var(--border-radius);
 }

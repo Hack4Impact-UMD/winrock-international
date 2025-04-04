@@ -1,13 +1,19 @@
 .container {
    display: flex;
    flex-direction: column;
-   gap: 0.5rem;
+   gap: 1.5rem;
    width: 100%;
-   padding: 4rem 12rem 0;
+   padding: 1.5rem 12rem;
+   margin: 2.5rem 0 0;
 }
 
 .noTopPadding {
-   padding: 0 12rem 0;
+   padding: 1.5rem 12rem;
+   margin: 0;
+}
+
+.noTopPadding .label{
+   display: none;
 }
 
 .smallContainer {
@@ -16,10 +22,9 @@
 }
 
 .label {
-   font-size: 1.1rem;
+   font-size: 1rem;
    font-weight: 400;
    letter-spacing: 3%;
-   margin-bottom: 0.8rem;
 }
 
 .requiredLabel::after {
@@ -30,7 +35,7 @@
    display: flex;
    width: 100%;
    padding: 1rem;
-   border-radius: 0.625rem;
+   border-radius: var(--border-radius);
    resize: vertical;
    font-size: 0.9rem;
    font-family: inherit;
