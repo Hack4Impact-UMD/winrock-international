@@ -1,8 +1,18 @@
 @import url('https://fonts.cdnfonts.com/css/neue-haas-grotesk-display-pro');
 
+:root {
+  --color-primary: #005293;
+  --color-secondary: #C1C7CE;
+  --color-green: #31ab48;
+  
+  /* Border radius */
+  --border-radius: 0.625rem;
+}
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+   letter-spacing: 3%;
 }
