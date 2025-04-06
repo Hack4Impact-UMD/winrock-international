@@ -1,0 +1,123 @@
+.loginContainer {
+    /* Center everything vertically and horizontally */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  
+    /* Full height background */
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    position: relative;
+  
+    /* Use your preferred font */
+    font-family: "Roboto", sans-serif;
+  }
+  
+  /* Positioning for the title section, if you want some spacing above the card */
+  .titleSection {
+    margin-bottom: 20px;
+  }
+  
+  /* The main card that holds the login form */
+  .loginCard {
+    position: relative;
+    z-index: 10; /* Make sure it appears above the background rectangle */
+    width: 400px;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Google sign-in button */
+  .googleButton {
+    width: 100%;
+    padding: 10px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  
+  /* The OR divider text */
+  .divider {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 18px;
+    color: #757575;
+  }
+  
+  /* Subtext for "Sign in with email address" */
+  .emailSigninText {
+    text-align: center;
+    font-size: 16px;
+    color: #757575;
+    margin-bottom: 20px;
+  }
+  
+  /* The form layout */
+  .loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* Label + input grouping */
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formGroup label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .formGroup input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  /* Sign up button */
+  .signupButton {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    color: #4285f4;
+    border: 1px solid #4285f4;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .signupButton:hover {
+    background-color: #4285f4;
+    color: white;
+  }
+  
+  /* Background rectangle behind the card */
+  .backgroundRectangle {
+    position: absolute;
+    width: 460px;
+    height: 540px;
+    border-radius: 20px;
+    border: 1px solid #c7c7c7;
+  
+    /* Place behind the card */
+    z-index: 0;
+  
+    /* Adjust to taste; here we offset it a bit for a Figma-like effect */
+    top: calc(50% - 270px);
+    left: calc(50% - 230px);
+    transform: translate(100px, 30px); /* shift to the right/down */
+  }
+  

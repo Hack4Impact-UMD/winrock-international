@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "react-scripts start",
+  
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
   },
   "dependencies": {
     "firebase": "^11.3.1",
