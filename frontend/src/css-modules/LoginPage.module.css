@@ -1,184 +1,100 @@
-.container {
-    /* Set explicit dimensions based on your Figma design */
-    width: 1440px;
-    height: 1024px;
-    position: relative;
-    background: white;
-    overflow: hidden;
-    margin: 0 auto; /* centers the container on the page */
-  }
-  
-  /* "Stage 1: Supplier Onboarding" */
-  .stageTitle {
-    width: 494px;
-    height: 66px;
-    left: 62px;
-    top: 54px;
-    position: absolute;
-    color: black;
-    font-size: 36px;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
+body, html {
+    margin: 0;
+    padding: 0;
     font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    line-height: 44px;
-    word-wrap: break-word;
   }
-  
-  /* "Returning → Login Screen" */
-  .subtitle {
-    left: 62px;
-    top: 120px;
-    position: absolute;
-    color: black;
-    font-size: 28px;
+
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
+  .container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers children by default */
+    justify-content: flex-start;
+    background-color: #fff;
     font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    line-height: 36px;
-    word-wrap: break-word;
+    /* Remove default padding to avoid gaps */
+    padding: 0;
+    margin: 0;
   }
   
-  /* "Sign in with Google" */
-  .googleText {
-    left: 864px;
-    top: 343px;
-    position: absolute;
-    color: black;
-    font-size: 22px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    line-height: 28px;
-    word-wrap: break-word;
+  .header {
+    align-self: flex-start; /* Aligns header to left */
+    /* Remove margin to eliminate extra gap */
+    margin: 0;
+    /* If you need some vertical spacing, add padding-top or margin-top here */
   }
   
-  /* "Sign in with email address" */
-  .signinEmailText {
-    left: 854px;
-    top: 466px;
-    position: absolute;
-    color: #757575;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    line-height: 24px;
-    letter-spacing: 0.15px;
-    word-wrap: break-word;
-  }
-  
-  /* "Email" label */
-  .emailLabel {
-    left: 783px;
-    top: 502px;
-    position: absolute;
-    color: black;
-    font-size: 14px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    line-height: 20px;
-    letter-spacing: 0.1px;
-    word-wrap: break-word;
-  }
-  
-  /* "Password" label */
-  .passwordLabel {
-    left: 783px;
-    top: 597px;
-    position: absolute;
-    color: #B3B3B3;
-    font-size: 14px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    line-height: 20px;
-    letter-spacing: 0.1px;
-    word-wrap: break-word;
-  }
-  
-  /* "OR" divider */
-  .divider {
-    left: 943px;
-    top: 411px;
-    position: absolute;
-    color: black;
-    font-size: 22px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    line-height: 28px;
-    word-wrap: break-word;
-  }
-  
-  /* "Sign up with new account" container */
-  .signup {
-    left: 854px;
-    top: 755px;
-    position: absolute;
-  }
-  
-  .signupPrimary {
-    color: #1E1E1E;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    line-height: 24px;
-    letter-spacing: 0.15px;
-    word-wrap: break-word;
-  }
-  
-  .signupSecondary {
-    color: #757575;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    line-height: 24px;
-    letter-spacing: 0.15px;
-    word-wrap: break-word;
-  }
-  
-  /* Background rectangle (Rectangle 126) */
-  .backgroundRectangle {
-    width: 469px;
-    height: 544px;
-    left: 725px;
-    top: 268px;
-    position: absolute;
-    border-radius: 20px;
+  .card {
+    width: 25rem;
+    height: 28rem;
+    margin-top: 5rem; /* Space from header, adjust as needed */
     border: 1px solid #C7C7C7;
-  }
-  
-  /* Input rectangle for Email (Rectangle 128) */
-  .inputRectangle1 {
-    width: 349px;
-    height: 55px;
-    left: 783px;
-    top: 329px;
-    position: absolute;
     border-radius: 10px;
-    border: 1px solid black;
+    padding: 2rem;
+    text-align: center;
   }
   
-  /* Input rectangle for Email again? (Rectangle 129) */
-  .inputRectangle2 {
-    width: 349px;
-    height: 55px;
-    left: 783px;
-    top: 528px;
-    position: absolute;
-    border-radius: 10px;
-    border: 1px solid black;
-  }
+  /* Other styles remain unchanged */
   
-  /* Input rectangle for Password (Rectangle 130) */
-  .inputRectangle3 {
-    width: 349px;
-    height: 55px;
-    left: 783px;
-    top: 618px;
-    position: absolute;
-    border-radius: 10px;
-    border: 1px solid #B3B3B3;
+
+/* Google button */
+.googleButton {
+  width: 80%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: #fff;
+  font-size: 22;
+  font-weight: 400;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+}
+
+/* Divider (the "OR") */
+.divider {
+  margin: 1rem 0;
+  font-weight: 600;
+  color: #333;
+}
+
+/* The login form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.form label {
+    font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #333;
+}
+
+.form input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #C7C7C7;
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Sign-up button */
+.signupButton {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    font-family: 'Roboto', sans-serif;
+    border: none; /* This removes the border */
   }
-  
-  /* Vertical line (Vector 34) */
-  .verticalLine {
-    left: 802px;
-    top: 541px;
-    position: absolute;
-  }
-  

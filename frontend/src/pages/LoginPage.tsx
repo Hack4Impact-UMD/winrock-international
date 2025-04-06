@@ -1,46 +1,37 @@
 import React from "react";
 import styles from "../css-modules/LoginPage.module.css";
+import TitleHeader from "../components/TitleHeader";        // Adjust the path as needed
+import SectionHeader from "../components/SectionHeader";    // Adjust the path as needed
 
-
-const LoginPage = () => {
+export default function LoginPage() {
   return (
     <div className={styles.container}>
-      <div data-layer="Stage 1: Supplier Onboarding" className={styles.stageTitle}>
-        Stage 1: Supplier Onboarding
+      <div className={styles.header}>
+        <TitleHeader 
+          title="Stage 1: Supplier Onboarding" 
+          description="Returning → Login Screen" 
+        />
       </div>
-      <div data-layer="Returning → Login Screen" className={styles.subtitle}>
-        Returning → Login Screen
-      </div>
-      <div data-layer="Sign in with Google" className={styles.googleText}>
-        Sign in with Google
-      </div>
-      <div data-layer="Sign in with email address" className={styles.signinEmailText}>
-        Sign in with email address
-      </div>
-      <div data-layer="Email" className={styles.emailLabel}>
-        Email
-      </div>
-      <div data-layer="Password" className={styles.passwordLabel}>
-        Password
-      </div>
-      <div data-layer="OR" className={styles.divider}>
-        OR
-      </div>
-      <div data-layer="Sign up with new account" className={styles.signup}>
-        <span className={styles.signupPrimary}>Sign up</span>
-        <span className={styles.signupSecondary}> with new account</span>
-      </div>
-      <div data-layer="Rectangle 126" className={styles.backgroundRectangle}></div>
-      <div data-layer="Rectangle 128" className={styles.inputRectangle1}></div>
-      <div data-layer="Rectangle 129" className={styles.inputRectangle2}></div>
-      <div data-layer="Rectangle 130" className={styles.inputRectangle3}></div>
-      <div data-svg-wrapper data-layer="Vector 34" className={styles.verticalLine}>
-        <svg width="2" height="25" viewBox="0 0 2 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 0V25" stroke="black" />
-        </svg>
+
+      <div className={styles.card}>
+        <button className={styles.googleButton}>Sign in with Google</button>
+        <div className={styles.divider}>OR</div>
+        
+        {/* Use SectionHeader only when you want a standardized section title */}
+        <SectionHeader label="Sign in with email address" />
+        
+        <form className={styles.form}>
+          <label>Email</label>
+          <input type="email" placeholder="Enter your email" />
+          
+          <label>Password</label>
+          <input type="password" placeholder="Enter your password" />
+        </form>
+
+        <button className={styles.signupButton}>
+          Sign up with new account →
+        </button>
       </div>
     </div>
   );
-};
-
-export default LoginPage;
+}

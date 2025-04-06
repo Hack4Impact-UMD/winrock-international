@@ -1,17 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap');
+
 .titleHeader {
     display: flex;
     flex-direction: column;
-    gap: .8rem;
+    gap: 0.8rem;
     padding: 2rem 3.2rem 0;
+    font-family: 'Roboto', sans-serif;
 }
 
 .title {
     font-size: 2rem;
-    font-weight: 600;
-    letter-spacing: .09rem;
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
 }
 
 .description {
-    font-size: .93rem;
-    letter-spacing: .03rem;
+    font-size: 28;
+    font-family: 'Roboto', sans-serif;
 }
