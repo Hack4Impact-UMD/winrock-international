@@ -52,19 +52,24 @@ export const getProjects = async (orderByField: string, desc: boolean, filterByF
 		orderBy(orderByField, desc ? "desc" : "asc"));
 	}
 	
-	const querySnapshot = await getDocs(filterQuery);
-	querySnapshot.forEach((doc) => {
-		const convertedDoc = {
-			...doc.data(),
-			startDate: doc.data().startDate.toDate(),
-			creationDate: doc.data().creationDate.toDate(),
-			lastAnalysisChange: doc.data().lastAnalysisChange.toDate()
-		}
-		results.push(convertedDoc as ProjectData);
-	});
+	try {
+		const querySnapshot = await getDocs(filterQuery);
+		querySnapshot.forEach((doc) => {
+			const convertedDoc = {
+				...doc.data(),
+				startDate: doc.data().startDate.toDate(),
+				creationDate: doc.data().creationDate.toDate(),
+				lastAnalysisChange: doc.data().lastAnalysisChange.toDate()
+			}
+			results.push(convertedDoc as ProjectData);
+		});
 
-	return results;
-
+		return results;
+	}
+	catch (error) {
+		console.log(error);
+		return results;
+	}
 };
 
 // retrieves all project names that start with [term] (for use in autocomplete)
@@ -76,13 +81,18 @@ export const getProjectNamesContaining = async (term: string) => {
 	where("name", ">=", term), 
 	where("name", "<=", term + "\uf8ff"));
 
-	const querySnapshot = await getDocs(nameQuery);
-	querySnapshot.forEach((doc) => {
-		results.push(doc.data().name);
-	});
+	try {
+		const querySnapshot = await getDocs(nameQuery);
+		querySnapshot.forEach((doc) => {
+			results.push(doc.data().name);
+		});
 
-	return results;
-
+		return results;
+	}
+	catch (error) {
+		console.log(error);
+		return results;
+	}
 };
 
 // retrieves all projects with creation date between [start] and [end] (for use with calendar picker)
@@ -98,16 +108,23 @@ export const getProjectsBetween = async (startDate: Date, endDate: Date) => {
 	where("creationDate", "<=", endTimestamp), 
 	orderBy("creationDate", "desc"));
 
-	const querySnapshot = await getDocs(datesQuery);
-	querySnapshot.forEach((doc) => {
-		const convertedDoc = {
-			...doc.data(),
-			startDate: doc.data().startDate.toDate(),
-			creationDate: doc.data().creationDate.toDate(),
-			lastAnalysisChange: doc.data().lastAnalysisChange.toDate()
-		}
-		results.push(convertedDoc as ProjectData);
-	});
+	try {
+		const querySnapshot = await getDocs(datesQuery);
 
-	return results;
+		querySnapshot.forEach((doc) => {
+			const convertedDoc = {
+				...doc.data(),
+				startDate: doc.data().startDate.toDate(),
+				creationDate: doc.data().creationDate.toDate(),
+				lastAnalysisChange: doc.data().lastAnalysisChange.toDate()
+			}
+			results.push(convertedDoc as ProjectData);
+		});
+
+		return results;
+	}
+	catch (error) {
+		console.log(error);
+		return results;
+	}
 };
