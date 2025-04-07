@@ -1,0 +1,163 @@
+.dashboardContainer {
+  display: flex;
+  min-height: 100vh;
+}
+
+.header {
+  padding: 1rem 2rem;
+  border: 1px solid #CCCCCC;
+}
+
+.logo {
+  height: 40px;
+}
+
+.mainContent {
+  padding: 2rem;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+.toolbarContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.searchContainer {
+  flex: 1;
+  max-width: 600px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+}
+
+.filterContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filterButton,
+.sortButton {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius);
+  background-color: white;
+  color: #374151;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.tableContainer {
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table th {
+  background-color: #f9fafb;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.table td {
+  font-size: 0.875rem;
+  color: #111827;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.OnTrack {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.AtRisk {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.Paused {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.Completed {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.analysisStage {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.actionButton {
+  border: none;
+  background: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.paginationControls button {
+  border: none;
+  background: none;
+  color: #374151;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.paginationControls button:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
