@@ -22,7 +22,7 @@
   font-size: 2.25rem;
   font-weight: 600; 
   letter-spacing: 1.80px;
-  padding: 5.125rem 0 1.6875rem 0.925rem;
+  padding: 5.125rem 0 1.6875rem 1.5625rem;
 }
 
 .toolbarContainer {
@@ -67,29 +67,6 @@
   overflow: hidden;
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th,
-.table td {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.table th {
-  background-color: #f9fafb;
-  font-weight: 500;
-  color: #374151;
-  font-size: 0.875rem;
-}
-
-.table td {
-  font-size: 0.875rem;
-  color: #111827;
-}
 
 .status {
   display: inline-block;

@@ -30,7 +30,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button 
         key={1}
         onClick={() => onPageChange(1)}
-        className={currentPage === 1 ? styles.active : ''}
+        className={`${currentPage === 1 ? styles.active : ''} ${styles.pageCount}`}
       >
         1
       </button>
@@ -47,7 +47,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <button
             key={i}
             onClick={() => onPageChange(i)}
-            className={currentPage === i ? styles.active : ''}
+            className={`${currentPage === i ? styles.active : ''} ${styles.pageCount}`}
           >
             {i}
           </button>
@@ -65,7 +65,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           key={totalPages}
           onClick={() => onPageChange(totalPages)}
-          className={currentPage === totalPages ? styles.active : ''}
+          className={`${currentPage === totalPages ? styles.active : ''} ${styles.pageCount}`}
         >
           {totalPages}
         </button>
@@ -77,9 +77,19 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className={styles.pagination}>
-      <span>{startItem}-{endItem} of {totalItems}</span>
+      <span className={styles.pageCount}>{startItem}-{endItem} of {totalItems}</span>
       <div className={styles.paginationControls}>
-        <span>Rows per page: {itemsPerPage}</span>
+        <div className={styles.rowsPerPage}>
+          <span>Rows per page</span>
+          <input
+            type="number"
+            value={itemsPerPage}
+            onChange={(e) => onItemsPerPageChange?.(Number(e.target.value))}
+            min={1}
+            max={100}
+            className={styles.rowsInput}
+          />
+        </div>
         <button 
           disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
