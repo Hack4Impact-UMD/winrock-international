@@ -1,9 +1,8 @@
-
+import React from 'react';
 import LoginPage from './pages/LoginPage';
 
-
 import { useState } from "react";
-import { handleClientSignup, handleClientLogin } from "./auth/clientAuth";
+//import { handleClientSignup, handleClientLogin } from "./auth/clientAuth";
 
 function generateRandomString(length: number) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -28,12 +27,14 @@ function App() {
 
   return (
     <>
+    <div className="App">
+      <LoginPage />
+    </div>
       <p
         style={{ margin: "1.5rem", fontSize: "2rem" }}
       >
         Test Client Signup/Login
       </p>
-      <LoginPage />
       <button
         onClick={async () => {
           const newUserEmail = generateRandomEmail();

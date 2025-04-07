@@ -1,4 +1,4 @@
-import { auth } from "../testFirebaseConfig.js";
+/*import { auth } from "../testFirebaseConfig.js";
 import { type User, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 interface ClientSignupInfo {
@@ -36,4 +36,4 @@ async function handleClientLogin({ email, password }: ClientLoginInfo) {
     }
 }
 
-export { handleClientSignup, handleClientLogin }
+export { handleClientSignup, handleClientLogin }*/

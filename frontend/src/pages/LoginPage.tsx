@@ -1,36 +1,52 @@
 import React from "react";
 import styles from "../css-modules/LoginPage.module.css";
-import TitleHeader from "../components/TitleHeader";        // Adjust the path as needed
-import SectionHeader from "../components/SectionHeader";    // Adjust the path as needed
+import logo from '../assets/winrock-international-logo.png';
+
 
 export default function LoginPage() {
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <TitleHeader 
-          title="Stage 1: Supplier Onboarding" 
-          description="Returning → Login Screen" 
+      {/* Top Header Bar */}
+      <header className={styles.header}>
+        {/* Replace src with your actual logo path */}
+        <img 
+          src={logo}
+          alt="Winrock Logo" 
+          className={styles.logo}
         />
-      </div>
+        <div className={styles.loginActions}>
+          <button className={styles.headerBtn}>Login</button>
+          <button className={styles.headerBtn}>Login</button>
+        </div>
+      </header>
 
-      <div className={styles.card}>
-        <button className={styles.googleButton}>Sign in with Google</button>
-        <div className={styles.divider}>OR</div>
-        
-        {/* Use SectionHeader only when you want a standardized section title */}
-        <SectionHeader label="Sign in with email address" />
-        
-        <form className={styles.form}>
-          <label>Email</label>
-          <input type="email" placeholder="Enter your email" />
-          
-          <label>Password</label>
-          <input type="password" placeholder="Enter your password" />
-        </form>
+      {/* Main Content Area */}
+      <div className={styles.mainContent}>
+        {/* Left Section: Outlook Login */}
+        <div className={styles.outlookSection}>
+          <div className={styles.outlookBox}>
+            <p className={styles.outlookText}>Sign in with Outlook</p>
+          </div>
+        </div>
 
-        <button className={styles.signupButton}>
-          Sign up with new account →
-        </button>
+        {/* Right Section: Email Login */}
+        <div className={styles.emailSection}>
+          <h2 className={styles.emailTitle}>Sign in with Email</h2>
+          <form className={styles.form}>
+            <label>Email</label>
+            <input type="email" placeholder="Enter your email" />
+
+            <label>Password</label>
+            <input type="password" placeholder="Enter your password" />
+
+            <button type="submit" className={styles.loginButton}>
+              Login
+            </button>
+          </form>
+          <button className={styles.signupButton}>
+            Sign up with new account →
+          </button>
+        </div>
       </div>
     </div>
   );

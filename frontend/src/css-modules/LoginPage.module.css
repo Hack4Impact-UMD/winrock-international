@@ -1,100 +1,155 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
 
 body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-  }
-
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
-
-  .container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers children by default */
-    justify-content: flex-start;
-    background-color: #fff;
-    font-family: 'Roboto', sans-serif;
-    /* Remove default padding to avoid gaps */
-    padding: 0;
-    margin: 0;
-  }
-  
-  .header {
-    align-self: flex-start; /* Aligns header to left */
-    /* Remove margin to eliminate extra gap */
-    margin: 0;
-    /* If you need some vertical spacing, add padding-top or margin-top here */
-  }
-  
-  .card {
-    width: 25rem;
-    height: 28rem;
-    margin-top: 5rem; /* Space from header, adjust as needed */
-    border: 1px solid #C7C7C7;
-    border-radius: 10px;
-    padding: 2rem;
-    text-align: center;
-  }
-  
-  /* Other styles remain unchanged */
-  
-
-/* Google button */
-.googleButton {
-  width: 80%;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 1px solid black;
-  border-radius: 10px;
-  background-color: #fff;
-  font-size: 22;
-  font-weight: 400;
+  margin: 0;
+  padding: 0;
   font-family: 'Roboto', sans-serif;
-  cursor: pointer;
 }
 
-/* Divider (the "OR") */
-.divider {
-  margin: 1rem 0;
-  font-weight: 600;
+/* Overall container */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Top header bar */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #C7C7C7;
+  font-family: 'Roboto', sans-serif;
+}
+
+.logo {
+  height: 40px; /* Adjust as needed */
+}
+
+.loginActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.headerBtn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
   color: #333;
 }
 
-/* The login form */
+/* Main content area */
+.mainContent {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3rem;
+  gap: 2rem; /* Space between Outlook panel and Email panel */
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Left side: Outlook panel */
+.outlookSection {
+  width: 420px;    /* Adjust width to match design */
+  height: 280px;   /* Adjust height to match design */
+  background-color: #0D4EAB; /* Winrock-like blue */
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.outlookBox {
+  width: 80%;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* If you want a distinct white rectangle inside the blue, 
+     uncomment the lines below:
+  background-color: #fff;
+  border-radius: 8px;
+  */
+}
+
+.outlookText {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Right side: Email login form */
+.emailSection {
+  width: 320px; /* Adjust as needed */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.emailTitle {
+  font-size: 1.375rem;
+  font-weight: 400;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  align-self: center;
+  color: #005293;
+}
+
 .form {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  text-align: left;
-  margin-bottom: 2rem;
+  gap: 0.75rem;
+  font-family: 'Roboto', sans-serif;
 }
 
 .form label {
-    font-family: 'Roboto', sans-serif;
   font-weight: 500;
   font-size: 0.875rem;
   color: #333;
+  font-family: 'Roboto', sans-serif;
 }
 
 .form input {
   width: 100%;
   padding: 0.5rem;
-  border-radius: 5px;
+  border-radius: 10px;
   border: 1px solid #C7C7C7;
   font-size: 1rem;
   font-family: 'Roboto', sans-serif;
 }
 
+/* Email login button */
+.loginButton {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background-color: #0D4EAB;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+}
+
 /* Sign-up button */
 .signupButton {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
-    font-family: 'Roboto', sans-serif;
-    border: none; /* This removes the border */
-  }
+  width: 100%;
+  padding: 0.75rem;
+  background-color: transparent;
+  color: #0D4EAB;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  border:none;
+  font-family: 'Roboto', sans-serif;
+}
