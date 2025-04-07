@@ -3,6 +3,7 @@ import styles from '../css-modules/WinrockDashboard.module.css';
 import winrockLogo from '../assets/winrock-international-logo.png';
 import FilterTabs from '../components/dashboards/winrock-dashboard/FilterTabs';
 import Pagination from '../components/dashboards/winrock-dashboard/Pagination';
+import TableHeader from '../components/dashboards/winrock-dashboard/TableHeader';   
 
 const WinrockDashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('Renewable Energy and Energy Efficiency');
@@ -27,6 +28,7 @@ const WinrockDashboard: React.FC = () => {
         />
 
         <div className={styles.tableContainer}>
+            <TableHeader />
         </div>
 
         <Pagination

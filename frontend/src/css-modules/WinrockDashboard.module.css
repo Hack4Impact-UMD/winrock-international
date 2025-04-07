@@ -61,11 +61,6 @@
   cursor: pointer;
 }
 
-.tableContainer {
-  border: 1px solid #e5e7eb;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-}
 
 
 .status {
