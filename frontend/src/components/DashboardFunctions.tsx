@@ -27,7 +27,7 @@ To load data on component mount:
 		getData();
 	}, []);
 
-To reload data:
+To reload data/search:
 	<button onClick={async () => setProjects(await getProjects("name", true))}>Refresh</button>
 */
 
@@ -43,12 +43,12 @@ export const getProjects = async (orderByField: string, desc: boolean, filterByF
 	let filterQuery: Query;
 
 	if (filterByField && filterValue) {
-		filterQuery = query(collection(db, "fake-data"), 
+		filterQuery = query(collection(db, "projects"), 
 		where(filterByField, filterByField === "geography" ? "array-contains" : "==", filterValue), 
 		orderBy(orderByField, desc ? "desc" : "asc"));
 	}
 	else {
-		filterQuery = query(collection(db, "fake-data"),
+		filterQuery = query(collection(db, "projects"),
 		orderBy(orderByField, desc ? "desc" : "asc"));
 	}
 	
@@ -72,7 +72,7 @@ export const getProjectNamesContaining = async (term: string) => {
 
 	const results: string[] = [];
 
-	const nameQuery = query(collection(db, "fake-data"), 
+	const nameQuery = query(collection(db, "projects"), 
 	where("name", ">=", term), 
 	where("name", "<=", term + "\uf8ff"));
 
@@ -93,7 +93,7 @@ export const getProjectsBetween = async (startDate: Date, endDate: Date) => {
 	const startTimestamp = Timestamp.fromDate(startDate);
 	const endTimestamp = Timestamp.fromDate(endDate);
 
-	const datesQuery = query(collection(db, "fake-data"), 
+	const datesQuery = query(collection(db, "projects"), 
 	where("creationDate", ">=", startTimestamp), 
 	where("creationDate", "<=", endTimestamp), 
 	orderBy("creationDate", "desc"));
