@@ -13,10 +13,10 @@ const FilterTabs: React.FC<FilterTabsProps> = ({ tabs, selectedTab, onTabSelect 
       {tabs.map(tab => (
         <button
           key={tab}
-          className={`${styles.tab} ${selectedTab === tab ? styles.activeTab : ''}`}
+          className={`${styles.tab} `}
           onClick={() => onTabSelect(tab)}
         >
-          {tab}
+          <p className={selectedTab === tab ? styles.activeTab : ''}>{tab}</p>
         </button>
       ))}
     </div>
