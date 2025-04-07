@@ -1,6 +1,6 @@
-import { auth } from "../firebaseConfig.js";
-import { onIdTokenChanged, type User, type IdTokenResult } from "@firebase/auth";
+import { type User, type IdTokenResult, onIdTokenChanged } from "@firebase/auth";
 import { useState, useEffect, useMemo, createContext, useContext } from "react";
+import { auth } from "../testFirebaseConfig.js";
 
 // We'll need this AuthProvider to provide info about the signed-in user to various pages.
 
