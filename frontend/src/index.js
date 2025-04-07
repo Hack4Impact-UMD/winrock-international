@@ -1,9 +1,13 @@
+// src/index.js
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // <- this is the key change
+import ReactDOM from 'react-dom/client';   // ← correct import for React 18+
 import App from './App.tsx';
-import './index.css'; // optional
+import './index.css';                      // your global styles
 
-const root = ReactDOM.createRoot(document.getElementById('root')); // this is the new React 18 API
+const container = document.getElementById('root');
+if (!container) throw new Error("Root container missing in index.html");
+
+const root = ReactDOM.createRoot(container);
 root.render(
   <React.StrictMode>
     <App />

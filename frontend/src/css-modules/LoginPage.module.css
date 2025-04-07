@@ -13,7 +13,7 @@
 .topBar {
   width: 100%;
   height: 4px;
-  background-color: #0D4EAB; /* Winrock blue */
+  background-color: #005293; /* Winrock blue */
 }
 
 /* Header area (white background) */
@@ -63,10 +63,10 @@
 .outlookButton {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #0D4EAB;
+  border: 1px solid #005293;
   border-radius: 20px;
   background-color: #fff;
-  color: #0D4EAB;
+  color: #005293;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -90,6 +90,7 @@
     width: 100%;
     margin: 1.5rem 0;         /* adjust vertical spacing as needed */
     font-size: 1.375rem;
+    font-family: 'Roboto', sans-serif;
   }
   
   /* The lines on each side */
@@ -99,6 +100,7 @@
     flex: 1;                  /* take up remaining space */
     height: 1px;              /* thickness of the line */
     background-color: #005293;   /* line color */
+    font-family: 'Roboto', sans-serif;
   }
   
   /* The “OR” text */
@@ -107,7 +109,8 @@
     background-color: #fff;   /* cover the lines behind the text */
     color: #005293;              /* text color */
     font-size: 1.375rem;      /* ~14px */
-    font-weight: 400;
+    font-weight: 300;
+    font-family: 'Roboto', sans-serif;
   }
   
   
@@ -144,38 +147,52 @@
   border-radius: 10px;
   font-size: 0.875rem;
   background-color: #F7F8F9;
-  color: #C7C7C7;
+  color: #76797C;
   letter-spacing: 0.42px;
 }
 
 /* Forgot password link */
 .forgotPassword {
   align-self: flex-end;
-  font-size: 0.8125rem; /* ~13px */
-  color: #0D4EAB;
+  font-size: 0.875rem; /* ~13px */
+  color: black;
   text-decoration: none;
   margin: 0.25rem 0 1rem 0;
+  letter-spacing: 0.10px;
+  font-weight: 500;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* Login button (solid) */
 .loginButton {
   width: 100%;
-  padding: 0.75rem;
+  padding: 1rem;
   border: none;
-  border-radius: 8px;
-  background-color: #0D4EAB;
+  border-radius: 10px;
+  background-color: #005293;
   color: #fff;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
+  letter-spacing: 0.48px;
 }
 
 /* Sign-up button/link (outlined or text) */
-.signupButton {
+.signup {
+  
+  font-size: 0.875rem; /* ~13px */
+  color: black;
+  text-decoration: none;
+  margin: 0.25rem 0 1rem 0;
+  letter-spacing: 0.10px;
+  font-weight: 500;
+  font-family: 'Roboto', sans-serif;
   margin-top: 1rem;
   background-color: transparent;
-  color: #0D4EAB;
+  color: #005293;
   border: none;
   font-size: 1rem;
   cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 0.15px;
 }

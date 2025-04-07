@@ -2,13 +2,15 @@ import React from "react";
 import styles from "../css-modules/LoginPage.module.css"; 
 import logo from "../assets/winrock-international-logo.png"
 import outlook from "../assets/Outlook-logo.png"
+import { Link } from "react-router-dom";
+
 // Adjust this path if needed
 
 export default function LoginPage() {
   return (
     <div className={styles.pageContainer}>
       {/* Thin blue bar at the top */}
-      <div className={styles.topBar}></div>
+     
 
       {/* White header area with logo and title */}
       <header className={styles.header}>
@@ -18,7 +20,7 @@ export default function LoginPage() {
           alt="Winrock Logo"
           className={styles.logo}
         />
-        <h1 className={styles.headerTitle}>Winrock and Client Login</h1>
+        
       </header>
 
       {/* Main content: centered card */}
@@ -59,9 +61,9 @@ export default function LoginPage() {
               placeholder="Enter your password"
             />
 
-            <a href="#forgot-password" className={styles.forgotPassword}>
-              Forgot password?
-            </a>
+<Link to="/forgot-password" className={styles.forgotPassword}>
+          Forgot password?
+        </Link>
 
             {/* Login button */}
             <button type="submit" className={styles.loginButton}>
@@ -70,9 +72,11 @@ export default function LoginPage() {
           </form>
 
           {/* Sign up link/button */}
-          <button className={styles.signupButton}>
-            Sign up with new account →
-          </button>
+          <Link to="/signup" className={styles.signup}>
+          Sign up with new account →
+        </Link>
+
+          
         </div>
       </main>
     </div>
