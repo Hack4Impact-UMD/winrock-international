@@ -48,7 +48,7 @@ function AuthProvider({ children }: AuthProviderProps) {
                 const newToken = await newUser.getIdTokenResult();
                 setToken(newToken);
             } catch (error) {
-                console.error("Server error refreshing ID token: ", error);
+                console.error("Server error on ID token change: ", error);
             }
         })
     }, []);

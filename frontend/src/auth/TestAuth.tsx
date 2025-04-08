@@ -1,9 +1,7 @@
 import { useState } from "react";
 import {
   handleSignup,
-  handleOutlookSignup,
   handleLogin,
-  handleOutlookLogin,
   handleLogout
 } from './auth';
 
@@ -12,7 +10,7 @@ const TestAuth: React.FC = () => {
   const [currentUserPassword, setCurrentUserPassword] = useState("");
 
   function generateRandomString(length: number) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let result = "";
     for (let i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -33,7 +31,7 @@ const TestAuth: React.FC = () => {
       <p
         style={{ margin: "1.5rem", fontSize: "2rem" }}
       >
-        Test Client Signup/Login
+        Test Signup/Login
       </p>
       <button
         onClick={async () => {
@@ -45,13 +43,16 @@ const TestAuth: React.FC = () => {
           const result = await handleSignup({
             email: newUserEmail,
             password: newUserPassword,
-            role: "admin or client or supplier"
+            firstName: "Rin",
+            lastName: "Wock",
+            role: "client",
+            company: "Rinwock"
           });
           console.log(result);
         }}
         style={{ margin: "1rem", padding: "1rem 2rem", borderRadius: "15px", background: "green", color: "white",
                 fontSize: "1rem", fontFamily: "sans-serif", cursor: "pointer"}}>
-          Create User w/ Random Email and Password
+          Sign Up w/ Random Email and Password
       </button>
 
       <button
@@ -65,34 +66,7 @@ const TestAuth: React.FC = () => {
         }}
         style={{ padding: "1rem 2rem", borderRadius: "15px", background: "yellow", color: "black",
                 fontSize: "1rem", fontFamily: "sans-serif", cursor: "pointer"}}>
-        Log In User (Click After Creating User)
-      </button>
-
-      <p
-        style={{ margin: "1.5rem", fontSize: "2rem" }}
-      >
-        Test Signup/Login with Outlook
-      </p>
-      <button
-        onClick={async () => {
-          console.log("Signing up with Outlook...");
-          const result = await handleOutlookSignup({ role: "admin or client or supplier" });
-          console.log(result);
-        }}
-        style={{ margin: "1rem", padding: "1rem 2rem", borderRadius: "15px", background: "blue", color: "white",
-                fontSize: "1rem", fontFamily: "sans-serif", cursor: "pointer"}}>
-          Sign Up w/ Outlook
-      </button>
-
-      <button
-        onClick={async () => {
-          console.log("Logging in with Outlook...");
-          const result = await handleOutlookLogin();
-          console.log(result);
-        }}
-        style={{ padding: "1rem 2rem", borderRadius: "15px", background: "white", color: "black",
-                fontSize: "1rem", fontFamily: "sans-serif", cursor: "pointer"}}>
-        Log In w/ Outlook (Winrock)
+        Log In (Click After Signing Up)
       </button>
 
       <p

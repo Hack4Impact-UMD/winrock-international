@@ -1,23 +1,26 @@
+import { FirebaseError } from "firebase/app";
+import * as firestore from "firebase/firestore";
 import { 
     type User,
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword,
-    signInWithPopup,
     signOut,
-    OAuthProvider
 } from "firebase/auth";
-import { FirebaseError } from "firebase/app";
-import { auth } from "../firebaseConfig.js";
+import { db, auth } from "../firebaseConfig.js";
 import Result from "../types/Result.js";
+
+type Role =
+    | "admin"
+    | "client"
+    | "supplier";
 
 interface SignupInfo {
     email: string;
     password: string;
-    role: string;
-}
-
-interface OutlookSignupInfo {
-    role: string;
+    firstName: string;
+    lastName: string;
+    role: Role;
+    company?: string;
 }
 
 interface LoginInfo {
@@ -26,42 +29,47 @@ interface LoginInfo {
 }
 
 /**
- * Sign up a user (client, supplier, or Winrock employee)
- * with an email and password.
+ * Sign up a user with an email and password.
  * 
  * @param email of the user.
  * @param password of the user. 
- * @returns a Promise<AuthResult>.
- */
-async function handleSignup({ email, password, role }: SignupInfo): Promise<Result> {
-    try {
-        const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const newUser: User = newUserCredential.user;
-        return { success: true, data: newUser.uid };
-    } catch (error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
-    }
-}
-
-/**
- * Sign up a user (client, supplier, or Winrock employee)
- * via Microsoft Outlook.
- * 
+ * @param firstName of the user.
+ * @param lastName of the user.
+ * @param role of the user (client, supplier, or Winrock employee).
+ * @param company of the user (if role is "client" or "supplier").
  * @returns a Promise<Result>.
  */
-async function handleOutlookSignup({ role } : OutlookSignupInfo): Promise<Result> {
+async function handleSignup({ email, password, firstName, lastName, role, company }: SignupInfo): Promise<Result> {
     try {
-        const provider = new OAuthProvider('microsoft.com');
-        provider.addScope('email');
-        provider.addScope('profile');
-        
-        const newUserCredential = await signInWithPopup(auth, provider);
+        if (!firstName) return { success: false, errorCode: "missing-firstname"};
+        if (!lastName) return { success: false, errorCode: "missing-lastname"};
+        if (!role) return { success: false, errorCode: "missing-role"};
+        // Email and password fields are checked by Firebase
+
+        let companyField = {};
+        if (role === "client" || role === "supplier") {
+            if (!company) return { success: false, errorCode: "missing-company"};
+            companyField = { company };
+        } else if (role === "admin") {
+            if (company) return { success: false, errorCode: "company-field-not-allowed"};
+        } else {
+            return { success: false, errorCode: "invalid-role"};
+        }
+
+        const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
         const newUser: User = newUserCredential.user;
-        return { success: true, data: newUser.uid };
+
+        const docRef = firestore.doc(db, "users", newUser.uid); // Use the user's random UID as the document ID
+        const newUserObj = {
+            email,
+            firstName,
+            lastName,
+            role,
+            ...companyField
+        };
+        
+        await firestore.setDoc(docRef, newUserObj);
+        return { success: true };
     } catch (error) {
         if (error instanceof FirebaseError) {
             return { success: false, errorCode: error.code };
@@ -76,36 +84,12 @@ async function handleOutlookSignup({ role } : OutlookSignupInfo): Promise<Result
  * 
  * @param email of the user.
  * @param password of the user.
- * @returns a Promise<AuthResult>.
+ * @returns a Promise<Result>.
  */
 async function handleLogin({ email, password }: LoginInfo): Promise<Result> {
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user: User = userCredential.user;
-        return { success: true, data: user.uid };
-    } catch (error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
-    }
-}
-
-/**
- * Log in a user via Microsoft Outlook.
- * 
- * @returns a Promise<Result>.
- */
-async function handleOutlookLogin(): Promise<Result> {
-    try {
-        const provider = new OAuthProvider('microsoft.com');
-        provider.addScope('email');
-        provider.addScope('profile');
-        
-        const userCredential = await signInWithPopup(auth, provider);
-        const user: User = userCredential.user;
-        return { success: true, data: user.uid };
+        await signInWithEmailAndPassword(auth, email, password);
+        return { success: true };
     } catch (error) {
         if (error instanceof FirebaseError) {
             return { success: false, errorCode: error.code };
@@ -134,8 +118,6 @@ async function handleLogout(): Promise<Result> {
 
 export { 
     handleSignup,
-    handleOutlookSignup,
     handleLogin,
-    handleOutlookLogin,
     handleLogout
 };
