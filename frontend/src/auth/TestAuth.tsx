@@ -1,9 +1,9 @@
 import { useState } from "react";
 import {
-  handleClientSignup,
-  handleWinrockOutlookSignup,
-  handleWinrockOutlookLogin,
-  handleClientLogin,
+  handleSignup,
+  handleOutlookSignup,
+  handleLogin,
+  handleOutlookLogin,
   handleLogout
 } from './auth';
 
@@ -37,14 +37,15 @@ const TestAuth: React.FC = () => {
       </p>
       <button
         onClick={async () => {
-          console.log("Signing up client...");
+          console.log("Signing up...");
           const newUserEmail = generateRandomEmail();
           const newUserPassword = generateRandomPassword();
           setCurrentUserEmail(newUserEmail);
           setCurrentUserPassword(newUserPassword);
-          const result = await handleClientSignup({
+          const result = await handleSignup({
             email: newUserEmail,
-            password: newUserPassword
+            password: newUserPassword,
+            role: "admin or client or supplier"
           });
           console.log(result);
         }}
@@ -55,8 +56,8 @@ const TestAuth: React.FC = () => {
 
       <button
         onClick={async () => {
-          console.log("Logging in client...");
-          const result = await handleClientLogin({
+          console.log("Logging in...");
+          const result = await handleLogin({
             email: currentUserEmail,
             password: currentUserPassword
           });
@@ -70,23 +71,23 @@ const TestAuth: React.FC = () => {
       <p
         style={{ margin: "1.5rem", fontSize: "2rem" }}
       >
-        Test Winrock Signup/Login with Outlook
+        Test Signup/Login with Outlook
       </p>
       <button
         onClick={async () => {
-          console.log("Signing up Winrock employee...");
-          const result = await handleWinrockOutlookSignup();
+          console.log("Signing up with Outlook...");
+          const result = await handleOutlookSignup({ role: "admin or client or supplier" });
           console.log(result);
         }}
         style={{ margin: "1rem", padding: "1rem 2rem", borderRadius: "15px", background: "blue", color: "white",
                 fontSize: "1rem", fontFamily: "sans-serif", cursor: "pointer"}}>
-          Sign Up w/ Outlook (Winrock)
+          Sign Up w/ Outlook
       </button>
 
       <button
         onClick={async () => {
-          console.log("Logging in Winrock employee...");
-          const result = await handleWinrockOutlookLogin();
+          console.log("Logging in with Outlook...");
+          const result = await handleOutlookLogin();
           console.log(result);
         }}
         style={{ padding: "1rem 2rem", borderRadius: "15px", background: "white", color: "black",

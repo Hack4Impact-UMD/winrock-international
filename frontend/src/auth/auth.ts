@@ -7,37 +7,33 @@ import {
     OAuthProvider
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { auth } from "../testFirebaseConfig.js";
+import { auth } from "../firebaseConfig.js";
 import Result from "../types/Result.js";
 
-interface WinrockSignupInfo {
+interface SignupInfo {
     email: string;
     password: string;
+    role: string;
 }
 
-interface ClientSignupInfo {
-    email: string;
-    password: string;
+interface OutlookSignupInfo {
+    role: string;
 }
 
-interface WinrockLoginInfo {
-    email: string;
-    password: string;
-}
-
-interface ClientLoginInfo {
+interface LoginInfo {
     email: string;
     password: string;
 }
 
 /**
- * Sign up a Winrock employee with an email and password.
+ * Sign up a user (client, supplier, or Winrock employee)
+ * with an email and password.
  * 
- * @param email of the Winrock employee.
- * @param password of the Winrock employee. 
+ * @param email of the user.
+ * @param password of the user. 
  * @returns a Promise<AuthResult>.
  */
-async function handleWinrockStandardSignup({ email, password }: WinrockSignupInfo): Promise<Result> {
+async function handleSignup({ email, password, role }: SignupInfo): Promise<Result> {
     try {
         const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
         const newUser: User = newUserCredential.user;
@@ -52,11 +48,12 @@ async function handleWinrockStandardSignup({ email, password }: WinrockSignupInf
 }
 
 /**
- * Sign up a Winrock employee via Microsoft Outlook.
+ * Sign up a user (client, supplier, or Winrock employee)
+ * via Microsoft Outlook.
  * 
  * @returns a Promise<Result>.
  */
-async function handleWinrockOutlookSignup(): Promise<Result> {
+async function handleOutlookSignup({ role } : OutlookSignupInfo): Promise<Result> {
     try {
         const provider = new OAuthProvider('microsoft.com');
         provider.addScope('email');
@@ -75,34 +72,13 @@ async function handleWinrockOutlookSignup(): Promise<Result> {
 }
 
 /**
- * Sign up a client with an email and password.
+ * Log in a user with their email and password.
  * 
- * @param email of the client.
- * @param password of the client.
- * @returns a Promise<Result>.
- */
-async function handleClientSignup({ email, password }: ClientSignupInfo): Promise<Result> {
-    try {
-        const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const newUser: User = newUserCredential.user;
-        return { success: true, data: newUser.uid };
-    } catch (error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
-    }
-}
-
-/**
- * Log in a Winrock employee with an email and password.
- * 
- * @param email of the Winrock employee.
- * @param password of the Winrock employee. 
+ * @param email of the user.
+ * @param password of the user.
  * @returns a Promise<AuthResult>.
  */
-async function handleWinrockStandardLogin({ email, password }: WinrockLoginInfo): Promise<Result> {
+async function handleLogin({ email, password }: LoginInfo): Promise<Result> {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user: User = userCredential.user;
@@ -117,11 +93,11 @@ async function handleWinrockStandardLogin({ email, password }: WinrockLoginInfo)
 }
 
 /**
- * Log in a Winrock employee via Microsoft Outlook.
+ * Log in a user via Microsoft Outlook.
  * 
  * @returns a Promise<Result>.
  */
-async function handleWinrockOutlookLogin(): Promise<Result> {
+async function handleOutlookLogin(): Promise<Result> {
     try {
         const provider = new OAuthProvider('microsoft.com');
         provider.addScope('email');
@@ -140,30 +116,9 @@ async function handleWinrockOutlookLogin(): Promise<Result> {
 }
 
 /**
- * Log in a client with an email and password.
- * 
- * @param email of the client.
- * @param password of the client.
- * @returns a Promise<Result>.
- */
-async function handleClientLogin({ email, password }: ClientLoginInfo): Promise<Result> {
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user: User = userCredential.user;
-        return { success: true, data: user.uid };
-    } catch (error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
-    }
-}
-
-/**
  * Log out the current user.
  */
-async function handleLogout() {
+async function handleLogout(): Promise<Result> {
     try {
         await(signOut(auth));
         return { success: true };
@@ -178,11 +133,9 @@ async function handleLogout() {
 
 
 export { 
-    handleWinrockStandardSignup, 
-    handleWinrockOutlookSignup,
-    handleClientSignup,
-    handleWinrockStandardLogin,
-    handleWinrockOutlookLogin,
-    handleClientLogin,
+    handleSignup,
+    handleOutlookSignup,
+    handleLogin,
+    handleOutlookLogin,
     handleLogout
 };
