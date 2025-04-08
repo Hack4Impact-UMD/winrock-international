@@ -1,17 +1,14 @@
-// src/pages/PasswordChangedPage.tsx
-import React from "react";
 import { Link } from "react-router-dom";
+import backArrow from "../../assets/arrow-left.svg";
+import successIcon from "../../assets/success.png";
 import styles from "../css-modules/ForgotFlow.module.css";
-import logo from "../assets/winrock-international-logo.png";
-import backArrow from "../assets/arrow-left.svg";
-import successIcon from "../assets/success.png";
+
+import AuthLogoHeader from "../components/AuthLogoHeader";
 
 export default function PasswordChangedPage() {
   return (
     <div className={styles.pageContainer}>
-      <header className={styles.header}>
-        <img src={logo} alt="Winrock Logo" className={styles.logo} />
-      </header>
+      <AuthLogoHeader />
 
       <main className={styles.main}>
         <div className={styles.card}>

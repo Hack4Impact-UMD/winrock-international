@@ -117,6 +117,7 @@ async function handleLogout(): Promise<Result> {
 
 
 export { 
+    type Role,
     handleSignup,
     handleLogin,
     handleLogout

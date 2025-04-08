@@ -1,37 +1,48 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import backArrow from "../../assets/arrow-left.svg";
+import outlookLogo from "../../assets/Outlook-logo.png";
+import Result from "../../types/Result";
+import { type Role, handleSignup } from "../auth";
 import styles from "../css-modules/SignUpPage.module.css";
-import logo from "../assets/winrock-international-logo.png";
-import backArrow from "../assets/arrow-left.svg";
-import outlookLogo from "../assets/Outlook-logo.png";
 
-export default function SignUpPage() {
-  const [step, setStep] = useState<1 | 2>(1);
-  const [role, setRole] = useState("");
+import AuthLogoHeader from "../components/AuthLogoHeader";
+
+function SignupPage() {
+  const navigate = useNavigate();
+
+  const [step, setStep] = useState(1);
+  const [role, setRole] = useState<Role | "">("");
   const [company, setCompany] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
-  const goNextStep = () => setStep(2);
-  const finishSignup = () => navigate("/login");
+  function goNextStep() {
+    setStep(step + 1);
+  }
+
+  async function handleSignupClick() {
+    if (role === "") return;
+
+    const result: Result = await handleSignup({ email, password, firstName, lastName, role, company})
+    if (result.success) {
+      navigate("/dashboard");
+    } else {
+      console.error("Error code: ", result.errorCode);
+    }
+  }
 
   return (
     <div className={styles.pageContainer}>
-      {/* Header */}
-      <header className={styles.header}>
-        <img src={logo} alt="Winrock Logo" className={styles.logo} />
-      </header>
+      <AuthLogoHeader />
 
-      {/* Main area */}
-      <main className={step === 2 ? styles.mainStep2 : styles.main}>        {/* Outlook button */}
+      <main className={step === 2 ? styles.mainStep2 : styles.main}>
         
-
         {step === 1 && (
           <div className={styles.card}>
-            <Link to="/" className={styles.backLink}>
+            <Link to="/login" className={styles.backLink}>
               <img src={backArrow} alt="Back" className={styles.backIcon} />
             </Link>
 
@@ -43,12 +54,18 @@ export default function SignUpPage() {
                 <select
                   className={styles.select}
                   value={role}
-                  onChange={(e) => setRole(e.target.value)}
+                  onChange={(e) => {
+                    const roleValue = e.target.value as Role;
+                    setRole(e.target.value as Role);
+                    if (roleValue === "admin") {
+                      setCompany("");
+                    }
+                  }}
                 >
-                  <option value="">Select a role</option>
-                  <option value="Client">Client</option>
-                  <option value="Supplier">Supplier</option>
-                  <option value="Winrock International">Winrock International</option>
+                  <option value="" disabled>Select a role</option>
+                  <option value="client">Client</option>
+                  <option value="supplier">Supplier</option>
+                  <option value="admin">Winrock International</option>
                 </select>
                 <svg
                   className={styles.selectIcon}
@@ -61,19 +78,21 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            <div className={styles.fieldGroup}>
-              <label className={styles.label}>Your Company Name</label>
-              <input
-                className={styles.input}
-                placeholder="Enter company name"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-              />
-            </div>
+            { (role === "client" || role === "supplier") &&
+              <div className={styles.fieldGroup}>
+                <label className={styles.label}>Your Company Name</label>
+                <input
+                  className={styles.input}
+                  placeholder="Enter company name"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                />
+              </div>
+            }
 
             <button
               className={styles.continueButton}
-              disabled={!role || !company}
+              disabled={!role}
               onClick={goNextStep}
             >
               Continue
@@ -88,9 +107,12 @@ export default function SignUpPage() {
           <img src={outlookLogo} alt="Outlook" className={styles.outlookIcon} />
         </button>
             <div className={styles.card}>
-              <Link to="/" className={styles.backLink}>
+              <div
+                className={styles.backLink}
+                onClick={() => setStep(1)}
+              >
                 <img src={backArrow} alt="Back" className={styles.backIcon} />
-              </Link>
+              </div>
 
               <h2 className={styles.title}>Create Your Account</h2>
 
@@ -142,7 +164,7 @@ export default function SignUpPage() {
                 disabled={
                   !firstName || !lastName || !email || !password
                 }
-                onClick={finishSignup}
+                onClick={async () => await handleSignupClick()}
               >
                 Continue
               </button>
@@ -153,3 +175,5 @@ export default function SignUpPage() {
     </div>
   );
 }
+
+export default SignupPage;

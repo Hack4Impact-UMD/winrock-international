@@ -1,9 +1,9 @@
-// src/pages/ForgotPasswordPage.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import backArrow from "../../assets/arrow-left.svg";
 import styles from "../css-modules/ForgotFlow.module.css";
-import logo from "../assets/winrock-international-logo.png";
-import backArrow from "../assets/arrow-left.svg";
+
+import AuthLogoHeader from "../components/AuthLogoHeader";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -13,17 +13,14 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
     console.log("Reset code sent to", email);
     navigate("/forgot-password/verify");
-  };
+  }
 
   return (
     <div className={styles.pageContainer}>
-      <header className={styles.header}>
-        <img src={logo} alt="Winrock Logo" className={styles.logo} />
-      </header>
+      <AuthLogoHeader />
 
       <main className={styles.main}>
         <div className={styles.card}>
-          {/* Back arrow now a Link */}
           <Link to="/login">
             <img
               src={backArrow}

@@ -1,9 +1,9 @@
-// src/pages/OTPVerificationPage.tsx
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import backArrow from "../../assets/arrow-left.svg";
 import styles from "../css-modules/ForgotFlow.module.css";
-import logo from "../assets/winrock-international-logo.png";
-import backArrow from "../assets/arrow-left.svg";
+
+import AuthLogoHeader from "../components/AuthLogoHeader";
 
 export default function OTPVerificationPage() {
   const navigate = useNavigate();
@@ -17,9 +17,7 @@ export default function OTPVerificationPage() {
 
   return (
     <div className={styles.pageContainer}>
-      <header className={styles.header}>
-        <img src={logo} alt="Winrock Logo" className={styles.logo} />
-      </header>
+      <AuthLogoHeader />
 
       <main className={styles.main}>
         <div className={styles.card}>

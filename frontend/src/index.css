@@ -6,3 +6,14 @@
     box-sizing: border-box;
     font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
 }
+
+:root {
+    --color-primary: #005293;
+    --color-secondary: #C1C7CE;
+    --color-green: #31ab48;
+    --color-bg-light: #F7F8F9;
+    --color-border-light: #DADADA;
+    --color-border-bottom: #C1C7CE;
+
+    --border-radius: 0.625rem;
+  }
