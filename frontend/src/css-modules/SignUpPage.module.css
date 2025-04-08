@@ -65,14 +65,14 @@
 .outlookButton {
   position: absolute;
   top: 0;      /* anchor at top of .main */
-  right: 1rem; /* 1rem from the right edge */
+   /* 1rem from the right edge */
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 0.6rem 1rem;
+  padding: 0.6rem 5rem;
   border: 1px solid var(--primary-blue);
-  border-radius: 8px;
-  background: var(--white);
+  border-radius: 15px;
+  background:var(--bg-light);
   color: var(--primary-blue);
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
@@ -88,14 +88,15 @@
 /* Card styling */
 .card {
   position: relative;
-  width: 420px; /* narrower than 469, but bigger than 360 if you want */
+  width: 25rem; /* narrower than 469, but bigger than 360 if you want */
   background: var(--white);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   border-radius: 20px;
-  padding: 60px 50px; /* top/bottom, left/right */
+  padding: 30px 50px; /* top/bottom, left/right */
   box-sizing: border-box;
   text-align: center;
-  margin-top: 2rem; /* extra top margin so the card sits lower */
+  margin-top: 4rem; /* extra top margin so the card sits lower */
+  margin-bottom: 1rem;
 }
 
 /* Back arrow link */
@@ -182,17 +183,17 @@
 
 /* The "Continue" or "Finish" button inside the card or at bottom */
 .continueButton {
-  margin-top: 36px;
   width: 100%;
   max-width: 320px;
-  height: 50px;
+  height: 3rem;
   background: var(--primary-blue);
   color: var(--white);
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   font-weight: 500;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
+  margin-top: 0;
   cursor: pointer;
 }
 

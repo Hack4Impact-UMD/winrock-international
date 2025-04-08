@@ -27,10 +27,7 @@ export default function SignUpPage() {
 
       {/* Main area */}
       <main className={step === 2 ? styles.mainStep2 : styles.main}>        {/* Outlook button */}
-        <button className={styles.outlookButton}>
-          Continue with Outlook
-          <img src={outlookLogo} alt="Outlook" className={styles.outlookIcon} />
-        </button>
+        
 
         {step === 1 && (
           <div className={styles.card}>
@@ -86,6 +83,10 @@ export default function SignUpPage() {
 
         {step === 2 && (
           <>
+          <button className={styles.outlookButton}>
+          Continue with Outlook
+          <img src={outlookLogo} alt="Outlook" className={styles.outlookIcon} />
+        </button>
             <div className={styles.card}>
               <Link to="/" className={styles.backLink}>
                 <img src={backArrow} alt="Back" className={styles.backIcon} />
