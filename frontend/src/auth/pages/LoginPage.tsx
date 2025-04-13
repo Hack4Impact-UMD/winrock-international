@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import outlookLogo from "../../assets/Outlook-logo.png"
+import { useNavigate } from "react-router-dom";
 import Result from "../../types/Result";
-import { handleLogin } from "../auth";
+import { handleLogin } from "../authService";
 import styles from "../css-modules/LoginPage.module.css"; 
 
 import AuthLogoHeader from "../components/AuthLogoHeader";
+import AuthForm from "../components/AuthForm";
+import AuthTextField from "../components/AuthTextField";
+import AuthPasswordField from "../components/AuthPasswordField";
+import OutlookButton from "../components/OutlookButton";
+import Divider from "../components/Divider";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -27,68 +31,48 @@ function LoginPage() {
   }
 
   return (
-    <div className={styles.pageContainer}>
+    <>
       <AuthLogoHeader />
 
-      <main className={styles.main}>
-        <div className={styles.card}>
-          <button className={styles.outlookButton}>
-            Continue with Outlook
-            <img src={outlookLogo} alt="Outlook icon" className={styles.outlookIcon} /> 
-          </button>
-
-          <div className={styles.divider}>
-            <span>OR</span>
-          </div>
-
-          <div className={styles.signInEmailLabel}>
-            Sign in with email
-          </div>
-
-          <form className={styles.form}>
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="Enter your company email"
-              autoComplete="on"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              autoComplete="on"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <Link to="/forgot-password" className={styles.forgotPassword}>
-              Forgot password?
-            </Link>
-
-            <button
-              className={styles.loginButton}
-              disabled={!email || !password}
-              onClick={async () => await handleLoginClick()}
-            >
-              Login
-            </button>
-          </form>
-
+      <AuthForm
+        nextLabel="Login"
+        onNext={handleLoginClick}
+        afterChildren={
           <button
             className={styles.signup}
             onClick={handleOpenSignupPortal}
           >
             Sign up with new account →
           </button>
-        </div>
-      </main>
-    </div>
-  );
+        }
+      >
+        <>
+          <OutlookButton
+            label="Continue with Outlook"
+            onClick={() => {return;}}
+          />
+
+          <Divider label="OR" />
+
+          <div className={styles.signInEmailLabel}>
+            Sign in with email
+          </div>
+
+          <AuthTextField
+            label="Email"
+            onChange={(value) => setEmail(value)}
+          />
+
+          <AuthPasswordField
+            label="Password"
+            linkLabel="Forgot password?"
+            link="/forgotPassword"
+            onChange={(value) => setPassword(value)}
+          />
+        </>
+      </AuthForm>
+    </>
+  )
 }
 
 export default LoginPage;

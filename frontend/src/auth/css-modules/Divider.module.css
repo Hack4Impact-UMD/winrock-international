@@ -1,0 +1,25 @@
+.divider {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 1.5rem 0;
+    font-size: 1.375rem;
+    font-family: 'Roboto', sans-serif;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #005293;
+    font-family: 'Roboto', sans-serif;
+}
+
+.divider span {
+    padding: 0 0.5rem;
+    background-color: #fff;
+    color: #005293;
+    font-size: 1.375rem;
+    font-weight: 300;
+}

@@ -1,0 +1,71 @@
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    height: calc(100vh - 4rem);
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-light);
+}
+
+.formContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    min-height: 35rem;
+    width: 27rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+}
+
+.backIcon {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: pointer;
+}
+
+.titleContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 4rem 0 1rem;
+    width: 100%;
+}
+
+.title {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    margin-bottom: 2rem;
+    color: black;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.48px;
+}
+
+.nextButton {
+    margin-top: 1rem;
+    width: 100%;
+    min-height: 3rem;
+    background: var(--color-primary);
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}  

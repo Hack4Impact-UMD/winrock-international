@@ -1,43 +1,36 @@
-import { Link } from "react-router-dom";
-import backArrow from "../../assets/arrow-left.svg";
+import { useNavigate } from "react-router-dom";
 import successIcon from "../../assets/success.png";
-import styles from "../css-modules/ForgotFlow.module.css";
 
 import AuthLogoHeader from "../components/AuthLogoHeader";
+import AuthForm from "../components/AuthForm";
 
-export default function PasswordChangedPage() {
+function PasswordChangedPage() {
+  const navigate = useNavigate();
+
+  function handleBackToLogin() {
+    navigate("/login");
+  }
+
   return (
-    <div className={styles.pageContainer}>
+    <>
       <AuthLogoHeader />
+      <AuthForm
+        title="Password Changed!"
+        subtitle="Your password has been changed successfully."
+        nextLabel="Back to Login"
+        onNext={handleBackToLogin}
 
-      <main className={styles.main}>
-        <div className={styles.card}>
-          <Link to="/login">
-            <img
-              src={backArrow}
-              alt="Back"
-              className={styles.backIcon}
-            />
-          </Link>
-
+        beforeChildren={<>
           <img
             src={successIcon}
             alt="Success"
-            style={{ width: "80px", margin: "0 auto 24px" }}
+            style={{ width: "80px", margin: "8rem auto -3rem" }}
           />
-
-          <h2 className={styles.title}>Password Changed!</h2>
-          <p className={styles.subtitle}>
-            Your password has been changed successfully.
-          </p>
-
-          <Link to="/login">
-            <button className={styles.button}>
-              Back to login
-            </button>
-          </Link>
-        </div>
-      </main>
-    </div>
-  );
+        </>}
+      >
+      </AuthForm>
+    </>
+  )
 }
+
+export default PasswordChangedPage;

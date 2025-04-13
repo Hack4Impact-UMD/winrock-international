@@ -1,32 +1,48 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import backArrow from "../../assets/arrow-left.svg";
-import outlookLogo from "../../assets/Outlook-logo.png";
+import { useNavigate } from "react-router-dom";
 import Result from "../../types/Result";
-import { type Role, handleSignup } from "../auth";
-import styles from "../css-modules/SignUpPage.module.css";
+import { type Role, handleSignup } from "../authService";
 
 import AuthLogoHeader from "../components/AuthLogoHeader";
+import AuthForm from "../components/AuthForm";
+import AuthDropdownField from "../components/AuthDropdownField";
+import AuthTextField from "../components/AuthTextField";
+import AuthPasswordField from "../components/AuthPasswordField";
+
+interface StepOneProps {
+  role: Role | "";
+  setRole: React.Dispatch<React.SetStateAction<Role | "">>;
+  setCompany: React.Dispatch<React.SetStateAction<string>>;
+}
+
+interface StepTwoProps {
+  setFirstName: React.Dispatch<React.SetStateAction<string>>;
+  setLastName: React.Dispatch<React.SetStateAction<string>>;
+}
+
+interface StepThreeProps {
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
+}
 
 function SignupPage() {
   const navigate = useNavigate();
 
-  const [step, setStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1);
   const [role, setRole] = useState<Role | "">("");
   const [company, setCompany] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  function goNextStep() {
-    setStep(step + 1);
-  }
+  async function handleCreateAccount() {
+    if (!email || !password || !firstName || !lastName || !role
+        || password !== confirmPassword) return;
 
-  async function handleSignupClick() {
-    if (role === "") return;
-
-    const result: Result = await handleSignup({ email, password, firstName, lastName, role, company})
+    const result: Result = await handleSignup({ email, password, firstName, lastName, role, company});
     if (result.success) {
       navigate("/dashboard");
     } else {
@@ -35,145 +51,104 @@ function SignupPage() {
   }
 
   return (
-    <div className={styles.pageContainer}>
+    <>
       <AuthLogoHeader />
+        <AuthForm
+          title="Create Your Account"
+          subtitle={currentStep < 3 ? "Please enter your details to sign up." : undefined}
+          nextLabel={currentStep < 3 ? "Continue" : "Create Account"}
+          onNext={() => {
+            if (currentStep === 1) {
 
-      <main className={step === 2 ? styles.mainStep2 : styles.main}>
-        
-        {step === 1 && (
-          <div className={styles.card}>
-            <Link to="/login" className={styles.backLink}>
-              <img src={backArrow} alt="Back" className={styles.backIcon} />
-            </Link>
-
-            <h2 className={styles.title}>Create Your Account</h2>
-
-            <div className={styles.fieldGroup}>
-              <label className={styles.label}>What is your role?</label>
-              <div className={styles.selectWrapper}>
-                <select
-                  className={styles.select}
-                  value={role}
-                  onChange={(e) => {
-                    const roleValue = e.target.value as Role;
-                    setRole(e.target.value as Role);
-                    if (roleValue === "admin") {
-                      setCompany("");
-                    }
-                  }}
-                >
-                  <option value="" disabled>Select a role</option>
-                  <option value="client">Client</option>
-                  <option value="supplier">Supplier</option>
-                  <option value="admin">Winrock International</option>
-                </select>
-                <svg
-                  className={styles.selectIcon}
-                  width="13" height="8"
-                  viewBox="0 0 13 8" fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M1 0.75L6.5 6.25L12 0.75" stroke="black" strokeWidth="2"/>
-                </svg>
-              </div>
-            </div>
-
-            { (role === "client" || role === "supplier") &&
-              <div className={styles.fieldGroup}>
-                <label className={styles.label}>Your Company Name</label>
-                <input
-                  className={styles.input}
-                  placeholder="Enter company name"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                />
-              </div>
+              setCurrentStep(currentStep + 1);
+            } else if (currentStep === 2) {
+              setCurrentStep(currentStep + 1);
+            } else {
+              handleCreateAccount();
             }
+          }}
+        >
+        <>
+          {currentStep === 1 &&
+            <StepOne
+              role={role}
+              setRole={setRole}
+              setCompany={setCompany}
+            />}
 
-            <button
-              className={styles.continueButton}
-              disabled={!role}
-              onClick={goNextStep}
-            >
-              Continue
-            </button>
-          </div>
-        )}
+          {currentStep === 2 &&
+            <StepTwo
+              setFirstName={setFirstName}
+              setLastName={setLastName}
+            />}
 
-        {step === 2 && (
-          <>
-          <button className={styles.outlookButton}>
-          Continue with Outlook
-          <img src={outlookLogo} alt="Outlook" className={styles.outlookIcon} />
-        </button>
-            <div className={styles.card}>
-              <div
-                className={styles.backLink}
-                onClick={() => setStep(1)}
-              >
-                <img src={backArrow} alt="Back" className={styles.backIcon} />
-              </div>
+          {currentStep === 3 &&
+            <StepThree
+              setEmail={setEmail}
+              setPassword={setPassword}
+              setConfirmPassword={setConfirmPassword}
+            />}
+        </>
+      </AuthForm>
+    </>
+  )
+}
 
-              <h2 className={styles.title}>Create Your Account</h2>
+const StepOne = ({ role, setRole, setCompany }: StepOneProps) => {
+  return (
+    <>
+      <AuthDropdownField
+        label="What is your role?"
+        blankOption="I am a..."
+        options={["Client", "Supplier", "Winrock Employee"]}
+        values={["client", "supplier", "admin"]}
+        onSelect={(value) => setRole(value as Role)}
+      />
 
-              <div className={styles.fieldGroup}>
-                <label className={styles.label}>First Name</label>
-                <input
-                  className={styles.input}
-                  placeholder="Enter first name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </div>
+      {(role === "client" || role === "supplier") &&
+        <AuthTextField
+          label="Company name"
+          onChange={(value) => setCompany(value)}
+        />}
+    </>
+  )
+}
 
-              <div className={styles.fieldGroup}>
-                <label className={styles.label}>Last Name</label>
-                <input
-                  className={styles.input}
-                  placeholder="Enter last name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </div>
+const StepTwo = ({ setFirstName, setLastName }: StepTwoProps) => {
+  return (
+    <>
+      <AuthTextField
+        label="First Name"
+        onChange={(value) => setFirstName(value)}
+      />
 
-              <div className={styles.fieldGroup}>
-                <label className={styles.label}>Email Address</label>
-                <input
-                  className={styles.input}
-                  placeholder="Enter email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
+      <AuthTextField
+        label="Last Name"
+        onChange={(value) => setLastName(value)}
+      />
+    </>
+  )
+}
 
-              <div className={styles.fieldGroup}>
-                <label className={styles.label}>Password</label>
-                <input
-                  type="password"
-                  className={styles.input}
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
+const StepThree = ({ setEmail, setPassword, setConfirmPassword }: StepThreeProps) => {
+  return (
+    <>
+      <AuthTextField
+        label="Email Address"
+        onChange={(value) => setEmail(value)}
+      />
 
-            <div className={styles.footerContinue}>
-              <button
-                className={styles.continueButton}
-                disabled={
-                  !firstName || !lastName || !email || !password
-                }
-                onClick={async () => await handleSignupClick()}
-              >
-                Continue
-              </button>
-            </div>
-          </>
-        )}
-      </main>
-    </div>
-  );
+      <AuthPasswordField
+        label="Password"
+        onChange={(value) => setPassword(value)}
+      />
+
+      <AuthPasswordField
+        label="Confirm Password"
+        onChange={(value) => setConfirmPassword(value)}
+      />
+    </>
+  )
 }
 
 export default SignupPage;

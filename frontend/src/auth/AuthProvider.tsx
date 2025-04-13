@@ -1,5 +1,5 @@
 import { type User, type IdTokenResult, onIdTokenChanged } from "@firebase/auth";
-import { useState, useEffect, useMemo, createContext, useContext } from "react";
+import { useState, useEffect, useMemo, createContext, useContext, JSX } from "react";
 import { auth } from "../firebaseConfig.js";
 
 // We'll need this AuthProvider to provide info about the signed-in user to various pages.
@@ -32,7 +32,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     // Cache these props and re-compute them only when they're changed,
     // preventing unnecessary re-renders of children.
     const providerProps = useMemo(() => {
-        return { user, token };
+        return {user, token};
     }, [user, token]);
 
     // Handle setting and updating the user upon signup, login, logout,
@@ -54,8 +54,8 @@ function AuthProvider({ children }: AuthProviderProps) {
     }, []);
 
     return (
-        <AuthContext.Provider value={ providerProps }>
-            { children }
+        <AuthContext.Provider value={providerProps}>
+            {children}
         </AuthContext.Provider>
     )
 }
