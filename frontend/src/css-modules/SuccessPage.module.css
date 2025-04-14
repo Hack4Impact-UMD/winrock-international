@@ -1,0 +1,53 @@
+
+.successContainer{
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    flex-direction: column;
+display: flex;
+
+}
+.successMessage{
+    align-items: center;
+    align-self: center;
+    justify-content: center; /* Center vertically inside the message box */
+    display: flex;
+    flex-direction: column;
+
+
+}
+
+.checkmark {
+    width: 9rem; /* Adjust size of the checkmark icon */
+    height: 9rem;
+    margin-bottom: 5px;
+    align-self: center;
+}
+
+h1 {
+    font-size: 2.25rem; /* Larger font for the heading */
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    margin: 10px 0;
+}
+
+p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    font-weight: normal;
+    font-style: italic;
+    letter-spacing: 0.54px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #0070c9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}

@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Correctly import useNavigate
-
+import { useNavigate } from "react-router-dom";
 import Dropdown from "./Dropdown";
 import LogoHeader from "./LogoHeader";
-import NavigationButtons from "./NavigationButtons";
+import NavigationButtons from "./NavigationButtons"; // Import NavigationButtons
 import SectionHeader from "./SectionHeader";
 import TextQuestion from "./TextQuestion";
 import TitleHeader from "./TitleHeader";
@@ -11,12 +10,14 @@ import ProgressBar from "./Progressbar";
 import { db } from "../firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 import styles from "../css-modules/AgricultureForm.module.css";
-import GuidanceDropdown from "./GuidanceDropdown";  
+import GuidanceDropdown from "./GuidanceDropdown";
 
-const Renewable = () => {
-    const navigate = useNavigate(); // Initialize the navigate function using useNavigate()
+// Import image for the table
+import tableImage from '../assets/table.png';
 
+const Page2 = () => {
     const [dropdownResponses, setDropdownResponses] = useState<{ [key: string]: string }>({});
+    const navigate = useNavigate();
 
     const handleSelect = (id: string, response: string) => {
         setDropdownResponses({
@@ -33,9 +34,14 @@ const Renewable = () => {
             });
         }
     }
+
+    // Navigation logic
     const goToNextPage = () => {
-        // Navigate to Page 2 when the "Next" button is clicked
-        navigate('/page2');
+        navigate('/page3'); // Adjust the route as needed
+    };
+
+    const goBack = () => {
+        navigate('/page1'); // Adjust the route as needed
     };
 
     return (
@@ -45,156 +51,53 @@ const Renewable = () => {
                 title="Renewable Energy Project Proposal Form"
                 description="Please focus on the top 80% of Energy Sources used linked to volume supplied to Nestlé. If you haven't done any Renewable Electricity/Energy Intervention, please list total energy usage in kWh linked to Nestlé supply per site."
             />
-            <ProgressBar currentPage={1} totalPages={2} pageLabels={["Proposal Form (Page 1)", "Proposal Form (Page 2)"]} />
+            <ProgressBar currentPage={2} totalPages={2} pageLabels={["Proposal Form (Page 1)", "Proposal Form (Page 2)"]} />
             <GuidanceDropdown />
             <div className={styles.section}>
-                <SectionHeader label="Generic Information" />
-                <div className={styles.questionscontainer}>
-                    <TextQuestion
-                        name="1. Parent Vendor Name"
-                        response=""
-                    />
-                    <TextQuestion
-                        name="2. Vendor Code"
-                        response=""
-                    />
-                    <TextQuestion
-                        name="3. Vendor Site SAP Name"
-                        response=""
-                    />
-                    <Dropdown
-                        id="spendCategory"
-                        question="4. Spend Category"
-                        options={["Option 1", "Option 2", "Option 3"]}
-                        onSelect={(selected: string) => handleSelect("spendCategory", selected)}
-                    />
-                    <Dropdown
-                        id="level2Category"
-                        question="5. Level 2 Category"
-                        options={["Category A", "Category B", "Category C"]}
-                        onSelect={(selected: string) => handleSelect("level2Category", selected)}
-                    />
-                    <TextQuestion
-                        name="6. Vendor Site Country"
-                        response=""
-                    />
-                    <TextQuestion
-                        name="7. Vendor Site City"
-                        response=""
-                    />
-                    <Dropdown
-                        id="projectType"
-                        question="8. Project Type"
-                        options={["Project A", "Project B", "Project C"]}
-                        onSelect={(selected: string) => handleSelect("projectType", selected)}
-                    />
-                    <TextQuestion
-                        name="Please describe specific project activities."
-                        response=""
-                    />
-                    <TextQuestion
-                        name="9. Project Implementation Year"
-                        response=""
-                    />
-                    <Dropdown
-                        id="evidenceImpact"
-                        question="10. How do you plan to evidence the project impact?"
-                        options={["Option 1", "Option 2", "Option 3"]}
-                        onSelect={(selected: string) => handleSelect("evidenceImpact", selected)}
-                    />
-                    <TextQuestion
-                        name="If other, please describe."
-                        response=""
-                    />
-                    <TextQuestion
-                        name="11. Volume of Material - Delivered to Nestlé in 2022 (Tons = Metric Tons)"
-                        response=""
+                <SectionHeader label="Evidentiary Documentation Checklist" />
+
+                <p style={{
+                    color: 'black',
+                    fontSize: '16px',
+                    fontFamily: 'Neue Haas Grotesk Display Pro',
+                    fontWeight: '500',
+                    lineHeight: '24px',
+                    letterSpacing: '0.48px',
+                    wordWrap: 'break-word',
+                    padding: '20px',
+                    margin: '0 60px',
+                }}>
+                    This checklist represents information that will need to be gathered over the course of the project validation process.
+                    ***This information does not necessarily need to be provided by suppliers when the project form is initially submitted to your procurement manager. Filling out the "Project Submission Form" tab will be enough to trigger the commencement of the project validation process.***
+                    <br />
+                    When suppliers fill out this checklist, the documentation can be attached on a separate tab, provided as a link in column I of this spreadsheet, or emailed along with this spreadsheet workbook. The following table provides a checklist of documents that will help our Technical Advisor evaluate the project. If you have any questions about the documents listed below, please refer to Nestlé's Renewable Energy FAQ, which is linked in the Guidance tab of this workbook.
+                </p>
+
+                {/* Add Image at the end */}
+                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                    <img
+                        src={tableImage}
+                        alt="Evidentiary Documentation Table"
+                        style={{ width: '100%', maxWidth: '1200px' }}
                     />
                 </div>
             </div>
 
-            {/* Energy Consumption: Before Intervention */}
-            <div className={styles.section}>
-                <SectionHeader label="Energy Consumption: Before Intervention" />
-                <div className={styles.questionscontainer}>
-                    <Dropdown
-                        id="sourceEnergyBefore"
-                        question="12. Source of Energy"
-                        options={["Option 1", "Option 2", "Option 3"]}
-                        onSelect={(selected: string) => handleSelect("sourceEnergyBefore", selected)}
-                    />
-                    <TextQuestion
-                        name="13. Energy Consumption (KWh/year) - estimate for Nestlé share only"
-                        response=""
-                        className={styles.redText} // Added red text class
-                    />
-                    <TextQuestion
-                        name="14. Emission Factor of Energy BEFORE Intervention (kgCO2 per KWh)"
-                        response=""
-                        className={styles.redText} // Added red text class
-                    />
-                </div>
-            </div>
-
-            {/* Energy Consumption: After Intervention */}
-            <div className={styles.section}>
-                <SectionHeader label="Energy Consumption: After Intervention is Completed" />
-                <div className={styles.questionscontainer}>
-                    <Dropdown
-                        id="sourceEnergyAfter"
-                        question="15. Source of Energy"
-                        options={["Option 1", "Option 2", "Option 3"]}
-                        onSelect={(selected: string) => handleSelect("sourceEnergyAfter", selected)}
-                    />
-                    <TextQuestion
-                        name="16. Energy Consumption 2 (KWh/year) - estimate for Nestlé share only"
-                        response=""
-                        className={styles.redText} // Added red text class
-                    />
-                    <TextQuestion
-                        name="17. Emission Factor of Energy AFTER Intervention (kgCO2 per KWh)"
-                        response=""
-                        className={styles.redText} // Added red text class
-                    />
-                </div>
-            </div>
-
-            {/* Comments/ Remarks */}
-            <div className={styles.section}>
-                <SectionHeader label="Comments/ Remarks" />
-                <div className={styles.questionscontainer}>
-                    <TextQuestion
-                        name="18. Source of Emission Factor (Please refer to your answer from Questions 14 and 17 - Energy Consumption before and after intervention)"
-                        response=""
-                    />
-                </div>
-            </div>
-
-            {/* Impact Section - New Addition */}
-            <div className={styles.section}>
-                <SectionHeader label="Impact" />
-                <div className={styles.questionscontainer}>
-                    <Dropdown
-                        id="sourceEnergyImpact"
-                        question="19. Source of Energy"
-                        options={["Option 1", "Option 2", "Option 3"]}
-                        onSelect={(selected: string) => handleSelect("sourceEnergyImpact", selected)}
-                    />
-                    <TextQuestion
-                        name="20. Impact Reduction On GHG Emission After Intervention - Attribute to Nestlé only (tonsCO2e) based on an annualized impact"
-                        response=""
-                        className={styles.redText} // Added red text class
-                    />
-                    <TextQuestion
-                        name="21. Impact Timing"
-                        response=""
-                    />
-                </div>
-            </div>
-            <NavigationButtons onSaveChanges={saveDropdowns} onSaveAndExit={saveDropdowns} onNext={goToNextPage} />
+            {/* Navigation Buttons */}
+            <NavigationButtons
+            onSaveChanges={saveDropdowns} // Save the changes
+            onSaveAndExit={saveDropdowns} // Save and Exit
+            onNext={goToNextPage}         // Handle Next (Submit) button
+            onBack={goBack}               // Handle Back button
+            canGoNext={true}              // Enable Next button
+            canGoBack={true}              // Enable Back button
+            showSaveOptions={true}        // Show Save buttons (Save Changes & Save and Exit)
+            nextLabel="Submit"            // Custom label for the next button
+            backLabel="Back"              // Custom label for the back button
+         />
 
         </div>
     );
 };
 
-export default Renewable;
+export default Page2;
