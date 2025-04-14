@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Result from "../../types/Result";
 import { handleLogin } from "../authService";
-import styles from "../css-modules/LoginPage.module.css"; 
 
 import AuthLogoHeader from "../components/AuthLogoHeader";
 import AuthForm from "../components/AuthForm";
@@ -10,6 +9,7 @@ import AuthTextField from "../components/AuthTextField";
 import AuthPasswordField from "../components/AuthPasswordField";
 import OutlookButton from "../components/OutlookButton";
 import Divider from "../components/Divider";
+import AuthBottomLink from "../components/AuthBottomLink";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -37,14 +37,14 @@ function LoginPage() {
       <AuthForm
         nextLabel="Login"
         onNext={handleLoginClick}
-        afterChildren={
-          <button
-            className={styles.signup}
-            onClick={handleOpenSignupPortal}
-          >
-            Sign up with new account →
-          </button>
+        afterChild={
+          <AuthBottomLink
+            beforeText="Don't have an account yet?"
+            linkLabel="Sign up"
+            link="/signup"
+          />
         }
+        remSpacing={[5, 5, 6, 10, 5, 5]}
       >
         <>
           <OutlookButton
@@ -54,7 +54,7 @@ function LoginPage() {
 
           <Divider label="OR" />
 
-          <div className={styles.signInEmailLabel}>
+          <div style={{color: "#005293", letterSpacing: ".48px"}}>
             Sign in with email
           </div>
 

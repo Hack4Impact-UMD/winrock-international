@@ -5,6 +5,7 @@ import { sendPasswordResetLink } from "../authService";
 import AuthLogoHeader from "../components/AuthLogoHeader";
 import AuthForm from "../components/AuthForm";
 import AuthTextField from "../components/AuthTextField";
+import AuthBottomLink from "../components/AuthBottomLink";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -29,6 +30,14 @@ function ForgotPasswordPage() {
         backLink="/login"
         nextLabel="Send Link"
         onNext={handleSendLink}
+        afterChild={
+          <AuthBottomLink
+            beforeText="Remember password?"
+            linkLabel="Sign in"
+            link="/login"
+          />
+        }
+        remSpacing={[10, 10]}
       >
         <>
           <AuthTextField

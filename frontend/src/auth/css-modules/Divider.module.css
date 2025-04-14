@@ -2,9 +2,7 @@
     display: flex;
     align-items: center;
     width: 100%;
-    margin: 1.5rem 0;
     font-size: 1.375rem;
-    font-family: 'Roboto', sans-serif;
 }
 
 .divider::before,
@@ -12,14 +10,13 @@
     content: "";
     flex: 1;
     height: 1px;
-    background-color: #005293;
-    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-primary);
 }
 
 .divider span {
     padding: 0 0.5rem;
-    background-color: #fff;
-    color: #005293;
+    background: white;
+    color: var(--color-primary);
     font-size: 1.375rem;
     font-weight: 300;
 }

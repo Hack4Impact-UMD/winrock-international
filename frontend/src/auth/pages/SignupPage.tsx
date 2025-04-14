@@ -8,6 +8,7 @@ import AuthForm from "../components/AuthForm";
 import AuthDropdownField from "../components/AuthDropdownField";
 import AuthTextField from "../components/AuthTextField";
 import AuthPasswordField from "../components/AuthPasswordField";
+import AuthBottomLink from "../components/AuthBottomLink";
 
 interface StepOneProps {
   role: Role | "";
@@ -59,7 +60,6 @@ function SignupPage() {
           nextLabel={currentStep < 3 ? "Continue" : "Create Account"}
           onNext={() => {
             if (currentStep === 1) {
-
               setCurrentStep(currentStep + 1);
             } else if (currentStep === 2) {
               setCurrentStep(currentStep + 1);
@@ -67,6 +67,14 @@ function SignupPage() {
               handleCreateAccount();
             }
           }}
+          afterChild={currentStep > 1 ?
+            <AuthBottomLink
+              beforeText="Already have an account?"
+              linkLabel="Sign in"
+              link="/login"
+            />
+          : undefined}
+          remSpacing={[10, 10, 10]}
         >
         <>
           {currentStep === 1 &&

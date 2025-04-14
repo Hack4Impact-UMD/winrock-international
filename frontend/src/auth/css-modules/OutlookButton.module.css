@@ -1,11 +1,10 @@
 .outlookButton {
-    margin-top: 3rem;
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #005293;
+    border: 1px solid var(--color-primary);
     border-radius: 20px;
     background-color: #fff;
-    color: #005293;
+    color: var(--color-primary);
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
@@ -17,6 +16,5 @@
 
 .outlookButton img {
     margin-left: 0.75rem;
-    height: 20px;
-    width: auto;
+    height: 1.2rem;
 }

@@ -19,12 +19,14 @@ function AuthPasswordField({ label, autoComplete, toggleHidden=false, onChange, 
             <p className={styles.label}>
                 {label}
             </p>
-            <input
-                className={styles.input}
-                type={isHidden ? "password" : "text"}
-                autoComplete={autoComplete ? "on" : "off"}
-                onChange={(e) => onChange(e.target.value)}
-            />
+            <form>
+                <input
+                    className={styles.input}
+                    type={isHidden ? "password" : "text"}
+                    autoComplete={autoComplete ? "on" : "off"}
+                    onChange={(e) => onChange(e.target.value)}
+                />
+            </form>
             {linkLabel && link &&
                 <Link to={link} className={styles.link}>
                     {linkLabel}

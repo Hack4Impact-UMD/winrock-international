@@ -10,18 +10,20 @@
 
 .formContainer {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
+    display: grid;
     min-height: 35rem;
     width: 27rem;
+    align-items: end;
+    justify-content: center;
+    background: white;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 0 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: white;
+}
+
+.childrenContainer {
+    display: grid;
+    width: 23rem;
+    align-items: end;
 }
 
 .backIcon {
@@ -45,11 +47,9 @@
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: 1.2px;
-    margin-bottom: 1rem;
 }
 
 .subtitle {
-    margin-bottom: 2rem;
     color: black;
     font-size: 1rem;
     font-weight: 500;

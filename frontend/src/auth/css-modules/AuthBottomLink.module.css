@@ -1,0 +1,15 @@
+.bottomLinkContainer {
+    display: flex;
+    flex-direction: row;
+    gap: .3rem;
+    width: 100%;
+    justify-content: center;
+    font-size: .875rem;
+    font-weight: 400;
+}
+
+.link {
+    color: black;
+    font-weight: 600;
+    text-decoration: none;
+}
