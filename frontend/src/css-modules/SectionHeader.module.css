@@ -1,19 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
-
-.sectionHeader {
+.sectionHeaderContainer {
     display: flex;
     flex-direction: column;
-    padding: .8rem 2rem;
-}
-
-.label {
-    font-size: 16;
-    font-weight: 500;
-    color: #757575;
-    font-family: 'Roboto', sans-serif;
-
-
-letter-spacing: 0.15;
-word-wrap: 'break-word'
-
-}
+ }
+ 
+ .sectionHeader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 2.5rem;
+    margin: 2.5rem 0;
+    background: #005293;
+    height: 3.125rem;
+ }
+ 
+ .label {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 5%;
+    color: white;
+ }
+ 
+ .description {
+    padding: 1rem 12rem;
+    font-style: italic;
+    font-size: 1rem;
+ }
