@@ -58,7 +58,6 @@
 }
 
 .nextButton {
-    margin-top: 1rem;
     width: 100%;
     min-height: 3rem;
     background: var(--color-primary);

@@ -26,7 +26,7 @@ function LoginPage() {
     if (result.success) {
       navigate("/dashboard");
     } else {
-      console.error("Error code: ", result.errorCode);
+      console.error("Error logging in: ", result.errorCode);
     }
   }
 
@@ -66,7 +66,7 @@ function LoginPage() {
           <AuthPasswordField
             label="Password"
             linkLabel="Forgot password?"
-            link="/forgotPassword"
+            link="/forgot-password"
             onChange={(value) => setPassword(value)}
           />
         </>

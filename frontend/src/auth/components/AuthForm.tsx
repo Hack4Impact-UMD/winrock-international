@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { useState, JSX } from "react";
 import { Link } from "react-router-dom";
 import backArrow from "../../assets/arrow-left.svg";
 import styles from "../css-modules/AuthForm.module.css";
@@ -16,6 +16,8 @@ interface AuthFormProps {
 }
 
 function AuthForm({ title, subtitle, backLink, nextLabel, onNext, beforeChildren, children, afterChildren }: AuthFormProps) {
+    const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
+
     return (
         <div className={styles.pageContainer}>
             <div className={styles.formContainer}>
@@ -44,7 +46,15 @@ function AuthForm({ title, subtitle, backLink, nextLabel, onNext, beforeChildren
                 {children}
 
                 {onNext &&
-                    <button className={styles.nextButton} onClick={onNext}>
+                    <button
+                        className={styles.nextButton}
+                        disabled={buttonIsDisabled}
+                        onClick={async () => {
+                            setButtonIsDisabled(true);
+                            await onNext();
+                            setButtonIsDisabled(false);
+                        }}
+                    >
                         <p className={styles.nextLabel}>
                             {nextLabel}
                         </p>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import AuthLogoHeader from "../components/AuthLogoHeader";
 import AuthForm from "../components/AuthForm";

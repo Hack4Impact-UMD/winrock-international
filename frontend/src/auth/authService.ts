@@ -3,6 +3,7 @@ import * as firestore from "firebase/firestore";
 import { 
     type User,
     createUserWithEmailAndPassword, 
+    sendPasswordResetEmail,
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
@@ -104,7 +105,26 @@ async function handleLogin({ email, password }: LoginInfo): Promise<Result> {
  */
 async function handleLogout(): Promise<Result> {
     try {
-        await(signOut(auth));
+        await signOut(auth);
+        return { success: true };
+    } catch(error) {
+        if (error instanceof FirebaseError) {
+            return { success: false, errorCode: error.code };
+        } else {
+            return { success: false, errorCode: "unknown" };
+        }
+    }
+}
+
+/**
+ * Send a password reset email to the given email address.
+ * 
+ * @param email to send the password reset email to.
+ * @returns a Promise<Result>.
+ */
+async function sendPasswordResetLink(email: string): Promise<Result> {
+    try {
+        await sendPasswordResetEmail(auth, email);
         return { success: true };
     } catch(error) {
         if (error instanceof FirebaseError) {
@@ -119,5 +139,6 @@ export {
     type Role,
     handleSignup,
     handleLogin,
-    handleLogout
+    handleLogout,
+    sendPasswordResetLink
 };

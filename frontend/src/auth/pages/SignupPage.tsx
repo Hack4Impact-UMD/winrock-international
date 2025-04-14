@@ -46,7 +46,7 @@ function SignupPage() {
     if (result.success) {
       navigate("/dashboard");
     } else {
-      console.error("Error code: ", result.errorCode);
+      console.error("Error signing up: ", result.errorCode);
     }
   }
 

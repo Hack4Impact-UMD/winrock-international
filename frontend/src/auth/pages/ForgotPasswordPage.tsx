@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { sendPasswordResetLink } from "../authService";
 
 import AuthLogoHeader from "../components/AuthLogoHeader";
 import AuthForm from "../components/AuthForm";
@@ -9,9 +10,13 @@ function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  function handleSendLink() {
-    console.log("Reset code sent to", email);
-    navigate("/forgot-password/verify");
+  async function handleSendLink() {
+    const result = await sendPasswordResetLink(email);
+    if (result.success) {
+      navigate("/forgot-password/reset");
+    } else {
+      console.error("Error sending password reset link: ", result.errorCode);
+    }
   }
 
   return (
