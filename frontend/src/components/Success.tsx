@@ -19,10 +19,11 @@ const Success = () => {
     return (
         <div className={styles.successContainer}>
             <LogoHeader />
+            <p ><br /><br /><br /></p>
             <div className={styles.successMessage}>
                 <img src={checkmarkImage} alt="Success" className={styles.checkmark} />
                 <h1>Renewable Energy Project Proposal</h1>
-                <p>Your response has been recorded. You may exit the page now.</p>
+                <p style={{ fontStyle: 'italic' }}>Your response has been recorded. You may exit the page now.</p>
             </div>
         </div>
     );
