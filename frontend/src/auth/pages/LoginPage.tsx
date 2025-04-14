@@ -16,11 +16,7 @@ function LoginPage() {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
-  function handleOpenSignupPortal() {
-    navigate("/signup");
-  }
-
+  
   async function handleLoginClick() {
     const result: Result = await handleLogin({ email, password });
     if (result.success) {
@@ -65,6 +61,7 @@ function LoginPage() {
 
           <AuthPasswordField
             label="Password"
+            toggleHidden={true}
             linkLabel="Forgot password?"
             link="/forgot-password"
             onChange={(value) => setPassword(value)}

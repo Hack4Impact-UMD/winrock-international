@@ -1,4 +1,4 @@
-import { useState, useRef, JSX } from "react";
+import { useState, useMemo, JSX } from "react";
 import { Link } from "react-router-dom";
 import backArrow from "../../assets/arrow-left.svg";
 import styles from "../css-modules/AuthForm.module.css";
@@ -27,26 +27,26 @@ function AuthForm({ title, subtitle, backLink, nextLabel, onNext, children, afte
     const childrenSpacing = remSpacing.slice(countBeforeChildren, remSpacing.length - countAfterChildren + 1);
 
     // Compute the gridTemplateRows CSS property for the form container once
-    const formGridTemplateRows = useRef(
-        `${(countBeforeChildren > 0) ? `${remSpacing[0]}rem` : ''}
-        ${(countBeforeChildren > 1) ? `${remSpacing[1]}rem` : ''}
-        ${childrenSpacing.reduce((sum, curr) => sum + curr, 0)}rem
-        ${(countAfterChildren > 1) ? `${remSpacing[remSpacing.length - 2]}rem` : ''}
-        ${(countAfterChildren > 0) ? `${remSpacing[remSpacing.length - 1]}rem` : ''}`
-    );
+    const formGridTemplateRows = useMemo(() => {
+        return `${(countBeforeChildren > 0) ? `${remSpacing[0]}rem` : ''}
+            ${(countBeforeChildren > 1) ? `${remSpacing[1]}rem` : ''}
+            ${childrenSpacing.reduce((sum, curr) => sum + curr, 0)}rem
+            ${(countAfterChildren > 1) ? `${remSpacing[remSpacing.length - 2]}rem` : ''}
+            ${(countAfterChildren > 0) ? `${remSpacing[remSpacing.length - 1]}rem` : ''}`;
+    }, [children]);
     
     // Compute the gridTemplateRows CSS property for the children container once
-    const childrenGridTemplateRows = useRef(
-        childrenSpacing
+    const childrenGridTemplateRows = useMemo(() => {
+        return childrenSpacing
             .map((remSpace) => `${remSpace}rem`)
-            .join(' ')
-    );
+            .join(' ');
+    }, [children]);
 
     return (
         <div className={styles.pageContainer}>
             <div
                 className={styles.formContainer}
-                style={{gridTemplateRows: formGridTemplateRows.current}}
+                style={{gridTemplateRows: formGridTemplateRows}}
             >
                 {backLink &&
                     <Link to={backLink}>
@@ -70,7 +70,7 @@ function AuthForm({ title, subtitle, backLink, nextLabel, onNext, children, afte
 
                 <div
                     className={styles.childrenContainer}
-                    style={{gridTemplateRows: childrenGridTemplateRows.current}}
+                    style={{gridTemplateRows: childrenGridTemplateRows}}
                 >
                     {children}
                 </div>
