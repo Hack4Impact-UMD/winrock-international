@@ -1,0 +1,75 @@
+.progressBarContainer {
+   padding: 4.5rem 12rem 0.5rem;
+}
+
+.progressSteps {
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+}
+
+.progressBars {
+   display: flex;
+   position: relative;
+   width: 100%;
+   margin-bottom: 1.2rem;
+}
+
+.progressBar {
+   height: 1.0625rem;
+   flex: 1;
+   position: relative;
+   border-top-left-radius: 1.5rem;
+   border-bottom-left-radius: 1.5rem;
+}
+
+/* Add space between bars */
+.progressBar + .progressBar {
+   margin-left: 0.5rem;
+}
+
+
+.progressBar:last-child {
+   border-radius: 1rem;
+}
+
+/* For the concave/inverted part on the right of each bar (except the last) */
+.progressBar:not(:last-child)::after {
+   content: '';
+   position: absolute;
+   right: -0.25rem;
+   width: 0.5rem;
+   height: 1rem;
+   background-color: white;
+   border-radius: 50%;
+   z-index: 2;
+}
+
+.progressBarCompleted {
+   background-color: var(--color-secondary);
+}
+
+.progressBarCurrent {
+   background-color: #acd3b3;
+}
+
+.progressBarUpcoming {
+   background-color: var(--color-secondary);
+}
+
+.progressLabels {
+   display: flex;
+   justify-content: space-between;
+   width: 100%;
+}
+
+.progressLabel {
+   font-size: 0.875rem;
+   color: #333;
+   flex: 1;
+   text-align: left;
+}
+
+.dot {
+   border-radius: 50%;
+}
