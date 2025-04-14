@@ -1,5 +1,5 @@
-import styles from "../css-modules/LogoHeader.module.css";
-import logo from "../assets/winrock-international-logo.png";
+import styles from "../../css-modules/LogoHeader.module.css";
+import logo from "../../assets/winrock-international-logo.png";
 
 function LogoHeader() {
     return (

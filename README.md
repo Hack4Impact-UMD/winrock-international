@@ -51,7 +51,7 @@ npm run dev  # start the development server
 ---
 
 ### 🧩 System Design
-A more detailed document on how the project is structured is linked here: Coming soon...
+[Firebase Design](https://docs.google.com/document/d/1HdE6Uy44C1Y9CROiIfXgWOOxvxB2M2bQb2CB1eWCIwg/edit?usp=sharing)
 
 For your reference, the full, most recent design as of now is below - will be updated if there are any future changes.
 ```
