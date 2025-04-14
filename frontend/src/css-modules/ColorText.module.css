@@ -1,7 +1,6 @@
 .colorText {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    text-align: center;
     border-radius: 0.325rem;
     width: fit-content;
     display: flex;
