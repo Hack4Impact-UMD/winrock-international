@@ -1,12 +1,12 @@
 import { useState, useMemo, JSX } from "react";
-import { Link } from "react-router-dom";
-import backArrow from "../../assets/arrow-left.svg";
+import backArrow from "../../assets/arrow-left.png";
 import styles from "../css-modules/AuthForm.module.css";
 
 interface AuthFormProps {
     title?: string;
     subtitle?: string;
-    backLink?: string;
+    titleStyle?: number;
+    onBack?: () => void;
     nextLabel?: string;
     onNext?: () => void;
 
@@ -14,25 +14,26 @@ interface AuthFormProps {
     afterChild?: JSX.Element;
 
     // The spacing proportions that each element should take up in rem
-    // Length should be equal to the # of elements in the form
+    // Length should be equal to (# of elements in the form) + 1 for ending space
     remSpacing: number[];
 }
 
-function AuthForm({ title, subtitle, backLink, nextLabel, onNext, children, afterChild, remSpacing }: AuthFormProps) {
+function AuthForm({ title, subtitle, titleStyle=1, onBack, nextLabel, onNext, children, afterChild, remSpacing }: AuthFormProps) {
     const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
 
     // Used to offset gridTemplateRows calculations for the children
-    const countBeforeChildren = (title ? 1 : 0) + (subtitle ? 1 : 0);
+    const countBeforeChildren = (title ? 1 : 0);
     const countAfterChildren = ((nextLabel && onNext) ? 1 : 0) + (afterChild ? 1 : 0);
-    const childrenSpacing = remSpacing.slice(countBeforeChildren, remSpacing.length - countAfterChildren + 1);
+    const childrenSpacing = remSpacing.slice(countBeforeChildren, remSpacing.length - countAfterChildren);
 
     // Compute the gridTemplateRows CSS property for the form container once
     const formGridTemplateRows = useMemo(() => {
-        return `${(countBeforeChildren > 0) ? `${remSpacing[0]}rem` : ''}
-            ${(countBeforeChildren > 1) ? `${remSpacing[1]}rem` : ''}
+        return `${onBack ? '0rem' : ''}
+            ${(countBeforeChildren > 0) ? `${remSpacing[0]}rem` : ''}
             ${childrenSpacing.reduce((sum, curr) => sum + curr, 0)}rem
-            ${(countAfterChildren > 1) ? `${remSpacing[remSpacing.length - 2]}rem` : ''}
-            ${(countAfterChildren > 0) ? `${remSpacing[remSpacing.length - 1]}rem` : ''}`;
+            ${(countAfterChildren > 1) ? `${remSpacing[remSpacing.length - 3]}rem` : ''}
+            ${(countAfterChildren > 0) ? `${remSpacing[remSpacing.length - 2]}rem` : ''}
+            ${remSpacing[remSpacing.length - 1]}rem`;
     }, [children]);
     
     // Compute the gridTemplateRows CSS property for the children container once
@@ -48,22 +49,28 @@ function AuthForm({ title, subtitle, backLink, nextLabel, onNext, children, afte
                 className={styles.formContainer}
                 style={{gridTemplateRows: formGridTemplateRows}}
             >
-                {backLink &&
-                    <Link to={backLink}>
+                {onBack &&
+                    <div onClick={onBack}>
                         <img
                             src={backArrow}
                             alt="Back"
                             className={styles.backIcon}
                         />
-                    </Link>}
+                    </div>}
 
                 {title &&
-                    <div className={styles.titleContainer}>
+                    <div
+                        className={styles.titleContainer}
+                        style={titleStyle === 1 ? {textAlign: "center"} : {}}
+                    >
                         <p className={styles.title}>
                             {title}
                         </p>
                         {subtitle &&
-                            <p className={styles.subtitle}>
+                            <p
+                                className={styles.subtitle}
+                                style={titleStyle === 2 ? {color: "var(--color-gray)"} : {}}
+                            >
                                 {subtitle}
                             </p>}
                     </div>}

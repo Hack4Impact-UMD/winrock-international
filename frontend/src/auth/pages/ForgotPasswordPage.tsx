@@ -12,6 +12,11 @@ function ForgotPasswordPage() {
   const navigate = useNavigate();
 
   async function handleSendLink() {
+    if (!email) {
+      console.error("Error sending password reset link: Missing email");
+      return;
+    }
+    
     const result = await sendPasswordResetLink(email);
     if (result.success) {
       navigate("/forgot-password/reset");
@@ -27,7 +32,8 @@ function ForgotPasswordPage() {
       <AuthForm
         title="Forgot password?"
         subtitle="Don't worry! It occurs. Please enter the email address linked with your account."
-        backLink="/login"
+        titleStyle={2}
+        onBack={() => navigate("/login")}
         nextLabel="Send Link"
         onNext={handleSendLink}
         afterChild={
@@ -37,7 +43,7 @@ function ForgotPasswordPage() {
             link="/login"
           />
         }
-        remSpacing={[10, 10]}
+        remSpacing={[10, 8, 2.5, 12, 3]}
       >
         <>
           <AuthTextField

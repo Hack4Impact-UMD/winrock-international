@@ -18,6 +18,16 @@ function LoginPage() {
   const [password, setPassword] = useState<string>("");
   
   async function handleLoginClick() {
+    if (!email) {
+      console.error("Error logging in: Missing email");
+      return;
+    }
+
+    if (!password) {
+      console.error("Error logging in: Missing password")
+      return;
+    }
+    
     const result: Result = await handleLogin({ email, password });
     if (result.success) {
       navigate("/dashboard");
@@ -40,7 +50,7 @@ function LoginPage() {
             link="/signup"
           />
         }
-        remSpacing={[5, 5, 6, 10, 5, 5]}
+        remSpacing={[7, 3, 2.3, 6, 7.7, 2.7, 2.3, 3]}
       >
         <>
           <OutlookButton
@@ -50,7 +60,7 @@ function LoginPage() {
 
           <Divider label="OR" />
 
-          <div style={{color: "#005293", letterSpacing: ".48px"}}>
+          <div style={{textAlign: "center", fontSize: ".95rem", color: "var(--color-primary)", letterSpacing: ".48px"}}>
             Sign in with email
           </div>
 

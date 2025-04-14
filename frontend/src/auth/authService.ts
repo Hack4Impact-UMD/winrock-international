@@ -137,6 +137,7 @@ async function sendPasswordResetLink(email: string): Promise<Result> {
 
 export { 
     type Role,
+    type SignupInfo,
     handleSignup,
     handleLogin,
     handleLogout,

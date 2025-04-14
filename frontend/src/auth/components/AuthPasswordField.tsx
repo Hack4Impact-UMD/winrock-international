@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../css-modules/AuthPasswordField.module.css";
 import { Link } from "react-router-dom";
 import toggleHiddenIcon from "../../assets/toggle-hidden.png";
@@ -9,10 +9,22 @@ interface AuthPasswordFieldProps {
     toggleHidden?: boolean;
     linkLabel?: string;
     link?: string;
+    controlledValue?: string;
     onChange: (value: string) => void;
 }
 
-function AuthPasswordField({ label, autoComplete, toggleHidden=false, onChange, linkLabel, link }: AuthPasswordFieldProps) {
+function AuthPasswordField({ label, autoComplete, toggleHidden=false, linkLabel, link, controlledValue, onChange }: AuthPasswordFieldProps) {
+    const [value, setValue] = useState(controlledValue);
+        
+    useEffect(() => {
+        setValue(controlledValue);
+    }, [controlledValue]);
+
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setValue(e.target.value);
+        onChange(e.target.value);
+    }
+    
     const [isHidden, setIsHidden] = useState(true);
 
     return (
@@ -24,8 +36,9 @@ function AuthPasswordField({ label, autoComplete, toggleHidden=false, onChange, 
                 <input
                     className={styles.input}
                     type={isHidden ? "password" : "text"}
+                    value={value}
                     autoComplete={autoComplete ? "on" : "off"}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => handleChange(e)}
                 />
                 {toggleHidden &&
                     <img

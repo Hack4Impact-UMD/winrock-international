@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Result from "../../types/Result";
-import { type Role, handleSignup } from "../authService";
+import { type Role, type SignupInfo, handleSignup } from "../authService";
 
 import AuthLogoHeader from "../components/AuthLogoHeader";
 import AuthForm from "../components/AuthForm";
@@ -11,39 +11,138 @@ import AuthPasswordField from "../components/AuthPasswordField";
 import AuthBottomLink from "../components/AuthBottomLink";
 
 interface StepOneProps {
+  answersRef: React.RefObject<SignupInfo>;
+  handleChange: (field: keyof SignupInfo, value: string) => void;
   role: Role | "";
   setRole: React.Dispatch<React.SetStateAction<Role | "">>;
-  setCompany: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface StepTwoProps {
-  setFirstName: React.Dispatch<React.SetStateAction<string>>;
-  setLastName: React.Dispatch<React.SetStateAction<string>>;
+  answersRef: React.RefObject<SignupInfo>;
+  handleChange: (field: keyof SignupInfo, value: string) => void;
 }
 
 interface StepThreeProps {
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  answersRef: React.RefObject<SignupInfo>;
+  handleChange: (field: keyof SignupInfo, value: string) => void;
+  confirmPassword: string;
   setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
 }
 
 function SignupPage() {
   const navigate = useNavigate();
 
+  const answersRef = useRef<SignupInfo>({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    role: '' as Role,
+    company: ''
+  });
+
   const [currentStep, setCurrentStep] = useState(1);
-  const [role, setRole] = useState<Role | "">("");
-  const [company, setCompany] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<Role | "">(""); // tracks dynamic changes
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  async function handleCreateAccount() {
-    if (!email || !password || !firstName || !lastName || !role
-        || password !== confirmPassword) return;
+  // Used to change the answersRef's fields dynamically
+  function handleChange(field: keyof SignupInfo, value: string) {
+    answersRef.current = {
+        ...answersRef.current,
+        [field]: value
+    }
+  }
 
-    const result: Result = await handleSignup({ email, password, firstName, lastName, role, company});
+  const currentRemSpacing = useMemo((): number[] => {
+    if (currentStep === 1) {
+      if (role === "client" || role === "supplier") {
+        return [7.5, 10, 5.5, 7, 0, 0];
+      }
+      return [7.5, 10, 12.5, 0, 0];
+    } else if (currentStep === 2) {
+      return [7.5, 10, 5.5, 3.5, 2, 0];
+    } else { // currentStep === 3
+      return [6, 8, 6, 6, 2.5, 2, 1];
+    }
+  }, [currentStep, role])
+
+  async function handleNext() {
+    if (currentStep === 1) {
+      if (!answersRef.current.role) {
+        console.error("Error going to next step: Missing role");
+        return;
+      }
+
+      if ((answersRef.current.role === "client" || answersRef.current.role === "supplier") && !answersRef.current.company) {
+        console.error("Error going to next step: Missing company (required for this role)");
+        return;
+      }
+
+      setCurrentStep(2);
+    } else if (currentStep === 2) {
+      if (!answersRef.current.firstName) {
+        console.error("Error going to next step: Missing first name");
+        return;
+      }
+
+      if (!answersRef.current.lastName) {
+        console.error("Error going to next step: Missing last name");
+        return;
+      }
+
+      setCurrentStep(3);
+    } else {
+      await handleCreateAccount();
+    }
+  }
+
+  async function handleCreateAccount() {
+    if (!answersRef.current.email) {
+      console.error("Error signing up: Missing email");
+      return;
+    }
+
+    if (!answersRef.current.password) {
+      console.error("Error signing up: Missing password")
+      return;
+    }
+
+    if (!answersRef.current.firstName) {
+      console.error("Error signing up: Missing first name")
+      return;
+    }
+
+    if (!answersRef.current.lastName) {
+      console.error("Error signing up: Missing last name")
+      return;
+    }
+
+    if (!answersRef.current.role) {
+      console.error("Error signing up: Missing role")
+      return;
+    }
+
+    if ((answersRef.current.role === "client" || answersRef.current.role === "supplier") && !answersRef.current.company) {
+      console.error("Error signing up: Missing company (required for selected role)")
+      return;
+    }
+
+    if (answersRef.current.password !== confirmPassword) {
+      console.error("Error signing up: Passwords do not match")
+      return;
+    }
+
+    const companyField = answersRef.current.company ? {company: answersRef.current.company} : {};
+
+    const result: Result = await handleSignup({
+        email: answersRef.current.email,
+        password: answersRef.current.password,
+        firstName: answersRef.current.firstName,
+        lastName: answersRef.current.lastName,
+        role: answersRef.current.role,
+        ...companyField
+    })
+
     if (result.success) {
       navigate("/dashboard");
     } else {
@@ -54,46 +153,43 @@ function SignupPage() {
   return (
     <>
       <AuthLogoHeader />
-        <AuthForm
-          title="Create Your Account"
-          subtitle={currentStep < 3 ? "Please enter your details to sign up." : undefined}
-          nextLabel={currentStep < 3 ? "Continue" : "Create Account"}
-          onNext={() => {
-            if (currentStep === 1) {
-              setCurrentStep(currentStep + 1);
-            } else if (currentStep === 2) {
-              setCurrentStep(currentStep + 1);
-            } else {
-              handleCreateAccount();
-            }
-          }}
-          afterChild={currentStep > 1 ?
-            <AuthBottomLink
-              beforeText="Already have an account?"
-              linkLabel="Sign in"
-              link="/login"
-            />
-          : undefined}
-          remSpacing={[10, 10, 10]}
-        >
+
+      <AuthForm
+        title="Create Your Account"
+        subtitle={currentStep < 3 ? "Please enter your details to sign up." : undefined}
+        onBack={currentStep > 1 ? () => setCurrentStep(currentStep - 1) : undefined}
+        nextLabel={currentStep < 3 ? "Continue" : "Create Account"}
+        onNext={handleNext}
+        afterChild={currentStep > 1 ?
+          <AuthBottomLink
+            beforeText="Already have an account?"
+            linkLabel="Sign in"
+            link="/login"
+          />
+        : undefined}
+        remSpacing={currentRemSpacing}
+          
+      >
         <>
           {currentStep === 1 &&
             <StepOne
+              answersRef={answersRef}
+              handleChange={handleChange}
               role={role}
               setRole={setRole}
-              setCompany={setCompany}
             />}
 
           {currentStep === 2 &&
             <StepTwo
-              setFirstName={setFirstName}
-              setLastName={setLastName}
+              answersRef={answersRef}
+              handleChange={handleChange}
             />}
 
           {currentStep === 3 &&
             <StepThree
-              setEmail={setEmail}
-              setPassword={setPassword}
+              answersRef={answersRef}
+              handleChange={handleChange}
+              confirmPassword={confirmPassword}
               setConfirmPassword={setConfirmPassword}
             />}
         </>
@@ -102,7 +198,7 @@ function SignupPage() {
   )
 }
 
-const StepOne = ({ role, setRole, setCompany }: StepOneProps) => {
+const StepOne = ({ answersRef, handleChange, role, setRole }: StepOneProps) => {
   return (
     <>
       <AuthDropdownField
@@ -110,49 +206,59 @@ const StepOne = ({ role, setRole, setCompany }: StepOneProps) => {
         blankOption="I am a..."
         options={["Client", "Supplier", "Winrock Employee"]}
         values={["client", "supplier", "admin"]}
-        onSelect={(value) => setRole(value as Role)}
+        controlledValue={answersRef.current.role}
+        onSelect={(value) => {
+          setRole(value as Role);
+          handleChange("role", value as Role);
+        }}
       />
 
       {(role === "client" || role === "supplier") &&
         <AuthTextField
           label="Company name"
-          onChange={(value) => setCompany(value)}
+          controlledValue={answersRef.current.company!}
+          onChange={(value) => handleChange("company", value)}
         />}
     </>
   )
 }
 
-const StepTwo = ({ setFirstName, setLastName }: StepTwoProps) => {
+const StepTwo = ({ answersRef, handleChange }: StepTwoProps) => {
   return (
     <>
       <AuthTextField
         label="First Name"
-        onChange={(value) => setFirstName(value)}
+        controlledValue={answersRef.current.firstName}
+        onChange={(value) => handleChange("firstName", value)}
       />
 
       <AuthTextField
         label="Last Name"
-        onChange={(value) => setLastName(value)}
+        controlledValue={answersRef.current.lastName}
+        onChange={(value) => handleChange("lastName", value)}
       />
     </>
   )
 }
 
-const StepThree = ({ setEmail, setPassword, setConfirmPassword }: StepThreeProps) => {
+const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPassword }: StepThreeProps) => {
   return (
     <>
       <AuthTextField
         label="Email Address"
-        onChange={(value) => setEmail(value)}
+        controlledValue={answersRef.current.email}
+        onChange={(value) => handleChange("email", value)}
       />
 
       <AuthPasswordField
         label="Password"
-        onChange={(value) => setPassword(value)}
+        controlledValue={answersRef.current.password}
+        onChange={(value) => handleChange("password", value)}
       />
 
       <AuthPasswordField
         label="Confirm Password"
+        controlledValue={confirmPassword}
         onChange={(value) => setConfirmPassword(value)}
       />
     </>
