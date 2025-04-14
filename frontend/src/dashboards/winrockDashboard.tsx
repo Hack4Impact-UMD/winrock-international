@@ -357,12 +357,20 @@ const spendCategories = [
   { id: 'emulsifiers', label: 'Emulsifiers' },
 ];
 
+// const overallCategories = [
+//   { id: 'onTrack', label: <ColorText text="On Track" backgroundColor="#e6f4ff" textColor="#0a3977" />},
+//   { id: 'atRisk', label: <ColorText text="At Risk" backgroundColor="#fde7e9" textColor="#e41b35" />},
+//   { id: 'paused', label: <ColorText text="Paused" backgroundColor="#fff8e6" textColor="#b07d18" />},
+//   { id: 'completed', label: <ColorText text="Completed" backgroundColor="#e6f9eb" textColor="#186a3b" />},
+//   { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" backgroundColor="#f1fae1" textColor="#486b00" /> }];
+
 const overallCategories = [
-  { id: 'onTrack', label: <ColorText text="On Track" backgroundColor="#e6f4ff" textColor="#0a3977" />},
-  { id: 'atRisk', label: <ColorText text="At Risk" backgroundColor="#fde7e9" textColor="#e41b35" />},
-  { id: 'paused', label: <ColorText text="Paused" backgroundColor="#fff8e6" textColor="#b07d18" />},
-  { id: 'completed', label: <ColorText text="Completed" backgroundColor="#e6f9eb" textColor="#186a3b" />},
-  { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" backgroundColor="#f1fae1" textColor="#486b00" /> }];
+  { id: 'onTrack', label: <ColorText text="On Track" category="On Track" variant="status" /> },
+  { id: 'atRisk', label: <ColorText text="At Risk" category="At Risk" variant="status" /> },
+  { id: 'paused', label: <ColorText text="Paused" category="Paused" variant="status" /> },
+  { id: 'completed', label: <ColorText text="Completed" category="Completed" variant="status" /> },
+  { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" category="Completed (except for risk)" variant="status" /> }
+];
 
 const dateCategories = [
   { id: 'idk', label: 'idk' },

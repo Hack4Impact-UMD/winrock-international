@@ -39,6 +39,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  padding: 0.5rem 1.5625rem;
+  border: 1px solid #CCCCCC;
+  background-color: white;
 }
 
 .searchContainer {
@@ -48,25 +52,18 @@
 
 .searchInput {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: var(--border-radius);
+  padding: 0.5rem;
+  border: none;
   font-size: 0.875rem;
 }
 
 .filterContainer {
+  align-items: center;
+  border-left: 1px solid #CCCCCC;
+  padding-left: 1rem;
+  position: relative;
   display: flex;
   gap: 0.5rem;
-}
-
-.filterButton,
-.sortButton {
-  padding: 1rem 1.5rem;
-  border: 1px solid #e5e7eb;
-  width: 12rem;
-  background-color: white;
-  color: #374151;
-  font-size: 0.8rem;
 }
 
 .status {
@@ -148,7 +145,6 @@
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e0e0e0;
-  overflow: hidden;
 }
 
 .filterHeader {
@@ -255,16 +251,10 @@
   border-color: #d1d5db;
 }
 
-.filterContainer {
-  position: relative;
-  display: flex;
-  gap: 0.5rem;
-}
-
 .filterButton,
 .sortButton {
   padding: 1rem 1.5rem;
-  width: 12rem;
+  width: 10rem;
   border: 1px solid #e5e7eb;
   background-color: white;
   color: #374151;
@@ -337,4 +327,64 @@
 .table th:nth-child(10),
 .table td:nth-child(10) {
   width: 6%; /* Actions column */
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+
+.filterButton {
+  width: 14rem;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: #374151;
+  font-size: 0.875rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+}
+
+.filterButton::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #666;
+  border-bottom: 2px solid #666;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.filterButton.active {
+  background-color: white;
+}
+
+.filterButton.active::after {
+  transform: rotate(-135deg);
+}
+
+.sortButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: white;
+  color: #374151;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+.filterPopup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 15rem; 
+  background-color: white;
+  overflow: hidden;
+  border: 1px solid #CCCCCC;
+  border-top: none;
 }
