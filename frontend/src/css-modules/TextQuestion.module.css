@@ -4,12 +4,18 @@
     gap: 0.5rem;
     width: 80%;
     margin-bottom: 3rem;
-	margin-top: 3rem;
+    margin-top: 3rem;
 }
 
 .label {
     font-size: .93rem;
     letter-spacing: .05rem;
+    font-weight: 600; /* Default bold style */
+}
+
+/* Override bold for specific fields */
+.label[data-id="notbold"] {
+    font-weight: normal; /* Removes bold */
 }
 
 .textarea {
@@ -20,4 +26,9 @@
     border: 1px solid #ccc;
     resize: vertical;
     letter-spacing: .05rem;
+}
+/* Red text styling */
+.redText {
+    color: #D20000;
+    font-weight: 600; /* Ensure it's not bold */
 }
