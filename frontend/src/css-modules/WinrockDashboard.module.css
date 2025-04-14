@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .dashboardContainer {
   display: flex;
   min-height: 100vh;
@@ -7,10 +11,16 @@
   padding: 2rem 2.5rem;
   border-right: 1px solid #CCCCCC;
   width: 18.75rem;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background-color: white;
 }
 
 .mainContent {
-  width: 100%;
+  width: calc(100% - 18.75rem);
+  margin-left: 18.75rem;
+  padding-bottom: 5.625rem; /* Match pagination height */
 }
 
 .logo {
@@ -29,7 +39,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
 }
 
 .searchContainer {
@@ -59,8 +68,6 @@
   color: #374151;
   font-size: 0.8rem;
 }
-
-
 
 .status {
   display: inline-block;
@@ -263,4 +270,71 @@
   color: #374151;
   font-size: 0.8rem;
   text-align: center;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem 0.3125rem;
+  text-align: left; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 3%;
+  font-size: 1rem;
+}
+
+/* Column widths */
+.table th:first-child,
+.table td:first-child {
+  width: 4rem; /* Checkbox column */
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 10%; /* Project name */
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 10%; /* Supplier */
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 10%; /* Overall Status */
+}
+
+.table th:nth-child(5),
+.table td:nth-child(5) {
+  width: 16%; /* Analysis Stage */
+}
+
+.table th:nth-child(6),
+.table td:nth-child(6) {
+  width: 8%; /* Spend Category */
+}
+
+.table th:nth-child(7),
+.table td:nth-child(7) {
+  width: 10%; /* Geography */
+}
+
+.table th:nth-child(8),
+.table td:nth-child(8) {
+  width: 8%; /* Last Updated */
+}
+
+.table th:nth-child(9),
+.table td:nth-child(9) {
+  width: 8%; /* Start Date */
+}
+.table th:nth-child(10),
+.table td:nth-child(10) {
+  width: 6%; /* Actions column */
 }

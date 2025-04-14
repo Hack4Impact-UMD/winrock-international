@@ -7,7 +7,11 @@
   font-size: 0.875rem;
   position: fixed;
   bottom: 0;
-  width: calc(100% - 18.75rem); /* Matches the sidebar width from header */
+  right: 0;
+  width: calc(100% - 18.75rem); /* Matches the sidebar width */
+  background-color: white;
+  box-sizing: border-box;
+  border-top: 1px solid #CCCCCC;
 }
 
 .pageCount {
@@ -24,7 +28,7 @@
 
 .paginationControls button {
   background: #F6F7F9;
-  border: none;;
+  border: none;
   cursor: pointer;
   border-radius: 0.25rem;
   font-weight: 500;
