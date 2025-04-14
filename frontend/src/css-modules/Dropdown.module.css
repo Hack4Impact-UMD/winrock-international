@@ -1,0 +1,68 @@
+.dropdownContainer {
+	margin-bottom: 3rem;
+	margin-top: 3rem;
+	display: flex;
+	flex-direction: column;
+	width: 80%;
+}
+
+.question {
+	font-size: .93rem;
+	text-align: left;
+	letter-spacing: .05rem;
+	line-height: 1.5rem;
+	margin-bottom: 1rem;
+	font-weight: normal;
+}
+
+.dropdownButton {
+	background-color: white;
+	color: black;
+	text-align: left;
+	height: 2.75rem;
+	width: 18.125rem;
+	border-radius: 0.6rem;
+	border-color: black;
+	border-width: thin;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: space-between;
+	margin-left: 0;
+}
+
+.dropdownButton p {
+	font-size: .93rem;
+	margin-left: 1.25rem;
+	letter-spacing: .05rem;
+}
+
+.dropdownButton img {
+	margin-right: 1.25rem;
+}
+
+.dropdownMenu {
+	text-align: left;
+	width: 290px;
+	margin-top: 0.5rem;
+	border-radius: 0.5rem;
+	box-shadow: 10px;
+	background-color: rgb(237, 237, 237);
+	color: black;
+	overflow: hidden;
+	letter-spacing: .05rem;
+}
+
+.dropdownItem {
+	padding: 0.5rem;
+}
+
+.dropdownItem:hover {
+	background-color: #C1C7CE;
+}
+
+.chevron {
+	width: 1rem;
+	rotate: 180deg;
+	transition: rotate 0.3s linear;
+}
