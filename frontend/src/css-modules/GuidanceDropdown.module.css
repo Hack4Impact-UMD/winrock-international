@@ -6,7 +6,7 @@
 .guidanceButton {
     background-color: white;
     color: black;
-    font-size: 1rem;
+    font-size: 1.25rem;
     padding: 18px 20px;
     border: 1px solid #ccc;
     cursor: pointer;
@@ -89,7 +89,7 @@
 }
 
 .guidanceContent {
-    margin-top: 1rem;
+    margin-top: 0rem;
     background-color: #f9f9f9;
     padding: 1rem;
     border-radius: 0.3rem;
