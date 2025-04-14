@@ -1,8 +1,0 @@
-# Prevent these from being re-committed
-node_modules/
-/package.json
-/package-lock.json
-/tsconfig.json
-
-.DS_Store
-/public
