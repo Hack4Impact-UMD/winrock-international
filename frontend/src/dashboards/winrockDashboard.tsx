@@ -18,6 +18,7 @@ interface Project {
   geography: string;
   lastUpdated: string;
   startDate: string;
+  activityType: 'Renewable Energy and Energy Efficiency' | 'Agriculture' | 'Agroforestry' | 'Animal Agriculture and Manure Management';
 }
 
 const sampleProjects: Project[] = [
@@ -30,7 +31,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Cereals & Grains',
     geography: 'United States of America',
     lastUpdated: '6 days',
-    startDate: '03/15/2023'
+    startDate: '03/15/2023',
+    activityType: 'Agriculture'
   },
   {
     id: 2,
@@ -41,7 +43,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Commodities',
     geography: 'Sweden',
     lastUpdated: '30 days',
-    startDate: '03/15/2025'
+    startDate: '03/15/2025',
+    activityType: 'Agriculture'
   },
   {
     id: 3,
@@ -52,7 +55,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Fruits & Berries',
     geography: 'Sweden',
     lastUpdated: '2 days',
-    startDate: '03/15/2021'
+    startDate: '03/15/2021',
+    activityType: 'Renewable Energy and Energy Efficiency'
   },
   {
     id: 4,
@@ -63,7 +67,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Commodities',
     geography: 'China',
     lastUpdated: '12 days',
-    startDate: '03/15/2023'
+    startDate: '03/15/2023',
+    activityType: 'Agroforestry'
   },
   {
     id: 5,
@@ -74,7 +79,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Commodities',
     geography: 'Sweden',
     lastUpdated: '6 days',
-    startDate: '03/15/2023'
+    startDate: '03/15/2023',
+    activityType: 'Agriculture'
   },
   {
     id: 6,
@@ -85,7 +91,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Coco',
     geography: 'Indonesia',
     lastUpdated: '42 days',
-    startDate: '03/15/2019'
+    startDate: '03/15/2019',
+    activityType: 'Agroforestry'
   },
   {
     id: 7,
@@ -96,7 +103,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Commodities',
     geography: 'South Africa',
     lastUpdated: '6 days',
-    startDate: '03/15/2022'
+    startDate: '03/15/2022',
+    activityType: 'Agriculture'
   },
   {
     id: 8,
@@ -107,7 +115,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Spices',
     geography: 'Bangladesh',
     lastUpdated: '1 day',
-    startDate: '03/15/2015'
+    startDate: '03/15/2015',
+    activityType: 'Agriculture'
   },
   {
     id: 9,
@@ -118,7 +127,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Electricity',
     geography: 'Sweden',
     lastUpdated: '6 days',
-    startDate: '03/15/2022'
+    startDate: '03/15/2022',
+    activityType: 'Renewable Energy and Energy Efficiency'
   },
   {
     id: 10,
@@ -129,7 +139,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Commodities',
     geography: 'Norway',
     lastUpdated: '6 days',
-    startDate: '03/15/2023'
+    startDate: '03/15/2023',
+    activityType: 'Agriculture'
   },
   {
     id: 11,
@@ -140,7 +151,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Electricity',
     geography: 'Australia',
     lastUpdated: '15 days',
-    startDate: '04/01/2023'
+    startDate: '04/01/2023',
+    activityType: 'Renewable Energy and Energy Efficiency'
   },
   {
     id: 12,
@@ -151,7 +163,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Commodities',
     geography: 'Brazil',
     lastUpdated: '3 days',
-    startDate: '02/28/2024'
+    startDate: '02/28/2024',
+    activityType: 'Agriculture'
   },
   {
     id: 13,
@@ -162,7 +175,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Textiles',
     geography: 'India',
     lastUpdated: '20 days',
-    startDate: '01/15/2023'
+    startDate: '01/15/2023',
+    activityType: 'Animal Agriculture and Manure Management'
   },
   {
     id: 14,
@@ -173,7 +187,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Electronics',
     geography: 'South Korea',
     lastUpdated: '8 days',
-    startDate: '03/10/2024'
+    startDate: '03/10/2024',
+    activityType: 'Renewable Energy and Energy Efficiency'
   },
   {
     id: 15,
@@ -184,7 +199,8 @@ const sampleProjects: Project[] = [
     spendCategory: 'Oils & Fats',
     geography: 'Malaysia',
     lastUpdated: '4 days',
-    startDate: '03/20/2024'
+    startDate: '03/20/2024',
+    activityType: 'Animal Agriculture and Manure Management'
   }
 ];
 
@@ -196,15 +212,23 @@ const WinrockDashboard: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const itemsPerPage = 10;
   
-  const totalItems = sampleProjects.length;
+  // Filter projects by selected activity type
+  const filteredProjects = sampleProjects.filter(project => project.activityType === selectedTab);
+  const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // Calculate the current page's projects
+  // Calculate the current page's projects from filtered projects
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
-  const currentProjects = sampleProjects.slice(indexOfFirstProject, indexOfLastProject);
+  const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
+
+  // Reset to first page when changing tabs
+  const handleTabChange = (tab: string) => {
+    setSelectedTab(tab);
+    setCurrentPage(1);
+    setSelectedRows([]); // Clear selected rows when changing tabs
+  };
   
-  // toggle 
   const toggleFilterPopup = () => {
     setIsFilterPopupOpen(!isFilterPopupOpen);
   };
@@ -274,7 +298,7 @@ const WinrockDashboard: React.FC = () => {
         <FilterTabs
           tabs={tabs}
           selectedTab={selectedTab}
-          onTabSelect={setSelectedTab}
+          onTabSelect={handleTabChange}
         />
 
         <div className={styles.toolbarContainer}>
