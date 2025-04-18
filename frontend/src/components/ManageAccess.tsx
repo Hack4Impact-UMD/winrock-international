@@ -35,7 +35,7 @@ const ManageAccess = (props: ManageAccessProps) => {
     const [notifyPeople, setNotifyPeople] = useState(true);
     const [showingManageAccess, setShowingManageAccess] = useState(false);
 
-	// used in manage access view
+    // used in manage access view
     const [usersWithAccess, setUsersWithAccess] = useState<UserData[]>([
         {
             name: "Jane Doe",
@@ -49,7 +49,7 @@ const ManageAccess = (props: ManageAccessProps) => {
         },
     ]);
 
-	// all alerts in this array are shown
+    // all alerts in this array are shown
     const [alerts, setAlerts] = useState<AlertData[]>([
         {
             text: "Access updated",
@@ -61,22 +61,37 @@ const ManageAccess = (props: ManageAccessProps) => {
         },
     ]);
 
-	// null if not showing confirm dialog, is user to remove if showing (to facilitate actually removing them)
+    // null if not showing confirm dialog, is user to remove if showing (to facilitate actually removing them)
     const [userToRemove, setUserToRemove] = useState<UserData | null>(null);
+
+    // suggestions currently being shown in autocomplete list
+    const [userSuggestions, setUserSuggestions] = useState<UserData[]>([
+        {
+            name: "Alex Smith",
+            email: "asmith@gmail.com",
+            role: "Supplier",
+        },
+    ]);
+
+    const [emailIsFocused, setEmailIsFocused] = useState(false);
 
     // called on keydown in the email input textbox
     const onEmailKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter") {
+        const emailInput = event.target as HTMLInputElement;
+
+        if (event.key === "Backspace" && emailInput.value === "") {
+            setEmails(emails.slice(0, -1));
+        } else if (event.key === "Enter") {
             // check if email is a valid user or not here
 
             setEmails([
                 ...emails,
                 {
-                    email: (event.target as HTMLInputElement).value,
+                    email: emailInput.value,
                     valid: true,
                 },
             ]);
-            (event.target as HTMLInputElement).value = "";
+            emailInput.value = "";
         }
         // code for populating autocomplete can go here
     };
@@ -119,7 +134,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                         style={{ color: "green" }}
                     ></CheckBadge>
 
-                    <button onClick={(event) => removeAlert(alert)}>
+                    <button onClick={() => removeAlert(alert)}>
                         <CloseIcon
                             fontSize="medium"
                             style={{ color: "gray" }}
@@ -131,7 +146,7 @@ const ManageAccess = (props: ManageAccessProps) => {
             return (
                 <div className={styles.alertCont}>
                     <p className={styles.errorText}>{alert.text}</p>
-                    <button onClick={(event) => removeAlert(alert)}>
+                    <button onClick={() => removeAlert(alert)}>
                         <CloseIcon
                             fontSize="medium"
                             style={{ color: "gray" }}
@@ -142,9 +157,35 @@ const ManageAccess = (props: ManageAccessProps) => {
         }
     };
 
+    // called to add an alert
+    const addAlert = (type: string, invalidEmail?: string) => {
+        let newAlert: AlertData;
+        if (type === "success") {
+            newAlert = {
+                text: "Access updated",
+                type: "success",
+            };
+        } else {
+            newAlert = {
+                text:
+                    "Could not add " +
+                    invalidEmail +
+                    " because account does not exist",
+                type: "error",
+            };
+        }
+
+        setAlerts([...alerts, newAlert]);
+    };
+
     // called to close an alert with its x button
     const removeAlert = (alert: AlertData) => {
         setAlerts(alerts.filter((element) => element !== alert));
+    };
+
+    // called on Invite button click
+    const addAccess = () => {
+        addAlert("success");
     };
 
     return (
@@ -156,13 +197,21 @@ const ManageAccess = (props: ManageAccessProps) => {
                     <>
                         <div className={styles.confirmDialogOverlay}></div>
                         <div className={styles.confirmDialog}>
-							<h3>Are you sure you want to remove {userToRemove.name} from this project?</h3>
-							<div className={styles.confirmButtonsCont}>
-								<button onClick={() => {setUserToRemove(null)}}>Cancel</button>
-								<button>Yes</button>
-							</div>
-							
-						</div>
+                            <h3>
+                                Are you sure you want to remove{" "}
+                                {userToRemove.name} from this project?
+                            </h3>
+                            <div className={styles.confirmButtonsCont}>
+                                <button
+                                    onClick={() => {
+                                        setUserToRemove(null);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button>Yes</button>
+                            </div>
+                        </div>
                     </>
                 ) : (
                     <></>
@@ -197,6 +246,22 @@ const ManageAccess = (props: ManageAccessProps) => {
                                     }
                                 >
                                     <p>{emailData.email}</p>
+                                    <button
+                                        onClick={() => {
+                                            setEmails(
+                                                emails.filter((element) => {
+                                                    return (
+                                                        element !== emailData
+                                                    );
+                                                })
+                                            );
+                                        }}
+                                    >
+                                        <CloseIcon
+                                            fontSize="small"
+                                            sx={{ color: "#76797C" }}
+                                        ></CloseIcon>
+                                    </button>
                                 </div>
                             );
                         })}
@@ -207,41 +272,94 @@ const ManageAccess = (props: ManageAccessProps) => {
                             className={styles.emailInput}
                             placeholder="Add members by email"
                             onKeyDown={onEmailKeyPress}
+                            onFocus={() => setEmailIsFocused(true)}
+                            onBlur={() => {
+                                setTimeout(() => {
+                                    setEmailIsFocused(false);
+                                }, 200);
+                            }}
                         ></input>
                     </div>
-                    <div
-                        className={styles.notifyCont}
-                        onClick={() => setNotifyPeople(!notifyPeople)}
-                    >
-                        {notifyPeople ? (
-                            <CheckIcon
-                                fontSize="large"
-                                sx={{ color: "#005293" }}
-                            ></CheckIcon>
-                        ) : (
-                            <BoxIcon
-                                fontSize="large"
-                                sx={{ color: "#005293" }}
-                            ></BoxIcon>
-                        )}
-                        <p>Notify people</p>
-                    </div>
-                    <textarea
-                        className={styles.messageBox}
-                        placeholder="Enter optional message"
-                    ></textarea>
-                    <div className={styles.buttonCont}>
-                        <button className={styles.inviteButton}>Invite</button>
-                    </div>
-                    <h2>Manage access</h2>
-                    <div className={styles.accessCont}>
-                        {usersPreview(usersWithAccess)}
-                        <button onClick={() => setShowingManageAccess(true)}>
-                            <ChevronRight
-                                fontSize="medium"
-                                sx={{ color: "black" }}
-                            ></ChevronRight>
-                        </button>
+                    <div className={styles.belowInputCont}>
+                        <div
+                            id="autocomplete"
+                            className={styles.autocompleteCont}
+                            style={{
+                                display: emailIsFocused ? "block" : "none",
+                            }}
+                        >
+                            {userSuggestions.map((user) => {
+                                return (
+                                    <button
+                                        className={styles.autocompleteButton}
+                                        onClick={() => {
+                                            setEmails([
+                                                ...emails,
+                                                {
+                                                    email: user.email,
+                                                    valid: true,
+                                                },
+                                            ]);
+                                            const emailInput =
+                                                document.getElementById(
+                                                    "email-input"
+                                                );
+                                            if (emailInput) {
+                                                (
+                                                    emailInput as HTMLInputElement
+                                                ).value = "";
+                                            }
+                                        }}
+                                    >
+                                        <p>{user.name}</p>
+                                        <p>{user.email}</p>
+                                        <p>{user.role}</p>
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        <div
+                            className={styles.notifyCont}
+                            onClick={() => setNotifyPeople(!notifyPeople)}
+                        >
+                            {notifyPeople ? (
+                                <CheckIcon
+                                    fontSize="large"
+                                    sx={{ color: "#005293" }}
+                                ></CheckIcon>
+                            ) : (
+                                <BoxIcon
+                                    fontSize="large"
+                                    sx={{ color: "#005293" }}
+                                ></BoxIcon>
+                            )}
+                            <p>Notify people</p>
+                        </div>
+                        <textarea
+                            className={styles.messageBox}
+                            placeholder="Enter optional message"
+                        ></textarea>
+                        <div className={styles.buttonCont}>
+                            <button
+                                className={styles.inviteButton}
+                                onClick={addAccess}
+                            >
+                                Invite
+                            </button>
+                        </div>
+                        <h2>Manage access</h2>
+                        <div className={styles.accessCont}>
+                            {usersPreview(usersWithAccess)}
+                            <button
+                                onClick={() => setShowingManageAccess(true)}
+                            >
+                                <ChevronRight
+                                    fontSize="medium"
+                                    sx={{ color: "black" }}
+                                ></ChevronRight>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -279,7 +397,11 @@ const ManageAccess = (props: ManageAccessProps) => {
                                     <div className={styles.userRole}>
                                         <p>{user.role}</p>
                                     </div>
-                                    <button onClick={() => setUserToRemove(user)}>Remove</button>
+                                    <button
+                                        onClick={() => setUserToRemove(user)}
+                                    >
+                                        Remove
+                                    </button>
                                 </div>
                             );
                         })}

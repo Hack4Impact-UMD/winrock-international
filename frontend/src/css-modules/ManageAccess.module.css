@@ -33,6 +33,7 @@
 	margin-bottom: 1rem;
 	width: fit-content;
 	gap: 5px;
+	position: relative;
 }
 
 .alertCont button {
@@ -110,7 +111,7 @@
 	min-height: 380px;
 	background-color: white;
 	z-index: 2;
-	overflow: hidden;
+	overflow-x: hidden;
 }
 
 .shareCont {
@@ -118,9 +119,10 @@
 	top: 0px;
 	right: 0%;
 	width: 50vw;
-	padding: 2.5rem;
+	padding: 2.5rem calc(2.5rem - 14px) 2.5rem 2.5rem;
 	height: 100%;
 	transition: right 0.3s ease-in-out;
+	overflow-y: scroll;
 }
 
 .headerCont {
@@ -172,10 +174,20 @@ h1 {
 }
 
 .emailCapsuleValid, .emailCapsuleInvalid {
-	padding: 5px 5px;
+	padding: 2px 5px;
 	border-radius: 10px;
 	margin-right: 5px;
 	margin-bottom: 0.5rem;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	gap: 7px;
+}
+
+.emailCapsuleValid button, .emailCapsuleInvalid button {
+	border: none;
+	background-color: transparent;
+	padding-top: 3px;
 }
 
 .emailCapsuleValid {
@@ -192,9 +204,46 @@ h1 {
 	font-size: 0.7rem;
 }
 
+.belowInputCont {
+	position: relative;
+}
+
+.autocompleteCont {
+	display: none;
+	position: absolute;
+	top: 0px;
+	background-color: white;
+	width: 100%;
+	border-left: var(--color-secondary) 1px solid;
+	border-right: var(--color-secondary) 1px solid;
+	border-bottom: var(--color-secondary) 1px solid;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	margin-top: 5px;
+	overflow: hidden;
+}
+
+.autocompleteButton {
+	border: none;
+	background-color: transparent;
+	appearance: none;
+	font-size: 0.7rem;
+	padding: 10px;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	align-items: baseline;
+	width: 100%;
+	transition: background-color 0.2s linear;
+}
+
+.autocompleteButton:hover {
+	background-color: var(--color-secondary);
+}
+
 .notifyCont {
 	font-size: 0.7rem;
-	margin: 1rem 0rem;
+	padding: 1rem 0rem;
 	display: flex;
 	flex-flow: row wrap;
 	align-items: center;
@@ -258,13 +307,14 @@ h2 {
 
 .manageAccessCont {
 	width: 50vw;
-	padding: 2.5rem;
+	padding: 2.5rem calc(2.5rem - 14px) 2.5rem 2.5rem;
 	position: absolute;
 	top: 0px;
 	left: 0%;
 	height: 100%;
 	background-color: white;
 	transition: left 0.3s ease-in-out;
+	overflow-y: scroll;
 }
 
 .buttonsHeaderCont {
