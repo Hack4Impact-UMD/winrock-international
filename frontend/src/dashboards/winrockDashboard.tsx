@@ -194,7 +194,7 @@ const WinrockDashboard: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const itemsPerPage = 10;
   
   const totalItems = sampleProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -224,11 +224,6 @@ const WinrockDashboard: React.FC = () => {
     } else {
       setSelectedRows(selectedRows.filter(rowId => rowId !== id));
     }
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1); // Reset to first page when changing items per page
   };
 
   // per category
@@ -332,7 +327,6 @@ const WinrockDashboard: React.FC = () => {
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
-          onItemsPerPageChange={handleItemsPerPageChange}
         />
       </main>
     </div>
