@@ -1,0 +1,23 @@
+.fieldContainer {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    width: 100%;
+}
+
+.label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: black;
+}
+
+.input {
+    width: 100%;
+    padding: 1.15rem;
+    border: 1px solid #dadada;
+    border-radius: .625rem;
+    font-size: 0.95rem;
+    background-color: #F7F8F9;
+    color: #76797C;
+    letter-spacing: 0.42px;
+}

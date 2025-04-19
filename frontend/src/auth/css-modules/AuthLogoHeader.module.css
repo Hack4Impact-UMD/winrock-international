@@ -1,0 +1,12 @@
+.header {
+    display: flex;
+    padding: 0 1rem;
+    align-items: center;
+    height: 4rem;
+    background: white;
+    border-bottom: 1px solid var(--color-border-bottom);
+}
+
+.logo {
+    height: 2.8rem;
+}
