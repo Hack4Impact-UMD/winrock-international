@@ -3,15 +3,15 @@ import * as firestore from "firebase/firestore";
 import { db } from "../../firebaseConfig.js";
 import FormField from "../FormField.js";
 
-import LogoHeader from "../../components/headers/LogoHeader.js";
-import TitleHeader from "../../components/headers/TitleHeader.js";
-import ProgressBar from "../../components/ProgressBar.js";
-import SectionHeader from "../../components/headers/SectionHeader.js";
-import TextQuestion from "../../components/questions/TextQuestion.js";
-import DropdownQuestion from "../../components/questions/DropdownQuestion.js";
-import NavigationButtons from "../../components/NavigationButtons.js";
+import LogoHeader from "../components/headers/LogoHeader.js";
+import TitleHeader from "../components/headers/TitleHeader.js";
+import ProgressBar from "../components/ProgressBar.js";
+import SectionHeader from "../components/headers/SectionHeader.js";
+import TextQuestion from "../components/questions/TextQuestion.js";
+import DropdownQuestion from "../components/questions/DropdownQuestion.js";
+import NavigationButtons from "../components/NavigationButtons.js";
 import ConfirmationPage from "../ConfirmationPage.js";
-import Error from "../../components/Error.js";
+import Error from "../components/Error.js";
 
 interface AgricultureProposalFormData {
     // Ingredient/Crop Supplied
