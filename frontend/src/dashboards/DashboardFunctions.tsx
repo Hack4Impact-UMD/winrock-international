@@ -1,4 +1,4 @@
-import { db } from "../../firebaseConfig";
+import { db } from "../firebaseConfig";
 import { collection, getDocs, query, where, orderBy, Query, Timestamp } from "firebase/firestore";
 
 export interface ProjectData {
