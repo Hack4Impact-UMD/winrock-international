@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../../css-modules/ColorText.module.css';
+import styles from '../css-modules/ColorText.module.css';
 
 // Define the possible status and analysis stage types
 type StatusType = 

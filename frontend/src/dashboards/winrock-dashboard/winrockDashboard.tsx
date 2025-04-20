@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import styles from '../css-modules/WinrockDashboard.module.css';
-import winrockLogo from '../assets/winrock-international-logo.png';
+import styles from './css-modules/WinrockDashboard.module.css';
+import winrockLogo from '../../assets/winrock-international-logo.png';
 import FilterTabs from './components/FilterTabs';
 import Pagination from './components/Pagination';
 import TableHeader from './components/TableHeader';
