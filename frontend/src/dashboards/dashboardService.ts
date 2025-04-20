@@ -40,16 +40,15 @@ interface Project {
     geography: string;
     overallStatus: OverallStatus;
     analysisStage: AnalysisStage;
-    startDate: Timestamp;
-    lastUpdated: Timestamp;
+    startDate: Timestamp; // receive and send as a Date
+    lastUpdated: Timestamp; // receive and send as a Date
 }
 
 /**
- * Creates a project with the given fields into the
- * collection whose name matches the supplierName.
- * If no such collection exists, it will be created.
+ * Saves a project with the given fields
+ * into the database.
  * 
- * The projectName must be unique for the given supplier.
+ * The projectName must be unique.
  * 
  * @returns a Promise<Result>.
  */
@@ -63,7 +62,7 @@ const createProject = async (
     startDate?: Date
 ): Promise<Result> => {
     try{
-        const docRef = doc(db, `projects/supplier-name/${supplierName}`, projectName);
+        const docRef = doc(db, "projects", projectName);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             return { success: false, errorCode: "project-name-already-exists"}
@@ -151,17 +150,17 @@ const getProjects = async (orderByField: string, desc: boolean, filterByField?: 
 }
 
 // retrieves all project names that start with [term] (for use in autocomplete)
-const getProjectNamesContaining = async (term: string): Promise<Result> => {
+const getProjectNamesStartingWith = async (term: string): Promise<Result> => {
     try {
         const results: string[] = [];
 
         const nameQuery = query(collection(db, "projects"), 
-            where("name", ">=", term), 
-            where("name", "<=", term + "\uf8ff"));
+            where("projectName", ">=", term), 
+            where("projectName", "<=", term + "\uf8ff")); // End at the last possible name that starts with the term
 
 		const querySnapshot = await getDocs(nameQuery);
 		querySnapshot.forEach((doc) => {
-			results.push(doc.data().name);
+			results.push(doc.data().projectName);
 		});
 
 		return { success: true, data: results };
@@ -175,8 +174,8 @@ const getProjectNamesContaining = async (term: string): Promise<Result> => {
 	}
 }
 
-// retrieves all projects with creation date between [start] and [end] (for use with calendar picker)
-const getProjectsBetween = async (startDate: Date, endDate: Date): Promise<Result> => {
+// retrieves all projects with start date between [start] and [end] (for use with calendar picker)
+const getProjectsStartedBetween = async (startDate: Date, endDate: Date): Promise<Result> => {
     try {
         const results: Project[] = [];
 
@@ -184,9 +183,9 @@ const getProjectsBetween = async (startDate: Date, endDate: Date): Promise<Resul
         const endTimestamp = Timestamp.fromDate(endDate);
 
         const datesQuery = query(collection(db, "projects"), 
-            where("creationDate", ">=", startTimestamp), 
-            where("creationDate", "<=", endTimestamp), 
-            orderBy("creationDate", "desc"));
+            where("startDate", ">=", startTimestamp), 
+            where("startDate", "<=", endTimestamp), 
+            orderBy("startDate", "desc"));
 
         const querySnapshot = await getDocs(datesQuery);
 
@@ -216,9 +215,9 @@ const getProjectsBetween = async (startDate: Date, endDate: Date): Promise<Resul
  * 
  * @returns a Promise<Result>.
  */
-const updateProjectField = async (projectName: string, supplierName: string, field: keyof Project, newData: any): Promise<Result> => {
+const updateProjectField = async (projectName: string, field: keyof Project, newData: any): Promise<Result> => {
     try {
-        const docRef = doc(db, `projects/supplier-name/${supplierName}/${projectName}`);
+        const docRef = doc(db, `projects/${projectName}`);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
             return { success: false, errorCode: "project-not-found"};
@@ -249,9 +248,9 @@ const updateProjectField = async (projectName: string, supplierName: string, fie
  * 
  * @returns a Promise<Result>.
  */
-const deleteProject = async (projectName: string, supplierName: string): Promise<Result> => {
+const deleteProject = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, `projects/supplier-name/${supplierName}/${projectName}`);
+        const docRef = doc(db, `projects/${projectName}`);
 
         const projectDoc = await getDoc(docRef);
         if (!projectDoc.exists) {
@@ -275,8 +274,8 @@ export {
     type AnalysisStage,
     createProject,
     getProjects,
-    getProjectNamesContaining,
-    getProjectsBetween,
+    getProjectNamesStartingWith,
+    getProjectsStartedBetween,
     updateProjectField,
     deleteProject
 };
