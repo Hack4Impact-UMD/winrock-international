@@ -6,6 +6,8 @@ import BoxIcon from "@mui/icons-material/CheckBoxOutlineBlankRounded";
 import ChevronRight from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeft from "@mui/icons-material/ChevronLeftRounded";
 import CheckBadge from "@mui/icons-material/Verified";
+import { db } from "../firebaseConfig";
+import { collection, getDocs, query, where, limit, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
 
 interface ManageAccessProps {
     projectId: string;
@@ -50,50 +52,227 @@ const ManageAccess = (props: ManageAccessProps) => {
     ]);
 
     // all alerts in this array are shown
-    const [alerts, setAlerts] = useState<AlertData[]>([
-        {
-            text: "Access updated",
-            type: "success",
-        },
-        {
-            text: "Could not add example@gmail.com because account does not exist",
-            type: "error",
-        },
-    ]);
+    const [alerts, setAlerts] = useState<AlertData[]>([]);
 
     // null if not showing confirm dialog, is user to remove if showing (to facilitate actually removing them)
     const [userToRemove, setUserToRemove] = useState<UserData | null>(null);
 
     // suggestions currently being shown in autocomplete list
-    const [userSuggestions, setUserSuggestions] = useState<UserData[]>([
-        {
-            name: "Alex Smith",
-            email: "asmith@gmail.com",
-            role: "Supplier",
-        },
-    ]);
+    const [userSuggestions, setUserSuggestions] = useState<UserData[]>([]);
 
     const [emailIsFocused, setEmailIsFocused] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const handleEmailAutocomplete = async (partialEmail: string) => {
+        if (!partialEmail || partialEmail.length < 2) {
+            setUserSuggestions([]);
+            return;
+        }
+        
+        try {
+            const results: UserData[] = [];
+            
+            // Query for email matches
+            const emailQuery = query(
+                collection(db, "users"),
+                where("email", ">=", partialEmail.toLowerCase()),
+                where("email", "<=", partialEmail.toLowerCase() + "\uf8ff"),
+                limit(5)
+            );
+            
+            // Query for name matches
+            const nameQuery = query(
+                collection(db, "users"),
+                where("name", ">=", partialEmail),
+                where("name", "<=", partialEmail + "\uf8ff"),
+                limit(5)
+            );
+            
+            // Execute both queries
+            const [emailSnapshot, nameSnapshot] = await Promise.all([
+                getDocs(emailQuery),
+                getDocs(nameQuery)
+            ]);
+            
+            // Process email query results
+            emailSnapshot.forEach((doc) => {
+                const userData = doc.data();
+                results.push({
+                    name: userData.name,
+                    email: userData.email,
+                    role: userData.role
+                } as UserData);
+            });
+            
+            // Process name query results (avoid duplicates)
+            nameSnapshot.forEach((doc) => {
+                const userData = doc.data();
+                // Check if this user is already in results
+                if (!results.some(user => user.email === userData.email)) {
+                    results.push({
+                        name: userData.name,
+                        email: userData.email,
+                        role: userData.role
+                    } as UserData);
+                }
+            });
+            
+            setUserSuggestions(results);
+        } catch (error) {
+            console.error("Error searching for users:", error);
+            setUserSuggestions([]);
+        }
+    };
+
+    const checkUserExists = async (email: string): Promise<UserData | null> => {
+        try {
+            const userQuery = query(
+                collection(db, "users"),
+                where("email", "==", email.toLowerCase())
+            );
+            
+            const querySnapshot = await getDocs(userQuery);
+            
+            if (querySnapshot.empty) {
+                return null;
+            }
+            
+            const userData = querySnapshot.docs[0].data();
+            return {
+                name: userData.name,
+                email: userData.email,
+                role: userData.role
+            } as UserData;
+            
+        } catch (error) {
+            console.error("Error checking if user exists:", error);
+            return null;
+        }
+    };
+
+    const updateUserAccess = async () => {
+        if (isProcessing || emails.length === 0) return;
+        
+        setIsProcessing(true);
+        
+        try {
+            const validUsers: UserData[] = [];
+            const invalidEmails: string[] = [];
+            
+            for (const emailData of emails) {
+                const userData = await checkUserExists(emailData.email);
+                if (userData) {
+                    validUsers.push(userData);
+                } else {
+                    invalidEmails.push(emailData.email);
+                }
+            }
+            
+            invalidEmails.forEach(email => {
+                addAlert("error", email);
+            });
+            
+            const existingEmails = usersWithAccess.map(user => user.email);
+            const newUsers = validUsers.filter(user => !existingEmails.includes(user.email));
+            
+            if (newUsers.length > 0) {
+                for (const user of newUsers) {
+                    await addDoc(collection(db, "projectAccess"), {
+                        projectId: props.projectId,
+                        userEmail: user.email,
+                        role: user.role,
+                        addedBy: "current-user-email",
+                        addedAt: new Date(),
+                        notified: notifyPeople
+                    });
+                }
+                
+                setUsersWithAccess([...usersWithAccess, ...newUsers]);
+                addAlert("success");
+            }
+            
+            setEmails([]);
+            
+        } catch (error) {
+            console.error("Error updating access:", error);
+            setAlerts([...alerts, {
+                text: "An error occurred while updating access",
+                type: "error"
+            }]);
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const removeUserAccess = async (user: UserData) => {
+        if (!user) return;
+        
+        setIsProcessing(true);
+        
+        try {
+            const accessQuery = query(
+                collection(db, "projectAccess"),
+                where("projectId", "==", props.projectId),
+                where("userEmail", "==", user.email)
+            );
+            
+            const querySnapshot = await getDocs(accessQuery);
+            
+            if (!querySnapshot.empty) {
+                await deleteDoc(doc(db, "projectAccess", querySnapshot.docs[0].id));
+                
+                setUsersWithAccess(usersWithAccess.filter(u => u.email !== user.email));
+                addAlert("success");
+            }
+            
+        } catch (error) {
+            console.error("Error removing access:", error);
+            setAlerts([...alerts, {
+                text: "An error occurred while removing access",
+                type: "error"
+            }]);
+        } finally {
+            setIsProcessing(false);
+            setUserToRemove(null);
+        }
+    };
 
     // called on keydown in the email input textbox
-    const onEmailKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const onEmailKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
         const emailInput = event.target as HTMLInputElement;
 
         if (event.key === "Backspace" && emailInput.value === "") {
             setEmails(emails.slice(0, -1));
         } else if (event.key === "Enter") {
-            // check if email is a valid user or not here
-
-            setEmails([
-                ...emails,
-                {
-                    email: emailInput.value,
-                    valid: true,
-                },
-            ]);
+            if (emailInput.value.trim() === "") return;
+            
+            // Add email to the list immediately, mark as checking validity
+            const newEmail = {
+                email: emailInput.value,
+                valid: false // Initially false until validated
+            };
+            
+            setEmails([...emails, newEmail]);
+            
+            // Check if user exists asynchronously
+            const userData = await checkUserExists(emailInput.value);
+            
+            // Update the email's valid status based on existence check
+            setEmails(currentEmails => 
+                currentEmails.map(email => 
+                    email.email === newEmail.email 
+                        ? { ...email, valid: userData !== null } 
+                        : email
+                )
+            );
+            
+            // Show error if user doesn't exist
+            if (!userData) {
+                addAlert("error", newEmail.email);
+            }
+            
             emailInput.value = "";
         }
-        // code for populating autocomplete can go here
     };
 
     // called to show preview of users next to the manage access > button
@@ -185,7 +364,7 @@ const ManageAccess = (props: ManageAccessProps) => {
 
     // called on Invite button click
     const addAccess = () => {
-        addAlert("success");
+        updateUserAccess();
     };
 
     return (
@@ -209,7 +388,12 @@ const ManageAccess = (props: ManageAccessProps) => {
                                 >
                                     Cancel
                                 </button>
-                                <button>Yes</button>
+                                <button 
+                                    onClick={() => removeUserAccess(userToRemove)}
+                                    disabled={isProcessing}
+                                >
+                                    Yes
+                                </button>
                             </div>
                         </div>
                     </>
@@ -239,6 +423,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                         {emails.map((emailData) => {
                             return (
                                 <div
+                                    key={emailData.email}
                                     className={
                                         emailData.valid
                                             ? styles.emailCapsuleValid
@@ -272,6 +457,10 @@ const ManageAccess = (props: ManageAccessProps) => {
                             className={styles.emailInput}
                             placeholder="Add members by email"
                             onKeyDown={onEmailKeyPress}
+                            onChange={(e) => {
+                                const inputElement = e.target as HTMLInputElement;
+                                handleEmailAutocomplete(inputElement.value);
+                            }}
                             onFocus={() => setEmailIsFocused(true)}
                             onBlur={() => {
                                 setTimeout(() => {
@@ -291,6 +480,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                             {userSuggestions.map((user) => {
                                 return (
                                     <button
+                                        key={user.email}
                                         className={styles.autocompleteButton}
                                         onClick={() => {
                                             setEmails([
@@ -344,8 +534,9 @@ const ManageAccess = (props: ManageAccessProps) => {
                             <button
                                 className={styles.inviteButton}
                                 onClick={addAccess}
+                                disabled={isProcessing || emails.length === 0}
                             >
-                                Invite
+                                {isProcessing ? "Processing..." : "Invite"}
                             </button>
                         </div>
                         <h2>Manage access</h2>
@@ -385,7 +576,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                     <div className={styles.usersCont}>
                         {usersWithAccess.map((user) => {
                             return (
-                                <div className={styles.userDataCont}>
+                                <div key={user.email} className={styles.userDataCont}>
                                     <div className={styles.userNameEmail}>
                                         <p className={styles.userName}>
                                             {user.name}
