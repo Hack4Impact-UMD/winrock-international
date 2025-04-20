@@ -1,5 +1,18 @@
 import { FirebaseError } from "firebase/app";
-import * as firestore from "firebase/firestore";
+import {
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    orderBy,
+    Query,
+    query,
+    setDoc,
+    Timestamp,
+    updateDoc,
+    where
+} from "firebase/firestore";
 import { db } from "../firebaseConfig.js";
 import Result from "../types/Result";
 
@@ -27,8 +40,8 @@ interface Project {
     geography: string;
     overallStatus: OverallStatus;
     analysisStage: AnalysisStage;
-    startDate: firestore.Timestamp;
-    lastUpdated: firestore.Timestamp;
+    startDate: Timestamp;
+    lastUpdated: Timestamp;
 }
 
 /**
@@ -47,16 +60,16 @@ const createProject = async (
     geography: string,
     overallStatus: OverallStatus = OverallStatus.ON_TRACK,
     analysisStage: AnalysisStage = AnalysisStage.STAGE_1,
-    startDate?: firestore.Timestamp
+    startDate?: Date
 ): Promise<Result> => {
     try{
-        const docRef = firestore.doc(db, `projects/supplier-name/${supplierName}`, projectName);
-        const docSnap = await firestore.getDoc(docRef);
+        const docRef = doc(db, `projects/supplier-name/${supplierName}`, projectName);
+        const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             return { success: false, errorCode: "project-name-already-exists"}
         }
 
-        const now = firestore.Timestamp.now();
+        const now = Timestamp.now();
         const newProject: Project = {
             projectName,
             supplierName,
@@ -64,12 +77,12 @@ const createProject = async (
             geography,
             overallStatus,
             analysisStage,
-            startDate: startDate ? startDate : now,
+            startDate: startDate ? Timestamp.fromDate(startDate) : now,
             lastUpdated: now
         };
-        await firestore.setDoc(docRef, newProject);
+        await setDoc(docRef, newProject);
 
-        return { success: true, data: newProject };
+        return { success: true };
     } catch (error) {
         if (error instanceof FirebaseError) {
             return { success: false, errorCode: error.code };
@@ -79,30 +92,147 @@ const createProject = async (
     }
 }
 
+/*
+To load data on component mount:
+	const [projects, setProjects] = useState<ProjectData[]>([]);
+	const [names, setNames] = useState<string[]>([]);
+
+	useEffect(() => {
+		const getData = async () => {
+			setProjects(await getProjects("name", true));
+			setNames(await getProjectNamesContaining("Ch"));
+		};
+
+		getData();
+	}, []);
+
+To reload data/search:
+	<button onClick={async () => setProjects(await getProjects("name", true))}>Refresh</button>
+*/
+
+// retrieves all projects ordered by [field] asc/desc,
+// only where [filterByField] == [filterValue] (or where geography contains [filterValue]) if present
+
+// to order by another field while filtering by geography with array-contains, a composite index needs to be
+// manually added to the firestore for geography (Arrays) and the order-by field (Ascending/Descending)
+const getProjects = async (orderByField: string, desc: boolean, filterByField?: string, filterValue?: string): Promise<Result> => {
+    try {
+        const results: Project[] = [];
+        let filterQuery: Query;
+
+        if (filterByField && filterValue) {
+            filterQuery = query(collection(db, "projects"), 
+            where(filterByField, filterByField === "geography" ? "array-contains" : "==", filterValue), 
+            orderBy(orderByField, desc ? "desc" : "asc"));
+        } else {
+            filterQuery = query(collection(db, "projects"),
+            orderBy(orderByField, desc ? "desc" : "asc"));
+        }
+	
+		const querySnapshot = await getDocs(filterQuery);
+		querySnapshot.forEach((doc) => {
+			const convertedDoc = {
+                ...doc.data(),
+                startDate: doc.data().startDate.toDate(),
+                lastUpdated: doc.data().lastUpdated.toDate()
+            }
+            results.push(convertedDoc as Project);
+		});
+
+		return { success: true, data: results };
+	}
+	catch (error) {
+		if (error instanceof FirebaseError) {
+            return { success: false, errorCode: error.code };
+        } else {
+            return { success: false, errorCode: "unknown" };
+        }
+	}
+}
+
+// retrieves all project names that start with [term] (for use in autocomplete)
+const getProjectNamesContaining = async (term: string): Promise<Result> => {
+    try {
+        const results: string[] = [];
+
+        const nameQuery = query(collection(db, "projects"), 
+            where("name", ">=", term), 
+            where("name", "<=", term + "\uf8ff"));
+
+		const querySnapshot = await getDocs(nameQuery);
+		querySnapshot.forEach((doc) => {
+			results.push(doc.data().name);
+		});
+
+		return { success: true, data: results };
+	}
+	catch (error) {
+		if (error instanceof FirebaseError) {
+            return { success: false, errorCode: error.code };
+        } else {
+            return { success: false, errorCode: "unknown" };
+        }
+	}
+}
+
+// retrieves all projects with creation date between [start] and [end] (for use with calendar picker)
+const getProjectsBetween = async (startDate: Date, endDate: Date): Promise<Result> => {
+    try {
+        const results: Project[] = [];
+
+        const startTimestamp = Timestamp.fromDate(startDate);
+        const endTimestamp = Timestamp.fromDate(endDate);
+
+        const datesQuery = query(collection(db, "projects"), 
+            where("creationDate", ">=", startTimestamp), 
+            where("creationDate", "<=", endTimestamp), 
+            orderBy("creationDate", "desc"));
+
+        const querySnapshot = await getDocs(datesQuery);
+
+        querySnapshot.forEach((doc) => {
+            const convertedDoc = {
+                ...doc.data(),
+                startDate: doc.data().startDate.toDate(),
+                lastUpdated: doc.data().lastUpdated.toDate()
+            }
+            results.push(convertedDoc as Project);
+        });
+
+        return { success: true, data: results };
+	}
+	catch (error) {
+		if (error instanceof FirebaseError) {
+            return { success: false, errorCode: error.code };
+        } else {
+            return { success: false, errorCode: "unknown" };
+        }
+	}
+}
+
 /**
  * Updates the given field of the given project
  * to newData.
  * 
  * @returns a Promise<Result>.
  */
-const updateProjectField = async (
-    projectName: string,
-    supplierName: string,
-    field: keyof Project,
-    newData: any
-): Promise<Result> => {
+const updateProjectField = async (projectName: string, supplierName: string, field: keyof Project, newData: any): Promise<Result> => {
     try {
-        const docRef = firestore.doc(db, `projects/supplier-name/${supplierName}/${projectName}`);
-        const docSnap = await firestore.getDoc(docRef);
+        const docRef = doc(db, `projects/supplier-name/${supplierName}/${projectName}`);
+        const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
             return { success: false, errorCode: "project-not-found"};
         }
 
+        if (field == "startDate" || field == "lastUpdated") {
+            newData = Timestamp.fromDate(newData);
+        }
+
         const updateData = {
             [field]: newData,
-            lastUpdated: field === "lastUpdated" ? newData : firestore.Timestamp.now()
+            lastUpdated: field === "lastUpdated" ? newData : Timestamp.now()
         };
-        await firestore.updateDoc(docRef, updateData);
+        await updateDoc(docRef, updateData);
 
         return { success: true };
     } catch (error) {
@@ -119,19 +249,16 @@ const updateProjectField = async (
  * 
  * @returns a Promise<Result>.
  */
-const deleteProject = async (
-    projectName: string,
-    supplierName: string
-): Promise<Result> => {
+const deleteProject = async (projectName: string, supplierName: string): Promise<Result> => {
     try {
-        const docRef = firestore.doc(db, `projects/supplier-name/${supplierName}/${projectName}`);
+        const docRef = doc(db, `projects/supplier-name/${supplierName}/${projectName}`);
 
-        const projectDoc = await firestore.getDoc(docRef);
+        const projectDoc = await getDoc(docRef);
         if (!projectDoc.exists) {
             return { success: false, errorCode: "project-not-found"};
         }
 
-        await firestore.deleteDoc(docRef);
+        await deleteDoc(docRef);
 
         return { success: true };
     } catch (error) {
@@ -147,6 +274,9 @@ export {
     type OverallStatus,
     type AnalysisStage,
     createProject,
+    getProjects,
+    getProjectNamesContaining,
+    getProjectsBetween,
     updateProjectField,
     deleteProject
 };
