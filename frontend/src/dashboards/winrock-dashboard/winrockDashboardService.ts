@@ -13,8 +13,8 @@ import {
     updateDoc,
     where
 } from "firebase/firestore";
-import { db } from "../firebaseConfig.js";
-import Result from "../types/Result";
+import { db } from "../../firebaseConfig.js";
+import Result from "../../types/Result.js";
 
 enum OverallStatus {
     ON_TRACK = "On Track",
@@ -83,11 +83,45 @@ const createProject = async (
 
         return { success: true };
     } catch (error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
+        return {
+            success: false,
+            errorCode: error instanceof FirebaseError ? error.code : "unknown"
+        };
+    }
+}
+
+/**
+ * Retrieves the project with the given name.
+ * If the project does not exist, an error
+ * is returned.
+ * 
+ * @returns a Promise<Result> containing the
+ *          requested project.
+ */
+const getProjectByName = async (projectName: string): Promise<Result> => {
+    try {
+        const docRef = doc(db, "projects", projectName);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            return { success: false, errorCode: "project-not-found" };
         }
+
+        const projectData = docSnap.data();
+        const project = {
+            ...projectData,
+            startDate: projectData.startDate.toDate(),
+            lastUpdated: projectData.lastUpdated.toDate()
+        } as Project;
+
+        return {
+            success: true,
+            data: project
+        };
+    } catch (error) {
+        return {
+            success: false,
+            errorCode: error instanceof FirebaseError ? error.code : "unknown"
+        };
     }
 }
 
@@ -99,7 +133,7 @@ To load data on component mount:
 	useEffect(() => {
 		const getData = async () => {
 			setProjects(await getProjects("name", true));
-			setNames(await getProjectNamesContaining("Ch"));
+			setNames(await getProjectNamesStartingWith("Ch"));
 		};
 
 		getData();
@@ -115,10 +149,10 @@ To reload data/search:
 // to order by another field while filtering by geography with array-contains, a composite index needs to be
 // manually added to the firestore for geography (Arrays) and the order-by field (Ascending/Descending)
 const getProjects = async (orderByField: string, desc: boolean, filterByField?: string, filterValue?: string): Promise<Result> => {
+    const projects: Project[] = [];
+    let filterQuery: Query;
+    
     try {
-        const results: Project[] = [];
-        let filterQuery: Query;
-
         if (filterByField && filterValue) {
             filterQuery = query(collection(db, "projects"), 
             where(filterByField, filterByField === "geography" ? "array-contains" : "==", filterValue), 
@@ -135,53 +169,57 @@ const getProjects = async (orderByField: string, desc: boolean, filterByField?: 
                 startDate: doc.data().startDate.toDate(),
                 lastUpdated: doc.data().lastUpdated.toDate()
             }
-            results.push(convertedDoc as Project);
+            projects.push(convertedDoc as Project);
 		});
 
-		return { success: true, data: results };
+		return {
+            success: true,
+            data: projects
+        };
 	}
 	catch (error) {
-		if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
+		return {
+            success: false,
+            errorCode: error instanceof FirebaseError ? error.code : "unknown"
+        };
 	}
 }
 
 // retrieves all project names that start with [term] (for use in autocomplete)
 const getProjectNamesStartingWith = async (term: string): Promise<Result> => {
+    const projectNames: string[] = [];
+    
     try {
-        const results: string[] = [];
-
         const nameQuery = query(collection(db, "projects"), 
             where("projectName", ">=", term), 
             where("projectName", "<=", term + "\uf8ff")); // End at the last possible name that starts with the term
 
 		const querySnapshot = await getDocs(nameQuery);
 		querySnapshot.forEach((doc) => {
-			results.push(doc.data().projectName);
+			projectNames.push(doc.data().projectName);
 		});
 
-		return { success: true, data: results };
+		return {
+            success: true,
+            data: projectNames
+        };
 	}
 	catch (error) {
-		if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
+		return {
+            success: false,
+            errorCode: error instanceof FirebaseError ? error.code : "unknown"
+        };
 	}
 }
 
 // retrieves all projects with start date between [start] and [end] (for use with calendar picker)
 const getProjectsStartedBetween = async (startDate: Date, endDate: Date): Promise<Result> => {
+    const projects: Project[] = [];
+
+    const startTimestamp = Timestamp.fromDate(startDate);
+    const endTimestamp = Timestamp.fromDate(endDate);
+    
     try {
-        const results: Project[] = [];
-
-        const startTimestamp = Timestamp.fromDate(startDate);
-        const endTimestamp = Timestamp.fromDate(endDate);
-
         const datesQuery = query(collection(db, "projects"), 
             where("startDate", ">=", startTimestamp), 
             where("startDate", "<=", endTimestamp), 
@@ -195,23 +233,26 @@ const getProjectsStartedBetween = async (startDate: Date, endDate: Date): Promis
                 startDate: doc.data().startDate.toDate(),
                 lastUpdated: doc.data().lastUpdated.toDate()
             }
-            results.push(convertedDoc as Project);
+            projects.push(convertedDoc as Project);
         });
 
-        return { success: true, data: results };
+        return {
+            success: true,
+            data: projects
+        };
 	}
 	catch (error) {
-		if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
+		return {
+            success: false,
+            errorCode: error instanceof FirebaseError ? error.code : "unknown"
+        };
 	}
 }
 
 /**
  * Updates the given field of the given project
- * to newData.
+ * to newData. If the project does not exist,
+ * an error is returned.
  * 
  * @returns a Promise<Result>.
  */
@@ -223,7 +264,7 @@ const updateProjectField = async (projectName: string, field: keyof Project, new
             return { success: false, errorCode: "project-not-found"};
         }
 
-        if (field == "startDate" || field == "lastUpdated") {
+        if (newData instanceof Date) {
             newData = Timestamp.fromDate(newData);
         }
 
@@ -235,25 +276,24 @@ const updateProjectField = async (projectName: string, field: keyof Project, new
 
         return { success: true };
     } catch (error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
+        return {
+            success: false,
+            errorCode: error instanceof FirebaseError ? error.code : "unknown"
+        };
     }
 };
 
 /**
- * Deletes the given project.
+ * Deletes the given project. If the project
+ * does not exist, an error is returned.
  * 
  * @returns a Promise<Result>.
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
     try {
         const docRef = doc(db, `projects/${projectName}`);
-
-        const projectDoc = await getDoc(docRef);
-        if (!projectDoc.exists) {
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
             return { success: false, errorCode: "project-not-found"};
         }
 
@@ -261,18 +301,18 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 
         return { success: true };
     } catch (error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
+        return {
+            success: false,
+            errorCode: error instanceof FirebaseError ? error.code : "unknown"
+        };
     }
 }
 
 export {
-    type OverallStatus,
-    type AnalysisStage,
+    OverallStatus,
+    AnalysisStage,
     createProject,
+    getProjectByName,
     getProjects,
     getProjectNamesStartingWith,
     getProjectsStartedBetween,
