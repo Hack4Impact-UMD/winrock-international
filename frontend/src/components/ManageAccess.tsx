@@ -7,7 +7,7 @@ import ChevronRight from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeft from "@mui/icons-material/ChevronLeftRounded";
 import CheckBadge from "@mui/icons-material/Verified";
 import { db } from "../firebaseConfig";
-import { collection, getDocs, query, where, limit, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, limit, addDoc, deleteDoc, doc } from "firebase/firestore";
 
 interface ManageAccessProps {
     projectId: string;
@@ -21,7 +21,8 @@ interface EmailCapsuleData {
 }
 
 interface UserData {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     role: string;
 }
@@ -40,12 +41,14 @@ const ManageAccess = (props: ManageAccessProps) => {
     // used in manage access view
     const [usersWithAccess, setUsersWithAccess] = useState<UserData[]>([
         {
-            name: "Jane Doe",
+            firstName: "Jane",
+            lastName: "Doe",
             email: "jdoe@gmail.com",
             role: "Client",
         },
         {
-            name: "John Smith",
+            firstName: "John",
+            lastName: "Smith",
             email: "john.smith1@icloud.com",
             role: "Supplier",
         },
@@ -68,10 +71,10 @@ const ManageAccess = (props: ManageAccessProps) => {
             setUserSuggestions([]);
             return;
         }
-        
+
         try {
             const results: UserData[] = [];
-            
+
             // Query for email matches
             const emailQuery = query(
                 collection(db, "users"),
@@ -79,7 +82,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                 where("email", "<=", partialEmail.toLowerCase() + "\uf8ff"),
                 limit(5)
             );
-            
+
             // Query for name matches
             const nameQuery = query(
                 collection(db, "users"),
@@ -87,36 +90,38 @@ const ManageAccess = (props: ManageAccessProps) => {
                 where("name", "<=", partialEmail + "\uf8ff"),
                 limit(5)
             );
-            
+
             // Execute both queries
             const [emailSnapshot, nameSnapshot] = await Promise.all([
                 getDocs(emailQuery),
                 getDocs(nameQuery)
             ]);
-            
+
             // Process email query results
             emailSnapshot.forEach((doc) => {
                 const userData = doc.data();
                 results.push({
-                    name: userData.name,
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
                     email: userData.email,
                     role: userData.role
                 } as UserData);
             });
-            
+
             // Process name query results (avoid duplicates)
             nameSnapshot.forEach((doc) => {
                 const userData = doc.data();
                 // Check if this user is already in results
                 if (!results.some(user => user.email === userData.email)) {
                     results.push({
-                        name: userData.name,
+                        firstName: userData.firstName,
+                        lastName: userData.lastName,
                         email: userData.email,
                         role: userData.role
                     } as UserData);
                 }
             });
-            
+
             setUserSuggestions(results);
         } catch (error) {
             console.error("Error searching for users:", error);
@@ -130,20 +135,21 @@ const ManageAccess = (props: ManageAccessProps) => {
                 collection(db, "users"),
                 where("email", "==", email.toLowerCase())
             );
-            
+
             const querySnapshot = await getDocs(userQuery);
-            
+
             if (querySnapshot.empty) {
                 return null;
             }
-            
+
             const userData = querySnapshot.docs[0].data();
             return {
-                name: userData.name,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
                 email: userData.email,
                 role: userData.role
             } as UserData;
-            
+
         } catch (error) {
             console.error("Error checking if user exists:", error);
             return null;
@@ -152,13 +158,13 @@ const ManageAccess = (props: ManageAccessProps) => {
 
     const updateUserAccess = async () => {
         if (isProcessing || emails.length === 0) return;
-        
+
         setIsProcessing(true);
-        
+
         try {
             const validUsers: UserData[] = [];
             const invalidEmails: string[] = [];
-            
+
             for (const emailData of emails) {
                 const userData = await checkUserExists(emailData.email);
                 if (userData) {
@@ -167,14 +173,14 @@ const ManageAccess = (props: ManageAccessProps) => {
                     invalidEmails.push(emailData.email);
                 }
             }
-            
+
             invalidEmails.forEach(email => {
                 addAlert("error", email);
             });
-            
+
             const existingEmails = usersWithAccess.map(user => user.email);
             const newUsers = validUsers.filter(user => !existingEmails.includes(user.email));
-            
+
             if (newUsers.length > 0) {
                 for (const user of newUsers) {
                     await addDoc(collection(db, "projectAccess"), {
@@ -186,13 +192,13 @@ const ManageAccess = (props: ManageAccessProps) => {
                         notified: notifyPeople
                     });
                 }
-                
+
                 setUsersWithAccess([...usersWithAccess, ...newUsers]);
                 addAlert("success");
             }
-            
+
             setEmails([]);
-            
+
         } catch (error) {
             console.error("Error updating access:", error);
             setAlerts([...alerts, {
@@ -206,25 +212,25 @@ const ManageAccess = (props: ManageAccessProps) => {
 
     const removeUserAccess = async (user: UserData) => {
         if (!user) return;
-        
+
         setIsProcessing(true);
-        
+
         try {
             const accessQuery = query(
                 collection(db, "projectAccess"),
                 where("projectId", "==", props.projectId),
                 where("userEmail", "==", user.email)
             );
-            
+
             const querySnapshot = await getDocs(accessQuery);
-            
+
             if (!querySnapshot.empty) {
                 await deleteDoc(doc(db, "projectAccess", querySnapshot.docs[0].id));
-                
+
                 setUsersWithAccess(usersWithAccess.filter(u => u.email !== user.email));
                 addAlert("success");
             }
-            
+
         } catch (error) {
             console.error("Error removing access:", error);
             setAlerts([...alerts, {
@@ -245,32 +251,32 @@ const ManageAccess = (props: ManageAccessProps) => {
             setEmails(emails.slice(0, -1));
         } else if (event.key === "Enter") {
             if (emailInput.value.trim() === "") return;
-            
+
             // Add email to the list immediately, mark as checking validity
             const newEmail = {
                 email: emailInput.value,
                 valid: false // Initially false until validated
             };
-            
+
             setEmails([...emails, newEmail]);
-            
+
             // Check if user exists asynchronously
             const userData = await checkUserExists(emailInput.value);
-            
+
             // Update the email's valid status based on existence check
-            setEmails(currentEmails => 
-                currentEmails.map(email => 
-                    email.email === newEmail.email 
-                        ? { ...email, valid: userData !== null } 
+            setEmails(currentEmails =>
+                currentEmails.map(email =>
+                    email.email === newEmail.email
+                        ? { ...email, valid: userData !== null }
                         : email
                 )
             );
-            
+
             // Show error if user doesn't exist
             if (!userData) {
                 addAlert("error", newEmail.email);
             }
-            
+
             emailInput.value = "";
         }
     };
@@ -280,23 +286,23 @@ const ManageAccess = (props: ManageAccessProps) => {
         if (data.length === 0) {
             return <p>No other users have access.</p>;
         } else if (data.length === 1) {
-            return <p>{data[0].name}</p>;
+            return <p>{data[0].firstName + " " + data[0].lastName}</p>;
         } else if (data.length === 2) {
             return (
                 <p>
-                    {data[0].name} and {data[1].name}
+                    {data[0].firstName + " " + data[0].lastName} and {data[1].firstName + " " + data[1].lastName}
                 </p>
             );
         } else if (data.length === 3) {
             return (
                 <p>
-                    {data[0].name}, {data[1].name}, and 1 other
+                    {data[0].firstName + " " + data[0].lastName}, {data[1].firstName + " " + data[1].lastName}, and 1 other
                 </p>
             );
         } else {
             return (
                 <p>
-                    {data[0].name}, {data[1].name}, and {data.length - 2} others
+                    {data[0].firstName + " " + data[0].lastName}, {data[1].firstName + " " + data[1].lastName}, and {data.length - 2} others
                 </p>
             );
         }
@@ -378,7 +384,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                         <div className={styles.confirmDialog}>
                             <h3>
                                 Are you sure you want to remove{" "}
-                                {userToRemove.name} from this project?
+                                {userToRemove.firstName + " " + userToRemove.lastName} from this project?
                             </h3>
                             <div className={styles.confirmButtonsCont}>
                                 <button
@@ -388,7 +394,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                                 >
                                     Cancel
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => removeUserAccess(userToRemove)}
                                     disabled={isProcessing}
                                 >
@@ -501,7 +507,8 @@ const ManageAccess = (props: ManageAccessProps) => {
                                             }
                                         }}
                                     >
-                                        <p>{user.name}</p>
+                                        <p>{user.firstName}</p>
+                                        <p>{user.lastName}</p>
                                         <p>{user.email}</p>
                                         <p>{user.role}</p>
                                     </button>
@@ -579,7 +586,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                                 <div key={user.email} className={styles.userDataCont}>
                                     <div className={styles.userNameEmail}>
                                         <p className={styles.userName}>
-                                            {user.name}
+                                            {user.firstName + " " + user.lastName}
                                         </p>
                                         <p className={styles.userEmail}>
                                             {user.email}
