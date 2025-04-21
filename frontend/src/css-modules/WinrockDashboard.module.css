@@ -20,7 +20,7 @@
 .mainContent {
   width: calc(100% - 18.75rem);
   margin-left: 18.75rem;
-  padding-bottom: 5.625rem; /* Match pagination height */
+  padding-bottom: 5.625rem; 
 }
 
 .logo {

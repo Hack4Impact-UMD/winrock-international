@@ -5,8 +5,10 @@ import FilterTabs from '../components/dashboards/winrock-dashboard/FilterTabs';
 import Pagination from '../components/dashboards/winrock-dashboard/Pagination';
 import TableHeader from '../components/dashboards/winrock-dashboard/TableHeader';
 import FilterWrapper from '../components/dashboards/winrock-dashboard/FilterWrapper';
+import SortWrapper from '../components/dashboards/winrock-dashboard/SortWrapper'; 
 import ColorText from '../components/dashboards/winrock-dashboard/ColorText';
 import TableRow from '../components/dashboards/winrock-dashboard/TableRow';
+
 
 interface Project {
   id: number;
@@ -210,6 +212,8 @@ const WinrockDashboard: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
+  
   const itemsPerPage = 10;
   
   // Filter projects by selected activity type
@@ -248,6 +252,11 @@ const WinrockDashboard: React.FC = () => {
     } else {
       setSelectedRows(selectedRows.filter(rowId => rowId !== id));
     }
+  };
+  
+  // Handler for sort selection - just updates the state
+  const handleSortChange = (sortOption: string) => {
+    setSelectedSort(sortOption);
   };
 
   // per category
@@ -317,7 +326,12 @@ const WinrockDashboard: React.FC = () => {
             >
               Filter
             </button>
-            <button className={styles.sortButton}>Sort</button>
+            
+            {/* Our updated SortWrapper component */}
+            <SortWrapper 
+              onSortChange={handleSortChange}
+              initialSortOption={selectedSort}
+            />
             
             {isFilterPopupOpen && (
               <div className={styles.filterPopup}>
@@ -374,13 +388,6 @@ const spendCategories = [
   { id: 'electricity', label: 'Electricity' },
   { id: 'emulsifiers', label: 'Emulsifiers' },
 ];
-
-// const overallCategories = [
-//   { id: 'onTrack', label: <ColorText text="On Track" backgroundColor="#e6f4ff" textColor="#0a3977" />},
-//   { id: 'atRisk', label: <ColorText text="At Risk" backgroundColor="#fde7e9" textColor="#e41b35" />},
-//   { id: 'paused', label: <ColorText text="Paused" backgroundColor="#fff8e6" textColor="#b07d18" />},
-//   { id: 'completed', label: <ColorText text="Completed" backgroundColor="#e6f9eb" textColor="#186a3b" />},
-//   { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" backgroundColor="#f1fae1" textColor="#486b00" /> }];
 
 const overallCategories = [
   { id: 'onTrack', label: <ColorText text="On Track" category="On Track" variant="status" /> },
