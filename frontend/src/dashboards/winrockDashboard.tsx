@@ -210,12 +210,14 @@ const WinrockDashboard: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [projects, setProjects] = useState<Project[]>(sampleProjects);
   const itemsPerPage = 10;
   
   // Filter projects by selected activity type
   const filteredProjects = selectedTab === 'All Projects' 
-    ? sampleProjects 
-    : sampleProjects.filter(project => project.activityType === selectedTab);
+    ? projects 
+    : projects.filter(project => project.activityType === selectedTab);
   const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -250,6 +252,14 @@ const WinrockDashboard: React.FC = () => {
     } else {
       setSelectedRows(selectedRows.filter(rowId => rowId !== id));
     }
+  };
+
+  const handleFieldChange = (id: number, field: keyof Project, value: string) => {
+    setProjects(prevProjects => 
+      prevProjects.map(project => 
+        project.id === id ? { ...project, [field]: value } : project
+      )
+    );
   };
 
   // per category
@@ -297,11 +307,19 @@ const WinrockDashboard: React.FC = () => {
       <main className={styles.mainContent}>
         <h1 className={styles.title}>Projects</h1>
         
-        <FilterTabs
-          tabs={tabs}
-          selectedTab={selectedTab}
-          onTabSelect={handleTabChange}
-        />
+        <div className={styles.tabsContainer}>
+          <FilterTabs
+            tabs={tabs}
+            selectedTab={selectedTab}
+            onTabSelect={handleTabChange}
+          />
+          <button 
+            className={`${styles.editButton} ${isEditMode ? styles.active : ''}`} 
+            onClick={() => setIsEditMode(!isEditMode)}
+          >
+            {isEditMode ? 'Done' : 'Edit'}
+          </button>
+        </div>
 
         <div className={styles.toolbarContainer}>
           <div className={styles.searchContainer}>
@@ -341,6 +359,8 @@ const WinrockDashboard: React.FC = () => {
                   data={project}
                   isSelected={selectedRows.includes(project.id)}
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
+                  isEditMode={isEditMode}
+                  onFieldChange={(field, value) => handleFieldChange(project.id, field, value)}
                 />
               ))}
             </tbody>
@@ -377,13 +397,6 @@ const spendCategories = [
   { id: 'electricity', label: 'Electricity' },
   { id: 'emulsifiers', label: 'Emulsifiers' },
 ];
-
-// const overallCategories = [
-//   { id: 'onTrack', label: <ColorText text="On Track" backgroundColor="#e6f4ff" textColor="#0a3977" />},
-//   { id: 'atRisk', label: <ColorText text="At Risk" backgroundColor="#fde7e9" textColor="#e41b35" />},
-//   { id: 'paused', label: <ColorText text="Paused" backgroundColor="#fff8e6" textColor="#b07d18" />},
-//   { id: 'completed', label: <ColorText text="Completed" backgroundColor="#e6f9eb" textColor="#186a3b" />},
-//   { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" backgroundColor="#f1fae1" textColor="#486b00" /> }];
 
 const overallCategories = [
   { id: 'onTrack', label: <ColorText text="On Track" category="On Track" variant="status" /> },

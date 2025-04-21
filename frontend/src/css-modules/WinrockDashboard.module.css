@@ -35,6 +35,29 @@
   padding: 5.125rem 0 1.6875rem 1.5625rem;
 }
 
+.tabsContainer {
+  display: flex;
+  padding-right: 2rem;
+}
+
+.editButton {
+  background-color: white;
+  border: 1.29px solid var(--color-primary);
+  color: var(--color-primary);
+  height: 2.25rem;
+  width:5.625rem;
+  border-radius: .4rem;
+  cursor: pointer;
+  font-size: 0.65rem;
+  margin-left: auto;
+  margin-top: 0.5rem;
+}
+
+.editButton.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
 .toolbarContainer {
   display: flex;
   justify-content: space-between;
