@@ -8,6 +8,7 @@ import ChevronLeft from "@mui/icons-material/ChevronLeftRounded";
 import CheckBadge from "@mui/icons-material/Verified";
 import { db } from "../firebaseConfig";
 import { collection, getDocs, query, where, limit, addDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, query, where, limit, addDoc, deleteDoc, doc } from "firebase/firestore";
 
 interface ManageAccessProps {
     projectId: string;
@@ -39,20 +40,7 @@ const ManageAccess = (props: ManageAccessProps) => {
     const [showingManageAccess, setShowingManageAccess] = useState(false);
 
     // used in manage access view
-    const [usersWithAccess, setUsersWithAccess] = useState<UserData[]>([
-        {
-            firstName: "Jane",
-            lastName: "Doe",
-            email: "jdoe@gmail.com",
-            role: "Client",
-        },
-        {
-            firstName: "John",
-            lastName: "Smith",
-            email: "john.smith1@icloud.com",
-            role: "Supplier",
-        },
-    ]);
+    const [usersWithAccess, setUsersWithAccess] = useState<UserData[]>([]);
 
     // all alerts in this array are shown
     const [alerts, setAlerts] = useState<AlertData[]>([]);
@@ -84,38 +72,56 @@ const ManageAccess = (props: ManageAccessProps) => {
             );
 
             // Query for name matches
-            const nameQuery = query(
+            const firstNameQuery = query(
                 collection(db, "users"),
-                where("name", ">=", partialEmail),
-                where("name", "<=", partialEmail + "\uf8ff"),
+                where("firstName", ">=", partialEmail),
+                where("firstName", "<=", partialEmail + "\uf8ff"),
                 limit(5)
             );
 
-            // Execute both queries
-            const [emailSnapshot, nameSnapshot] = await Promise.all([
+			const lastNameQuery = query(
+                collection(db, "users"),
+				where("lastName", ">=", partialEmail),
+                where("lastName", "<=", partialEmail + "\uf8ff"),
+                limit(5)
+            );
+            
+            // Execute all queries
+            const [emailSnapshot, firstNameSnapshot, lastNameSnapshot] = await Promise.all([
                 getDocs(emailQuery),
-                getDocs(nameQuery)
+                getDocs(firstNameQuery),
+				getDocs(lastNameQuery)
             ]);
 
             // Process email query results
             emailSnapshot.forEach((doc) => {
                 const userData = doc.data();
                 results.push({
-                    firstName: userData.firstName,
-                    lastName: userData.lastName,
+                    name: userData.firstName + " " + userData.lastName,
                     email: userData.email,
                     role: userData.role
                 } as UserData);
             });
 
             // Process name query results (avoid duplicates)
-            nameSnapshot.forEach((doc) => {
+            firstNameSnapshot.forEach((doc) => {
                 const userData = doc.data();
                 // Check if this user is already in results
                 if (!results.some(user => user.email === userData.email)) {
                     results.push({
-                        firstName: userData.firstName,
-                        lastName: userData.lastName,
+                        name: userData.firstName + " " + userData.lastName,
+                        email: userData.email,
+                        role: userData.role
+                    } as UserData);
+                }
+            });
+
+			lastNameSnapshot.forEach((doc) => {
+                const userData = doc.data();
+                // Check if this user is already in results
+                if (!results.some(user => user.email === userData.email)) {
+                    results.push({
+                        name: userData.firstName + " " + userData.lastName,
                         email: userData.email,
                         role: userData.role
                     } as UserData);
@@ -144,8 +150,7 @@ const ManageAccess = (props: ManageAccessProps) => {
 
             const userData = querySnapshot.docs[0].data();
             return {
-                firstName: userData.firstName,
-                lastName: userData.lastName,
+                name: userData.firstName + " " + userData.lastName,
                 email: userData.email,
                 role: userData.role
             } as UserData;

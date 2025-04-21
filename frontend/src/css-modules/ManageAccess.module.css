@@ -119,7 +119,7 @@
 	top: 0px;
 	right: 0%;
 	width: 50vw;
-	padding: 2.5rem calc(2.5rem - 14px) 2.5rem 2.5rem;
+	padding: 2.5rem;
 	height: 100%;
 	transition: right 0.3s ease-in-out;
 	overflow-y: scroll;
@@ -307,7 +307,7 @@ h2 {
 
 .manageAccessCont {
 	width: 50vw;
-	padding: 2.5rem calc(2.5rem - 14px) 4rem 2.5rem;
+	padding: 2.5rem;
 	position: absolute;
 	top: 0px;
 	left: 0%;
