@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from 'react';
-import styles from '../../../css-modules/FilterWrapper.module.css';
+import styles from '../css-modules/FilterWrapper.module.css';
 
 interface FilterSectionProps {
   title: string;

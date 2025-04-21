@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../../css-modules/TableHeader.module.css';
+import styles from '../css-modules/TableHeader.module.css';
 
 interface TableHeaderProps {
   onSelectAll?: (checked: boolean) => void;

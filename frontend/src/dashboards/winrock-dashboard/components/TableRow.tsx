@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from '../../../css-modules/TableRow.module.css';
-import ColorText from './components/ColorText';
+import styles from '../css-modules/TableRow.module.css';
+import ColorText from '../components/ColorText';
 
 type StatusType = 
   | 'On Track'
