@@ -1,8 +1,8 @@
 import { FirebaseError } from "firebase/app";
 import * as firestore from "firebase/firestore";
-import { 
+import {
     type User,
-    createUserWithEmailAndPassword, 
+    createUserWithEmailAndPassword,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
     signOut,
@@ -42,19 +42,29 @@ interface LoginInfo {
  */
 async function handleSignup({ email, password, firstName, lastName, role, company }: SignupInfo): Promise<Result> {
     try {
-        if (!firstName) return { success: false, errorCode: "missing-firstname"};
-        if (!lastName) return { success: false, errorCode: "missing-lastname"};
-        if (!role) return { success: false, errorCode: "missing-role"};
+        if (!firstName) return { success: false, errorCode: "missing-firstname" };
+        if (!lastName) return { success: false, errorCode: "missing-lastname" };
+        if (!role) return { success: false, errorCode: "missing-role" };
         // Email and password fields are checked by Firebase
 
         let companyField = {};
         if (role === "client" || role === "supplier") {
-            if (!company) return { success: false, errorCode: "missing-company"};
+            if (!company) return { success: false, errorCode: "missing-company" };
+
+            const companiesRef = firestore.collection(db, "companies");
+            const q = firestore.query(companiesRef, firestore.where("name", "==", company));
+            const querySnapshot = await firestore.getDocs(q);
+
+            if (querySnapshot.empty) {
+
+                await firestore.addDoc(companiesRef, { name: company })
+            }
+
             companyField = { company };
         } else if (role === "admin") {
-            if (company) return { success: false, errorCode: "company-field-not-allowed"};
+            if (company) return { success: false, errorCode: "company-field-not-allowed" };
         } else {
-            return { success: false, errorCode: "invalid-role"};
+            return { success: false, errorCode: "invalid-role" };
         }
 
         const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -68,7 +78,7 @@ async function handleSignup({ email, password, firstName, lastName, role, compan
             role,
             ...companyField
         };
-        
+
         await firestore.setDoc(docRef, newUserObj);
         return { success: true };
     } catch (error) {
@@ -107,7 +117,7 @@ async function handleLogout(): Promise<Result> {
     try {
         await signOut(auth);
         return { success: true };
-    } catch(error) {
+    } catch (error) {
         if (error instanceof FirebaseError) {
             return { success: false, errorCode: error.code };
         } else {
@@ -126,7 +136,7 @@ async function sendPasswordResetLink(email: string): Promise<Result> {
     try {
         await sendPasswordResetEmail(auth, email);
         return { success: true };
-    } catch(error) {
+    } catch (error) {
         if (error instanceof FirebaseError) {
             return { success: false, errorCode: error.code };
         } else {
@@ -135,7 +145,7 @@ async function sendPasswordResetLink(email: string): Promise<Result> {
     }
 }
 
-export { 
+export {
     type Role,
     type SignupInfo,
     handleSignup,
