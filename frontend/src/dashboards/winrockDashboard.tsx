@@ -205,7 +205,7 @@ const sampleProjects: Project[] = [
 ];
 
 const WinrockDashboard: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState('Renewable Energy and Energy Efficiency');
+  const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
@@ -213,7 +213,9 @@ const WinrockDashboard: React.FC = () => {
   const itemsPerPage = 10;
   
   // Filter projects by selected activity type
-  const filteredProjects = sampleProjects.filter(project => project.activityType === selectedTab);
+  const filteredProjects = selectedTab === 'All Projects' 
+    ? sampleProjects 
+    : sampleProjects.filter(project => project.activityType === selectedTab);
   const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -358,6 +360,7 @@ const WinrockDashboard: React.FC = () => {
 };
 
 const tabs = [
+  'All Projects',
   'Renewable Energy and Energy Efficiency',
   'Agriculture',
   'Agroforestry',
