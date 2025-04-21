@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const GeminiButton = () => {
-    const [loading, setLoading] = useState(false);
+const GeminiVision = () => {
+    const [file, setFile] = useState<File | null>(null);
     const [response, setResponse] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleClick = async () => {
+    const handleUpload = async () => {
+        if (!file) return;
         setLoading(true);
+        const formData = new FormData();
+        formData.append("image", file);
+
         try {
-            const res = await axios.post("http://localhost:3001/api/gemini", {
-                prompt: "Tell me a fun fact about space",
-            });
+            const res = await axios.post("http://localhost:3001/api/vision", formData);
             setResponse(res.data.text);
         } catch (err) {
-            console.error("Error fetching Gemini response:", err);
+            console.error("Upload error:", err);
             setResponse("Something went wrong.");
         } finally {
             setLoading(false);
@@ -22,12 +25,14 @@ const GeminiButton = () => {
 
     return (
         <div>
-            <button onClick={handleClick} disabled={loading}>
-                {loading ? "Thinking..." : "Ask Gemini"}
+            <h2>Upload an image for Gemini to read</h2>
+            <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+            <button onClick={handleUpload} disabled={!file || loading}>
+                {loading ? "Analyzing..." : "Analyze Image"}
             </button>
-            <p>{response}</p>
+            <pre style={{ whiteSpace: "pre-wrap" }}>{response}</pre>
         </div>
     );
 };
 
-export default GeminiButton;
+export default GeminiVision;
