@@ -1,9 +1,9 @@
-import WinrockDashboard from './dashboards/winrock-dashboard/winrockDashboard';
+import AgricultureProposalForm from "./forms/project-proposal-forms/AgricultureProposalForm";
 
 function App() {
   return (
     <div className="app-container">
-      <WinrockDashboard />
+      <AgricultureProposalForm />
     </div>
   );
 }
