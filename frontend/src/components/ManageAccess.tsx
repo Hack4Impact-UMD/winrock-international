@@ -8,7 +8,6 @@ import ChevronLeft from "@mui/icons-material/ChevronLeftRounded";
 import CheckBadge from "@mui/icons-material/Verified";
 import { db } from "../firebaseConfig";
 import { collection, getDocs, query, where, limit, addDoc, deleteDoc, doc } from "firebase/firestore";
-import { collection, getDocs, query, where, limit, addDoc, deleteDoc, doc } from "firebase/firestore";
 
 interface ManageAccessProps {
     projectId: string;
