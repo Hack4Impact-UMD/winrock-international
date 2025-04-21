@@ -15,7 +15,6 @@ import {
 import { db } from "../../firebaseConfig.js";
 import Result from "../../types/Result.js";
 
-
 /**
  * Represents the overall status of a project.
  */
@@ -38,7 +37,6 @@ enum AnalysisStage {
     STAGE_5 = "Stage 5: Risk & Co-benefit Assessment",
     STAGE_6 = "Stage 6: Complete, and Excluded"
 }
-
 
 /**
  * Represents a project stored in the database.

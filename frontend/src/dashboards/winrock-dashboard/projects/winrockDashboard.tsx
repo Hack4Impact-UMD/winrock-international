@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styles from './css-modules/WinrockDashboard.module.css';
 import winrockLogo from '../../assets/winrock-international-logo.png';
-import FilterTabs from './components/FilterTabs';
-import Pagination from './components/Pagination';
-import TableHeader from './components/TableHeader';
-import FilterWrapper from './components/FilterWrapper';
-import ColorText from './components/ColorText';
-import TableRow from './components/TableRow';
+import FilterTabs from '../components/FilterTabs';
+import Pagination from '../components/Pagination';
+import TableHeader from '../components/TableHeader';
+import FilterWrapper from '../components/FilterWrapper';
+import ColorText from '../components/ColorText';
+import TableRow from '../components/TableRow';
 
 interface Project {
   id: number;
