@@ -2,7 +2,7 @@ import React from 'react';
 import styles from '../css-modules/ColorText.module.css';
 
 // Define the possible status and analysis stage types
-type StatusType = 
+type StatusType =
   | 'On Track'
   | 'At Risk'
   | 'Paused'
@@ -38,25 +38,29 @@ const ANALYSIS_COLORS: Record<AnalysisStageType, { bg: string; text: string }> =
   'Complete, and Excluded': { bg: '#DFFEE5', text: '#12820F' }
 };
 
-const ColorText: React.FC<ColorTextProps> = ({ 
+const ColorText: React.FC<ColorTextProps> = ({
   text,
   category,
   variant
 }) => {
-  const colors = variant === 'status' 
-    ? STATUS_COLORS[category as StatusType] 
+  const colors = variant === 'status'
+    ? STATUS_COLORS[category as StatusType]
     : ANALYSIS_COLORS[category as AnalysisStageType];
 
+  if (!colors) {
+    console.warn(`Unknown category "${category}" passed to ColorText`);
+    return <span className={styles.colorText}>{text}</span>;
+  }
   const customStyle = {
     backgroundColor: colors.bg,
     color: colors.text
   };
 
   // Handle multi-line text for "Completed (except for risk)"
-  const formattedText = text === 'Completed (except for risk)' 
+  const formattedText = text === 'Completed (except for risk)'
     ? <>Completed<br />(except for risk)</>
     : text;
-  
+
   return (
     <span className={styles.colorText} style={customStyle}>
       {formattedText}
