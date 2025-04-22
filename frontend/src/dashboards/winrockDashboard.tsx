@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styles from '../css-modules/WinrockDashboard.module.css';
 import winrockLogo from '../assets/winrock-international-logo.png';
-import { ReactComponent as ProjectsIcon } from '../assets/projects-icon.svg';
-import { ReactComponent as NotificationIcon } from '../assets/notification-icon.svg';
-import { ReactComponent as AccountSettingsIcon } from '../assets/account-settings-icon.svg';
+import projectsIcon from '../assets/projects-icon.svg';
+import notificationIcon from '../assets/notification-icon.svg';
+import accountSettingsIcon from '../assets/account-settings-icon.svg';
 import FilterTabs from '../components/dashboards/winrock-dashboard/FilterTabs';
 import Pagination from '../components/dashboards/winrock-dashboard/Pagination';
 import TableHeader from '../components/dashboards/winrock-dashboard/TableHeader';
@@ -219,8 +219,10 @@ const WinrockDashboard: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [projects, setProjects] = useState<Project[]>(sampleProjects);
-  const [activeSideButton, setActiveSideButton] = useState('Projects');
+  const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
+  const [allSelected, setAllSelected] = useState(false);
+
   
   const itemsPerPage = 10;
   
@@ -392,33 +394,37 @@ const WinrockDashboard: React.FC = () => {
     return null;
   };
 
+
+  const handleSelectAll = (checked: boolean) => {
+    // TODO: select all checkboxes
+  };
+
   return (
     <div className={styles.dashboardContainer}>
       <header className={styles.header}>
         <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
-        <div className={styles.sideButtonsContainer}>
+        <div className={styles.headerNavContainer}>
           <button 
-            className={`${styles.sideButton} ${activeSideButton === 'Projects' ? styles.active : ''}`}
-            onClick={() => setActiveSideButton('Projects')}
+            className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
+            onClick={() => setActiveNavButton('Projects')}
           >
-            <ProjectsIcon />
+            <img src={projectsIcon} alt="Projects" />
             Projects
           </button>
           <button 
-            className={`${styles.sideButton} ${activeSideButton === 'Notification Center' ? styles.active : ''}`}
-            onClick={() => setActiveSideButton('Notification Center')}
+            className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
+            onClick={() => setActiveNavButton('Notification Center')}
           >
-            <NotificationIcon />
+            <img src={notificationIcon} alt="Notification Center" />
             Notification Center
           </button>
           <button 
-            className={`${styles.sideButton} ${activeSideButton === 'Account Settings' ? styles.active : ''}`}
-            onClick={() => setActiveSideButton('Account Settings')}
+            className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
+            onClick={() => setActiveNavButton('Account Settings')}
           >
-            <AccountSettingsIcon />
+            <img src={accountSettingsIcon} alt="Account Settings" />
             Account Settings
           </button>
-
         </div>
       </header>
 
@@ -474,7 +480,12 @@ const WinrockDashboard: React.FC = () => {
 
         <div className={styles.tableContainer}>
           <table className={styles.table}>
-            <TableHeader />
+            <TableHeader 
+              onSelectAll={handleSelectAll}
+              allSelected={allSelected}
+              headers={['Project','Supplier','Overall Status','Analysis stage','Spend Category','Geography','Last Updated','Start Date','Action']}
+              isEditMode={isEditMode}
+            />
             <tbody>
               {currentProjects.map(project => (
                 <TableRow

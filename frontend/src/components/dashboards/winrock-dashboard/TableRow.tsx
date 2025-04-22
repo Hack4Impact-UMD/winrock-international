@@ -52,12 +52,13 @@ const TableRow: React.FC<TableRowProps> = ({
   return (
     <tr className={styles.tableRow}>
       <td className={styles.checkboxCell}>
-        <div className={styles.checkboxWrapper}>
+        <div className={`${styles.checkboxWrapper} ${!isEditMode ? styles.hidden : ''}`}>
           <input
             type="checkbox"
             checked={isSelected}
             onChange={(e) => onSelect(e.target.checked)}
             className={styles.checkbox}
+            disabled={!isEditMode}
           />
         </div>
       </td>
@@ -94,11 +95,11 @@ const TableRow: React.FC<TableRowProps> = ({
             variant="status"
           />
         ) : (
-          <ColorText
-            text={data.overallStatus}
-            category={data.overallStatus}
-            variant="status"
-          />
+        <ColorText
+          text={data.overallStatus}
+          category={data.overallStatus}
+          variant="status"
+        />
         )}
       </td>
       <td className={styles.cell}>
@@ -110,11 +111,11 @@ const TableRow: React.FC<TableRowProps> = ({
             variant="analysis"
           />
         ) : (
-          <ColorText
-            text={data.analysisStage}
-            category={data.analysisStage}
-            variant="analysis"
-          />
+        <ColorText
+          text={data.analysisStage}
+          category={data.analysisStage}
+          variant="analysis"
+        />
         )}
       </td>
       <td className={styles.cell}>{data.spendCategory}</td>
