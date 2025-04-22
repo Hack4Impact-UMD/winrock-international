@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../../../css-modules/SortWrapper.module.css';
+import styles from '../../../forms/css-modules/SortWrapper.module.css';
 
 interface SortOption {
   id: string;
