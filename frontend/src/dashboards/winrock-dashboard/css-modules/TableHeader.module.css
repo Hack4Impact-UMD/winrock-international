@@ -23,6 +23,18 @@
   vertical-align: middle;
 }
 
+.checkboxWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.checkboxWrapper.hidden {
+  visibility: hidden;
+}
+
 .checkbox {
   width: 1.5rem;
   height: 1.5rem;
@@ -65,10 +77,6 @@
   outline-offset: 2px;
 }
 
-.checkboxWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
+.checkbox:disabled {
+  cursor: not-allowed;
 } 

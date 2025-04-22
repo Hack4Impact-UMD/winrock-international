@@ -17,10 +17,54 @@
   background-color: white;
 }
 
+html {
+  font-size: 85%;
+}
+
+.headerNavContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 7rem;
+  margin-left: -2.5rem;  /* Counter the header's left padding */
+  margin-right: -2.5rem; /* Counter the header's right padding */
+  gap: 1rem;
+}
+
+.headerNavButton {
+  display: flex;
+  gap: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5875em;
+  align-items: center;
+  height: 3.125rem;
+  background: none;
+  border: none;
+  cursor: pointer;  
+  padding-left: 2.5rem;
+}
+
+.headerNavButton.active {
+  background-color: #F6F7F9;
+}
+
+.headerNavButton img {
+  width: 1.25rem;  
+  min-width: 1.25rem;  
+  height: 1.25rem; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerNavButton:hover {
+  background-color: #F6F7F9;
+}
+
 .mainContent {
   width: calc(100% - 18.75rem);
   margin-left: 18.75rem;
-  padding-bottom: 5.625rem; /* Match pagination height */
+  padding-bottom: 5.625rem; 
 }
 
 .logo {
@@ -33,6 +77,29 @@
   font-weight: 600; 
   letter-spacing: 1.80px;
   padding: 5.125rem 0 1.6875rem 1.5625rem;
+}
+
+.tabsContainer {
+  display: flex;
+  padding-right: 2rem;
+}
+
+.editButton {
+  background-color: white;
+  border: 1.29px solid var(--color-primary);
+  color: var(--color-primary);
+  height: 2.25rem;
+  width:5.625rem;
+  border-radius: .4rem;
+  cursor: pointer;
+  font-size: 0.65rem;
+  margin-left: auto;
+  margin-top: 0.5rem;
+}
+
+.editButton.active {
+  background-color: var(--color-primary);
+  color: white;
 }
 
 .toolbarContainer {
@@ -335,7 +402,7 @@
 
 
 .filterButton {
-  width: 14rem;
+  width: 20rem;
   padding: 0.5rem 1rem;
   background-color: white;
   color: #374151;
@@ -382,7 +449,7 @@
   position: absolute;
   top: 100%;
   right: 0;
-  width: 15rem; 
+  width: 21rem; 
   background-color: white;
   overflow: hidden;
   border: 1px solid #CCCCCC;
