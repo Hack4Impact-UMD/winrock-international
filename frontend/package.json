@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/react-datepicker": "^6.2.0",
     "firebase": "^11.3.1",
     "react": "^19.0.0",
     "react-datepicker": "^8.3.0",
