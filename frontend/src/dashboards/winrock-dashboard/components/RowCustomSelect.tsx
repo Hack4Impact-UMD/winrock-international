@@ -1,6 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styles from '../../../css-modules/RowCustomSelect.module.css';
+import styles from '../css-modules/RowCustomSelect.module.css'
 import ColorText from './ColorText';
+
+type StatusType = 
+  | 'On Track'
+  | 'At Risk'
+  | 'Paused'
+  | 'Completed'
+  | 'Completed (except for risk)';
+
+type AnalysisStageType =
+  | 'Risk & Co-benefit Assessment'
+  | 'GHG Assessment Analysis'
+  | 'Confirming Final Requirements'
+  | 'Clarifying Initial Project Information'
+  | 'Complete, and Excluded';
 
 interface RowCustomSelectProps {
   value: string;
@@ -44,7 +58,7 @@ const RowCustomSelect: React.FC<RowCustomSelectProps> = ({ value, options, onCha
       >
         <ColorText
           text={value}
-          category={value as any}
+          category={value as StatusType | AnalysisStageType}
           variant={variant}
         />
         <svg 
@@ -82,7 +96,7 @@ const RowCustomSelect: React.FC<RowCustomSelectProps> = ({ value, options, onCha
             >
               <ColorText
                 text={option}
-                category={option as any}
+                category={option as StatusType | AnalysisStageType}
                 variant={variant}
               />
             </div>

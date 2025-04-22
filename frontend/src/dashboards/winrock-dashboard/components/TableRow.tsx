@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../css-modules/TableRow.module.css';
 import ColorText from '../components/ColorText';
+import RowCustomSelect from '../components/RowCustomSelect';
 
 type StatusType = 
   | 'On Track'
@@ -33,6 +34,22 @@ interface TableRowProps {
   isEditMode?: boolean;
   onFieldChange?: (field: keyof TableRowProps['data'], value: string) => void;
 }
+
+const statusOptions: StatusType[] = [
+  'On Track',
+  'At Risk',
+  'Paused',
+  'Completed',
+  'Completed (except for risk)'
+];
+
+const analysisStageOptions: AnalysisStageType[] = [
+  'Risk & Co-benefit Assessment',
+  'GHG Assessment Analysis',
+  'Confirming Final Requirements',
+  'Clarifying Initial Project Information',
+  'Complete, and Excluded'
+];
 
 const TableRow: React.FC<TableRowProps> = ({ 
   data, 
@@ -75,18 +92,36 @@ const TableRow: React.FC<TableRowProps> = ({
         ) : data.supplier}
       </td>
       <td className={styles.cell}>
-        <ColorText
-          text={data.overallStatus}
-          category={data.overallStatus}
-          variant="status"
-        />
+        {isEditMode ? (
+          <RowCustomSelect
+            value={data.overallStatus}
+            options={statusOptions}
+            onChange={(value) => onFieldChange?.('overallStatus', value)}
+            variant="status"
+          />
+        ) : (
+          <ColorText
+            text={data.overallStatus}
+            category={data.overallStatus}
+            variant="status"
+          />
+        )}
       </td>
       <td className={styles.cell}>
-        <ColorText
-          text={data.analysisStage}
-          category={data.analysisStage}
-          variant="analysis"
-        />
+        {isEditMode ? (
+          <RowCustomSelect
+            value={data.analysisStage}
+            options={analysisStageOptions}
+            onChange={(value) => onFieldChange?.('analysisStage', value)}
+            variant="analysis"
+          />
+        ) : (
+          <ColorText
+            text={data.analysisStage}
+            category={data.analysisStage}
+            variant="analysis"
+          />
+        )}
       </td>
       <td className={styles.cell}>
         {isEditMode ? (
