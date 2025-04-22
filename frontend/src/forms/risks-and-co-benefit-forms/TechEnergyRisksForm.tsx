@@ -3,15 +3,15 @@ import * as firestore from "firebase/firestore";
 import { db } from "../../firebaseConfig.js";
 import FormField from "../FormField.js";
 
-import LogoHeader from '../../components/headers/LogoHeader.js';
-import TitleHeader from '../../components/headers/TitleHeader.js';
-import ProgressBar from '../../components/ProgressBar.js';
-import NavigationButtons from '../../components/NavigationButtons.js';
-import SectionHeader from '../../components/headers/SectionHeader.js';
-import RisksDropdownQuestion from '../../components/questions/RisksDropdownQuestion.js';
-import CoBenefitsDropdownQuestion from '../../components/questions/CoBenefitsDropdownQuestion.js';
+import LogoHeader from '../components/headers/LogoHeader.js';
+import TitleHeader from '../components/headers/TitleHeader.js';
+import ProgressBar from '../components/ProgressBar.js';
+import NavigationButtons from '../components/NavigationButtons.js';
+import SectionHeader from '../components/headers/SectionHeader.js';
+import RisksDropdownQuestion from '../components/questions/RisksDropdownQuestion.js';
+import CoBenefitsDropdownQuestion from '../components/questions/CoBenefitsDropdownQuestion.js';
 import ConfirmationPage from '../ConfirmationPage.js';
-import Error from '../../components/Error.js';
+import Error from '../components/Error.js';
 
 interface TechEnergyRisksFormData {
   // Risk Assessment

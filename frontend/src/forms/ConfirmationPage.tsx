@@ -1,5 +1,5 @@
 import '../styles/ConfirmationPage.css'
-import LogoHeader from '../components/headers/LogoHeader'
+import LogoHeader from './components/headers/LogoHeader'
 
 interface ConfirmationPageProps {
    formName: string;
