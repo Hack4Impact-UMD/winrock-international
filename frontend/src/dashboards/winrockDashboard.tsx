@@ -5,8 +5,11 @@ import FilterTabs from '../components/dashboards/winrock-dashboard/FilterTabs';
 import Pagination from '../components/dashboards/winrock-dashboard/Pagination';
 import TableHeader from '../components/dashboards/winrock-dashboard/TableHeader';
 import FilterWrapper from '../components/dashboards/winrock-dashboard/FilterWrapper';
+import SortWrapper from '../components/dashboards/winrock-dashboard/SortWrapper'; 
+import DateFilter from '../components/dashboards/winrock-dashboard/DateFilter';
 import ColorText from '../components/dashboards/winrock-dashboard/ColorText';
 import TableRow from '../components/dashboards/winrock-dashboard/TableRow';
+
 
 interface Project {
   id: number;
@@ -204,6 +207,7 @@ const sampleProjects: Project[] = [
   }
 ];
 
+
 const WinrockDashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
@@ -213,6 +217,8 @@ const WinrockDashboard: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [projects, setProjects] = useState<Project[]>(sampleProjects);
   const [activeSideButton, setActiveSideButton] = useState('Projects');
+  const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
+  
   const itemsPerPage = 10;
   
   // Filter projects by selected activity type
@@ -226,6 +232,17 @@ const WinrockDashboard: React.FC = () => {
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
   const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
+
+  //date filter consts
+  interface DateRange {
+    startDate: Date | null;
+    endDate: Date | null;
+  }
+  
+  const [dateFilter, setDateFilter] = useState<DateRange>({
+    startDate: null,
+    endDate: null
+  });
 
   // Reset to first page when changing tabs
   const handleTabChange = (tab: string) => {
@@ -264,39 +281,112 @@ const WinrockDashboard: React.FC = () => {
   };
 
   // per category
-  const renderFilterContent = (sectionKey: string) => {
-    let categories;
+  
+  // Handler for sort selection - just updates the state
+  const handleSortChange = (sortOption: string) => {
+    setSelectedSort(sortOption);
+  };
+
+  // // per category
+  // const renderFilterContent = (sectionKey: string) => {
+  //   let categories;
     
+  //   if (sectionKey === 'status') {
+  //     categories = overallCategories;
+  //   } else if (sectionKey === 'spend') {
+  //     categories = spendCategories;
+  //   } else if (sectionKey === 'date') {
+  //     categories = dateCategories;
+  //   } else {
+  //     return null;
+  //   }
+    
+  //   return (
+  //     <div className={styles.filterOptions}>
+  //       {categories.map(option => (
+  //         <div key={option.id} className={styles.checkboxItem}>
+  //           <input 
+  //             type="checkbox"
+  //             id={`${sectionKey}-${option.id}`}
+  //             checked={selectedCategories.includes(option.id)}
+  //             onChange={() => toggleCategory(option.id)}
+  //           />
+  //           <label htmlFor={`${sectionKey}-${option.id}`}>
+  //             {sectionKey === 'status' && (
+  //               <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
+  //             )}
+  //             {option.label}
+  //           </label>
+  //         </div>
+  //       ))}
+  //     </div>
+  //   );
+  // };
+
+  
+  
+  const renderFilterContent = (sectionKey: string) => {
     if (sectionKey === 'status') {
-      categories = overallCategories;
+      return (
+        <div className={styles.filterOptions}>
+          {overallCategories.map(option => (
+            <div key={option.id} className={styles.checkboxItem}>
+              <input
+                type="checkbox"
+                id={`${sectionKey}-${option.id}`}
+                checked={selectedCategories.includes(option.id)}
+                onChange={() => toggleCategory(option.id)}
+              />
+              <label htmlFor={`${sectionKey}-${option.id}`}>
+                {sectionKey === 'status' && (
+                  <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
+                )}
+                {option.label}
+              </label>
+            </div>
+          ))}
+        </div>
+      );
     } else if (sectionKey === 'spend') {
-      categories = spendCategories;
+      return (
+        <div className={styles.filterOptions}>
+          {spendCategories.map(option => (
+            <div key={option.id} className={styles.checkboxItem}>
+              <input
+                type="checkbox"
+                id={`${sectionKey}-${option.id}`}
+                checked={selectedCategories.includes(option.id)}
+                onChange={() => toggleCategory(option.id)}
+              />
+              <label htmlFor={`${sectionKey}-${option.id}`}>{option.label}</label>
+            </div>
+          ))}
+        </div>
+      );
     } else if (sectionKey === 'date') {
-      categories = dateCategories;
-    } else {
-      return null;
+      // Return the DateFilter component for date filtering
+      return (
+        <DateFilter
+          onFilterChange={(dateRange) => {
+            // Make sure this state updater function is defined in your component
+            setDateFilter({
+              startDate: dateRange.startDate,
+              endDate: dateRange.endDate
+            });
+            
+            // Reset to first page when filter changes
+            setCurrentPage(1);
+            
+            // Close the filter popup if needed
+            if (isFilterPopupOpen) {
+              toggleFilterPopup();
+            }
+          }}
+        />
+      );
     }
     
-    return (
-      <div className={styles.filterOptions}>
-        {categories.map(option => (
-          <div key={option.id} className={styles.checkboxItem}>
-            <input 
-              type="checkbox"
-              id={`${sectionKey}-${option.id}`}
-              checked={selectedCategories.includes(option.id)}
-              onChange={() => toggleCategory(option.id)}
-            />
-            <label htmlFor={`${sectionKey}-${option.id}`}>
-              {sectionKey === 'status' && (
-                <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
-              )}
-              {option.label}
-            </label>
-          </div>
-        ))}
-      </div>
-    );
+    return null;
   };
 
   return (
@@ -368,7 +458,12 @@ const WinrockDashboard: React.FC = () => {
             >
               Filter
             </button>
-            <button className={styles.sortButton}>Sort</button>
+            
+            {/* Our updated SortWrapper component */}
+            <SortWrapper 
+              onSortChange={handleSortChange}
+              initialSortOption={selectedSort}
+            />
             
             {isFilterPopupOpen && (
               <div className={styles.filterPopup}>
@@ -437,8 +532,5 @@ const overallCategories = [
   { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" category="Completed (except for risk)" variant="status" /> }
 ];
 
-const dateCategories = [
-  { id: 'idk', label: 'idk' },
-];
 
 export default WinrockDashboard;
