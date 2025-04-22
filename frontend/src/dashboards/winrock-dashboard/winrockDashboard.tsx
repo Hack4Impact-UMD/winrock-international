@@ -195,7 +195,7 @@ const WinrockDashboard: React.FC = () => {
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  
+
   const totalItems = sampleProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -203,12 +203,12 @@ const WinrockDashboard: React.FC = () => {
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
   const currentProjects = sampleProjects.slice(indexOfFirstProject, indexOfLastProject);
-  
+
   // toggle 
   const toggleFilterPopup = () => {
     setIsFilterPopupOpen(!isFilterPopupOpen);
   };
-  
+
   const toggleCategory = (categoryId: string) => {
     if (selectedCategories.includes(categoryId)) {
       setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
@@ -234,7 +234,7 @@ const WinrockDashboard: React.FC = () => {
   // per category
   const renderFilterContent = (sectionKey: string) => {
     let categories;
-    
+
     if (sectionKey === 'status') {
       categories = overallCategories;
     } else if (sectionKey === 'spend') {
@@ -244,12 +244,12 @@ const WinrockDashboard: React.FC = () => {
     } else {
       return null;
     }
-    
+
     return (
       <div className={styles.filterOptions}>
         {categories.map(option => (
           <div key={option.id} className={styles.checkboxItem}>
-            <input 
+            <input
               type="checkbox"
               id={`${sectionKey}-${option.id}`}
               checked={selectedCategories.includes(option.id)}
@@ -275,7 +275,7 @@ const WinrockDashboard: React.FC = () => {
 
       <main className={styles.mainContent}>
         <h1 className={styles.title}>Projects</h1>
-        
+
         <FilterTabs
           tabs={tabs}
           selectedTab={selectedTab}
@@ -284,22 +284,22 @@ const WinrockDashboard: React.FC = () => {
 
         <div className={styles.toolbarContainer}>
           <div className={styles.searchContainer}>
-            <input 
-              type="text" 
-              placeholder="Search projects..." 
+            <input
+              type="text"
+              placeholder="Search projects..."
               className={styles.searchInput}
             />
           </div>
-          
+
           <div className={styles.filterContainer}>
-            <button 
+            <button
               className={`${styles.filterButton} ${isFilterPopupOpen ? styles.active : ''}`}
               onClick={toggleFilterPopup}
             >
               Filter
             </button>
             <button className={styles.sortButton}>Sort</button>
-            
+
             {isFilterPopupOpen && (
               <div className={styles.filterPopup}>
                 <FilterWrapper title="Filters">
