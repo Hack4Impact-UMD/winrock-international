@@ -12,6 +12,7 @@
   "dependencies": {
     "firebase": "^11.3.1",
     "react": "^19.0.0",
+    "react-datepicker": "^8.3.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {

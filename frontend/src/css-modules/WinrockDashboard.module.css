@@ -335,7 +335,7 @@
 
 
 .filterButton {
-  width: 14rem;
+  width: 20rem;
   padding: 0.5rem 1rem;
   background-color: white;
   color: #374151;
@@ -382,7 +382,7 @@
   position: absolute;
   top: 100%;
   right: 0;
-  width: 15rem; 
+  width: 21rem; 
   background-color: white;
   overflow: hidden;
   border: 1px solid #CCCCCC;

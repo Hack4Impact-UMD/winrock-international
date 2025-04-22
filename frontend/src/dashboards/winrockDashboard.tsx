@@ -6,6 +6,7 @@ import Pagination from '../components/dashboards/winrock-dashboard/Pagination';
 import TableHeader from '../components/dashboards/winrock-dashboard/TableHeader';
 import FilterWrapper from '../components/dashboards/winrock-dashboard/FilterWrapper';
 import SortWrapper from '../components/dashboards/winrock-dashboard/SortWrapper'; 
+import DateFilter from '../components/dashboards/winrock-dashboard/DateFilter';
 import ColorText from '../components/dashboards/winrock-dashboard/ColorText';
 import TableRow from '../components/dashboards/winrock-dashboard/TableRow';
 
@@ -206,6 +207,7 @@ const sampleProjects: Project[] = [
   }
 ];
 
+
 const WinrockDashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('Renewable Energy and Energy Efficiency');
   const [currentPage, setCurrentPage] = useState(1);
@@ -225,6 +227,17 @@ const WinrockDashboard: React.FC = () => {
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
   const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
+
+  //date filter consts
+  interface DateRange {
+    startDate: Date | null;
+    endDate: Date | null;
+  }
+  
+  const [dateFilter, setDateFilter] = useState<DateRange>({
+    startDate: null,
+    endDate: null
+  });
 
   // Reset to first page when changing tabs
   const handleTabChange = (tab: string) => {
@@ -259,40 +272,106 @@ const WinrockDashboard: React.FC = () => {
     setSelectedSort(sortOption);
   };
 
-  // per category
-  const renderFilterContent = (sectionKey: string) => {
-    let categories;
+  // // per category
+  // const renderFilterContent = (sectionKey: string) => {
+  //   let categories;
     
+  //   if (sectionKey === 'status') {
+  //     categories = overallCategories;
+  //   } else if (sectionKey === 'spend') {
+  //     categories = spendCategories;
+  //   } else if (sectionKey === 'date') {
+  //     categories = dateCategories;
+  //   } else {
+  //     return null;
+  //   }
+    
+  //   return (
+  //     <div className={styles.filterOptions}>
+  //       {categories.map(option => (
+  //         <div key={option.id} className={styles.checkboxItem}>
+  //           <input 
+  //             type="checkbox"
+  //             id={`${sectionKey}-${option.id}`}
+  //             checked={selectedCategories.includes(option.id)}
+  //             onChange={() => toggleCategory(option.id)}
+  //           />
+  //           <label htmlFor={`${sectionKey}-${option.id}`}>
+  //             {sectionKey === 'status' && (
+  //               <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
+  //             )}
+  //             {option.label}
+  //           </label>
+  //         </div>
+  //       ))}
+  //     </div>
+  //   );
+  // };
+
+  
+  
+  const renderFilterContent = (sectionKey: string) => {
     if (sectionKey === 'status') {
-      categories = overallCategories;
+      return (
+        <div className={styles.filterOptions}>
+          {overallCategories.map(option => (
+            <div key={option.id} className={styles.checkboxItem}>
+              <input
+                type="checkbox"
+                id={`${sectionKey}-${option.id}`}
+                checked={selectedCategories.includes(option.id)}
+                onChange={() => toggleCategory(option.id)}
+              />
+              <label htmlFor={`${sectionKey}-${option.id}`}>
+                {sectionKey === 'status' && (
+                  <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
+                )}
+                {option.label}
+              </label>
+            </div>
+          ))}
+        </div>
+      );
     } else if (sectionKey === 'spend') {
-      categories = spendCategories;
+      return (
+        <div className={styles.filterOptions}>
+          {spendCategories.map(option => (
+            <div key={option.id} className={styles.checkboxItem}>
+              <input
+                type="checkbox"
+                id={`${sectionKey}-${option.id}`}
+                checked={selectedCategories.includes(option.id)}
+                onChange={() => toggleCategory(option.id)}
+              />
+              <label htmlFor={`${sectionKey}-${option.id}`}>{option.label}</label>
+            </div>
+          ))}
+        </div>
+      );
     } else if (sectionKey === 'date') {
-      categories = dateCategories;
-    } else {
-      return null;
+      // Return the DateFilter component for date filtering
+      return (
+        <DateFilter
+          onFilterChange={(dateRange) => {
+            // Make sure this state updater function is defined in your component
+            setDateFilter({
+              startDate: dateRange.startDate,
+              endDate: dateRange.endDate
+            });
+            
+            // Reset to first page when filter changes
+            setCurrentPage(1);
+            
+            // Close the filter popup if needed
+            if (isFilterPopupOpen) {
+              toggleFilterPopup();
+            }
+          }}
+        />
+      );
     }
     
-    return (
-      <div className={styles.filterOptions}>
-        {categories.map(option => (
-          <div key={option.id} className={styles.checkboxItem}>
-            <input 
-              type="checkbox"
-              id={`${sectionKey}-${option.id}`}
-              checked={selectedCategories.includes(option.id)}
-              onChange={() => toggleCategory(option.id)}
-            />
-            <label htmlFor={`${sectionKey}-${option.id}`}>
-              {sectionKey === 'status' && (
-                <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
-              )}
-              {option.label}
-            </label>
-          </div>
-        ))}
-      </div>
-    );
+    return null;
   };
 
   return (
@@ -397,8 +476,5 @@ const overallCategories = [
   { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" category="Completed (except for risk)" variant="status" /> }
 ];
 
-const dateCategories = [
-  { id: 'idk', label: 'idk' },
-];
 
 export default WinrockDashboard;
