@@ -12,8 +12,8 @@ import {
     updateDoc,
     where
 } from "firebase/firestore";
-import { db } from "../../firebaseConfig.js";
-import Result from "../../types/Result.js";
+import { db } from "../../../firebaseConfig.js";
+import Result from "../../../types/Result.js";
 
 /**
  * Represents the overall status of a project.
@@ -85,7 +85,7 @@ const createProject = async (
     isActive: boolean = true,
     isPinned: boolean = false
 ): Promise<Result> => {
-    try{
+    try {
         const docRef = doc(db, "projects", projectName);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
