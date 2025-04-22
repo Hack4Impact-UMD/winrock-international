@@ -17,6 +17,10 @@
   background-color: white;
 }
 
+html {
+  font-size: 85%;
+}
+
 .sideButtonsContainer {
   display: flex;
   flex-direction: column;
