@@ -2,13 +2,16 @@ import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Result from "../../types/Result";
 import { type Role, type SignupInfo, handleSignup } from "../authService";
-
 import AuthLogoHeader from "../components/AuthLogoHeader";
 import AuthForm from "../components/AuthForm";
 import AuthDropdownField from "../components/AuthDropdownField";
 import AuthTextField from "../components/AuthTextField";
 import AuthPasswordField from "../components/AuthPasswordField";
 import AuthBottomLink from "../components/AuthBottomLink";
+import { db, auth } from "../../firebaseConfig"
+import * as firestore from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query, startAfter, endAt } from "firebase/firestore";
+
 
 interface StepOneProps {
   answersRef: React.RefObject<SignupInfo>;
@@ -48,10 +51,12 @@ function SignupPage() {
   // Used to change the answersRef's fields dynamically
   function handleChange(field: keyof SignupInfo, value: string) {
     answersRef.current = {
-        ...answersRef.current,
-        [field]: value
+      ...answersRef.current,
+      [field]: value
     }
   }
+
+
 
   const currentRemSpacing = useMemo((): number[] => {
     if (currentStep === 1) {
@@ -132,15 +137,15 @@ function SignupPage() {
       return;
     }
 
-    const companyField = answersRef.current.company ? {company: answersRef.current.company} : {};
+    const companyField = answersRef.current.company ? { company: answersRef.current.company } : {};
 
     const result: Result = await handleSignup({
-        email: answersRef.current.email,
-        password: answersRef.current.password,
-        firstName: answersRef.current.firstName,
-        lastName: answersRef.current.lastName,
-        role: answersRef.current.role,
-        ...companyField
+      email: answersRef.current.email,
+      password: answersRef.current.password,
+      firstName: answersRef.current.firstName,
+      lastName: answersRef.current.lastName,
+      role: answersRef.current.role,
+      ...companyField
     })
 
     if (result.success) {
@@ -166,9 +171,9 @@ function SignupPage() {
             linkLabel="Sign in"
             link="/login"
           />
-        : undefined}
+          : undefined}
         remSpacing={currentRemSpacing}
-          
+
       >
         <>
           {currentStep === 1 &&
@@ -199,6 +204,34 @@ function SignupPage() {
 }
 
 const StepOne = ({ answersRef, handleChange, role, setRole }: StepOneProps) => {
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  const fetchCompanySuggestions = async (input: string) => {
+    if (!input) {
+      return setSuggestions([])
+    };
+    const companiesRef = firestore.collection(db, "companies");
+    const q = query(companiesRef, orderBy("name"), limit(5), startAfter(input), endAt(input + "\uf8ff"))
+
+    const snapshot = await getDocs(q)
+
+    snapshot.forEach((doc) => {
+      console.log(`🧾 Document ID: ${doc.id}`);
+      console.log(doc.data());
+    });
+
+    const results: string[] = []
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+
+      if (typeof (data.name) == "string") {
+        results.push(data.name)
+      };
+    });
+    console.log(results)
+    setSuggestions(results);
+  };
   return (
     <>
       <AuthDropdownField
@@ -217,7 +250,15 @@ const StepOne = ({ answersRef, handleChange, role, setRole }: StepOneProps) => {
         <AuthTextField
           label="Company name"
           controlledValue={answersRef.current.company!}
-          onChange={(value) => handleChange("company", value)}
+          onChange={(value) => {
+            handleChange("company", value);
+            fetchCompanySuggestions(value);
+
+          }}
+          suggestions={suggestions}
+          onSuggestionClick={(value) => {
+            handleChange("company", value);
+          }}
         />}
     </>
   )
