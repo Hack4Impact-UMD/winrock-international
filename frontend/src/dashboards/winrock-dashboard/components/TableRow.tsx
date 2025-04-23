@@ -20,7 +20,7 @@ type AnalysisStageType =
 interface TableRowProps {
   data: {
     id: number;
-    project: string;
+    projectName: string;
     supplierName: string;
     overallStatus: StatusType;
     analysisStage: AnalysisStageType;
@@ -34,6 +34,7 @@ interface TableRowProps {
   isEditMode?: boolean;
   onFieldChange?: (field: keyof TableRowProps['data'], value: string) => void;
 }
+
 
 const statusOptions: StatusType[] = [
   'On Track',
@@ -75,11 +76,11 @@ const TableRow: React.FC<TableRowProps> = ({
         {isEditMode ? (
           <input
             type="text"
-            value={data.project}
-            onChange={(e) => onFieldChange?.('project', e.target.value)}
+            value={data.projectName}
+            onChange={(e) => onFieldChange?.('projectName', e.target.value)}
             className={styles.editableInput}
           />
-        ) : data.project}
+        ) : data.projectName}
       </td>
       <td className={styles.cell}>
         {isEditMode ? (

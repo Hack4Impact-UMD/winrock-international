@@ -15,10 +15,9 @@ import TableRow from './components/TableRow';
 import { getAllProjects, updateProjectField } from "./winrockDashboardService"
 import { orderBy } from 'firebase/firestore';
 
-
 interface Project {
   id: number;
-  project: string;
+  projectName: string;
   supplierName: string;
   overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
   analysisStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded';
@@ -38,7 +37,7 @@ async function fetchProjects(): Promise<Project[]> {
 
   return result.data.projects.map((p: any, index: number) => ({
     id: index,
-    project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
+    projectName: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
     supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
     overallStatus: p.overallStatus,
     analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
@@ -48,7 +47,7 @@ async function fetchProjects(): Promise<Project[]> {
     geography: p.geography,
     lastUpdated: typeof p.lastUpdated === 'string' ? p.lastUpdated : new Date(p.lastUpdated).toISOString().split("T")[0],
     startDate: typeof p.startDate === 'string' ? p.startDate : new Date(p.startDate).toISOString().split("T")[0],
-    activityType: 'Renewable Energy and Energy Efficiency', // TODO: update if backend supports this
+    activityType: 'Renewable Energy and Energy Efficiency',
   }));
 }
 
@@ -210,7 +209,7 @@ const WinrockDashboard: React.FC = () => {
 
           // Call backend update for each field
           Object.entries(changes).forEach(([field, value]) => {
-            updateProjectField(originalProject.project, field as keyof Project, value);
+            updateProjectField(originalProject.projectName, field as keyof Project, value);
           });
         });
       }
@@ -375,7 +374,7 @@ const WinrockDashboard: React.FC = () => {
             <TableHeader
               onSelectAll={handleSelectAll}
               allSelected={allSelected}
-              headers={['Project', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
+              headers={['Project Name', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
               isEditMode={isEditMode}
             />
             <tbody>
