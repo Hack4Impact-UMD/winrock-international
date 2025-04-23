@@ -3,7 +3,7 @@ import styles from '../css-modules/TableRow.module.css';
 import ColorText from '../components/ColorText';
 import RowCustomSelect from '../components/RowCustomSelect';
 
-type StatusType = 
+type StatusType =
   | 'On Track'
   | 'At Risk'
   | 'Paused'
@@ -21,7 +21,7 @@ interface TableRowProps {
   data: {
     id: number;
     project: string;
-    supplier: string;
+    supplierName: string;
     overallStatus: StatusType;
     analysisStage: AnalysisStageType;
     spendCategory: string;
@@ -51,9 +51,9 @@ const analysisStageOptions: AnalysisStageType[] = [
   'Complete, and Excluded'
 ];
 
-const TableRow: React.FC<TableRowProps> = ({ 
-  data, 
-  isSelected = false, 
+const TableRow: React.FC<TableRowProps> = ({
+  data,
+  isSelected = false,
   onSelect,
   isEditMode = false,
   onFieldChange
@@ -85,11 +85,11 @@ const TableRow: React.FC<TableRowProps> = ({
         {isEditMode ? (
           <input
             type="text"
-            value={data.supplier}
-            onChange={(e) => onFieldChange?.('supplier', e.target.value)}
+            value={data.supplierName}
+            onChange={(e) => onFieldChange?.('supplierName', e.target.value)}
             className={styles.editableInput}
           />
-        ) : data.supplier}
+        ) : data.supplierName}
       </td>
       <td className={styles.cell}>
         {isEditMode ? (
