@@ -397,7 +397,7 @@ const WinrockDashboard: React.FC = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <Sidebar />
+      <Sidebar currentTab='projects' />
 
       <main className={styles.mainContent}>
         <h1 className={styles.title}>Projects</h1>
