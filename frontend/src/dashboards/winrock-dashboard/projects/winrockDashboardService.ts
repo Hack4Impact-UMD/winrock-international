@@ -12,8 +12,8 @@ import {
     updateDoc,
     where
 } from "firebase/firestore";
-import { db } from "../../firebaseConfig.js";
-import Result from "../../types/Result.js";
+import { db } from "../../../firebaseConfig.js";
+import Result from "../../../types/Result.js";
 
 
 /**

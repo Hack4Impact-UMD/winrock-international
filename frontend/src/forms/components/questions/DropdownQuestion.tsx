@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import styles from '../../css-modules/DropdownQuestion.module.css'
-import chevron from '../../assets/chevron-up-svgrepo-com.svg'
+import chevron from '../../../assets/chevron-up-svgrepo-com.svg'
 
 interface DropdownQuestionProps {
    label: string

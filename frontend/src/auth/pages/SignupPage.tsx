@@ -1,16 +1,23 @@
-import { useMemo, useRef, useState } from "react";
+import {
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { useNavigate } from "react-router-dom";
 import Result from "../../types/Result";
-import { type Role, type SignupInfo, handleSignup } from "../authService";
+import {
+  type Role,
+  type SignupInfo,
+  fetchCompanySuggestions,
+  handleSignup
+} from "../authService";
+
 import AuthLogoHeader from "../components/AuthLogoHeader";
 import AuthForm from "../components/AuthForm";
 import AuthDropdownField from "../components/AuthDropdownField";
 import AuthTextField from "../components/AuthTextField";
 import AuthPasswordField from "../components/AuthPasswordField";
 import AuthBottomLink from "../components/AuthBottomLink";
-import { db, auth } from "../../firebaseConfig"
-import * as firestore from "firebase/firestore";
-import { collection, getDocs, limit, orderBy, query, startAfter, endAt } from "firebase/firestore";
 
 
 interface StepOneProps {
@@ -55,8 +62,6 @@ function SignupPage() {
       [field]: value
     }
   }
-
-
 
   const currentRemSpacing = useMemo((): number[] => {
     if (currentStep === 1) {
@@ -149,7 +154,7 @@ function SignupPage() {
     })
 
     if (result.success) {
-      navigate("/dashboard");
+      navigate("/dashboard/admin/projects");
     } else {
       console.error("Error signing up: ", result.errorCode);
     }
@@ -168,12 +173,11 @@ function SignupPage() {
         afterChild={currentStep > 1 ?
           <AuthBottomLink
             beforeText="Already have an account?"
-            linkLabel="Sign in"
-            link="/login"
+            actionLabel="Sign in"
+            onClick={() => navigate("/auth/login")}
           />
           : undefined}
         remSpacing={currentRemSpacing}
-
       >
         <>
           {currentStep === 1 &&
@@ -204,34 +208,17 @@ function SignupPage() {
 }
 
 const StepOne = ({ answersRef, handleChange, role, setRole }: StepOneProps) => {
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [companySuggestions, setCompanySuggestions] = useState<string[]>([]);
+  
+  const handleCompanySuggestions = async (input: string) => {
+    const result = await fetchCompanySuggestions(input);
+    if (result.success) {
+      setCompanySuggestions(result.data as string[]);
+    } else {
+      console.error("Error fetching company suggestions, ", result.errorCode);
+    }
+  }
 
-  const fetchCompanySuggestions = async (input: string) => {
-    if (!input) {
-      return setSuggestions([])
-    };
-    const companiesRef = firestore.collection(db, "companies");
-    const q = query(companiesRef, orderBy("name"), limit(5), startAfter(input), endAt(input + "\uf8ff"))
-
-    const snapshot = await getDocs(q)
-
-    snapshot.forEach((doc) => {
-      console.log(`🧾 Document ID: ${doc.id}`);
-      console.log(doc.data());
-    });
-
-    const results: string[] = []
-
-    snapshot.forEach(doc => {
-      const data = doc.data();
-
-      if (typeof (data.name) == "string") {
-        results.push(data.name)
-      };
-    });
-    console.log(results)
-    setSuggestions(results);
-  };
   return (
     <>
       <AuthDropdownField
@@ -252,10 +239,9 @@ const StepOne = ({ answersRef, handleChange, role, setRole }: StepOneProps) => {
           controlledValue={answersRef.current.company!}
           onChange={(value) => {
             handleChange("company", value);
-            fetchCompanySuggestions(value);
-
+            handleCompanySuggestions(value);
           }}
-          suggestions={suggestions}
+          suggestions={companySuggestions}
           onSuggestionClick={(value) => {
             handleChange("company", value);
           }}

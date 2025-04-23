@@ -30,7 +30,7 @@ function LoginPage() {
     
     const result: Result = await handleLogin({ email, password });
     if (result.success) {
-      navigate("/dashboard");
+      navigate("/dashboard/admin/projects");
     } else {
       console.error("Error logging in: ", result.errorCode);
     }
@@ -46,8 +46,8 @@ function LoginPage() {
         afterChild={
           <AuthBottomLink
             beforeText="Don't have an account yet?"
-            linkLabel="Sign up"
-            link="/signup"
+            actionLabel="Sign up"
+            onClick={() => navigate("/auth/signup")}
           />
         }
         remSpacing={[7, 3, 2.3, 6, 7.7, 2.7, 2.3, 3]}
@@ -73,7 +73,7 @@ function LoginPage() {
             label="Password"
             toggleHidden={true}
             linkLabel="Forgot password?"
-            link="/forgot-password"
+            link="/auth/forgot-password"
             onChange={(value) => setPassword(value)}
           />
         </>

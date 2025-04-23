@@ -6,9 +6,12 @@ import AuthLogoHeader from "../components/AuthLogoHeader";
 import AuthForm from "../components/AuthForm";
 import AuthTextField from "../components/AuthTextField";
 import AuthBottomLink from "../components/AuthBottomLink";
+import PasswordResetSentPage from "./PasswordResetSentPage";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
+  const [linkIsSent, setLinkIsSent] = useState(false);
+
   const navigate = useNavigate();
 
   async function handleSendLink() {
@@ -19,10 +22,19 @@ function ForgotPasswordPage() {
     
     const result = await sendPasswordResetLink(email);
     if (result.success) {
-      navigate("/forgot-password/reset");
+      setLinkIsSent(true);
     } else {
       console.error("Error sending password reset link: ", result.errorCode);
     }
+  }
+
+  if (linkIsSent) {
+    return (
+      <PasswordResetSentPage
+        email={email}
+        setLinkIsSent={setLinkIsSent}
+      />
+    );
   }
 
   return (
@@ -33,14 +45,14 @@ function ForgotPasswordPage() {
         title="Forgot password?"
         subtitle="Don't worry! It occurs. Please enter the email address linked with your account."
         titleStyle={2}
-        onBack={() => navigate("/login")}
+        onBack={() => navigate("/auth/login")}
         nextLabel="Send Link"
         onNext={handleSendLink}
         afterChild={
           <AuthBottomLink
             beforeText="Remember password?"
-            linkLabel="Sign in"
-            link="/login"
+            actionLabel="Sign in"
+            onClick={() => navigate("/auth/login")}
           />
         }
         remSpacing={[10, 8, 2.5, 12, 3]}
@@ -53,7 +65,7 @@ function ForgotPasswordPage() {
         </>
       </AuthForm>
     </>
-  )
+  );
 }
 
 export default ForgotPasswordPage;

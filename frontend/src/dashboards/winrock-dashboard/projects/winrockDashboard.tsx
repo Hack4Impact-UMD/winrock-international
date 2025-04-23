@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import styles from './css-modules/WinrockDashboard.module.css';
-import winrockLogo from '../../assets/winrock-international-logo.png';
-import projectsIcon from '../../assets/projects-icon.svg';
-import notificationIcon from '../../assets/notification-icon.svg';
-import accountSettingsIcon from '../../assets/account-settings-icon.svg';
-import FilterTabs from './components/FilterTabs';
-import Pagination from './components/Pagination';
-import TableHeader from './components/TableHeader';
-import FilterWrapper from './components/FilterWrapper';
-import SortWrapper from './components/SortWrapper'; 
-import DateFilter from './components/DateFilter';
-import ColorText from './components/ColorText';
-import TableRow from './components/TableRow';
-
+import styles from '../css-modules/WinrockDashboard.module.css';
+import winrockLogo from '../../../assets/winrock-international-logo.png';
+import projectsIcon from '../../../assets/projects-icon.svg';
+import notificationIcon from '../../../assets/notification-icon.svg';
+import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
+import FilterTabs from '../components/FilterTabs';
+import Pagination from '../components/Pagination';
+import TableHeader from '../components/TableHeader';
+import FilterWrapper from '../components/FilterWrapper';
+import SortWrapper from '../components/SortWrapper'; 
+import DateFilter from '../components/DateFilter';
+import ColorText from '../components/ColorText';
+import TableRow from '../components/TableRow';
 
 interface Project {
   id: number;
