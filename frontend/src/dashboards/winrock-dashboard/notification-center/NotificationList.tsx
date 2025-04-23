@@ -3,16 +3,16 @@ import {
     useState,
     useTransition
 } from "react";
-import { NotificationTab } from "./NotificationCenter";
+import { NotificationStatus } from "./notificationService";
 import "../css-modules/NotificationList.module.css";
 
 import NotificationItem from "./NotificationItem";
 
 interface NotificationListProps {
-    tab: NotificationTab;
+    tab: NotificationStatus | "all";
 }
 
-function useNotifications(tab: NotificationTab) {
+function useNotifications(tab: NotificationStatus | "all") {
     const [notifications, setNotifications] = useState([]);
     const [isPending, startTransition] = useTransition();
 

@@ -1,17 +1,13 @@
 import {
     useState
 } from "react";
+import { NotificationStatus } from "./notificationService";
 import styles from "../css-modules/NotificationCenter.module.css";
 
 import NotificationList from "./NotificationList";
 
-type NotificationTab =
-    | "unread"
-    | "read"
-    | "all";
-
 const NotificationCenter: React.FC = () => {
-    const [selectedTab, setSelectedTab] = useState<NotificationTab>("unread");
+    const [selectedTab, setSelectedTab] = useState<NotificationStatus | "all">("unread");
 
     return (
         <section className={styles.notificationCenter}>
@@ -46,4 +42,3 @@ const NotificationCenter: React.FC = () => {
 }
 
 export default NotificationCenter;
-export { type NotificationTab };

@@ -1,4 +1,4 @@
-import WinrockDashboard from './dashboards/winrock-dashboard/winrockDashboard';
+import WinrockDashboard from './dashboards/winrock-dashboard/projects/winrockDashboard';
 
 function App() {
   return (
