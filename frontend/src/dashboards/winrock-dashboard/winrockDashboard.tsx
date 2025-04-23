@@ -14,6 +14,7 @@ import ColorText from './components/ColorText';
 import TableRow from './components/TableRow';
 import { getAllProjects, updateProjectField } from "./winrockDashboardService"
 import { orderBy } from 'firebase/firestore';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 
 
 interface Project {
@@ -54,6 +55,7 @@ async function fetchProjects(): Promise<Project[]> {
 
 
 const WinrockDashboard: React.FC = () => {
+  const [editedProjects, setEditedProjects] = useState<Record<number, Partial<Project>>>({});
   const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -136,21 +138,18 @@ const WinrockDashboard: React.FC = () => {
     }
   };
   console.log(projects)
-  const handleFieldChange = (
+  const handleStagedFieldChange = (
     id: number,
     field: keyof Project,
     value: Project[keyof Project]
   ) => {
-    setProjects(prevProjects =>
-      prevProjects.map(project =>
-        project.id === id ? { ...project, [field]: value } : project
-      )
-    );
-
-    const project = projects.find(p => p.id === id);
-    if (!project) return;
-
-    updateProjectField(project.project, field, value); // replace `name` with the actual key
+    setEditedProjects(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [field]: value
+      }
+    }));
   };
 
   // per category
@@ -196,6 +195,31 @@ const WinrockDashboard: React.FC = () => {
   //   );
   // };
 
+  const handleToggleEditMode = () => {
+    if (isEditMode) {
+      // On exiting edit mode
+      if (window.confirm("Do you want to make these changes?")) {
+        Object.entries(editedProjects).forEach(([idStr, changes]) => {
+          const id = parseInt(idStr);
+          const originalProject = projects.find(p => p.id === id);
+          if (!originalProject) return;
+
+          const updatedProject = { ...originalProject, ...changes };
+          setProjects(prev =>
+            prev.map(p => (p.id === id ? updatedProject : p))
+          );
+
+          // Call backend update for each field
+          Object.entries(changes).forEach(([field, value]) => {
+            updateProjectField(originalProject.project, field as keyof Project, value);
+          });
+        });
+      }
+      setEditedProjects({}); // clear after applying
+    }
+
+    setIsEditMode(!isEditMode);
+  };
 
 
   const renderFilterContent = (sectionKey: string) => {
@@ -307,7 +331,7 @@ const WinrockDashboard: React.FC = () => {
           />
           <button
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
-            onClick={() => setIsEditMode(!isEditMode)}
+            onClick={handleToggleEditMode}
           >
             {isEditMode ? 'Done' : 'Edit'}
           </button>
@@ -356,16 +380,23 @@ const WinrockDashboard: React.FC = () => {
               isEditMode={isEditMode}
             />
             <tbody>
-              {currentProjects.map(project => (
-                <TableRow
-                  key={project.id}
-                  data={project}
-                  isSelected={selectedRows.includes(project.id)}
-                  onSelect={(checked) => handleRowSelect(project.id, checked)}
-                  isEditMode={isEditMode}
-                  onFieldChange={(field, value) => handleFieldChange(project.id, field, value)}
-                />
-              ))}
+              {currentProjects.map(project => {
+                const mergedProject = {
+                  ...project,
+                  ...(editedProjects[project.id] || {})
+                };
+
+                return (
+                  <TableRow
+                    key={project.id}
+                    data={mergedProject}
+                    isSelected={selectedRows.includes(project.id)}
+                    onSelect={(checked) => handleRowSelect(project.id, checked)}
+                    isEditMode={isEditMode}
+                    onFieldChange={(field, value) => handleStagedFieldChange(project.id, field, value)}
+                  />
+                );
+              })}
             </tbody>
           </table>
         </div>
