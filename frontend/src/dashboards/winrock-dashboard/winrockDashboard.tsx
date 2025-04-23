@@ -14,7 +14,6 @@ import ColorText from './components/ColorText';
 import TableRow from './components/TableRow';
 import { getAllProjects, updateProjectField } from "./winrockDashboardService"
 import { orderBy } from 'firebase/firestore';
-import { ConfirmDialog } from 'primereact/confirmdialog';
 
 
 interface Project {
