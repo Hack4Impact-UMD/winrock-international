@@ -1,8 +1,4 @@
 import React, { useState } from 'react';
-import winrockLogo from '../../../assets/winrock-international-logo.png';
-import projectsIcon from '../../assets/projects-icon.svg';
-import notificationIcon from '../../assets/notification-icon.svg';
-import accountSettingsIcon from '../../assets/account-settings-icon.svg';
 import styles from '../css-modules/WinrockDashboard.module.css';
 
 import FilterTabs from '../components/FilterTabs';
@@ -11,8 +7,9 @@ import TableHeader from '../components/TableHeader';
 import FilterWrapper from '../components/FilterWrapper';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
-import SortWrapper from './components/SortWrapper'; 
-import DateFilter from './components/DateFilter';
+import SortWrapper from '../components/SortWrapper'; 
+import DateFilter from '../components/DateFilter';
+import Sidebar from '../components/Sidebar';
 
 interface Project {
   id: number;
@@ -219,7 +216,6 @@ const WinrockDashboard: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [projects, setProjects] = useState<Project[]>(sampleProjects);
-  const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
   const [allSelected, setAllSelected] = useState(false);
 
@@ -401,32 +397,7 @@ const WinrockDashboard: React.FC = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <header className={styles.header}>
-        <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
-        <div className={styles.headerNavContainer}>
-          <button 
-            className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Projects')}
-          >
-            <img src={projectsIcon} alt="Projects" />
-            Projects
-          </button>
-          <button 
-            className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Notification Center')}
-          >
-            <img src={notificationIcon} alt="Notification Center" />
-            Notification Center
-          </button>
-          <button 
-            className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Account Settings')}
-          >
-            <img src={accountSettingsIcon} alt="Account Settings" />
-            Account Settings
-          </button>
-        </div>
-      </header>
+      <Sidebar />
 
       <main className={styles.mainContent}>
         <h1 className={styles.title}>Projects</h1>
