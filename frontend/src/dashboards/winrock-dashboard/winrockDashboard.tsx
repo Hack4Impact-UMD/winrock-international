@@ -13,7 +13,6 @@ import DateFilter from './components/DateFilter';
 import ColorText from './components/ColorText';
 import TableRow from './components/TableRow';
 import { getAllProjects, updateProjectField } from "./winrockDashboardService"
-import { getAllProjects, updateProjectField } from "./winrockDashboardService"
 import { orderBy } from 'firebase/firestore';
 
 interface Project {
@@ -325,7 +324,7 @@ const WinrockDashboard: React.FC = () => {
           />
           <button
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
-            onClick={handleToggleEditMode}
+            onClick={() => setIsEditMode(!isEditMode)}
           >
             {isEditMode ? 'Done' : 'Edit'}
           </button>
@@ -370,27 +369,20 @@ const WinrockDashboard: React.FC = () => {
             <TableHeader
               onSelectAll={handleSelectAll}
               allSelected={allSelected}
-              headers={['Project Name', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
+              headers={['Project', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
               isEditMode={isEditMode}
             />
             <tbody>
-              {currentProjects.map(project => {
-                const mergedProject = {
-                  ...project,
-                  ...(editedProjects[project.id] || {})
-                };
-
-                return (
-                  <TableRow
-                    key={project.id}
-                    data={mergedProject}
-                    isSelected={selectedRows.includes(project.id)}
-                    onSelect={(checked) => handleRowSelect(project.id, checked)}
-                    isEditMode={isEditMode}
-                    onFieldChange={(field, value) => handleStagedFieldChange(project.id, field, value)}
-                  />
-                );
-              })}
+              {currentProjects.map(project => (
+                <TableRow
+                  key={project.id}
+                  data={project}
+                  isSelected={selectedRows.includes(project.id)}
+                  onSelect={(checked) => handleRowSelect(project.id, checked)}
+                  isEditMode={isEditMode}
+                  onFieldChange={(field, value) => handleFieldChange(project.id, field, value)}
+                />
+              ))}
             </tbody>
           </table>
         </div>
