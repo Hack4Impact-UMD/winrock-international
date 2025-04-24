@@ -12,14 +12,14 @@ import SortWrapper from './components/SortWrapper';
 import DateFilter from './components/DateFilter';
 import ColorText from './components/ColorText';
 import TableRow from './components/TableRow';
-import { getAllProjects } from "./winrockDashboardService"
+import { getAllProjects, updateProjectField } from "./winrockDashboardService"
 import { orderBy } from 'firebase/firestore';
 
 
 interface Project {
   id: number;
   project: string;
-  supplier: string;
+  supplierName: string;
   overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
   analysisStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded';
   spendCategory: string;
@@ -39,7 +39,7 @@ async function fetchProjects(): Promise<Project[]> {
   return result.data.projects.map((p: any, index: number) => ({
     id: index,
     project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
-    supplier: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
+    supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
     overallStatus: p.overallStatus,
     analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
       ? p.analysisStage.split(':')[1].trim()
@@ -142,6 +142,7 @@ const WinrockDashboard: React.FC = () => {
         project.id === id ? { ...project, [field]: value } : project
       )
     );
+    updateProjectField(projects[id].project, field, value);
   };
 
   // per category
