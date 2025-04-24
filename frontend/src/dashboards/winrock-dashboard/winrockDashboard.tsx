@@ -461,7 +461,7 @@ const WinrockDashboard: React.FC = () => {
               className={`${styles.filterButton} ${isFilterPopupOpen ? styles.active : ''}`}
               onClick={toggleFilterPopup}
             >
-              Filter
+              Filters
             </button>
             
             {/* Our updated SortWrapper component */}

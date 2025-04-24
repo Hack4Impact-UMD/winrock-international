@@ -59,9 +59,6 @@ const FilterWrapper: React.FC<FilterWrapperProps> = ({
 
   return (
     <div className={styles.filterWrapper}>
-      <div className={styles.filterHeader}>
-        <h3 className={styles.filterTitle}>{title}</h3>
-      </div>
       
       <div className={styles.filtersContainer}>
         {filterSections.map((section) => (

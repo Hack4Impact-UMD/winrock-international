@@ -107,12 +107,14 @@ html {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 0.5rem 1.5625rem;
-  border: 1px solid #CCCCCC;
+  height: 2.5rem;
+  border-top: 1px solid #CCCCCC;
   background-color: white;
+  padding-left: 1.5rem;
 }
 
 .searchContainer {
+  height: 100%;
   position: relative;
   flex: 1;
 }
@@ -145,11 +147,10 @@ html {
 
 .filterContainer {
   align-items: center;
-  border-left: 1px solid #CCCCCC;
-  padding-left: 1rem;
   position: relative;
   display: flex;
-  gap: 0.5rem;
+  height: 100%;
+  width: 37.5rem;
 }
 
 .status {
@@ -322,30 +323,13 @@ html {
 .filterPopup {
   position: absolute;
   top: 100%;
+  width: 18.75rem;
   left: 0; 
   z-index: 100;
-  margin-top: 4px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  box-shadow: 0px 4px 4px 0px #00000040;
   background-color: white;
-  border-radius: 4px;
+  border-radius: 45x;
   overflow: hidden;
-}
-
-.filterButton.active {
-  background-color: #f3f4f6;
-  border-color: #d1d5db;
-}
-
-.filterButton,
-.sortButton {
-  padding: 1rem 1.5rem;
-  width: 10rem;
-  border: 1px solid #e5e7eb;
-  background-color: white;
-  color: #374151;
-  font-size: 0.8rem;
-  text-align: center;
 }
 
 .table {
@@ -420,57 +404,46 @@ html {
 }
 
 
-.filterButton {
-  width: 20rem;
-  padding: 0.5rem 1rem;
+.filterButton, .sortButton {
   background-color: white;
-  color: #374151;
-  font-size: 0.875rem;
+  width: 18.75rem;
+  color: #1E1E1E;
+  font-size: 1em;
+  letter-spacing: 3%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
   border: none;
+  height: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid #CCCCCC;
+  border-bottom: 1.5px solid #ffffff00;
+  border-top: none; 
+}
+.sortButton {
+  border-left:none;
 }
 
-.filterButton::after {
+.filterButton::after, .sortButton::after {
   content: '';
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid #666;
-  border-bottom: 2px solid #666;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid #666;
+  border-bottom: 1.5px solid #666;
   transform: rotate(45deg);
   transition: transform 0.2s ease;
   display: inline-block;
 }
 
-.filterButton.active {
+.filterButton.active, .sortButton.active {
   background-color: white;
+  border: 1.5px solid #005293;
+  border-top: none;
+  color: #005293;
 }
 
-.filterButton.active::after {
+.filterButton.active::after, .sortButton.active::after {
   transform: rotate(-135deg);
 }
 
-.sortButton {
-  padding: 0.5rem 1rem;
-  border: none;
-  background-color: white;
-  color: #374151;
-  font-size: 0.875rem;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  margin-left: 0.5rem;
-}
-
-.filterPopup {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  width: 21rem; 
-  background-color: white;
-  overflow: hidden;
-  border: 1px solid #CCCCCC;
-  border-top: none;
-}
