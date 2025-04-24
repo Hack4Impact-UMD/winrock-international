@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import styles from '../css-modules/WinrockDashboard.module.css';
 
+import Sidebar from '../components/Sidebar';
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
 import FilterWrapper from '../components/FilterWrapper';
-import ColorText from '../components/ColorText';
-import TableRow from '../components/TableRow';
 import SortWrapper from '../components/SortWrapper'; 
 import DateFilter from '../components/DateFilter';
-import Sidebar from '../components/Sidebar';
+import ColorText from '../components/ColorText';
+import TableRow from '../components/TableRow';
 
 interface Project {
   id: number;
