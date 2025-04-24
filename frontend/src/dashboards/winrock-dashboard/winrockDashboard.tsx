@@ -12,7 +12,7 @@ import SortWrapper from './components/SortWrapper';
 import DateFilter from './components/DateFilter';
 import ColorText from './components/ColorText';
 import TableRow from './components/TableRow';
-
+import ReportsDropdown from './components/ReportsDropdown';
 
 interface Project {
   id: number;
@@ -430,7 +430,7 @@ const WinrockDashboard: React.FC = () => {
 
       <main className={styles.mainContent}>
         <h1 className={styles.title}>Projects</h1>
-        
+        <ReportsDropdown />
         <div className={styles.tabsContainer}>
           <FilterTabs
             tabs={tabs}
