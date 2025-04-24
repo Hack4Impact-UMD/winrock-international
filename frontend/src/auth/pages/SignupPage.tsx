@@ -5,8 +5,8 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import Result from "../../types/Result";
+import Role from "../../types/Role.js";
 import {
-  type Role,
   type SignupInfo,
   fetchCompanySuggestions,
   handleSignup
@@ -18,7 +18,6 @@ import AuthDropdownField from "../components/AuthDropdownField";
 import AuthTextField from "../components/AuthTextField";
 import AuthPasswordField from "../components/AuthPasswordField";
 import AuthBottomLink from "../components/AuthBottomLink";
-
 
 interface StepOneProps {
   answersRef: React.RefObject<SignupInfo>;

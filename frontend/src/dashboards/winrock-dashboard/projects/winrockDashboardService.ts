@@ -13,8 +13,7 @@ import {
     where
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
-import Result from "../../../types/Result.js";
-
+import Result, { handleFirebaseError } from "../../../types/Result.js";
 
 /**
  * Represents the overall status of a project.
@@ -38,7 +37,6 @@ enum AnalysisStage {
     STAGE_5 = "Stage 5: Risk & Co-benefit Assessment",
     STAGE_6 = "Stage 6: Complete, and Excluded"
 }
-
 
 /**
  * Represents a project stored in the database.
@@ -111,10 +109,7 @@ const createProject = async (
 
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -147,10 +142,7 @@ const getProjectByName = async (projectName: string): Promise<Result> => {
             data: project
         };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -235,10 +227,7 @@ const getProjectsWithFilters = async (
             }
         };
 	} catch (error) {
-		return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+		return handleFirebaseError(error);
 	}
 }
 
@@ -275,10 +264,7 @@ const updateProjectField = async (projectName: string, field: keyof Project, new
 
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 };
 
@@ -301,10 +287,7 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 

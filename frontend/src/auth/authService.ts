@@ -1,4 +1,3 @@
-import { FirebaseError } from "firebase/app";
 import  "firebase/firestore";
 import {
     type User,
@@ -8,13 +7,9 @@ import {
     signOut,
 } from "firebase/auth";
 import { db, auth } from "../firebaseConfig.js";
-import Result from "../types/Result.js";
+import Result, { handleFirebaseError } from "../types/Result.js";
+import Role from "../types/Role.js";
 import { addDoc, collection, doc, endAt, getDocs, limit, orderBy, query, setDoc, startAfter, where } from "firebase/firestore";
-
-type Role =
-    | "admin"
-    | "client"
-    | "supplier";
 
 interface SignupInfo {
     email: string;
@@ -82,10 +77,7 @@ const handleSignup = async ({ email, password, firstName, lastName, role, compan
         await setDoc(docRef, newUserObj);
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -101,10 +93,7 @@ const handleLogin = async ({ email, password }: LoginInfo): Promise<Result> => {
         await signInWithEmailAndPassword(auth, email, password);
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -116,10 +105,7 @@ const handleLogout = async (): Promise<Result> =>  {
         await signOut(auth);
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -134,10 +120,7 @@ const sendPasswordResetLink = async (email: string): Promise<Result> => {
         await sendPasswordResetEmail(auth, email);
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -166,10 +149,7 @@ const fetchCompanySuggestions = async (input: string): Promise<Result> => {
             data: suggestions
         };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
