@@ -152,42 +152,6 @@ const WinrockDashboard: React.FC = () => {
     setSelectedSort(sortOption);
   };
 
-  // // per category
-  // const renderFilterContent = (sectionKey: string) => {
-  //   let categories;
-
-  //   if (sectionKey === 'status') {
-  //     categories = overallCategories;
-  //   } else if (sectionKey === 'spend') {
-  //     categories = spendCategories;
-  //   } else if (sectionKey === 'date') {
-  //     categories = dateCategories;
-  //   } else {
-  //     return null;
-  //   }
-
-  //   return (
-  //     <div className={styles.filterOptions}>
-  //       {categories.map(option => (
-  //         <div key={option.id} className={styles.checkboxItem}>
-  //           <input 
-  //             type="checkbox"
-  //             id={`${sectionKey}-${option.id}`}
-  //             checked={selectedCategories.includes(option.id)}
-  //             onChange={() => toggleCategory(option.id)}
-  //           />
-  //           <label htmlFor={`${sectionKey}-${option.id}`}>
-  //             {sectionKey === 'status' && (
-  //               <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
-  //             )}
-  //             {option.label}
-  //           </label>
-  //         </div>
-  //       ))}
-  //     </div>
-  //   );
-  // };
-
 
   const renderFilterContent = (sectionKey: string) => {
     if (sectionKey === 'status') {
