@@ -3,6 +3,7 @@ import {
     addDoc,
     collection,
     doc,
+    documentId,
     endAt,
     getCountFromServer,
     getDoc,
@@ -16,6 +17,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
 import Result from "../../../types/Result";
+import { batchArray } from "../../../utils/batch.js";
+import { sendEmail } from "../../../api/apiClient.js";
 
 interface Notification {
     type: string;
@@ -35,7 +38,7 @@ type NotificationStatus =
  * 
  * Returns the ID of the created document.
  * 
- * @param {string} userId - ID of the user to send the notification to.
+ * @param {string} recipientIds - IDs of the users to send the notification to.
  * @param {string} type 
  * @param {string} project 
  * @param {string} message 
@@ -48,13 +51,13 @@ type NotificationStatus =
  *      - On failure: `{ success: false, errorCode: string }`
  */
 const sendNotification = async (
-    userId: string,
+    recipientIds: string[],
     type: string,
     project: string,
     message: string,
     date?: Date,
     status: NotificationStatus = "unread",
-    sendEmail: boolean = true
+    shouldSendEmail: boolean = true
 ): Promise<Result> => {
     const notification: Notification = {
         type,
@@ -65,16 +68,43 @@ const sendNotification = async (
     };
 
     try {
-        if (sendEmail) {
-            // todo
+        const recipientDocs = [];
+        const recipientIdBatches = batchArray(recipientIds, 10); // Firestore "in" has a 10-item limit
+        for (const batch of recipientIdBatches) {
+            const q = query(
+                collection(db, "users"),
+                where(documentId(), "in", batch));
+            const querySnapshot = await getDocs(q);
+            recipientDocs.push(...querySnapshot.docs);
         }
 
-        const collectionRef = collection(db, `users/${userId}/notifications`);
-        const docRef = await addDoc(collectionRef, notification); // addDoc() auto-generates an ID for the notification
-        return {
-            success: true,
-            data: docRef.id
-        };
+        if (shouldSendEmail) {
+            const recipientNames: string[] = [];
+            const recipientEmails: string[] = [];
+
+            await Promise.all(recipientDocs.map(async (recipientDoc) => {
+                const recipient = recipientDoc.data();
+                recipientNames.push(`${recipient.firstName} ${recipient.lastName}`);
+                recipientEmails.push(recipient.email);
+            
+                const notificationsCollection = collection(db, `users/${recipientDoc.id}/notifications`);
+                await addDoc(notificationsCollection, notification);
+            }));
+    
+            await sendEmail({
+                recipientNames,
+                recipientEmails,
+                subject: `New update for "${project}" project`,
+                message
+            });
+        } else {
+            recipientDocs.forEach(async (recipientDoc) => {
+                const notificationsCollection = collection(db, `users/${recipientDoc.id}/notifications`);
+                await addDoc(notificationsCollection, notification);
+            });
+        }
+        
+        return { success: true };
     } catch (error) {
         return {
             success: false,
