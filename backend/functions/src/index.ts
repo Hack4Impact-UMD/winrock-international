@@ -25,7 +25,7 @@ exports.sendEmail = onCall(async (request) => {
     }
 
     if (recipientNames.length > EMAIL_API_BATCH_LIMIT) {
-        throw { reason: "too-many-email-addresses" };
+        throw { reason: "too-many-recipients" };
     }
 
     const recipients: string[] = [];

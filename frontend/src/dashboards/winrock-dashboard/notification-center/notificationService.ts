@@ -4,13 +4,11 @@ import {
     collection,
     doc,
     documentId,
-    endAt,
     getCountFromServer,
     getDoc,
     getDocs,
     orderBy,
     query,
-    startAt,
     Timestamp,
     updateDoc,
     where
@@ -44,10 +42,10 @@ type NotificationStatus =
  * @param {string} message 
  * @param {Date} date - Defaults to the current date, but can optionally be set.
  * @param {NotificationStatus} status - Defaults to "unread", but can optionally be set.
- * @param {boolean} sendEmail - Whether to send an email to the user.
+ * @param {boolean} shouldSendEmail - Whether to send an email to the user.
  * 
  * @returns {Promise<Result>} A promise resolving to a `Result` object:
- *      - On success: `{ success: true, data: { docRef.id } }`
+ *      - On success: `{ success: true }`
  *      - On failure: `{ success: false, errorCode: string }`
  */
 const sendNotification = async (
@@ -69,7 +67,7 @@ const sendNotification = async (
 
     try {
         const recipientDocs = [];
-        const recipientIdBatches = batchArray(recipientIds, 10); // Firestore "in" has a 10-item limit
+        const recipientIdBatches: string[][] = batchArray(recipientIds, 10); // Firestore "in" has a 10-item limit
         for (const batch of recipientIdBatches) {
             const q = query(
                 collection(db, "users"),
@@ -98,10 +96,10 @@ const sendNotification = async (
                 message
             });
         } else {
-            recipientDocs.forEach(async (recipientDoc) => {
+            await Promise.all(recipientDocs.map(recipientDoc => {
                 const notificationsCollection = collection(db, `users/${recipientDoc.id}/notifications`);
-                await addDoc(notificationsCollection, notification);
-            });
+                return addDoc(notificationsCollection, notification);
+            }));
         }
         
         return { success: true };
@@ -114,15 +112,15 @@ const sendNotification = async (
 }
 
 /**
- * Retrieves all notifications of the given user from 'start' to 'end',
- * ordered by descending date.
+ * Retrieves tall notifications of the given user from 'start' (inclusive)
+ * to 'end' (exclusive), ordered by descending date.
  * 
- * @param userId - ID of the user to retrieve the notifications of.
- * @param start - Index of the first notification to retrieve, when ordering by descending date.
- * @param end - Index of the last notification to retrieve, when ordering by descending date.
+ * @param {string} userId - ID of the user to retrieve the notifications of.
+ * @param {string} start - Inclusive index of the first notification to retrieve, when ordering by descending date.
+ * @param {string} end - Exclusive index of the last notification to retrieve, when ordering by descending date.
  * 
  * @returns {Promise<Result>} A promise resolving to a `Result` object:
- *      - On success: `{ success: true, data: { notifications } }`
+ *      - On success: `{ success: true, data: notifications }`
  *      - On failure: `{ success: false, errorCode: string }`
  */
 const getAllNotifications = async (userId: string, start: number, end: number): Promise<Result> => {
@@ -131,12 +129,11 @@ const getAllNotifications = async (userId: string, start: number, end: number): 
     try {
         const allNotificationsQuery = query(
             collection(db, `users/${userId}/notifications`),
-            orderBy("date", "desc"),
-            startAt(start),
-            endAt(end));
+            orderBy("date", "desc"));
 
         const querySnapshot = await getDocs(allNotificationsQuery);
-        querySnapshot.forEach((doc) => {
+        const slicedDocs = querySnapshot.docs.slice(start, end);
+        slicedDocs.forEach((doc) => {
             const notification = {
                 ...doc.data(),
                 date: doc.data().date.toDate()
@@ -157,15 +154,15 @@ const getAllNotifications = async (userId: string, start: number, end: number): 
 }
 
 /**
- * Retrieves the unread notifications of the given user from 'start' to 'end',
- * ordered by descending date.
+ * Retrieves the unread notifications of the given user from 'start' (inclusive)
+ * to 'end' (exclusive), ordered by descending date.
  * 
  * @param userId - ID of the user to retrieve the notifications of.
- * @param start - Index of the first notification to retrieve, when ordering by descending date.
- * @param end - Index of the last notification to retrieve, when ordering by descending date.
+ * @param start - Inclusive index of the first notification to retrieve, when ordering by descending date.
+ * @param end - Exclusive index of the last notification to retrieve, when ordering by descending date.
  * 
  * @returns {Promise<Result>} A promise resolving to a `Result` object:
- *      - On success: `{ success: true, data: { notifications } }`
+ *      - On success: `{ success: true, data: notifications }`
  *      - On failure: `{ success: false, errorCode: string }`
  */
 const getUnreadNotifications = async (userId: string, start: number, end: number): Promise<Result> => {
@@ -175,12 +172,11 @@ const getUnreadNotifications = async (userId: string, start: number, end: number
         const allNotificationsQuery = query(
             collection(db, `users/${userId}/notifications`),
             where("status", "==", "unread"),
-            orderBy("date", "desc"),
-            startAt(start),
-            endAt(end));
+            orderBy("date", "desc"));
 
         const querySnapshot = await getDocs(allNotificationsQuery);
-        querySnapshot.forEach((doc) => {
+        const slicedDocs = querySnapshot.docs.slice(start, end);
+        slicedDocs.forEach((doc) => {
             const notification = {
                 ...doc.data(),
                 date: doc.data().date.toDate()
@@ -201,15 +197,15 @@ const getUnreadNotifications = async (userId: string, start: number, end: number
 }
 
 /**
- * Retrieves the read notifications of the given user from 'start' to 'end',
- * ordered by descending date.
+ * Retrieves the read notifications of the given user from 'start' (inclusive)
+ * to 'end' (exclusive), ordered by descending date.
  * 
  * @param userId - ID of the user to retrieve the notifications of.
- * @param start - Index of the first notification to retrieve, when ordering by descending date.
- * @param end - Index of the last notification to retrieve, when ordering by descending date.
+ * @param start - Inclusive index of the first notification to retrieve, when ordering by descending date.
+ * @param end - Exclusive index of the last notification to retrieve, when ordering by descending date.
  * 
  * @returns {Promise<Result>} A promise resolving to a `Result` object:
- *      - On success: `{ success: true, data: { notifications } }`
+ *      - On success: `{ success: true, data: notifications }`
  *      - On failure: `{ success: false, errorCode: string }`
  */
 const getReadNotifications = async (userId: string, start: number, end: number): Promise<Result> => {
@@ -219,12 +215,11 @@ const getReadNotifications = async (userId: string, start: number, end: number):
         const allNotificationsQuery = query(
             collection(db, `users/${userId}/notifications`),
             where("status", "==", "read"),
-            orderBy("date", "desc"),
-            startAt(start),
-            endAt(end));
+            orderBy("date", "desc"));
 
         const querySnapshot = await getDocs(allNotificationsQuery);
-        querySnapshot.forEach((doc) => {
+        const slicedDocs = querySnapshot.docs.slice(start, end);
+        slicedDocs.forEach((doc) => {
             const notification = {
                 ...doc.data(),
                 date: doc.data().date.toDate()
@@ -250,7 +245,7 @@ const getReadNotifications = async (userId: string, start: number, end: number):
  * @param userId - ID of the user to retrieve the notification count of.
  * 
  * @returns {Promise<Result>} A promise resolving to a `Result` object:
- *      - On success: `{ success: true, data: { count } }`
+ *      - On success: `{ success: true, data: count }`
  *      - On failure: `{ success: false, errorCode: string }`
  */
 const countAllNotifications = async (userId: string): Promise<Result> => {
@@ -278,7 +273,7 @@ const countAllNotifications = async (userId: string): Promise<Result> => {
  * @param userId - ID of the user to retrieve the notification count of.
  * 
  * @returns {Promise<Result>} A promise resolving to a `Result` object:
- *      - On success: `{ success: true, data: { count } }`
+ *      - On success: `{ success: true, data: count }`
  *      - On failure: `{ success: false, errorCode: string }`
  */
 const countUnreadNotifications = async (userId: string): Promise<Result> => {
@@ -308,7 +303,7 @@ const countUnreadNotifications = async (userId: string): Promise<Result> => {
  * @param userId - ID of the user to retrieve the notification count of.
  * 
  * @returns {Promise<Result>} A promise resolving to a `Result` object:
- *      - On success: `{ success: true, data: { count } }`
+ *      - On success: `{ success: true, data: count }`
  *      - On failure: `{ success: false, errorCode: string }`
  */
 const countReadNotifications = async (userId: string): Promise<Result> => {
@@ -391,6 +386,7 @@ const markNotificationAsUnread = async (userId: string, notificationId: string):
 }
 
 export {
+    type Notification,
     type NotificationStatus,
     sendNotification,
     getAllNotifications,
