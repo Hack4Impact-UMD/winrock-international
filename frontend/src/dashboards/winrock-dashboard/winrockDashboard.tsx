@@ -13,7 +13,6 @@ import DateFilter from './components/DateFilter';
 import ColorText from './components/ColorText';
 import TableRow from './components/TableRow';
 import { getAllProjects, updateProjectField } from "./winrockDashboardService"
-import { orderBy } from 'firebase/firestore';
 
 interface Project {
   id: number;
@@ -53,7 +52,6 @@ async function fetchProjects(): Promise<Project[]> {
 
 
 const WinrockDashboard: React.FC = () => {
-  const [editedProjects, setEditedProjects] = useState<Record<number, Partial<Project>>>({});
   const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -136,13 +134,15 @@ const WinrockDashboard: React.FC = () => {
     }
   };
 
-  const handleFieldChange = (id: number, field: keyof Project, value: string) => {
-    setProjects(prevProjects =>
-      prevProjects.map(project =>
-        project.id === id ? { ...project, [field]: value } : project
-      )
-    );
-    updateProjectField(projects[id].project, field, value);
+  const handleSaveProject = async (projectName: string, updatedFields: Partial<Project>) => {
+    try {
+      for (const [field, value] of Object.entries(updatedFields)) {
+        await updateProjectField(projectName, field as keyof Project, value as any);
+      }
+      console.log(`✅ Project ${projectName} updated successfully.`);
+    } catch (error) {
+      console.error(`❌ Failed to update project ${projectName}:`, error);
+    }
   };
 
   // per category
@@ -187,32 +187,6 @@ const WinrockDashboard: React.FC = () => {
   //     </div>
   //   );
   // };
-
-  const handleToggleEditMode = () => {
-    if (isEditMode) {
-      // On exiting edit mode
-      if (window.confirm("Do you want to make these changes?")) {
-        Object.entries(editedProjects).forEach(([idStr, changes]) => {
-          const id = parseInt(idStr);
-          const originalProject = projects.find(p => p.id === id);
-          if (!originalProject) return;
-
-          const updatedProject = { ...originalProject, ...changes };
-          setProjects(prev =>
-            prev.map(p => (p.id === id ? updatedProject : p))
-          );
-
-          // Call backend update for each field
-          Object.entries(changes).forEach(([field, value]) => {
-            updateProjectField(originalProject.projectName, field as keyof Project, value);
-          });
-        });
-      }
-      setEditedProjects({}); // clear after applying
-    }
-
-    setIsEditMode(!isEditMode);
-  };
 
 
   const renderFilterContent = (sectionKey: string) => {
@@ -380,7 +354,7 @@ const WinrockDashboard: React.FC = () => {
                   isSelected={selectedRows.includes(project.id)}
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
                   isEditMode={isEditMode}
-                  onFieldChange={(field, value) => handleFieldChange(project.id, field, value)}
+                  onSave={(updatedFields) => handleSaveProject(project.project, updatedFields)}
                 />
               ))}
             </tbody>

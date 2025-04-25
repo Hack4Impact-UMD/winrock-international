@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../css-modules/TableRow.module.css';
 import ColorText from '../components/ColorText';
 import RowCustomSelect from '../components/RowCustomSelect';
@@ -32,9 +32,8 @@ interface TableRowProps {
   isSelected?: boolean;
   onSelect?: (checked: boolean) => void;
   isEditMode?: boolean;
-  onFieldChange?: (field: keyof TableRowProps['data'], value: string) => void;
+  onSave?: (updatedFields: Partial<TableRowProps['data']>) => void; // ✅ only one call
 }
-
 
 const statusOptions: StatusType[] = [
   'On Track',
@@ -57,8 +56,24 @@ const TableRow: React.FC<TableRowProps> = ({
   isSelected = false,
   onSelect,
   isEditMode = false,
-  onFieldChange
+  onSave,
 }) => {
+  // --- Local State for Editable Fields ---
+  const [localSupplierName, setLocalSupplierName] = useState(data.supplierName);
+  const [localOverallStatus, setLocalOverallStatus] = useState<StatusType>(data.overallStatus);
+  const [localAnalysisStage, setLocalAnalysisStage] = useState<AnalysisStageType>(data.analysisStage);
+  const [localSpendCategory, setLocalSpendCategory] = useState(data.spendCategory);
+  const [localGeography, setLocalGeography] = useState(data.geography);
+
+  // Refresh local states when `data` changes
+  useEffect(() => {
+    setLocalSupplierName(data.supplierName);
+    setLocalOverallStatus(data.overallStatus);
+    setLocalAnalysisStage(data.analysisStage);
+    setLocalSpendCategory(data.spendCategory);
+    setLocalGeography(data.geography);
+  }, [data]);
+
   return (
     <tr className={styles.tableRow}>
       <td className={styles.checkboxCell}>
@@ -72,30 +87,31 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         </div>
       </td>
-      <td className={styles.cell}>
-        {isEditMode ? (
-          <span>{data.project}</span> // Not editable in edit mode
-        ) : (
-          data.project
-        )}
-      </td>
 
+      {/* Project Name - Not Editable */}
+      <td className={styles.cell}>{data.project}</td>
+
+      {/* Supplier Name */}
       <td className={styles.cell}>
         {isEditMode ? (
           <input
             type="text"
-            value={data.supplierName}
-            onChange={(e) => onFieldChange?.('supplierName', e.target.value)}
+            value={localSupplierName}
+            onChange={(e) => setLocalSupplierName(e.target.value)}
             className={styles.editableInput}
           />
-        ) : data.supplierName}
+        ) : (
+          data.supplierName
+        )}
       </td>
+
+      {/* Overall Status */}
       <td className={styles.cell}>
         {isEditMode ? (
           <RowCustomSelect
-            value={data.overallStatus}
+            value={localOverallStatus}
             options={statusOptions}
-            onChange={(value) => onFieldChange?.('overallStatus', value)}
+            onChange={(value) => setLocalOverallStatus(value as StatusType)}
             variant="status"
           />
         ) : (
@@ -106,12 +122,14 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         )}
       </td>
+
+      {/* Analysis Stage */}
       <td className={styles.cell}>
         {isEditMode ? (
           <RowCustomSelect
-            value={data.analysisStage}
+            value={localAnalysisStage}
             options={analysisStageOptions}
-            onChange={(value) => onFieldChange?.('analysisStage', value)}
+            onChange={(value) => setLocalAnalysisStage(value as AnalysisStageType)}
             variant="analysis"
           />
         ) : (
@@ -122,33 +140,64 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         )}
       </td>
+
+      {/* Spend Category */}
       <td className={styles.cell}>
         {isEditMode ? (
           <input
             type="text"
-            value={data.spendCategory}
-            onChange={(e) => onFieldChange?.('spendCategory', e.target.value)}
+            value={localSpendCategory}
+            onChange={(e) => setLocalSpendCategory(e.target.value)}
             className={styles.editableInput}
           />
-        ) : data.spendCategory}
+        ) : (
+          data.spendCategory
+        )}
       </td>
+
+      {/* Geography */}
       <td className={styles.cell}>
         {isEditMode ? (
           <input
             type="text"
-            value={data.geography}
-            onChange={(e) => onFieldChange?.('geography', e.target.value)}
+            value={localGeography}
+            onChange={(e) => setLocalGeography(e.target.value)}
             className={styles.editableInput}
           />
-        ) : data.geography}
+        ) : (
+          data.geography
+        )}
       </td>
+
+      {/* Last Updated - Not Editable */}
       <td className={styles.cell}>{data.lastUpdated}</td>
+
+      {/* Start Date - Not Editable */}
       <td className={styles.cell}>{data.startDate}</td>
+
+      {/* Actions */}
       <td className={styles.actionCell}>
-        <button className={styles.actionButton}>•••</button>
+        {isEditMode ? (
+          <button
+            className={styles.saveButton}
+            onClick={() => {
+              onSave?.({
+                supplierName: localSupplierName,
+                overallStatus: localOverallStatus,
+                analysisStage: localAnalysisStage,
+                spendCategory: localSpendCategory,
+                geography: localGeography,
+              });
+            }}
+          >
+            Save
+          </button>
+        ) : (
+          <button className={styles.actionButton}>•••</button>
+        )}
       </td>
     </tr>
   );
 };
 
-export default TableRow; 
+export default TableRow;
