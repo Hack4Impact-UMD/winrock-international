@@ -1,4 +1,3 @@
-import { FirebaseError } from "firebase/app";
 import {
     collection,
     deleteDoc,
