@@ -12,10 +12,11 @@ import ToastMessage from "../components/ToastMessage";
 
 interface PasswordResetSentPageProps {
     email: string;
+    setEmail: React.Dispatch<React.SetStateAction<string>>;
     setLinkIsSent: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PasswordResetSentPage: React.FC<PasswordResetSentPageProps> = ({ email, setLinkIsSent }) => {
+const PasswordResetSentPage: React.FC<PasswordResetSentPageProps> = ({ email, setEmail, setLinkIsSent }) => {
   const navigate = useNavigate();
 
   const [toastMessage, setToastMessage] = useState<string>("");
@@ -30,7 +31,10 @@ const PasswordResetSentPage: React.FC<PasswordResetSentPageProps> = ({ email, se
         {toastMessage &&
           <ToastMessage message={toastMessage} />}
 
-        <BackButton onClick={() => setLinkIsSent(false)} />
+        <BackButton onClick={() => {
+          setLinkIsSent(false);
+          setEmail("");
+        }} />
 
         <TitleHeader
           title="Email has been sent!"

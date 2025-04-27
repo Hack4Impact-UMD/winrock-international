@@ -29,7 +29,6 @@ function ForgotPasswordPage() {
     const result = await sendPasswordResetLink(email);
     if (result.success) {
       setLinkIsSent(true);
-      setEmail("");
     } else {
       console.error("Error sending password reset link: ", result.errorCode);
       setErrorMessage(toReadableError(result.errorCode));
@@ -40,6 +39,7 @@ function ForgotPasswordPage() {
     return (
       <PasswordResetSentPage
         email={email}
+        setEmail={setEmail}
         setLinkIsSent={setLinkIsSent}
       />
     );

@@ -1,0 +1,1 @@
+export const emailApiKey = "api-16B7DCD6A7DE478EACCC8E7B348E2D21";
