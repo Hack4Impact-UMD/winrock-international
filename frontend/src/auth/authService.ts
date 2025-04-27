@@ -1,15 +1,29 @@
-import  "firebase/firestore";
 import {
     type User,
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
-    signOut,
+    signOut
 } from "firebase/auth";
-import { db, auth } from "../firebaseConfig.js";
+import {
+    addDoc,
+    collection,
+    doc,
+    endAt,
+    getDocs,
+    limit,
+    orderBy,
+    query,
+    setDoc,
+    startAfter,
+    where
+} from "firebase/firestore";
+import {
+    db,
+    auth
+} from "../firebaseConfig.js";
 import Result, { handleFirebaseError } from "../types/Result.js";
 import Role from "../types/Role.js";
-import { addDoc, collection, doc, endAt, getDocs, limit, orderBy, query, setDoc, startAfter, where } from "firebase/firestore";
 
 interface SignupInfo {
     email: string;
@@ -124,6 +138,13 @@ const sendPasswordResetLink = async (email: string): Promise<Result> => {
     }
 }
 
+/**
+ * Retrieve auto-complete company suggestions based on the
+ * given input.
+ * 
+ * @param input - The prefix of the suggestions to retrieve.
+ * @returns a Promise<Result>.
+ */
 const fetchCompanySuggestions = async (input: string): Promise<Result> => {
     if (!input) {
       return { success: false, errorCode: "missing-input" };

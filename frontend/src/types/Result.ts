@@ -11,5 +11,13 @@ function handleFirebaseError(error: any): Result {
     }
 }
 
+function toReadableError(errorCode: string): string {
+    let readableError = errorCode.replace("auth/", "").replaceAll("-", " ");
+    return readableError.charAt(0).toUpperCase() + readableError.slice(1);
+}
+
 export default Result;
-export { handleFirebaseError };
+export {
+    handleFirebaseError,
+    toReadableError
+};

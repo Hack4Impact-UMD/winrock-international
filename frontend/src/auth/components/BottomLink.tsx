@@ -1,13 +1,12 @@
-import { Link } from "react-router-dom";
-import styles from "../css-modules/AuthBottomLink.module.css";
+import styles from "../css-modules/BottomLink.module.css";
 
-interface AuthBottomLinkProps {
+interface BottomLinkProps {
     beforeText?: string;
     actionLabel: string;
     onClick: () => void;
 }
 
-function AuthBottomLink({ beforeText, actionLabel, onClick }: AuthBottomLinkProps) {
+const BottomLink: React.FC<BottomLinkProps> = ({ beforeText, actionLabel, onClick }) => {
     return (
         <div className={styles.bottomLinkContainer}>
             <p className={styles.beforeText}>
@@ -20,4 +19,4 @@ function AuthBottomLink({ beforeText, actionLabel, onClick }: AuthBottomLinkProp
     )
 }
 
-export default AuthBottomLink;
+export default BottomLink;
