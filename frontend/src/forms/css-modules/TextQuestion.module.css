@@ -6,6 +6,7 @@
    margin-bottom: 1.5rem; /* Add some spacing between fields */
    padding-top: 1rem;
    margin-left: 5rem;
+   
 }
 
 /* Adjust container padding for small size */
@@ -40,11 +41,11 @@
 .input {
    width: 40%;
    padding: 0.8rem;
+   padding-bottom: 0.8rem;
    font-size: 1rem;
    border: 1px solid #ccc;
    border-radius: 10px;
    outline: none;
-   resize: none; /* Disable resizing */
    transition: all 0.3s ease; /* Smooth transition on focus */
 }
 
@@ -63,10 +64,7 @@
 }
 
 /* Input field size adjustments for small size */
-.smallInput {
-   font-size: 0.875rem;
-   padding: 0.6rem;
-}
+
 
 /* Placeholder styling */
 input::placeholder {
