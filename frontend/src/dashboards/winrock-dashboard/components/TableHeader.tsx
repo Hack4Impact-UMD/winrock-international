@@ -4,31 +4,30 @@ import styles from '../css-modules/TableHeader.module.css';
 interface TableHeaderProps {
   onSelectAll?: (checked: boolean) => void;
   allSelected?: boolean;
+  headers: string[];
+  isEditMode: boolean;
 }
 
-const TableHeader: React.FC<TableHeaderProps> = ({ onSelectAll, allSelected = false }) => {
+const TableHeader: React.FC<TableHeaderProps> = ({ onSelectAll, allSelected = false, headers, isEditMode }) => {
   return (
     <thead className={styles.tableHeader}>
       <tr>
         <th className={styles.checkboxCell}>
-          <div className={styles.checkboxWrapper}>
+          <div className={`${styles.checkboxWrapper} ${!isEditMode ? styles.hidden : ''}`}>
             <input 
               type="checkbox" 
               onChange={(e) => onSelectAll?.(e.target.checked)}
               checked={allSelected}
               className={styles.checkbox}
+              disabled={!isEditMode}
             />
           </div>
         </th>
-        <th className={styles.headerCell}>Project</th>
-        <th className={styles.headerCell}>Supplier</th>
-        <th className={styles.headerCell}>Overall Status</th>
-        <th className={styles.headerCell}>Analysis stage</th>
-        <th className={styles.headerCell}>Spend Category</th>
-        <th className={styles.headerCell}>Geography</th>
-        <th className={styles.headerCell}>Last Updated</th>
-        <th className={styles.headerCell}>Start Date</th>
-        <th className={styles.headerCell}>Action</th>
+        {headers.map((header, index) => (
+          <th key={index} className={styles.headerCell}>
+            {header}
+          </th>
+        ))}
       </tr>
     </thead>
   );
