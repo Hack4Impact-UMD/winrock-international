@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './css-modules/WinrockDashboard.module.css';
 import winrockLogo from '../../assets/winrock-international-logo.png';
 import projectsIcon from '../../assets/projects-icon.svg';
@@ -12,6 +12,7 @@ import SortWrapper from '../components/SortWrapper';
 import DateFilter from '../components/DateFilter';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
+import { getAllProjects, updateProjectField } from './winrockDashboardService';
 
 
 interface Project {
