@@ -1,85 +1,34 @@
 .container {
    display: flex;
    flex-direction: column;
-   gap: 1.5rem;
-   width: 100%;
-   padding: 1.5rem 12rem;
-   margin: 2.5rem 0 0;
-}
-
-.noTopPadding {
-   padding: 1.5rem 12rem;
-   margin: 0;
-}
-
-.noTopPadding .label{
-   display: none;
-}
-
-.smallContainer {
-   display: flex;
-   flex-direction: column;
+   gap: 0.5rem;
+   width: 80%;
+   margin-bottom: 3rem;
+   margin-top: 3rem;
 }
 
 .label {
-   font-size: 1rem;
-   font-weight: 400;
-   letter-spacing: 3%;
-}
-
-.labelRow {
-   display: flex;
-   align-items: center;
-   gap: 0.5rem;
-   margin-bottom: 1.25rem;
-}
-
-.requiredLabel::after {
-   content: '';
-}
-
-.input {
-   display: flex;
-   width: 100%;
-   padding: 1rem;
-   border-radius: var(--border-radius);
-   resize: vertical;
-   font-size: 0.9rem;
-   font-family: inherit;
-}
-
-.smallInput {
-   height: 2.75rem;
-   width: 18.125rem;
-   resize: none;
-   display: flex;
    font-size: .93rem;
    letter-spacing: .05rem;
-   align-items: center;
-   padding: 0 1.25rem;
-   line-height: 2.75rem;
+   font-weight: 600; /* Default bold style */
 }
 
-.smallInput::placeholder {
-   display: flex;
-   align-items: center;
-   color: #666;
+/* Override bold for specific fields */
+.label[data-id="notbold"] {
+   font-weight: normal; /* Removes bold */
 }
 
-.validInput {
-   border: 1px solid #c1c7ce;
+.textarea {
+   min-height: 4rem;
+   padding: 0.7rem;
+   font-size: 0.93rem;
+   border-radius: 0.4rem;
+   border: 1px solid #ccc;
+   resize: vertical;
+   letter-spacing: .05rem;
 }
-
-.invalidInput {
-   border: solid 1px red;
-}
-
-.invalidInput::placeholder {
-   color: red;
-   opacity: 1;
-}
-
-.disabledInput {
-   background: #f0f0f0;
-   pointer-events: none;
+/* Red text styling */
+.redText {
+   color: #D20000;
+   font-weight: 600; /* Ensure it's not bold */
 }

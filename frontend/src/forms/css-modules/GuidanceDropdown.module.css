@@ -1,0 +1,96 @@
+.guidanceContainer {
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.guidanceButton {
+    background-color: white;
+    color: black;
+    font-size: 1.25rem;
+    padding: 18px 20px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    width: 100%;
+    letter-spacing: 0.60px;
+    text-align: left;
+    font-weight: 600;
+    display: flex;
+    
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.guidanceButton:hover {
+    background-color: #f0f0f0;
+}
+
+.guidanceContent {
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: 'Arial', sans-serif;
+}
+
+.guidanceContent h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 1.6px;
+}
+
+.guidanceContent h3 {
+    font-size: 1.25rem;
+    margin-top: 20px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    margin-bottom: 10px;
+}
+
+.guidanceContent p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: black;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.icon {
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+.icon.open {
+    transform: rotate(-90deg);
+}
+.importantNote {
+    color: red;
+}
+/* GuidanceDropdown.module.css */
+.guidanceContainer {
+    position: sticky;
+    top: 0;
+    z-index: 10; /* Ensure it stays above other content */
+    background-color: white; /* Optional: ensures it stays visible if overlapping */
+    padding: 1rem; /* Optional: adds padding for spacing */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for visibility */
+}
+
+.guidanceButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    border-radius: 0.3rem;
+}
+
+.guidanceContent {
+    margin-top: 0rem;
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 0.3rem;
+}

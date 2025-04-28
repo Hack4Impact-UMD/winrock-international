@@ -11,6 +11,7 @@ import TextQuestion from "../components/questions/TextQuestion.js";
 import DropdownQuestion from "../components/questions/DropdownQuestion.js";
 import NavigationButtons from "../components/NavigationButtons.js";
 import ConfirmationPage from "../ConfirmationPage.js";
+import GuidanceDropdown from "../components/GuidanceDropdown.js";
 import Error from "../components/Error.js";
 
 interface AgricultureProposalFormData {
@@ -176,10 +177,16 @@ function AgricultureProposalForm() {
     if (isSubmitted) {
         return <ConfirmationPage formName={title} />
     }
-
+    const style = {
+        marginLeft: '8rem'  // Corrected property name
+    };
+    
     return (
         <>
+        <div style={style}>
             <LogoHeader />
+            
+
             <TitleHeader
                 title={title}
                 description='The project proposal form is used to record information critical to the completion of the validation process for your project. It requests information both technical and administrative in nature. These questions are split within ten key categories, each of which requests one or more pieces of key information to kick off the project validation process. In Columns F ("Guidance") of this tab defines key terms and describes information sought in the fields in Column D/E ("Supplier answers"). It also includes key guidance including relevant examples and links to helpful sources. Please complete all required fields. Required questions must be answered before a project validation may commence. Optional questions are welcomed and may lead to a faster validation process.'
@@ -189,7 +196,7 @@ function AgricultureProposalForm() {
                 totalPages={totalPages}
                 pageLabels={["Proposal Form", "Project Costs", "Document Checklist"]}
             />
-
+            <GuidanceDropdown></GuidanceDropdown>
             <SectionHeader label="Ingredient/Crop Supplied" />
 
             <DropdownQuestion
@@ -745,6 +752,7 @@ function AgricultureProposalForm() {
             />
 
             <Error message={error} />
+            </div>
         </>
     );
 }
