@@ -25,7 +25,7 @@ html {
   display: flex;
   flex-direction: column;
   margin-top: 7rem;
-  margin-left: -2.5rem;  
+  margin-left: -2.5rem;
   margin-right: -2.5rem;
   gap: 1rem;
 }
@@ -40,7 +40,7 @@ html {
   height: 3.125rem;
   background: none;
   border: none;
-  cursor: pointer;  
+  cursor: pointer;
   padding-left: 2.5rem;
 }
 
@@ -49,9 +49,9 @@ html {
 }
 
 .headerNavButton img {
-  width: 1.25rem;  
-  min-width: 1.25rem;  
-  height: 1.25rem; 
+  width: 1.25rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,7 +64,7 @@ html {
 .mainContent {
   width: calc(100% - 18.75rem);
   margin-left: 18.75rem;
-  padding-bottom: 5.625rem; 
+  padding-bottom: 5.625rem;
 }
 
 .logo {
@@ -82,7 +82,7 @@ html {
 .title {
   color: black;
   font-size: 2.25rem;
-  font-weight: 600; 
+  font-weight: 600;
   letter-spacing: 1.80px;
   margin: 0;
 }
@@ -93,6 +93,7 @@ html {
   background-color: #f5f5f5;
   border-radius: 4px;
   overflow: hidden;
+  align-items: end;
 }
 
 .viewModeButton {
@@ -105,7 +106,8 @@ html {
 }
 
 .viewModeButton.active {
-  background-color: #1e5288; /* Dark blue color like in the image */
+  background-color: #1e5288;
+  /* Dark blue color like in the image */
   color: white;
 }
 
@@ -119,7 +121,7 @@ html {
   border: 1.29px solid var(--color-primary);
   color: var(--color-primary);
   height: 2.25rem;
-  width:5.625rem;
+  width: 5.625rem;
   border-radius: .4rem;
   cursor: pointer;
   font-size: 0.65rem;
@@ -333,7 +335,7 @@ html {
 .filterPopup {
   position: absolute;
   top: 100%;
-  left: 0; 
+  left: 0;
   z-index: 100;
   margin-top: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -368,7 +370,7 @@ html {
 .table th,
 .table td {
   padding: 0.75rem 0.3125rem;
-  text-align: left; 
+  text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -379,51 +381,62 @@ html {
 /* Column widths */
 .table th:first-child,
 .table td:first-child {
-  width: 4rem; /* Checkbox column */
+  width: 4rem;
+  /* Checkbox column */
 }
 
 .table th:nth-child(2),
 .table td:nth-child(2) {
-  width: 10%; /* Project name */
+  width: 10%;
+  /* Project name */
 }
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-  width: 10%; /* Supplier */
+  width: 10%;
+  /* Supplier */
 }
 
 .table th:nth-child(4),
 .table td:nth-child(4) {
-  width: 10%; /* Overall Status */
+  width: 10%;
+  /* Overall Status */
 }
 
 .table th:nth-child(5),
 .table td:nth-child(5) {
-  width: 16%; /* Analysis Stage */
+  width: 16%;
+  /* Analysis Stage */
 }
 
 .table th:nth-child(6),
 .table td:nth-child(6) {
-  width: 8%; /* Spend Category */
+  width: 8%;
+  /* Spend Category */
 }
 
 .table th:nth-child(7),
 .table td:nth-child(7) {
-  width: 10%; /* Geography */
+  width: 10%;
+  /* Geography */
 }
 
 .table th:nth-child(8),
 .table td:nth-child(8) {
-  width: 8%; /* Last Updated */
+  width: 8%;
+  /* Last Updated */
 }
 
 .table th:nth-child(9),
 .table td:nth-child(9) {
-  width: 8%; /* Start Date */
+  width: 8%;
+  /* Start Date */
 }
+
 .table th:nth-child(10),
 .table td:nth-child(10) {
-  width: 6%; /* Actions column */
+  width: 6%;
+  /* Actions column */
 }
 
 .searchInput:focus {
@@ -478,7 +491,7 @@ html {
   position: absolute;
   top: 100%;
   right: 0;
-  width: 21rem; 
+  width: 21rem;
   background-color: white;
   overflow: hidden;
   border: 1px solid #CCCCCC;

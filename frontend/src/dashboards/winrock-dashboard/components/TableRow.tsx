@@ -34,7 +34,7 @@ interface TableRowProps {
   onSelect?: (checked: boolean) => void;
   isEditMode?: boolean;
   onSave?: (updatedFields: Partial<TableRowProps['data']>) => void;
-  onActionClick?: (id: number | null) => void; // 👈 updated here
+  onActionClick?: (id: number | null, event?: React.MouseEvent) => void; // 👈 updated here
   onArchiveClick?: (id: number) => void;
   activeActionMenuId?: number | null;
 }

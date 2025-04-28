@@ -192,9 +192,9 @@ const WinrockDashboard: React.FC = () => {
       for (const [field, value] of Object.entries(updatedFields)) {
         await updateProjectField(projectName, field as keyof Project, value as any);
       }
-      console.log(`✅ Project ${projectName} updated successfully.`);
+      console.log(`Project ${projectName} updated successfully.`);
     } catch (error) {
-      console.error(`❌ Failed to update project ${projectName}:`, error);
+      console.error(`Failed to update project ${projectName}:`, error);
     }
   };
 
@@ -273,6 +273,7 @@ const WinrockDashboard: React.FC = () => {
 
   const handleSelectAll = (checked: boolean) => {
     // TODO: select all checkboxes
+    console.log(checked)
   };
 
   return (
@@ -305,20 +306,22 @@ const WinrockDashboard: React.FC = () => {
       </header>
 
       <main className={styles.mainContent}>
-        <h1 className={styles.title}>Projects</h1>
-        <div className={styles.viewModeButtons}>
-          <button
-            className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`}
-            onClick={() => setViewMode('active')}
-          >
-            Active
-          </button>
-          <button
-            className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`}
-            onClick={() => setViewMode('archived')}
-          >
-            Archived
-          </button>
+        <div className={styles.titleContainer}>
+          <h1 className={styles.title}>Projects</h1>
+          <div className={styles.viewModeButtons}>
+            <button
+              className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`}
+              onClick={() => setViewMode('active')}
+            >
+              Active
+            </button>
+            <button
+              className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`}
+              onClick={() => setViewMode('archived')}
+            >
+              Archived
+            </button>
+          </div>
         </div>
 
         <div className={styles.tabsContainer}>
