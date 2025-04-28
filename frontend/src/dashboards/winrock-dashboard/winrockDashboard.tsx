@@ -13,6 +13,7 @@ import DateFilter from './components/DateFilter';
 import ColorText from './components/ColorText';
 import TableRow from './components/TableRow';
 import { getAllProjects, updateProjectField } from "./winrockDashboardService"
+import PopupMenu from './components/PopupMenu';
 
 interface Project {
   id: number;
@@ -25,7 +26,9 @@ interface Project {
   lastUpdated: string;
   startDate: string;
   activityType: 'Renewable Energy and Energy Efficiency' | 'Agriculture' | 'Agroforestry' | 'Animal Agriculture and Manure Management';
+  isActive: boolean; // 🧠 ADD THIS
 }
+
 
 async function fetchProjects(): Promise<Project[]> {
   const result = await getAllProjects("projectName", false);
@@ -33,7 +36,6 @@ async function fetchProjects(): Promise<Project[]> {
   if (!result.success || !result.data?.projects) {
     throw new Error("Failed to fetch projects");
   }
-
   return result.data.projects.map((p: any, index: number) => ({
     id: index,
     project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
@@ -47,6 +49,9 @@ async function fetchProjects(): Promise<Project[]> {
     lastUpdated: typeof p.lastUpdated === 'string' ? p.lastUpdated : new Date(p.lastUpdated).toISOString().split("T")[0],
     startDate: typeof p.startDate === 'string' ? p.startDate : new Date(p.startDate).toISOString().split("T")[0],
     activityType: 'Renewable Energy and Energy Efficiency',
+
+    // 🚀 ADD THIS
+    isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
   }));
 }
 
@@ -66,6 +71,50 @@ const WinrockDashboard: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [activeActionMenu, setActiveActionMenu] = useState<number | null>(null);
+  const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+  const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
+
+  const handleActionClick = (id: number | null, event?: React.MouseEvent) => {
+    console.log('handleActionClick called with id:', id);
+    if (id === null) {
+      setActiveActionMenu(null);
+    } else {
+      if (event) {
+        const rect = (event.target as HTMLElement).getBoundingClientRect();
+        setButtonPosition({ x: rect.left, y: rect.bottom });
+      }
+      setActiveActionMenu(id);
+    }
+  };
+  const handleArchiveSingle = async (projectId: number) => {
+    console.log('handleArchiveSingle called with projectId:', projectId);
+    const project = projects.find(p => p.id === projectId);
+    if (!project) {
+      console.error(`Project with ID ${projectId} not found`);
+      return;
+    }
+
+    console.log(`Attempting to archive project: ${project.project}`);
+
+    try {
+      await handleSaveProject(project.project, { isActive: false });
+      console.log(`Successfully called handleSaveProject for ${project.project}`);
+
+      setActiveActionMenu(null);
+
+      // Update local state
+      setProjects(prev => prev.map(p =>
+        p.id === projectId ? { ...p, isActive: false } : p
+      ));
+
+      console.log(`Local state updated for project ID ${projectId}`);
+    } catch (error) {
+      console.error(`Failed to archive project: ${error}`);
+    }
+  };
+
 
   useEffect(() => {
     fetchProjects()
@@ -90,10 +139,14 @@ const WinrockDashboard: React.FC = () => {
   const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // Calculate the current page's projects from filtered projects
+  const visibleProjects = projects
+    .filter(p => viewMode === 'active' ? p.isActive : !p.isActive)
+    .filter(p => selectedTab === 'All Projects' ? true : p.activityType === selectedTab);
+
+  // Then paginate
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
-  const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
+  const currentProjects = visibleProjects.slice(indexOfFirstProject, indexOfLastProject);
 
   //date filter consts
   interface DateRange {
@@ -253,6 +306,20 @@ const WinrockDashboard: React.FC = () => {
 
       <main className={styles.mainContent}>
         <h1 className={styles.title}>Projects</h1>
+        <div className={styles.viewModeButtons}>
+          <button
+            className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`}
+            onClick={() => setViewMode('active')}
+          >
+            Active
+          </button>
+          <button
+            className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`}
+            onClick={() => setViewMode('archived')}
+          >
+            Archived
+          </button>
+        </div>
 
         <div className={styles.tabsContainer}>
           <FilterTabs
@@ -319,10 +386,33 @@ const WinrockDashboard: React.FC = () => {
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
                   isEditMode={isEditMode}
                   onSave={(updatedFields) => handleSaveProject(project.project, updatedFields)}
+                  onActionClick={handleActionClick}
+                  onArchiveClick={handleArchiveSingle}
+                  activeActionMenuId={activeActionMenu}  // 👈 here
                 />
               ))}
             </tbody>
           </table>
+          {activeActionMenu !== null && (
+            <PopupMenu
+              x={buttonPosition.x}
+              y={buttonPosition.y}
+              onClose={() => setActiveActionMenu(null)}
+            >
+              <button
+                className={styles.archiveButton} // Add appropriate styling
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent event bubbling
+                  console.log('Archive button clicked for ID:', activeActionMenu);
+                  handleArchiveSingle(activeActionMenu);
+                  // No need to manually close here - handleArchiveSingle already calls setActiveActionMenu(null)
+                }}
+              >
+                Archive
+              </button>
+            </PopupMenu>
+          )}
+
         </div>
 
         <Pagination

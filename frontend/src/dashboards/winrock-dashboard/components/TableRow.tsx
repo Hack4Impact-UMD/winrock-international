@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from '../css-modules/TableRow.module.css';
 import ColorText from '../components/ColorText';
 import RowCustomSelect from '../components/RowCustomSelect';
+import PopupMenu from './PopupMenu'; // ⬅️ Import the portal popup component (you need to create it too if you haven't yet)
 
 type StatusType =
   | 'On Track'
@@ -32,7 +33,10 @@ interface TableRowProps {
   isSelected?: boolean;
   onSelect?: (checked: boolean) => void;
   isEditMode?: boolean;
-  onSave?: (updatedFields: Partial<TableRowProps['data']>) => void; // ✅ only one call
+  onSave?: (updatedFields: Partial<TableRowProps['data']>) => void;
+  onActionClick?: (id: number | null) => void; // 👈 updated here
+  onArchiveClick?: (id: number) => void;
+  activeActionMenuId?: number | null;
 }
 
 const statusOptions: StatusType[] = [
@@ -57,6 +61,9 @@ const TableRow: React.FC<TableRowProps> = ({
   onSelect,
   isEditMode = false,
   onSave,
+  onActionClick,         // ✅ ADD THIS
+  onArchiveClick,        // ✅ ADD THIS
+  activeActionMenuId,    // ✅ ADD THIS
 }) => {
   // --- Local State for Editable Fields ---
   const [localSupplierName, setLocalSupplierName] = useState(data.supplierName);
@@ -64,6 +71,7 @@ const TableRow: React.FC<TableRowProps> = ({
   const [localAnalysisStage, setLocalAnalysisStage] = useState<AnalysisStageType>(data.analysisStage);
   const [localSpendCategory, setLocalSpendCategory] = useState(data.spendCategory);
   const [localGeography, setLocalGeography] = useState(data.geography);
+  const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
 
   // Refresh local states when `data` changes
   useEffect(() => {
@@ -73,6 +81,19 @@ const TableRow: React.FC<TableRowProps> = ({
     setLocalSpendCategory(data.spendCategory);
     setLocalGeography(data.geography);
   }, [data]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest(`.${styles.actionMenuWrapper}`)) {
+        onActionClick?.(null); // close menu if clicked outside
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <tr className={styles.tableRow}>
@@ -193,9 +214,35 @@ const TableRow: React.FC<TableRowProps> = ({
             Save
           </button>
         ) : (
-          <button className={styles.actionButton}>•••</button>
+          <div className={styles.actionMenuWrapper}>
+            <button
+              className={styles.actionButton}
+              onClick={(e) => {
+                const rect = (e.target as HTMLElement).getBoundingClientRect();
+                setButtonPosition({ x: rect.left, y: rect.bottom });
+                onActionClick?.(data.id, e);
+              }}
+            >
+              •••
+            </button>
+
+            {activeActionMenuId === data.id && (
+              <PopupMenu
+                x={buttonPosition.x}
+                y={buttonPosition.y}
+                onClose={() => onActionClick?.(null)}
+              >
+                <button onClick={(e) => {
+                  console.log('Archive button clicked for id:', data.id);
+                  e.stopPropagation(); // Stop event from bubbling up
+                  onArchiveClick?.(data.id);
+                }}>Archive</button>
+              </PopupMenu>
+            )}
+          </div>
         )}
       </td>
+
     </tr>
   );
 };
