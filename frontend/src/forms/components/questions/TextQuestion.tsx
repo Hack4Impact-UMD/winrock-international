@@ -1,32 +1,73 @@
-import React, { useState } from "react";
+import { useEffect, useState } from 'react';
 import styles from "../../css-modules/TextQuestion.module.css";
+import Popup from '../Popup';
 
 interface TextQuestionProps {
-  name: string;
-  response: string;
-  className?: string; // Add className as an optional prop
+  label: string;
+  onChange: (value: string) => void;
+  controlledValue: string;
+  required?: boolean;
+  disableOverwrite?: boolean;
+  size?: 'small' | 'large';
+  removeTopPadding?: boolean;
+  popup?: {
+    guidance: string;
+    example: string;
+  };
 }
 
-const TextQuestion: React.FC<TextQuestionProps> = ({ name, response, className }) => {
-  const [userResponse, setUserResponse] = useState<string>(response);
+function TextQuestion({
+  label,
+  onChange,
+  controlledValue,
+  required = false,
+  disableOverwrite = false,
+  size = 'large',
+  removeTopPadding = false,
+  popup
+}: TextQuestionProps) {
+  const [value, setValue] = useState(controlledValue);
+  const [placeholder, setPlaceholder] = useState("Enter text here");
+  const [isValid, setIsValid] = useState(true);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setUserResponse(event.target.value);
+  useEffect(() => {
+    setValue(controlledValue)
+  }, [controlledValue]);
+
+  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const newValue = e.target.value;
+    setValue(newValue);
+
+    setIsValid(true);
+    setPlaceholder("Enter text here");
+
+    onChange(newValue);
   };
 
+  function validate() {
+    if (required && value === '') {
+      setIsValid(false);
+      setPlaceholder("This field is required");
+    }
+  }
+
   return (
-    <div className={`${styles.container} ${className || ""}`}>
-      <label className={styles.label}>
-        {name.split(/(\(\S+\))/).map((part, index) => 
-          // Apply the red color to units within parentheses
-          part.match(/\(\S+\)/) ? <span key={index} className={styles.redText}>{part}</span> : part
+    <div className={`${styles.container} ${size === 'small' ? styles.smallContainer : ''} ${removeTopPadding ? styles.noTopPadding : ''}`}>
+      <div className={styles.labelRow}>
+        {popup && (
+          <Popup guidance={popup.guidance} example={popup.example} />
         )}
-      </label>
+        <label className={`${styles.label} ${required ? styles.requiredLabel : ""} ${size === 'small' ? styles.smallLabel : ''}`}>
+          {label}
+        </label>
+      </div>
+
       <textarea
-        value={userResponse}
-        onChange={handleInputChange}
-        className={styles.textarea}
-        placeholder="Enter text here"
+        className={`${styles.input} ${isValid ? styles.validInput : styles.invalidInput} ${disableOverwrite ? styles.disabledInput : ""} ${size === 'small' ? styles.smallInput : ''}`}
+        value={value}
+        placeholder={placeholder}
+        onChange={handleChange}
+        onBlur={validate}
       />
     </div>
   );

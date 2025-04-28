@@ -1,27 +1,17 @@
-.sectionHeaderContainer {
-   display: flex;
-   flex-direction: column;
-}
-
 .sectionHeader {
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   padding: 0 2.5rem;
-   margin: 2.5rem 0;
-   background: #005293;
-   height: 3.125rem;
+    display: flex;
+    flex-direction: column;
+    padding: .8rem 2rem;
+    background: #005293;
 }
 
 .label {
-   font-size: 1.5rem;
-   font-weight: 600;
-   letter-spacing: 5%;
-   color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: .05rem;
+    color: white;
+    padding-bottom: 0;
 }
-
-.description {
-   padding: 1rem 12rem;
-   font-style: italic;
-   font-size: 1rem;
+p {
+   padding-bottom: 0;
 }

@@ -1,34 +1,85 @@
+/* General container for the input field */
 .container {
    display: flex;
    flex-direction: column;
-   gap: 0.5rem;
-   width: 80%;
-   margin-bottom: 3rem;
-   margin-top: 3rem;
+   width: 100%;
+   margin-bottom: 1.5rem; /* Add some spacing between fields */
+   padding-top: 1rem;
+   margin-left: 5rem;
+}
+
+/* Adjust container padding for small size */
+.smallContainer {
+   padding-top: 0.5rem;
+}
+
+/* Label styling */
+.labelRow {
+   display: flex;
+   align-items: center;
+   margin-bottom: 0.5rem; /* Space between label and input field */
 }
 
 .label {
-   font-size: .93rem;
-   letter-spacing: .05rem;
-   font-weight: 600; /* Default bold style */
+   margin-top: 1rem;
+   font-size: 1.2rem;
+   letter-spacing: 0.6px;
+   font-weight: 600;
+   color: #333; /* Dark color for better contrast */
+   margin-right: 0.5rem;
 }
 
-/* Override bold for specific fields */
-.label[data-id="notbold"] {
-   font-weight: normal; /* Removes bold */
+
+
+/* Popup guidance styling */
+.popup {
+   margin-left: 0.5rem;
 }
 
-.textarea {
-   min-height: 4rem;
-   padding: 0.7rem;
-   font-size: 0.93rem;
-   border-radius: 0.4rem;
+/* Input field styling */
+.input {
+   width: 20%;
+   padding: 0.8rem;
+   font-size: 1rem;
    border: 1px solid #ccc;
-   resize: vertical;
-   letter-spacing: .05rem;
+   border-radius: 10px;
+   outline: none;
+   resize: none; /* Disable resizing */
+   transition: all 0.3s ease; /* Smooth transition on focus */
 }
-/* Red text styling */
-.redText {
-   color: #D20000;
-   font-weight: 600; /* Ensure it's not bold */
+
+/* Styling when the input is valid */
+.validInput {
+   border-color: #ccc;
+}
+
+/* Styling for invalid input */
+
+
+/* Disabled input field */
+.disabledInput {
+   background-color: #e0e0e0;
+   pointer-events: none;
+}
+
+/* Input field size adjustments for small size */
+.smallInput {
+   font-size: 0.875rem;
+   padding: 0.6rem;
+}
+
+/* Placeholder styling */
+input::placeholder {
+   color: #aaa;
+}
+
+/* Error message handling */
+.errorMessage {
+   font-size: 0.9rem;
+   margin-top: 0.5rem;
+}
+
+/* Remove top padding for fields that need it */
+.noTopPadding {
+   padding-top: 0;
 }

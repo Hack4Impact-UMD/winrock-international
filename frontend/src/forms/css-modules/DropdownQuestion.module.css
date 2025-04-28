@@ -1,20 +1,37 @@
-.dropdownContainer {
-    margin-bottom: 3rem;
+/* Main container for the dropdown question */
+.dropdownQuestion {
+    width: 100%;
+    margin-bottom: 2rem;
     margin-top: 3rem;
+    margin-left: 5rem;
+}
+
+/* Label styling */
+.labelRow {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem; /* Space between label and dropdown */
+}
+
+.label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: #333;
+    margin-right: 0.5rem;
+    padding-bottom: 0;
+}
+
+
+
+/* Dropdown container styling */
+.dropdownContainer {
     display: flex;
     flex-direction: column;
-    width: 80%;
-
+    width: 80%; /* Set the dropdown container width */
 }
 
-.question {
-    font-size: .93rem;
-    text-align: left;
-    letter-spacing: .05rem;
-    line-height: 1.5rem;
-    font-weight: 600;
-}
-
+/* Button styling for the dropdown */
 .dropdownButton {
     background-color: white;
     color: black;
@@ -22,50 +39,81 @@
     height: 2.75rem;
     width: 18.125rem;
     border-radius: 0.6rem;
-    border-color: black;
-    border-width: thin;
-    border-style: solid; /* Added border-style */
+    border: 1px solid #ccc; /* Light border */
     display: flex;
-    flex-flow: row nowrap;
     align-items: center;
     justify-content: space-between;
-    margin-left: 0;
+    padding-left: 1rem; /* Left padding for better spacing inside button */
+    padding-right: 0.75rem; 
+    
+        transition: border 0.3s ease; /* Transition for smooth border change */
 }
 
+/* Text inside the dropdown button */
 .dropdownButton p {
-    font-size: .93rem;
-    margin-left: 0rem;
-    letter-spacing: .05rem;
+    font-size: 1rem;
+    margin: 0; /* Remove default margin */
+    letter-spacing: 0.05rem;
+    padding-top: 1rem;
+    color: #333; /* Dark color for readability */
 }
 
+/* Chevron icon styling */
 .dropdownButton img {
-    margin-right: 0rem;
+    margin-left: 1rem; /* Space before the chevron icon */
+    transition: transform 0.3s ease; /* Smooth transition for the rotation */
+    width: 1rem; /* Size of the chevron icon */
 }
 
+/* Dropdown menu styling */
 .dropdownMenu {
     text-align: left;
     width: 290px;
     margin-top: 0.5rem;
     border-radius: 0.5rem;
-    box-shadow: 10px;
     background-color: rgb(237, 237, 237);
     color: black;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for dropdown */
     overflow: hidden;
-    letter-spacing: .05rem;
-    
+    z-index: 10; /* Ensure the dropdown stays on top */
 }
 
+/* Dropdown item styling */
 .dropdownItem {
-    padding: 0.5rem;
-    
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    letter-spacing: 0.05rem;
+    transition: background-color 0.3s ease;
 }
 
+/* Hover effect for dropdown items */
 .dropdownItem:hover {
-    background-color: #C1C7CE;
+    background-color: #C1C7CE; /* Slight grey background on hover */
 }
 
-.chevron {
-    width: 1rem;
-    rotate: 180deg;
-    transition: rotate 0.3s linear;
+/* Styling for selected option */
+.selectedDropdownItem {
+    background-color: #b0bec5; /* Highlight selected item */
+    color: white;
 }
+
+/* Invalid button state */
+
+
+/* Valid button state */
+.validDropdownButton {
+    border-color: #ccc; /* Light border for valid selection */
+}
+
+/* Chevron rotation when dropdown is shown */
+.chevron {
+    transform: rotate(180deg);
+}
+
+/* Active chevron rotation when dropdown is open */
+.chevron-active {
+    transform: rotate(0deg); /* Chevron pointing down when open */
+}
+p {
+    padding-bottom: 0;
+ }
