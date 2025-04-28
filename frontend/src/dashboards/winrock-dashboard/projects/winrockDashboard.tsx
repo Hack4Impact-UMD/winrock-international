@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import styles from '../css-modules/WinrockDashboard.module.css';
-
-import Sidebar from '../components/Sidebar';
+import styles from './css-modules/WinrockDashboard.module.css';
+import winrockLogo from '../../assets/winrock-international-logo.png';
+import projectsIcon from '../../assets/projects-icon.svg';
+import notificationIcon from '../../assets/notification-icon.svg';
+import accountSettingsIcon from '../../assets/account-settings-icon.svg';
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
@@ -11,10 +13,11 @@ import DateFilter from '../components/DateFilter';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 
+
 interface Project {
   id: number;
   project: string;
-  supplier: string;
+  supplierName: string;
   overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
   analysisStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded';
   spendCategory: string;
@@ -24,188 +27,28 @@ interface Project {
   activityType: 'Renewable Energy and Energy Efficiency' | 'Agriculture' | 'Agroforestry' | 'Animal Agriculture and Manure Management';
 }
 
-const sampleProjects: Project[] = [
-  {
-    id: 1,
-    project: 'Nestlé',
-    supplier: 'Cargill',
-    overallStatus: 'On Track',
-    analysisStage: 'Risk & Co-benefit Assessment',
-    spendCategory: 'Cereals & Grains',
-    geography: 'United States of America',
-    lastUpdated: '6 days',
-    startDate: '03/15/2023',
-    activityType: 'Agriculture'
-  },
-  {
-    id: 2,
-    project: 'McCormick',
-    supplier: 'Orange',
-    overallStatus: 'At Risk',
-    analysisStage: 'GHG Assessment Analysis',
-    spendCategory: 'Commodities',
-    geography: 'Sweden',
-    lastUpdated: '30 days',
-    startDate: '03/15/2025',
-    activityType: 'Agriculture'
-  },
-  {
-    id: 3,
-    project: 'Microsoft',
-    supplier: 'Kiwi',
-    overallStatus: 'Paused',
-    analysisStage: 'Confirming Final Requirements',
-    spendCategory: 'Fruits & Berries',
-    geography: 'Sweden',
-    lastUpdated: '2 days',
-    startDate: '03/15/2021',
-    activityType: 'Renewable Energy and Energy Efficiency'
-  },
-  {
-    id: 4,
-    project: 'WebMD',
-    supplier: 'Apple',
-    overallStatus: 'Completed',
-    analysisStage: 'Clarifying Initial Project Information',
-    spendCategory: 'Commodities',
-    geography: 'China',
-    lastUpdated: '12 days',
-    startDate: '03/15/2023',
-    activityType: 'Agroforestry'
-  },
-  {
-    id: 5,
-    project: 'Kellogg',
-    supplier: 'Grape',
-    overallStatus: 'Completed (except for risk)',
-    analysisStage: 'Complete, and Excluded',
-    spendCategory: 'Commodities',
-    geography: 'Sweden',
-    lastUpdated: '6 days',
-    startDate: '03/15/2023',
-    activityType: 'Agriculture'
-  },
-  {
-    id: 6,
-    project: 'Lululemon',
-    supplier: 'Orange',
-    overallStatus: 'On Track',
-    analysisStage: 'Clarifying Initial Project Information',
-    spendCategory: 'Coco',
-    geography: 'Indonesia',
-    lastUpdated: '42 days',
-    startDate: '03/15/2019',
-    activityType: 'Agroforestry'
-  },
-  {
-    id: 7,
-    project: 'Cheetos',
-    supplier: 'Orange',
-    overallStatus: 'On Track',
-    analysisStage: 'Risk & Co-benefit Assessment',
-    spendCategory: 'Commodities',
-    geography: 'South Africa',
-    lastUpdated: '6 days',
-    startDate: '03/15/2022',
-    activityType: 'Agriculture'
-  },
-  {
-    id: 8,
-    project: 'Cheezits',
-    supplier: 'Orange',
-    overallStatus: 'Paused',
-    analysisStage: 'Confirming Final Requirements',
-    spendCategory: 'Spices',
-    geography: 'Bangladesh',
-    lastUpdated: '1 day',
-    startDate: '03/15/2015',
-    activityType: 'Agriculture'
-  },
-  {
-    id: 9,
-    project: 'Cheerios',
-    supplier: 'Orange',
-    overallStatus: 'Paused',
-    analysisStage: 'Clarifying Initial Project Information',
-    spendCategory: 'Electricity',
-    geography: 'Sweden',
-    lastUpdated: '6 days',
-    startDate: '03/15/2022',
-    activityType: 'Renewable Energy and Energy Efficiency'
-  },
-  {
-    id: 10,
-    project: 'McCormick',
-    supplier: 'Orange',
-    overallStatus: 'Paused',
-    analysisStage: 'Risk & Co-benefit Assessment',
-    spendCategory: 'Commodities',
-    geography: 'Norway',
-    lastUpdated: '6 days',
-    startDate: '03/15/2023',
-    activityType: 'Agriculture'
-  },
-  {
-    id: 11,
-    project: 'Tesla',
-    supplier: 'Lithium Corp',
-    overallStatus: 'At Risk',
-    analysisStage: 'GHG Assessment Analysis',
-    spendCategory: 'Electricity',
-    geography: 'Australia',
-    lastUpdated: '15 days',
-    startDate: '04/01/2023',
-    activityType: 'Renewable Energy and Energy Efficiency'
-  },
-  {
-    id: 12,
-    project: 'Starbucks',
-    supplier: 'Coffee Beans Co',
-    overallStatus: 'On Track',
-    analysisStage: 'Confirming Final Requirements',
-    spendCategory: 'Commodities',
-    geography: 'Brazil',
-    lastUpdated: '3 days',
-    startDate: '02/28/2024',
-    activityType: 'Agriculture'
-  },
-  {
-    id: 13,
-    project: 'Nike',
-    supplier: 'Cotton Express',
-    overallStatus: 'Completed',
-    analysisStage: 'Complete, and Excluded',
-    spendCategory: 'Textiles',
-    geography: 'India',
-    lastUpdated: '20 days',
-    startDate: '01/15/2023',
-    activityType: 'Animal Agriculture and Manure Management'
-  },
-  {
-    id: 14,
-    project: 'Samsung',
-    supplier: 'Green Energy Ltd',
-    overallStatus: 'Completed (except for risk)',
-    analysisStage: 'Risk & Co-benefit Assessment',
-    spendCategory: 'Electronics',
-    geography: 'South Korea',
-    lastUpdated: '8 days',
-    startDate: '03/10/2024',
-    activityType: 'Renewable Energy and Energy Efficiency'
-  },
-  {
-    id: 15,
-    project: 'Unilever',
-    supplier: 'Palm Oil Inc',
-    overallStatus: 'At Risk',
-    analysisStage: 'Clarifying Initial Project Information',
-    spendCategory: 'Oils & Fats',
-    geography: 'Malaysia',
-    lastUpdated: '4 days',
-    startDate: '03/20/2024',
-    activityType: 'Animal Agriculture and Manure Management'
+async function fetchProjects(): Promise<Project[]> {
+  const result = await getAllProjects("projectName", false);
+
+  if (!result.success || !result.data?.projects) {
+    throw new Error("Failed to fetch projects");
   }
-];
+
+  return result.data.projects.map((p: any, index: number) => ({
+    id: index,
+    project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
+    supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
+    overallStatus: p.overallStatus,
+    analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
+      ? p.analysisStage.split(':')[1].trim()
+      : p.analysisStage,
+    spendCategory: p.spendCategory,
+    geography: p.geography,
+    lastUpdated: typeof p.lastUpdated === 'string' ? p.lastUpdated : new Date(p.lastUpdated).toISOString().split("T")[0],
+    startDate: typeof p.startDate === 'string' ? p.startDate : new Date(p.startDate).toISOString().split("T")[0],
+    activityType: 'Renewable Energy and Energy Efficiency',
+  }));
+}
 
 
 const WinrockDashboard: React.FC = () => {
@@ -215,16 +58,34 @@ const WinrockDashboard: React.FC = () => {
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [projects, setProjects] = useState<Project[]>(sampleProjects);
+  //const [projects, setProjects] = useState<Project[]>(allProjects);
+  const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
   const [allSelected, setAllSelected] = useState(false);
 
-  
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchProjects()
+      .then(data => {
+        setProjects(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setError("Failed to load projects");
+        setLoading(false);
+      });
+  }, []);
+
+
   const itemsPerPage = 10;
-  
+
   // Filter projects by selected activity type
-  const filteredProjects = selectedTab === 'All Projects' 
-    ? projects 
+  const filteredProjects = selectedTab === 'All Projects'
+    ? projects
     : projects.filter(project => project.activityType === selectedTab);
   const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -239,7 +100,7 @@ const WinrockDashboard: React.FC = () => {
     startDate: Date | null;
     endDate: Date | null;
   }
-  
+
   const [dateFilter, setDateFilter] = useState<DateRange>({
     startDate: null,
     endDate: null
@@ -251,11 +112,11 @@ const WinrockDashboard: React.FC = () => {
     setCurrentPage(1);
     setSelectedRows([]); // Clear selected rows when changing tabs
   };
-  
+
   const toggleFilterPopup = () => {
     setIsFilterPopupOpen(!isFilterPopupOpen);
   };
-  
+
   const toggleCategory = (categoryId: string) => {
     if (selectedCategories.includes(categoryId)) {
       setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
@@ -273,59 +134,25 @@ const WinrockDashboard: React.FC = () => {
     }
   };
 
-  const handleFieldChange = (id: number, field: keyof Project, value: string) => {
-    setProjects(prevProjects => 
-      prevProjects.map(project => 
-        project.id === id ? { ...project, [field]: value } : project
-      )
-    );
+  const handleSaveProject = async (projectName: string, updatedFields: Partial<Project>) => {
+    try {
+      for (const [field, value] of Object.entries(updatedFields)) {
+        await updateProjectField(projectName, field as keyof Project, value as any);
+      }
+      console.log(`✅ Project ${projectName} updated successfully.`);
+    } catch (error) {
+      console.error(`❌ Failed to update project ${projectName}:`, error);
+    }
   };
 
   // per category
-  
+
   // Handler for sort selection - just updates the state
   const handleSortChange = (sortOption: string) => {
     setSelectedSort(sortOption);
   };
 
-  // // per category
-  // const renderFilterContent = (sectionKey: string) => {
-  //   let categories;
-    
-  //   if (sectionKey === 'status') {
-  //     categories = overallCategories;
-  //   } else if (sectionKey === 'spend') {
-  //     categories = spendCategories;
-  //   } else if (sectionKey === 'date') {
-  //     categories = dateCategories;
-  //   } else {
-  //     return null;
-  //   }
-    
-  //   return (
-  //     <div className={styles.filterOptions}>
-  //       {categories.map(option => (
-  //         <div key={option.id} className={styles.checkboxItem}>
-  //           <input 
-  //             type="checkbox"
-  //             id={`${sectionKey}-${option.id}`}
-  //             checked={selectedCategories.includes(option.id)}
-  //             onChange={() => toggleCategory(option.id)}
-  //           />
-  //           <label htmlFor={`${sectionKey}-${option.id}`}>
-  //             {sectionKey === 'status' && (
-  //               <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
-  //             )}
-  //             {option.label}
-  //           </label>
-  //         </div>
-  //       ))}
-  //     </div>
-  //   );
-  // };
 
-  
-  
   const renderFilterContent = (sectionKey: string) => {
     if (sectionKey === 'status') {
       return (
@@ -374,10 +201,10 @@ const WinrockDashboard: React.FC = () => {
               startDate: dateRange.startDate,
               endDate: dateRange.endDate
             });
-            
+
             // Reset to first page when filter changes
             setCurrentPage(1);
-            
+
             // Close the filter popup if needed
             if (isFilterPopupOpen) {
               toggleFilterPopup();
@@ -386,7 +213,7 @@ const WinrockDashboard: React.FC = () => {
         />
       );
     }
-    
+
     return null;
   };
 
@@ -397,19 +224,44 @@ const WinrockDashboard: React.FC = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <Sidebar currentTab='projects' />
+      <header className={styles.header}>
+        <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
+        <div className={styles.headerNavContainer}>
+          <button
+            className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
+            onClick={() => setActiveNavButton('Projects')}
+          >
+            <img src={projectsIcon} alt="Projects" />
+            Projects
+          </button>
+          <button
+            className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
+            onClick={() => setActiveNavButton('Notification Center')}
+          >
+            <img src={notificationIcon} alt="Notification Center" />
+            Notification Center
+          </button>
+          <button
+            className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
+            onClick={() => setActiveNavButton('Account Settings')}
+          >
+            <img src={accountSettingsIcon} alt="Account Settings" />
+            Account Settings
+          </button>
+        </div>
+      </header>
 
       <main className={styles.mainContent}>
         <h1 className={styles.title}>Projects</h1>
-        
+
         <div className={styles.tabsContainer}>
           <FilterTabs
             tabs={tabs}
             selectedTab={selectedTab}
             onTabSelect={handleTabChange}
           />
-          <button 
-            className={`${styles.editButton} ${isEditMode ? styles.active : ''}`} 
+          <button
+            className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
             onClick={() => setIsEditMode(!isEditMode)}
           >
             {isEditMode ? 'Done' : 'Edit'}
@@ -418,27 +270,27 @@ const WinrockDashboard: React.FC = () => {
 
         <div className={styles.toolbarContainer}>
           <div className={styles.searchContainer}>
-            <input 
-              type="text" 
-              placeholder="Search projects..." 
+            <input
+              type="text"
+              placeholder="Search projects..."
               className={styles.searchInput}
             />
           </div>
-          
+
           <div className={styles.filterContainer}>
-            <button 
+            <button
               className={`${styles.filterButton} ${isFilterPopupOpen ? styles.active : ''}`}
               onClick={toggleFilterPopup}
             >
               Filter
             </button>
-            
+
             {/* Our updated SortWrapper component */}
-            <SortWrapper 
+            <SortWrapper
               onSortChange={handleSortChange}
               initialSortOption={selectedSort}
             />
-            
+
             {isFilterPopupOpen && (
               <div className={styles.filterPopup}>
                 <FilterWrapper title="Filters">
@@ -448,13 +300,14 @@ const WinrockDashboard: React.FC = () => {
             )}
           </div>
         </div>
-
+        {loading && <p>Loading projects...</p>}
+        {error && <p className={styles.error}>{error}</p>}
         <div className={styles.tableContainer}>
           <table className={styles.table}>
-            <TableHeader 
+            <TableHeader
               onSelectAll={handleSelectAll}
               allSelected={allSelected}
-              headers={['Project','Supplier','Overall Status','Analysis stage','Spend Category','Geography','Last Updated','Start Date','Action']}
+              headers={['Project', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
               isEditMode={isEditMode}
             />
             <tbody>
@@ -465,7 +318,7 @@ const WinrockDashboard: React.FC = () => {
                   isSelected={selectedRows.includes(project.id)}
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
                   isEditMode={isEditMode}
-                  onFieldChange={(field, value) => handleFieldChange(project.id, field, value)}
+                  onSave={(updatedFields) => handleSaveProject(project.project, updatedFields)}
                 />
               ))}
             </tbody>
