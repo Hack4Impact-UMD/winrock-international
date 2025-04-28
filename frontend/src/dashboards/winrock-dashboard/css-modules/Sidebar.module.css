@@ -1,69 +1,53 @@
-.sidebar {
+.header {
+  position: fixed;
+  padding: 2rem 2.5rem;
+  border-right: 1px solid #CCCCCC;
   width: 18.75rem;
-  background: #fff;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  box-shadow: none;
-  padding-top: 32px;
-  border-right: 1px solid #e5e7eb;
-}
-
-.logoContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 48px;
+  top: 0;
+  bottom: 0;
+  background-color: white;
 }
 
 .logo {
-  width: 180px;
-  height: auto;
+  height: 3.5rem;
 }
 
-.navLinks {
+.headerNavContainer {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 0 0 0 0;
+  margin-top: 7rem;
+  margin-left: -2.5rem;  /* Counter the header's left padding */
+  margin-right: -2.5rem; /* Counter the header's right padding */
+  gap: 1rem;
 }
 
-.navLink {
+.headerNavButton {
   display: flex;
+  gap: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5875em;
   align-items: center;
-  gap: 14px;
+  height: 3.125rem;
   background: none;
   border: none;
-  outline: none;
-  font-size: 1.08rem;
-  color: #222;
-  padding: 12px 32px 12px 32px;
-  cursor: pointer;
-  font-weight: 400;
-  border-radius: 0;
-  text-align: left;
-  transition: background 0.15s, color 0.15s;
+  cursor: pointer;  
+  padding-left: 2.5rem;
 }
 
-.navLink:hover {
-  background: #f6f8fa;
+.headerNavButton.active {
+  background-color: #F6F7F9;
 }
 
-.active {
-  background: #f6f8fa;
-  color: #205493;
-  font-weight: 500;
-}
-
-.icon {
-  font-size: 1.2rem;
+.headerNavButton img {
+  width: 1.25rem;  
+  min-width: 1.25rem;  
+  height: 1.25rem; 
   display: flex;
   align-items: center;
-  margin-left: 2px;
+  justify-content: center;
 }
 
-.linkLabel {
-  flex: 1;
-  text-align: left;
+.headerNavButton:hover {
+  background-color: #F6F7F9;
 }

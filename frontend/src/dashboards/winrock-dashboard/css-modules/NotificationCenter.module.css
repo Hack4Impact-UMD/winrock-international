@@ -139,6 +139,8 @@
 }
 
 .actionBar {
+  position: absolute;
+  right: 2rem;
   display: flex;
   align-items: center;
   gap: 12px;

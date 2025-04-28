@@ -57,7 +57,6 @@ const mockNotifications = [
 const ITEMS_PER_PAGE = 10;
 
 const NotificationCenter: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<"Projects" | "Notification Center" | "Account Settings">("Notification Center");
   const [tab, setTab] = useState<NotificationTab>("Unread");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
@@ -101,9 +100,9 @@ const NotificationCenter: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#f4f5f7' }}>
-      <Sidebar activeSection={activeSection} onNavigate={(section) => setActiveSection(section as "Projects" | "Notification Center" | "Account Settings")} />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#f4f5f7' }}>
-        {activeSection === "Notification Center" && (
+      <Sidebar currentTab="notification-center" />
+
+      <div style={{ marginLeft: "18.75rem", flex: 1, display: 'flex', flexDirection: 'column', background: '#f4f5f7' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'transparent' }}>
             <div style={{ background: '#fff', boxShadow: '0 1px 0 #e5e7eb' }}>
               <h1 className={styles.title}>Notification Center</h1>
@@ -119,6 +118,7 @@ const NotificationCenter: React.FC = () => {
                     </button>
                   ))}
                 </div>
+                
                 {selectedRows.length > 0 && (
                   <div className={styles.actionBar}>
                     <button className={styles.markReadButton} onClick={() => {}}>
@@ -128,7 +128,12 @@ const NotificationCenter: React.FC = () => {
                       </svg>
                       Mark as read
                     </button>
-                    <button className={styles.doneButton} onClick={() => {}}>Done</button>
+                    <button
+                      className={styles.doneButton}
+                      onClick={() => setSelectedRows([])}
+                    >
+                      Done
+                    </button>
                   </div>
                 )}
               </div>
@@ -142,8 +147,6 @@ const NotificationCenter: React.FC = () => {
             </div>
             <div style={{ flex: 1, background: '#f4f5f7' }} />
           </div>
-        )}
-        {activeSection === "Notification Center" && (
           <div style={{ width: '100%', background: '#f4f5f7' }}>
             <Pagination
               currentPage={currentPage}
@@ -153,7 +156,6 @@ const NotificationCenter: React.FC = () => {
               onPageChange={setCurrentPage}
             />
           </div>
-        )}
       </div>
     </div>
   );

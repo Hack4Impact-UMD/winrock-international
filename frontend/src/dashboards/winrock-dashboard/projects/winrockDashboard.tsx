@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { getAllProjects, updateProjectField } from './winrockDashboardService';
 import styles from '../css-modules/WinrockDashboard.module.css';
-import winrockLogo from '../../../assets/winrock-international-logo.png';
-import projectsIcon from '../../../assets/projects-icon.svg';
-import notificationIcon from '../../../assets/notification-icon.svg';
-import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
+
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
@@ -12,6 +10,7 @@ import SortWrapper from '../components/SortWrapper';
 import DateFilter from '../components/DateFilter';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
+import Sidebar from '../components/Sidebar';
 
 interface Project {
   id: number;
@@ -223,37 +222,48 @@ const WinrockDashboard: React.FC = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <header className={styles.header}>
-        <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
-      </header>
+      <Sidebar currentTab="projects" />
 
       <main className={styles.mainContent}>
         <h1 className={styles.title}>Projects</h1>
-        
-        <FilterTabs
-          tabs={tabs}
-          selectedTab={selectedTab}
-          onTabSelect={setSelectedTab}
-        />
+
+        <div className={styles.tabsContainer}>
+          <FilterTabs
+            tabs={tabs}
+            selectedTab={selectedTab}
+            onTabSelect={handleTabChange}
+          />
+          <button
+            className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
+            onClick={() => setIsEditMode(!isEditMode)}
+          >
+            {isEditMode ? 'Done' : 'Edit'}
+          </button>
+        </div>
 
         <div className={styles.toolbarContainer}>
           <div className={styles.searchContainer}>
-            <input 
-              type="text" 
-              placeholder="Search projects..." 
+            <input
+              type="text"
+              placeholder="Search projects..."
               className={styles.searchInput}
             />
           </div>
-          
+
           <div className={styles.filterContainer}>
-            <button 
+            <button
               className={`${styles.filterButton} ${isFilterPopupOpen ? styles.active : ''}`}
               onClick={toggleFilterPopup}
             >
               Filter
             </button>
-            <button className={styles.sortButton}>Sort</button>
-            
+
+            {/* Our updated SortWrapper component */}
+            <SortWrapper
+              onSortChange={handleSortChange}
+              initialSortOption={selectedSort}
+            />
+
             {isFilterPopupOpen && (
               <div className={styles.filterPopup}>
                 <FilterWrapper title="Filters">
@@ -263,10 +273,16 @@ const WinrockDashboard: React.FC = () => {
             )}
           </div>
         </div>
-
+        {loading && <p>Loading projects...</p>}
+        {error && <p className={styles.error}>{error}</p>}
         <div className={styles.tableContainer}>
           <table className={styles.table}>
-            <TableHeader />
+            <TableHeader
+              onSelectAll={handleSelectAll}
+              allSelected={allSelected}
+              headers={['Project', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
+              isEditMode={isEditMode}
+            />
             <tbody>
               {currentProjects.map(project => (
                 <TableRow
@@ -274,6 +290,8 @@ const WinrockDashboard: React.FC = () => {
                   data={project}
                   isSelected={selectedRows.includes(project.id)}
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
+                  isEditMode={isEditMode}
+                  onSave={(updatedFields) => handleSaveProject(project.project, updatedFields)}
                 />
               ))}
             </tbody>
@@ -286,7 +304,6 @@ const WinrockDashboard: React.FC = () => {
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
-          onItemsPerPageChange={handleItemsPerPageChange}
         />
       </main>
     </div>
