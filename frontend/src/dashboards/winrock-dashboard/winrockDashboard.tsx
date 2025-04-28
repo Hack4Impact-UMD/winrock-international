@@ -88,33 +88,33 @@ const WinrockDashboard: React.FC = () => {
       setActiveActionMenu(id);
     }
   };
-  const handleArchiveSingle = async (projectId: number) => {
-    console.log('handleArchiveSingle called with projectId:', projectId);
+  const handleToggleArchive = async (projectId: number) => {
+    console.log('handleToggleArchive called with projectId:', projectId);
     const project = projects.find(p => p.id === projectId);
     if (!project) {
       console.error(`Project with ID ${projectId} not found`);
       return;
     }
 
-    console.log(`Attempting to archive project: ${project.project}`);
+    const newIsActive = !project.isActive; // flip the active status
+    console.log(`Setting isActive=${newIsActive} for project: ${project.project}`);
 
     try {
-      await handleSaveProject(project.project, { isActive: false });
-      console.log(`Successfully called handleSaveProject for ${project.project}`);
+      await handleSaveProject(project.project, { isActive: newIsActive });
+      console.log(`Successfully updated isActive for ${project.project}`);
 
       setActiveActionMenu(null);
 
       // Update local state
       setProjects(prev => prev.map(p =>
-        p.id === projectId ? { ...p, isActive: false } : p
+        p.id === projectId ? { ...p, isActive: newIsActive } : p
       ));
 
       console.log(`Local state updated for project ID ${projectId}`);
     } catch (error) {
-      console.error(`Failed to archive project: ${error}`);
+      console.error(`Failed to update project:`, error);
     }
   };
-
 
   useEffect(() => {
     fetchProjects()
@@ -387,8 +387,7 @@ const WinrockDashboard: React.FC = () => {
                   isEditMode={isEditMode}
                   onSave={(updatedFields) => handleSaveProject(project.project, updatedFields)}
                   onActionClick={handleActionClick}
-                  onArchiveClick={handleArchiveSingle}
-                  activeActionMenuId={activeActionMenu}  // 👈 here
+                  onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                 />
               ))}
             </tbody>
@@ -400,18 +399,19 @@ const WinrockDashboard: React.FC = () => {
               onClose={() => setActiveActionMenu(null)}
             >
               <button
-                className={styles.archiveButton} // Add appropriate styling
+                className={styles.archiveButton}
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent event bubbling
-                  console.log('Archive button clicked for ID:', activeActionMenu);
-                  handleArchiveSingle(activeActionMenu);
-                  // No need to manually close here - handleArchiveSingle already calls setActiveActionMenu(null)
+                  e.stopPropagation();
+                  console.log('Archive/Unarchive button clicked for ID:', activeActionMenu);
+                  handleToggleArchive(activeActionMenu);
                 }}
               >
-                Archive
+                {projects.find(p => p.id === activeActionMenu)?.isActive ? 'Archive' : 'Unarchive'}
               </button>
             </PopupMenu>
           )}
+
+
 
         </div>
 
