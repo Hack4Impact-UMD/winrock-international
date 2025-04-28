@@ -1,0 +1,181 @@
+.notificationCenterContainer {
+  padding: 32px 48px;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 80px;
+  margin-bottom: 60px;
+  background: #fff;
+  padding-left: 32px;
+}
+
+.tabActionBarRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  background: #fff;
+}
+
+.tabSwitcher {
+  display: flex;
+  gap: 32px;
+  background: #fff;
+  padding: 0 0 0 32px;
+  align-items: flex-end;
+  margin-bottom: 0;
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  color: #888;
+  font-weight: 400;
+  font-size: 1.08rem;
+  padding: 0 0 4px 0;
+  margin: 0;
+  cursor: pointer;
+  box-shadow: none;
+  border-radius: 0;
+  outline: none;
+  transition: color 0.15s;
+}
+
+.activeTabButton {
+  background: none;
+  border: none;
+  color: #205493;
+  font-weight: 500;
+  font-size: 1.08rem;
+  padding: 0 0 4px 0;
+  margin: 0;
+  border-radius: 0;
+  position: relative;
+}
+
+.activeTabButton::after {
+  content: "";
+  display: block;
+  width: 32px;
+  height: 3px;
+  background: #205493;
+  border-radius: 2px;
+  margin: 4px auto 0 auto;
+}
+
+.notificationTableWrapper {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 0 0 24px 0;
+  margin-top: 16px;
+}
+
+.notificationTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1rem;
+  background: #fff;
+}
+
+.notificationTable th, .notificationTable td {
+  padding: 16px 12px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fff;
+}
+
+.notificationTable th {
+  background: #f4f5f7;
+  font-weight: 600;
+  color: #444;
+  border-top: 1px solid #e5e7eb;
+}
+
+.unreadRow {
+  background: #fff;
+  font-weight: 500;
+}
+
+.readRow {
+  background: #fff;
+  color: #888;
+}
+
+.viewButton {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.emptyState {
+  text-align: center;
+  color: #aaa;
+  padding: 32px 0;
+  background: #fff;
+}
+
+.paginationInfo {
+  margin-top: 8px;
+  text-align: right;
+  color: #888;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+.checkboxShadow {
+  box-shadow: 0 2px 6px 0 rgba(32, 84, 147, 0.18);
+  border-radius: 4px;
+  background: #fff;
+}
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+.markReadButton {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: #205493;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.markReadButton:hover {
+  background: #f6faff;
+}
+
+.doneButton {
+  background: #205493;
+  color: #fff;
+  border: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 6px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.doneButton:hover {
+  background: #17406a;
+}

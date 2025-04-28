@@ -7,6 +7,7 @@ import TableHeader from '../components/TableHeader';
 import FilterWrapper from '../components/FilterWrapper';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
+import Sidebar from '../components/Sidebar';
 
 interface Project {
   id: number;
@@ -268,73 +269,76 @@ const WinrockDashboard: React.FC = () => {
   };
 
   return (
-    <div className={styles.dashboardContainer}>
-      <header className={styles.header}>
-        <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
-      </header>
+    <div style={{ display: 'flex' }}>
+      <Sidebar activeSection="Notification Center" />
+      <div className={styles.dashboardContainer}>
+        <header className={styles.header}>
+          <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
+        </header>
 
-      <main className={styles.mainContent}>
-        <h1 className={styles.title}>Projects</h1>
-        
-        <FilterTabs
-          tabs={tabs}
-          selectedTab={selectedTab}
-          onTabSelect={setSelectedTab}
-        />
-
-        <div className={styles.toolbarContainer}>
-          <div className={styles.searchContainer}>
-            <input 
-              type="text" 
-              placeholder="Search projects..." 
-              className={styles.searchInput}
-            />
-          </div>
+        <main className={styles.mainContent}>
+          <h1 className={styles.title}>Projects</h1>
           
-          <div className={styles.filterContainer}>
-            <button 
-              className={`${styles.filterButton} ${isFilterPopupOpen ? styles.active : ''}`}
-              onClick={toggleFilterPopup}
-            >
-              Filter
-            </button>
-            <button className={styles.sortButton}>Sort</button>
+          <FilterTabs
+            tabs={tabs}
+            selectedTab={selectedTab}
+            onTabSelect={setSelectedTab}
+          />
+
+          <div className={styles.toolbarContainer}>
+            <div className={styles.searchContainer}>
+              <input 
+                type="text" 
+                placeholder="Search projects..." 
+                className={styles.searchInput}
+              />
+            </div>
             
-            {isFilterPopupOpen && (
-              <div className={styles.filterPopup}>
-                <FilterWrapper title="Filters">
-                  {(sectionKey) => renderFilterContent(sectionKey)}
-                </FilterWrapper>
-              </div>
-            )}
+            <div className={styles.filterContainer}>
+              <button 
+                className={`${styles.filterButton} ${isFilterPopupOpen ? styles.active : ''}`}
+                onClick={toggleFilterPopup}
+              >
+                Filter
+              </button>
+              <button className={styles.sortButton}>Sort</button>
+              
+              {isFilterPopupOpen && (
+                <div className={styles.filterPopup}>
+                  <FilterWrapper title="Filters">
+                    {(sectionKey) => renderFilterContent(sectionKey)}
+                  </FilterWrapper>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <TableHeader />
-            <tbody>
-              {currentProjects.map(project => (
-                <TableRow
-                  key={project.id}
-                  data={project}
-                  isSelected={selectedRows.includes(project.id)}
-                  onSelect={(checked) => handleRowSelect(project.id, checked)}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
+          <div className={styles.tableContainer}>
+            <table className={styles.table}>
+              <TableHeader />
+              <tbody>
+                {currentProjects.map(project => (
+                  <TableRow
+                    key={project.id}
+                    data={project}
+                    isSelected={selectedRows.includes(project.id)}
+                    onSelect={(checked) => handleRowSelect(project.id, checked)}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-          onItemsPerPageChange={handleItemsPerPageChange}
-        />
-      </main>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </main>
+      </div>
     </div>
   );
 };
