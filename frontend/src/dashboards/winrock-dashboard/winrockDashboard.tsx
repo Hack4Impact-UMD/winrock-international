@@ -26,7 +26,7 @@ interface Project {
   lastUpdated: string;
   startDate: string;
   activityType: 'Renewable Energy and Energy Efficiency' | 'Agriculture' | 'Agroforestry' | 'Animal Agriculture and Manure Management';
-  isActive: boolean; // 🧠 ADD THIS
+  isActive: boolean;
 }
 
 
@@ -132,7 +132,7 @@ const WinrockDashboard: React.FC = () => {
 
   const itemsPerPage = 10;
 
-  // Filter projects by selected activity type
+
   const filteredProjects = selectedTab === 'All Projects'
     ? projects
     : projects.filter(project => project.activityType === selectedTab);
@@ -143,7 +143,7 @@ const WinrockDashboard: React.FC = () => {
     .filter(p => viewMode === 'active' ? p.isActive : !p.isActive)
     .filter(p => selectedTab === 'All Projects' ? true : p.activityType === selectedTab);
 
-  // Then paginate
+
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
   const currentProjects = visibleProjects.slice(indexOfFirstProject, indexOfLastProject);
