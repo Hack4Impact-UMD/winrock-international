@@ -45,12 +45,6 @@
   background: #D2D4D9; 
 }
 
-.rowsPerPage {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .rowsInput {
   background: #F6F7F9;
   border: none;

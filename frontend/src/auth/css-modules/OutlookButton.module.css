@@ -1,9 +1,9 @@
 .outlookButton {
-    width: 100%;
+    width: 20rem;
     height: 3.3rem;
     padding: 0.75rem;
     border: 1px solid var(--color-primary);
-    border-radius: 20px;
+    border-radius: 15px;
     cursor: pointer;
     display: flex;
     align-items: center;

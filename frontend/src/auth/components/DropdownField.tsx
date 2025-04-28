@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
-import styles from "../css-modules/AuthDropdownField.module.css";
+import {
+    useEffect,
+    useState
+} from "react";
+import styles from "../css-modules/DropdownField.module.css";
 
-interface AuthDropdownFieldProps {
+interface DropdownFieldProps {
     label: string;
     blankOption?: string;
     options: string[];
@@ -10,7 +13,14 @@ interface AuthDropdownFieldProps {
     onSelect: (selected: string) => void;
 }
 
-function AuthDropdownField({ label, blankOption, options, values, controlledValue, onSelect }: AuthDropdownFieldProps) {
+const DropdownField: React.FC<DropdownFieldProps> = ({
+    label,
+    blankOption,
+    options,
+    values,
+    controlledValue,
+    onSelect
+}: DropdownFieldProps) => {
     const [value, setValue] = useState(controlledValue);
         
     useEffect(() => {
@@ -43,4 +53,4 @@ function AuthDropdownField({ label, blankOption, options, values, controlledValu
     )
 }
 
-export default AuthDropdownField;
+export default DropdownField;

@@ -4,7 +4,7 @@ interface DividerProps {
     label: string;
 }
 
-function Divider({ label }: DividerProps) {
+const Divider: React.FC<DividerProps> = ({ label }) => {
     return (
         <div className={styles.divider}>
             <span className={styles.dividerSpan}>
