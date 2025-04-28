@@ -25,8 +25,8 @@ html {
   display: flex;
   flex-direction: column;
   margin-top: 7rem;
-  margin-left: -2.5rem;  /* Counter the header's left padding */
-  margin-right: -2.5rem; /* Counter the header's right padding */
+  margin-left: -2.5rem;  
+  margin-right: -2.5rem;
   gap: 1rem;
 }
 
@@ -71,12 +71,42 @@ html {
   height: 3.5rem;
 }
 
+/* Updated title and added titleContainer */
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3rem 1.5625rem 1.6875rem 1.5625rem;
+}
+
 .title {
   color: black;
   font-size: 2.25rem;
   font-weight: 600; 
   letter-spacing: 1.80px;
-  padding: 5.125rem 0 1.6875rem 1.5625rem;
+  margin: 0;
+}
+
+/* Added view mode buttons styling */
+.viewModeButtons {
+  display: flex;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.viewModeButton {
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.viewModeButton.active {
+  background-color: #1e5288; /* Dark blue color like in the image */
+  color: white;
 }
 
 .tabsContainer {
@@ -400,7 +430,6 @@ html {
   outline: none;
 }
 
-
 .filterButton {
   width: 20rem;
   padding: 0.5rem 1rem;
@@ -454,4 +483,63 @@ html {
   overflow: hidden;
   border: 1px solid #CCCCCC;
   border-top: none;
+}
+
+/* Table container style */
+.tableContainer {
+  position: relative;
+  margin-top: 1rem;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+}
+
+/* Error message styling */
+.error {
+  color: #dc2626;
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: #fef2f2;
+  border-radius: 0.375rem;
+}
+
+/* Popup menu styles to match Figma design */
+.popupMenu {
+  position: absolute;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 1000;
+  min-width: 200px;
+}
+
+/* Updated archive button styling to match Figma design */
+.archiveButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.archiveButton:hover {
+  background-color: #f5f5f5;
+}
+
+/* Archive icon styling */
+.archiveButton:before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%231e5288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"></path><path d="M1 3h22v5H1z"></path><path d="M10 12h4"></path></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 12px;
 }
