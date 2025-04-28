@@ -1,4 +1,4 @@
-import outlookLogo from "../../assets/Outlook-logo.png"
+import outlookLogo from "../../assets/Outlook-logo.png";
 import styles from "../css-modules/OutlookButton.module.css";
 
 interface OutlookButtonProps {
@@ -6,7 +6,7 @@ interface OutlookButtonProps {
     onClick: () => void;
 }
 
-function OutlookButton({ label, onClick }: OutlookButtonProps) {
+const OutlookButton: React.FC<OutlookButtonProps> = ({ label, onClick }) => {
     return (
         <button className={styles.outlookButton}>
             {label}

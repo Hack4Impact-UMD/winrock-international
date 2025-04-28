@@ -1,17 +1,20 @@
-import { useEffect, useState } from "react";
-import styles from "../css-modules/AuthTextField.module.css";
+import {
+    useEffect,
+    useState
+} from "react";
+import styles from "../css-modules/TextField.module.css";
 
-interface AuthTextFieldProps {
+interface TextFieldProps {
     label?: string;
     placeholder?: string;
     autoComplete?: boolean;
     controlledValue?: string;
     onChange: (value: string) => void;
-    suggestions?: string[]; // ← NEW
-    onSuggestionClick?: (value: string) => void; // ← NEW
+    suggestions?: string[];
+    onSuggestionClick?: (value: string) => void;
 }
 
-function AuthTextField({
+const TextField: React.FC<TextFieldProps> = ({
     label = "",
     placeholder = "",
     autoComplete = true,
@@ -19,7 +22,7 @@ function AuthTextField({
     onChange,
     suggestions = [],
     onSuggestionClick = () => { }
-}: AuthTextFieldProps) {
+}) => {
     const [value, setValue] = useState(controlledValue);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -43,7 +46,9 @@ function AuthTextField({
 
     return (
         <div className={styles.fieldContainer}>
-            <p className={styles.label}>{label}</p>
+            <p className={styles.label}>
+                {label}
+            </p>
             <input
                 className={styles.input}
                 type="text"
@@ -71,4 +76,4 @@ function AuthTextField({
     );
 }
 
-export default AuthTextField;
+export default TextField;
