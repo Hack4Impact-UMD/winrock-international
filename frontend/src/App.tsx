@@ -1,9 +1,9 @@
-import WinrockDashboard from './dashboards/winrock-dashboard/winrockDashboard';
+import NotificationCenter from './dashboards/winrock-dashboard/notification-center/NotificationCenter';
 
 function App() {
   return (
     <div className="app-container">
-      <WinrockDashboard />
+      <NotificationCenter />
     </div>
   );
 }
