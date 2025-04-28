@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import styles from './css-modules/WinrockDashboard.module.css';
-import winrockLogo from '../../assets/winrock-international-logo.png';
-import projectsIcon from '../../assets/projects-icon.svg';
-import notificationIcon from '../../assets/notification-icon.svg';
-import accountSettingsIcon from '../../assets/account-settings-icon.svg';
+import styles from '../css-modules/WinrockDashboard.module.css';
+import winrockLogo from '../../../assets/winrock-international-logo.png';
+import projectsIcon from '../../../assets/projects-icon.svg';
+import notificationIcon from '../../../assets/notification-icon.svg';
+import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
@@ -13,6 +13,7 @@ import DateFilter from '../components/DateFilter';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 import { getAllProjects, updateProjectField } from './winrockDashboardService';
+import Sidebar from '../components/Sidebar';
 
 
 interface Project {
@@ -225,32 +226,7 @@ const WinrockDashboard: React.FC = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <header className={styles.header}>
-        <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
-        <div className={styles.headerNavContainer}>
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Projects')}
-          >
-            <img src={projectsIcon} alt="Projects" />
-            Projects
-          </button>
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Notification Center')}
-          >
-            <img src={notificationIcon} alt="Notification Center" />
-            Notification Center
-          </button>
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Account Settings')}
-          >
-            <img src={accountSettingsIcon} alt="Account Settings" />
-            Account Settings
-          </button>
-        </div>
-      </header>
+      <Sidebar currentTab="projects" />
 
       <main className={styles.mainContent}>
         <h1 className={styles.title}>Projects</h1>

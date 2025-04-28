@@ -18,21 +18,21 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTab }) => {
         <div className={styles.headerNavContainer}>
           <button 
             className={`${styles.headerNavButton} ${currentTab === 'projects' ? styles.active : ''}`}
-            onClick={() => navigate("/projects")}
+            onClick={() => navigate("/dashboard/admin/projects")}
           >
             <img src={projectsIcon} alt="Projects" />
             Projects
           </button>
           <button 
             className={`${styles.headerNavButton} ${currentTab === 'notification-center' ? styles.active : ''}`}
-            onClick={() => navigate("/notification-center")}
+            onClick={() => navigate("/dashboard/admin/notification-center")}
           >
             <img src={notificationIcon} alt="Notification Center" />
             Notification Center
           </button>
           <button 
             className={`${styles.headerNavButton} ${currentTab === 'account-settings' ? styles.active : ''}`}
-            onClick={() => navigate("/account-settings")}
+            onClick={() => navigate("/dashboard/admin/account-settings")}
           >
             <img src={accountSettingsIcon} alt="Account Settings" />
             Account Settings
