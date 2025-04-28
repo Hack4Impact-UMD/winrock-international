@@ -1,4 +1,3 @@
-import { FirebaseError } from "firebase/app";
 import {
     collection,
     deleteDoc,
@@ -12,8 +11,8 @@ import {
     updateDoc,
     where
 } from "firebase/firestore";
-import { db } from "../../firebaseConfig.js";
-import Result from "../../types/Result.js";
+import { db } from "../../../firebaseConfig.js";
+import Result, { handleFirebaseError } from "../../../types/Result.js";
 
 /**
  * Represents the overall status of a project.
@@ -85,7 +84,7 @@ const createProject = async (
     isActive: boolean = true,
     isPinned: boolean = false
 ): Promise<Result> => {
-    try{
+    try {
         const docRef = doc(db, "projects", projectName);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -109,10 +108,7 @@ const createProject = async (
 
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -145,10 +141,7 @@ const getProjectByName = async (projectName: string): Promise<Result> => {
             data: project
         };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -233,10 +226,7 @@ const getProjectsWithFilters = async (
             }
         };
 	} catch (error) {
-		return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+		return handleFirebaseError(error);
 	}
 }
 
@@ -273,10 +263,7 @@ const updateProjectField = async (projectName: string, field: keyof Project, new
 
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 };
 
@@ -299,10 +286,7 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 

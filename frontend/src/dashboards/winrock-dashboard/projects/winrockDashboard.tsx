@@ -1,215 +1,121 @@
-import React, { useState } from 'react';
-import styles from './css-modules/WinrockDashboard.module.css';
-import winrockLogo from '../../assets/winrock-international-logo.png';
+import React, { useState, useEffect } from 'react';
+import styles from '../css-modules/WinrockDashboard.module.css';
+import winrockLogo from '../../../assets/winrock-international-logo.png';
+import projectsIcon from '../../../assets/projects-icon.svg';
+import notificationIcon from '../../../assets/notification-icon.svg';
+import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
 import FilterWrapper from '../components/FilterWrapper';
+import SortWrapper from '../components/SortWrapper'; 
+import DateFilter from '../components/DateFilter';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
-import Sidebar from '../components/Sidebar';
 
 interface Project {
   id: number;
   project: string;
-  supplier: string;
+  supplierName: string;
   overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
   analysisStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded';
   spendCategory: string;
   geography: string;
   lastUpdated: string;
   startDate: string;
+  activityType: 'Renewable Energy and Energy Efficiency' | 'Agriculture' | 'Agroforestry' | 'Animal Agriculture and Manure Management';
 }
 
-const sampleProjects: Project[] = [
-  {
-    id: 1,
-    project: 'Nestlé',
-    supplier: 'Cargill',
-    overallStatus: 'On Track',
-    analysisStage: 'Risk & Co-benefit Assessment',
-    spendCategory: 'Cereals & Grains',
-    geography: 'United States of America',
-    lastUpdated: '6 days',
-    startDate: '03/15/2023'
-  },
-  {
-    id: 2,
-    project: 'McCormick',
-    supplier: 'Orange',
-    overallStatus: 'At Risk',
-    analysisStage: 'GHG Assessment Analysis',
-    spendCategory: 'Commodities',
-    geography: 'Sweden',
-    lastUpdated: '30 days',
-    startDate: '03/15/2025'
-  },
-  {
-    id: 3,
-    project: 'Microsoft',
-    supplier: 'Kiwi',
-    overallStatus: 'Paused',
-    analysisStage: 'Confirming Final Requirements',
-    spendCategory: 'Fruits & Berries',
-    geography: 'Sweden',
-    lastUpdated: '2 days',
-    startDate: '03/15/2021'
-  },
-  {
-    id: 4,
-    project: 'WebMD',
-    supplier: 'Apple',
-    overallStatus: 'Completed',
-    analysisStage: 'Clarifying Initial Project Information',
-    spendCategory: 'Commodities',
-    geography: 'China',
-    lastUpdated: '12 days',
-    startDate: '03/15/2023'
-  },
-  {
-    id: 5,
-    project: 'Kellogg',
-    supplier: 'Grape',
-    overallStatus: 'Completed (except for risk)',
-    analysisStage: 'Complete, and Excluded',
-    spendCategory: 'Commodities',
-    geography: 'Sweden',
-    lastUpdated: '6 days',
-    startDate: '03/15/2023'
-  },
-  {
-    id: 6,
-    project: 'Lululemon',
-    supplier: 'Orange',
-    overallStatus: 'On Track',
-    analysisStage: 'Clarifying Initial Project Information',
-    spendCategory: 'Coco',
-    geography: 'Indonesia',
-    lastUpdated: '42 days',
-    startDate: '03/15/2019'
-  },
-  {
-    id: 7,
-    project: 'Cheetos',
-    supplier: 'Orange',
-    overallStatus: 'On Track',
-    analysisStage: 'Risk & Co-benefit Assessment',
-    spendCategory: 'Commodities',
-    geography: 'South Africa',
-    lastUpdated: '6 days',
-    startDate: '03/15/2022'
-  },
-  {
-    id: 8,
-    project: 'Cheezits',
-    supplier: 'Orange',
-    overallStatus: 'Paused',
-    analysisStage: 'Confirming Final Requirements',
-    spendCategory: 'Spices',
-    geography: 'Bangladesh',
-    lastUpdated: '1 day',
-    startDate: '03/15/2015'
-  },
-  {
-    id: 9,
-    project: 'Cheerios',
-    supplier: 'Orange',
-    overallStatus: 'Paused',
-    analysisStage: 'Clarifying Initial Project Information',
-    spendCategory: 'Electricity',
-    geography: 'Sweden',
-    lastUpdated: '6 days',
-    startDate: '03/15/2022'
-  },
-  {
-    id: 10,
-    project: 'McCormick',
-    supplier: 'Orange',
-    overallStatus: 'Paused',
-    analysisStage: 'Risk & Co-benefit Assessment',
-    spendCategory: 'Commodities',
-    geography: 'Norway',
-    lastUpdated: '6 days',
-    startDate: '03/15/2023'
-  },
-  {
-    id: 11,
-    project: 'Tesla',
-    supplier: 'Lithium Corp',
-    overallStatus: 'At Risk',
-    analysisStage: 'GHG Assessment Analysis',
-    spendCategory: 'Electricity',
-    geography: 'Australia',
-    lastUpdated: '15 days',
-    startDate: '04/01/2023'
-  },
-  {
-    id: 12,
-    project: 'Starbucks',
-    supplier: 'Coffee Beans Co',
-    overallStatus: 'On Track',
-    analysisStage: 'Confirming Final Requirements',
-    spendCategory: 'Commodities',
-    geography: 'Brazil',
-    lastUpdated: '3 days',
-    startDate: '02/28/2024'
-  },
-  {
-    id: 13,
-    project: 'Nike',
-    supplier: 'Cotton Express',
-    overallStatus: 'Completed',
-    analysisStage: 'Complete, and Excluded',
-    spendCategory: 'Textiles',
-    geography: 'India',
-    lastUpdated: '20 days',
-    startDate: '01/15/2023'
-  },
-  {
-    id: 14,
-    project: 'Samsung',
-    supplier: 'Green Energy Ltd',
-    overallStatus: 'Completed (except for risk)',
-    analysisStage: 'Risk & Co-benefit Assessment',
-    spendCategory: 'Electronics',
-    geography: 'South Korea',
-    lastUpdated: '8 days',
-    startDate: '03/10/2024'
-  },
-  {
-    id: 15,
-    project: 'Unilever',
-    supplier: 'Palm Oil Inc',
-    overallStatus: 'At Risk',
-    analysisStage: 'Clarifying Initial Project Information',
-    spendCategory: 'Oils & Fats',
-    geography: 'Malaysia',
-    lastUpdated: '4 days',
-    startDate: '03/20/2024'
+async function fetchProjects(): Promise<Project[]> {
+  const result = await getAllProjects("projectName", false);
+
+  if (!result.success || !result.data?.projects) {
+    throw new Error("Failed to fetch projects");
   }
-];
+
+  return result.data.projects.map((p: any, index: number) => ({
+    id: index,
+    project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
+    supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
+    overallStatus: p.overallStatus,
+    analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
+      ? p.analysisStage.split(':')[1].trim()
+      : p.analysisStage,
+    spendCategory: p.spendCategory,
+    geography: p.geography,
+    lastUpdated: typeof p.lastUpdated === 'string' ? p.lastUpdated : new Date(p.lastUpdated).toISOString().split("T")[0],
+    startDate: typeof p.startDate === 'string' ? p.startDate : new Date(p.startDate).toISOString().split("T")[0],
+    activityType: 'Renewable Energy and Energy Efficiency',
+  }));
+}
+
 
 const WinrockDashboard: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState('Renewable Energy and Energy Efficiency');
+  const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  
-  const totalItems = sampleProjects.length;
+  const [isEditMode, setIsEditMode] = useState(false);
+  //const [projects, setProjects] = useState<Project[]>(allProjects);
+  const [activeNavButton, setActiveNavButton] = useState('Projects');
+  const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
+  const [allSelected, setAllSelected] = useState(false);
+
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchProjects()
+      .then(data => {
+        setProjects(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setError("Failed to load projects");
+        setLoading(false);
+      });
+  }, []);
+
+
+  const itemsPerPage = 10;
+
+  // Filter projects by selected activity type
+  const filteredProjects = selectedTab === 'All Projects'
+    ? projects
+    : projects.filter(project => project.activityType === selectedTab);
+  const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // Calculate the current page's projects
+  // Calculate the current page's projects from filtered projects
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
-  const currentProjects = sampleProjects.slice(indexOfFirstProject, indexOfLastProject);
-  
-  // toggle 
+  const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
+
+  //date filter consts
+  interface DateRange {
+    startDate: Date | null;
+    endDate: Date | null;
+  }
+
+  const [dateFilter, setDateFilter] = useState<DateRange>({
+    startDate: null,
+    endDate: null
+  });
+
+  // Reset to first page when changing tabs
+  const handleTabChange = (tab: string) => {
+    setSelectedTab(tab);
+    setCurrentPage(1);
+    setSelectedRows([]); // Clear selected rows when changing tabs
+  };
+
   const toggleFilterPopup = () => {
     setIsFilterPopupOpen(!isFilterPopupOpen);
   };
-  
+
   const toggleCategory = (categoryId: string) => {
     if (selectedCategories.includes(categoryId)) {
       setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
@@ -227,123 +133,168 @@ const WinrockDashboard: React.FC = () => {
     }
   };
 
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1); // Reset to first page when changing items per page
+  const handleSaveProject = async (projectName: string, updatedFields: Partial<Project>) => {
+    try {
+      for (const [field, value] of Object.entries(updatedFields)) {
+        await updateProjectField(projectName, field as keyof Project, value as any);
+      }
+      console.log(`✅ Project ${projectName} updated successfully.`);
+    } catch (error) {
+      console.error(`❌ Failed to update project ${projectName}:`, error);
+    }
   };
 
   // per category
+
+  // Handler for sort selection - just updates the state
+  const handleSortChange = (sortOption: string) => {
+    setSelectedSort(sortOption);
+  };
+
+
   const renderFilterContent = (sectionKey: string) => {
-    let categories;
-    
     if (sectionKey === 'status') {
-      categories = overallCategories;
+      return (
+        <div className={styles.filterOptions}>
+          {overallCategories.map(option => (
+            <div key={option.id} className={styles.checkboxItem}>
+              <input
+                type="checkbox"
+                id={`${sectionKey}-${option.id}`}
+                checked={selectedCategories.includes(option.id)}
+                onChange={() => toggleCategory(option.id)}
+              />
+              <label htmlFor={`${sectionKey}-${option.id}`}>
+                {sectionKey === 'status' && (
+                  <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
+                )}
+                {option.label}
+              </label>
+            </div>
+          ))}
+        </div>
+      );
     } else if (sectionKey === 'spend') {
-      categories = spendCategories;
+      return (
+        <div className={styles.filterOptions}>
+          {spendCategories.map(option => (
+            <div key={option.id} className={styles.checkboxItem}>
+              <input
+                type="checkbox"
+                id={`${sectionKey}-${option.id}`}
+                checked={selectedCategories.includes(option.id)}
+                onChange={() => toggleCategory(option.id)}
+              />
+              <label htmlFor={`${sectionKey}-${option.id}`}>{option.label}</label>
+            </div>
+          ))}
+        </div>
+      );
     } else if (sectionKey === 'date') {
-      categories = dateCategories;
-    } else {
-      return null;
+      // Return the DateFilter component for date filtering
+      return (
+        <DateFilter
+          onFilterChange={(dateRange) => {
+            // Make sure this state updater function is defined in your component
+            setDateFilter({
+              startDate: dateRange.startDate,
+              endDate: dateRange.endDate
+            });
+
+            // Reset to first page when filter changes
+            setCurrentPage(1);
+
+            // Close the filter popup if needed
+            if (isFilterPopupOpen) {
+              toggleFilterPopup();
+            }
+          }}
+        />
+      );
     }
-    
-    return (
-      <div className={styles.filterOptions}>
-        {categories.map(option => (
-          <div key={option.id} className={styles.checkboxItem}>
-            <input 
-              type="checkbox"
-              id={`${sectionKey}-${option.id}`}
-              checked={selectedCategories.includes(option.id)}
-              onChange={() => toggleCategory(option.id)}
-            />
-            <label htmlFor={`${sectionKey}-${option.id}`}>
-              {sectionKey === 'status' && (
-                <span className={`${styles.statusIndicator} ${styles[option.id]}`}></span>
-              )}
-              {option.label}
-            </label>
-          </div>
-        ))}
-      </div>
-    );
+
+    return null;
+  };
+
+
+  const handleSelectAll = (checked: boolean) => {
+    // TODO: select all checkboxes
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      <Sidebar activeSection="Notification Center" />
-      <div className={styles.dashboardContainer}>
-        <header className={styles.header}>
-          <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
-        </header>
+    <div className={styles.dashboardContainer}>
+      <header className={styles.header}>
+        <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
+      </header>
 
-        <main className={styles.mainContent}>
-          <h1 className={styles.title}>Projects</h1>
+      <main className={styles.mainContent}>
+        <h1 className={styles.title}>Projects</h1>
+        
+        <FilterTabs
+          tabs={tabs}
+          selectedTab={selectedTab}
+          onTabSelect={setSelectedTab}
+        />
+
+        <div className={styles.toolbarContainer}>
+          <div className={styles.searchContainer}>
+            <input 
+              type="text" 
+              placeholder="Search projects..." 
+              className={styles.searchInput}
+            />
+          </div>
           
-          <FilterTabs
-            tabs={tabs}
-            selectedTab={selectedTab}
-            onTabSelect={setSelectedTab}
-          />
-
-          <div className={styles.toolbarContainer}>
-            <div className={styles.searchContainer}>
-              <input 
-                type="text" 
-                placeholder="Search projects..." 
-                className={styles.searchInput}
-              />
-            </div>
+          <div className={styles.filterContainer}>
+            <button 
+              className={`${styles.filterButton} ${isFilterPopupOpen ? styles.active : ''}`}
+              onClick={toggleFilterPopup}
+            >
+              Filter
+            </button>
+            <button className={styles.sortButton}>Sort</button>
             
-            <div className={styles.filterContainer}>
-              <button 
-                className={`${styles.filterButton} ${isFilterPopupOpen ? styles.active : ''}`}
-                onClick={toggleFilterPopup}
-              >
-                Filter
-              </button>
-              <button className={styles.sortButton}>Sort</button>
-              
-              {isFilterPopupOpen && (
-                <div className={styles.filterPopup}>
-                  <FilterWrapper title="Filters">
-                    {(sectionKey) => renderFilterContent(sectionKey)}
-                  </FilterWrapper>
-                </div>
-              )}
-            </div>
+            {isFilterPopupOpen && (
+              <div className={styles.filterPopup}>
+                <FilterWrapper title="Filters">
+                  {(sectionKey) => renderFilterContent(sectionKey)}
+                </FilterWrapper>
+              </div>
+            )}
           </div>
+        </div>
 
-          <div className={styles.tableContainer}>
-            <table className={styles.table}>
-              <TableHeader />
-              <tbody>
-                {currentProjects.map(project => (
-                  <TableRow
-                    key={project.id}
-                    data={project}
-                    isSelected={selectedRows.includes(project.id)}
-                    onSelect={(checked) => handleRowSelect(project.id, checked)}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <TableHeader />
+            <tbody>
+              {currentProjects.map(project => (
+                <TableRow
+                  key={project.id}
+                  data={project}
+                  isSelected={selectedRows.includes(project.id)}
+                  onSelect={(checked) => handleRowSelect(project.id, checked)}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            itemsPerPage={itemsPerPage}
-            onPageChange={setCurrentPage}
-            onItemsPerPageChange={handleItemsPerPageChange}
-          />
-        </main>
-      </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
+      </main>
     </div>
   );
 };
 
 const tabs = [
+  'All Projects',
   'Renewable Energy and Energy Efficiency',
   'Agriculture',
   'Agroforestry',
@@ -361,13 +312,6 @@ const spendCategories = [
   { id: 'emulsifiers', label: 'Emulsifiers' },
 ];
 
-// const overallCategories = [
-//   { id: 'onTrack', label: <ColorText text="On Track" backgroundColor="#e6f4ff" textColor="#0a3977" />},
-//   { id: 'atRisk', label: <ColorText text="At Risk" backgroundColor="#fde7e9" textColor="#e41b35" />},
-//   { id: 'paused', label: <ColorText text="Paused" backgroundColor="#fff8e6" textColor="#b07d18" />},
-//   { id: 'completed', label: <ColorText text="Completed" backgroundColor="#e6f9eb" textColor="#186a3b" />},
-//   { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" backgroundColor="#f1fae1" textColor="#486b00" /> }];
-
 const overallCategories = [
   { id: 'onTrack', label: <ColorText text="On Track" category="On Track" variant="status" /> },
   { id: 'atRisk', label: <ColorText text="At Risk" category="At Risk" variant="status" /> },
@@ -376,8 +320,5 @@ const overallCategories = [
   { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" category="Completed (except for risk)" variant="status" /> }
 ];
 
-const dateCategories = [
-  { id: 'idk', label: 'idk' },
-];
 
 export default WinrockDashboard;

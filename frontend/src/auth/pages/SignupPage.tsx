@@ -1,7 +1,16 @@
-import { useMemo, useRef, useState } from "react";
+import {
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { useNavigate } from "react-router-dom";
 import Result from "../../types/Result";
-import { type Role, type SignupInfo, handleSignup } from "../authService";
+import Role from "../../types/Role.js";
+import {
+  type SignupInfo,
+  fetchCompanySuggestions,
+  handleSignup
+} from "../authService";
 
 import AuthLogoHeader from "../components/AuthLogoHeader";
 import AuthForm from "../components/AuthForm";
@@ -48,8 +57,8 @@ function SignupPage() {
   // Used to change the answersRef's fields dynamically
   function handleChange(field: keyof SignupInfo, value: string) {
     answersRef.current = {
-        ...answersRef.current,
-        [field]: value
+      ...answersRef.current,
+      [field]: value
     }
   }
 
@@ -132,19 +141,19 @@ function SignupPage() {
       return;
     }
 
-    const companyField = answersRef.current.company ? {company: answersRef.current.company} : {};
+    const companyField = answersRef.current.company ? { company: answersRef.current.company } : {};
 
     const result: Result = await handleSignup({
-        email: answersRef.current.email,
-        password: answersRef.current.password,
-        firstName: answersRef.current.firstName,
-        lastName: answersRef.current.lastName,
-        role: answersRef.current.role,
-        ...companyField
+      email: answersRef.current.email,
+      password: answersRef.current.password,
+      firstName: answersRef.current.firstName,
+      lastName: answersRef.current.lastName,
+      role: answersRef.current.role,
+      ...companyField
     })
 
     if (result.success) {
-      navigate("/dashboard");
+      navigate("/dashboard/admin/projects");
     } else {
       console.error("Error signing up: ", result.errorCode);
     }
@@ -163,12 +172,11 @@ function SignupPage() {
         afterChild={currentStep > 1 ?
           <AuthBottomLink
             beforeText="Already have an account?"
-            linkLabel="Sign in"
-            link="/login"
+            actionLabel="Sign in"
+            onClick={() => navigate("/auth/login")}
           />
-        : undefined}
+          : undefined}
         remSpacing={currentRemSpacing}
-          
       >
         <>
           {currentStep === 1 &&
@@ -199,6 +207,17 @@ function SignupPage() {
 }
 
 const StepOne = ({ answersRef, handleChange, role, setRole }: StepOneProps) => {
+  const [companySuggestions, setCompanySuggestions] = useState<string[]>([]);
+  
+  const handleCompanySuggestions = async (input: string) => {
+    const result = await fetchCompanySuggestions(input);
+    if (result.success) {
+      setCompanySuggestions(result.data as string[]);
+    } else {
+      console.error("Error fetching company suggestions, ", result.errorCode);
+    }
+  }
+
   return (
     <>
       <AuthDropdownField
@@ -217,7 +236,14 @@ const StepOne = ({ answersRef, handleChange, role, setRole }: StepOneProps) => {
         <AuthTextField
           label="Company name"
           controlledValue={answersRef.current.company!}
-          onChange={(value) => handleChange("company", value)}
+          onChange={(value) => {
+            handleChange("company", value);
+            handleCompanySuggestions(value);
+          }}
+          suggestions={companySuggestions}
+          onSuggestionClick={(value) => {
+            handleChange("company", value);
+          }}
         />}
     </>
   )

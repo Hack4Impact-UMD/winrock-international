@@ -1,19 +1,15 @@
-import { FirebaseError } from "firebase/app";
-import * as firestore from "firebase/firestore";
-import { 
+import  "firebase/firestore";
+import {
     type User,
-    createUserWithEmailAndPassword, 
+    createUserWithEmailAndPassword,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
 import { db, auth } from "../firebaseConfig.js";
-import Result from "../types/Result.js";
-
-type Role =
-    | "admin"
-    | "client"
-    | "supplier";
+import Result, { handleFirebaseError } from "../types/Result.js";
+import Role from "../types/Role.js";
+import { addDoc, collection, doc, endAt, getDocs, limit, orderBy, query, setDoc, startAfter, where } from "firebase/firestore";
 
 interface SignupInfo {
     email: string;
@@ -40,27 +36,36 @@ interface LoginInfo {
  * @param company of the user (if role is "client" or "supplier").
  * @returns a Promise<Result>.
  */
-async function handleSignup({ email, password, firstName, lastName, role, company }: SignupInfo): Promise<Result> {
+const handleSignup = async ({ email, password, firstName, lastName, role, company }: SignupInfo): Promise<Result> => {
     try {
-        if (!firstName) return { success: false, errorCode: "missing-firstname"};
-        if (!lastName) return { success: false, errorCode: "missing-lastname"};
-        if (!role) return { success: false, errorCode: "missing-role"};
+        if (!firstName) return { success: false, errorCode: "missing-firstname" };
+        if (!lastName) return { success: false, errorCode: "missing-lastname" };
+        if (!role) return { success: false, errorCode: "missing-role" };
         // Email and password fields are checked by Firebase
 
         let companyField = {};
         if (role === "client" || role === "supplier") {
-            if (!company) return { success: false, errorCode: "missing-company"};
+            if (!company) return { success: false, errorCode: "missing-company" };
+
+            const companiesRef = collection(db, "companies");
+            const q = query(companiesRef, where("name", "==", company));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                await addDoc(companiesRef, { name: company });
+            }
+
             companyField = { company };
         } else if (role === "admin") {
-            if (company) return { success: false, errorCode: "company-field-not-allowed"};
+            if (company) return { success: false, errorCode: "company-field-not-allowed" };
         } else {
-            return { success: false, errorCode: "invalid-role"};
+            return { success: false, errorCode: "invalid-role" };
         }
 
         const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
         const newUser: User = newUserCredential.user;
 
-        const docRef = firestore.doc(db, "users", newUser.uid); // Use the user's random UID as the document ID
+        const docRef = doc(db, "users", newUser.uid); // Use the user's random UID as the document ID
         const newUserObj = {
             email,
             firstName,
@@ -68,15 +73,11 @@ async function handleSignup({ email, password, firstName, lastName, role, compan
             role,
             ...companyField
         };
-        
-        await firestore.setDoc(docRef, newUserObj);
+
+        await setDoc(docRef, newUserObj);
         return { success: true };
     } catch (error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
+        return handleFirebaseError(error);
     }
 }
 
@@ -87,32 +88,24 @@ async function handleSignup({ email, password, firstName, lastName, role, compan
  * @param password of the user.
  * @returns a Promise<Result>.
  */
-async function handleLogin({ email, password }: LoginInfo): Promise<Result> {
+const handleLogin = async ({ email, password }: LoginInfo): Promise<Result> => {
     try {
         await signInWithEmailAndPassword(auth, email, password);
         return { success: true };
     } catch (error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
+        return handleFirebaseError(error);
     }
 }
 
 /**
  * Log out the current user.
  */
-async function handleLogout(): Promise<Result> {
+const handleLogout = async (): Promise<Result> =>  {
     try {
         await signOut(auth);
         return { success: true };
-    } catch(error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
+    } catch (error) {
+        return handleFirebaseError(error);
     }
 }
 
@@ -122,24 +115,50 @@ async function handleLogout(): Promise<Result> {
  * @param email to send the password reset email to.
  * @returns a Promise<Result>.
  */
-async function sendPasswordResetLink(email: string): Promise<Result> {
+const sendPasswordResetLink = async (email: string): Promise<Result> => {
     try {
         await sendPasswordResetEmail(auth, email);
         return { success: true };
-    } catch(error) {
-        if (error instanceof FirebaseError) {
-            return { success: false, errorCode: error.code };
-        } else {
-            return { success: false, errorCode: "unknown" };
-        }
+    } catch (error) {
+        return handleFirebaseError(error);
     }
 }
 
-export { 
+const fetchCompanySuggestions = async (input: string): Promise<Result> => {
+    if (!input) {
+      return { success: false, errorCode: "missing-input" };
+    }
+
+    const suggestions: string[] = [];
+
+    try {
+        const companiesRef = collection(db, "companies");
+        const q = query(companiesRef,
+            orderBy("name"),
+            limit(5),
+            startAfter(input),
+            endAt(input + "\uf8ff"));
+
+        const snapshot = await getDocs(q);
+        snapshot.forEach((doc) => {
+            suggestions.push(doc.data().name);
+        });
+        
+        return {
+            success: true,
+            data: suggestions
+        };
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
+}
+
+export {
     type Role,
     type SignupInfo,
     handleSignup,
     handleLogin,
     handleLogout,
-    sendPasswordResetLink
+    sendPasswordResetLink,
+    fetchCompanySuggestions
 };
