@@ -28,7 +28,6 @@ interface RenewableProposalFormData {
     projectDescription: FormField;
     projectImplementationYear: FormField;
     impactEvidence: FormField;
-    emissionFactor: FormField;
     volumeDelivered: FormField;
     beforeSourceOfEnergy: FormField;
     beforeEnergyConsumption: FormField;
@@ -62,7 +61,6 @@ const RenewableProposalForm = () => {
         projectDescription: new FormField('', true),
         projectImplementationYear: new FormField('', true),
         impactEvidence: new FormField('', true),
-        emissionFactor: new FormField('', true),
         volumeDelivered: new FormField('', true),
         beforeSourceOfEnergy: new FormField('', true),
         beforeEnergyConsumption: new FormField('', true),
