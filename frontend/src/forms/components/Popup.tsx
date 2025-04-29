@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import styles from "../css-modules/Popup.module.css";
-import closeBtn from "../assets/x-close-delete-svgrepo-com.svg";
-import infoBtn from "../assets/info-svgrepo-com.svg";
+import closeBtn from "../../assets/x-close-delete-svgrepo-com.svg";
+import infoBtn from "../../assets/info-svgrepo-com.svg";
 
 
 interface PopupProps {
@@ -15,6 +15,17 @@ const Popup = ({ guidance, example }: PopupProps) => {
 
     const openPopup = () => setIsOpen(true);
     const closePopup = () => setIsOpen(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [isOpen]);
 
     return (
         <>

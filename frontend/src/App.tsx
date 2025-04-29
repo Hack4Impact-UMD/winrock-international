@@ -14,6 +14,8 @@ import ForestryRisksForm from './forms/risks-and-co-benefit-forms/ForestryRisksF
 import TechEnergyRisksForm from './forms/risks-and-co-benefit-forms/TechEnergyRisksForm';
 import WinrockDashboard from './dashboards/winrock-dashboard/projects/winrockDashboard';
 import NotificationCenter from './dashboards/winrock-dashboard/notification-center/NotificationCenter';
+import PasswordChangedPage from './auth/pages/PasswordChangedPage';
+import CreateNewPasswordPage from './auth/pages/CreateNewPasswordPage';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
         <Route path="/auth/login"                            element={<LoginPage />} />
         <Route path="/auth/signup"                           element={<SignupPage />} />
         <Route path="/auth/forgot-password"                  element={<ForgotPasswordPage />} />
+        <Route path="/auth/create-new-password"              element={<CreateNewPasswordPage />} />
+        <Route path="/auth/password-changed"                 element={<PasswordChangedPage />} />
 
         <Route path="/forms/agriculture-proposal-form"       element={<AgricultureProposalForm />} />
         <Route path="/forms/renewable-proposal-form"         element={<RenewableProposalForm />} />

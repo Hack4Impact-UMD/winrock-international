@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { getAllProjects, updateProjectField } from './winrockDashboardService';
 import styles from '../css-modules/WinrockDashboard.module.css';
-
+import winrockLogo from '../../../assets/winrock-international-logo.png';
+import projectsIcon from '../../../assets/projects-icon.svg';
+import notificationIcon from '../../../assets/notification-icon.svg';
+import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
 import FilterWrapper from '../components/FilterWrapper';
-import SortWrapper from '../components/SortWrapper'; 
+import SortWrapper from '../components/SortWrapper';
 import DateFilter from '../components/DateFilter';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
-import Sidebar from '../components/Sidebar';
+import { getAllProjects, updateProjectField } from "./winrockDashboardService"
+import PopupMenu from '../components/PopupMenu';
 
 interface Project {
   id: number;
@@ -23,7 +26,9 @@ interface Project {
   lastUpdated: string;
   startDate: string;
   activityType: 'Renewable Energy and Energy Efficiency' | 'Agriculture' | 'Agroforestry' | 'Animal Agriculture and Manure Management';
+  isActive: boolean;
 }
+
 
 async function fetchProjects(): Promise<Project[]> {
   const result = await getAllProjects("projectName", false);
@@ -31,7 +36,6 @@ async function fetchProjects(): Promise<Project[]> {
   if (!result.success || !result.data?.projects) {
     throw new Error("Failed to fetch projects");
   }
-
   return result.data.projects.map((p: any, index: number) => ({
     id: index,
     project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
@@ -45,6 +49,9 @@ async function fetchProjects(): Promise<Project[]> {
     lastUpdated: typeof p.lastUpdated === 'string' ? p.lastUpdated : new Date(p.lastUpdated).toISOString().split("T")[0],
     startDate: typeof p.startDate === 'string' ? p.startDate : new Date(p.startDate).toISOString().split("T")[0],
     activityType: 'Renewable Energy and Energy Efficiency',
+
+    // 🚀 ADD THIS
+    isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
   }));
 }
 
@@ -65,6 +72,50 @@ const WinrockDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [activeActionMenu, setActiveActionMenu] = useState<number | null>(null);
+  const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+  const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
+
+  const handleActionClick = (id: number | null, event?: React.MouseEvent) => {
+    console.log('handleActionClick called with id:', id);
+    if (id === null) {
+      setActiveActionMenu(null);
+    } else {
+      if (event) {
+        const rect = (event.target as HTMLElement).getBoundingClientRect();
+        setButtonPosition({ x: rect.left, y: rect.bottom });
+      }
+      setActiveActionMenu(id);
+    }
+  };
+  const handleToggleArchive = async (projectId: number) => {
+    console.log('handleToggleArchive called with projectId:', projectId);
+    const project = projects.find(p => p.id === projectId);
+    if (!project) {
+      console.error(`Project with ID ${projectId} not found`);
+      return;
+    }
+
+    const newIsActive = !project.isActive; // flip the active status
+    console.log(`Setting isActive=${newIsActive} for project: ${project.project}`);
+
+    try {
+      await handleSaveProject(project.project, { isActive: newIsActive });
+      console.log(`Successfully updated isActive for ${project.project}`);
+
+      setActiveActionMenu(null);
+
+      // Update local state
+      setProjects(prev => prev.map(p =>
+        p.id === projectId ? { ...p, isActive: newIsActive } : p
+      ));
+
+      console.log(`Local state updated for project ID ${projectId}`);
+    } catch (error) {
+      console.error(`Failed to update project:`, error);
+    }
+  };
+
   useEffect(() => {
     fetchProjects()
       .then(data => {
@@ -81,17 +132,21 @@ const WinrockDashboard: React.FC = () => {
 
   const itemsPerPage = 10;
 
-  // Filter projects by selected activity type
+
   const filteredProjects = selectedTab === 'All Projects'
     ? projects
     : projects.filter(project => project.activityType === selectedTab);
   const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // Calculate the current page's projects from filtered projects
+  const visibleProjects = projects
+    .filter(p => viewMode === 'active' ? p.isActive : !p.isActive)
+    .filter(p => selectedTab === 'All Projects' ? true : p.activityType === selectedTab);
+
+
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
-  const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
+  const currentProjects = visibleProjects.slice(indexOfFirstProject, indexOfLastProject);
 
   //date filter consts
   interface DateRange {
@@ -137,9 +192,9 @@ const WinrockDashboard: React.FC = () => {
       for (const [field, value] of Object.entries(updatedFields)) {
         await updateProjectField(projectName, field as keyof Project, value as any);
       }
-      console.log(`✅ Project ${projectName} updated successfully.`);
+      console.log(`Project ${projectName} updated successfully.`);
     } catch (error) {
-      console.error(`❌ Failed to update project ${projectName}:`, error);
+      console.error(`Failed to update project ${projectName}:`, error);
     }
   };
 
@@ -218,14 +273,56 @@ const WinrockDashboard: React.FC = () => {
 
   const handleSelectAll = (checked: boolean) => {
     // TODO: select all checkboxes
+    console.log(checked)
   };
 
   return (
     <div className={styles.dashboardContainer}>
-      <Sidebar currentTab="projects" />
+      <header className={styles.header}>
+        <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
+        <div className={styles.headerNavContainer}>
+          <button
+            className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
+            onClick={() => setActiveNavButton('Projects')}
+          >
+            <img src={projectsIcon} alt="Projects" />
+            Projects
+          </button>
+          <button
+            className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
+            onClick={() => setActiveNavButton('Notification Center')}
+          >
+            <img src={notificationIcon} alt="Notification Center" />
+            Notification Center
+          </button>
+          <button
+            className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
+            onClick={() => setActiveNavButton('Account Settings')}
+          >
+            <img src={accountSettingsIcon} alt="Account Settings" />
+            Account Settings
+          </button>
+        </div>
+      </header>
 
       <main className={styles.mainContent}>
-        <h1 className={styles.title}>Projects</h1>
+        <div className={styles.titleContainer}>
+          <h1 className={styles.title}>Projects</h1>
+          <div className={styles.viewModeButtons}>
+            <button
+              className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`}
+              onClick={() => setViewMode('active')}
+            >
+              Active
+            </button>
+            <button
+              className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`}
+              onClick={() => setViewMode('archived')}
+            >
+              Archived
+            </button>
+          </div>
+        </div>
 
         <div className={styles.tabsContainer}>
           <FilterTabs
@@ -292,10 +389,33 @@ const WinrockDashboard: React.FC = () => {
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
                   isEditMode={isEditMode}
                   onSave={(updatedFields) => handleSaveProject(project.project, updatedFields)}
+                  onActionClick={handleActionClick}
+                  onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                 />
               ))}
             </tbody>
           </table>
+          {activeActionMenu !== null && (
+            <PopupMenu
+              x={buttonPosition.x}
+              y={buttonPosition.y}
+              onClose={() => setActiveActionMenu(null)}
+            >
+              <button
+                className={styles.archiveButton}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log('Archive/Unarchive button clicked for ID:', activeActionMenu);
+                  handleToggleArchive(activeActionMenu);
+                }}
+              >
+                {projects.find(p => p.id === activeActionMenu)?.isActive ? 'Archive' : 'Unarchive'}
+              </button>
+            </PopupMenu>
+          )}
+
+
+
         </div>
 
         <Pagination

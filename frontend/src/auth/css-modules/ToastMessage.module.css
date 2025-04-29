@@ -1,0 +1,36 @@
+.messageCard {
+    position: absolute;
+    z-index: 100;
+    top: 1.5rem;
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: .5rem;
+    margin: auto;
+    padding: .5rem 1rem;
+    align-items: center;
+    justify-content: center;
+    max-width: 60%;
+    width: max-content;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    background: white;
+}
+
+.message {
+    margin-bottom: -1.15rem;
+    text-wrap: wrap;
+    text-align: center;
+    font-size: .9rem;
+    letter-spacing: .4px;
+}
+
+@keyframes message-fade-out {
+    from {opacity :1;}
+    to {opacity :0;}
+}
+
+.alertIcon {
+    width: 1.2rem;
+    height: 1.2rem;
+}

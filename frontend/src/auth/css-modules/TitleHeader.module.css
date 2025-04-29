@@ -1,0 +1,22 @@
+.titleContainer {
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+    width: 20rem;
+}
+
+.title {
+    display: flex;
+    margin-bottom: -1.15rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    letter-spacing: 1.2px;
+}
+
+.subtitle {
+    color: black;
+    font-size: .95rem;
+    font-weight: 400;
+    letter-spacing: 0.7px;
+}

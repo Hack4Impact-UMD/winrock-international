@@ -88,7 +88,7 @@ const createProject = async (
         const docRef = doc(db, "projects", projectName);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            return { success: false, errorCode: "project-name-already-exists"}
+            return { success: false, errorCode: "project-name-already-exists" }
         }
 
         const now = Timestamp.now();
@@ -206,28 +206,28 @@ const getProjectsWithFilters = async (
 
         // Apply ordering
         filterQuery = query(filterQuery, orderBy(orderByField, desc ? "desc" : "asc"));
-	
-		const querySnapshot = await getDocs(filterQuery);
-		querySnapshot.forEach((doc) => {
-			const project = {
+
+        const querySnapshot = await getDocs(filterQuery);
+        querySnapshot.forEach((doc) => {
+            const project = {
                 ...doc.data(),
                 startDate: doc.data().startDate.toDate(),
                 lastUpdated: doc.data().lastUpdated.toDate()
             } as Project;
             projects.push(project);
             projectNames.push(project.projectName);
-		});
+        });
 
-		return {
+        return {
             success: true,
             data: {
                 projects: projects,
                 projectNames: projectNames
             }
         };
-	} catch (error) {
-		return handleFirebaseError(error);
-	}
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
 }
 
 /**
@@ -247,7 +247,7 @@ const updateProjectField = async (projectName: string, field: keyof Project, new
         const docRef = doc(db, `projects/${projectName}`);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
-            return { success: false, errorCode: "project-not-found"};
+            return { success: false, errorCode: "project-not-found" };
         }
 
         // Convert Dates to Firestore Timestamps
@@ -279,7 +279,7 @@ const deleteProject = async (projectName: string): Promise<Result> => {
         const docRef = doc(db, `projects/${projectName}`);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
-            return { success: false, errorCode: "project-not-found"};
+            return { success: false, errorCode: "project-not-found" };
         }
 
         await deleteDoc(docRef);

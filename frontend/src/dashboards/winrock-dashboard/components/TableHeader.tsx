@@ -12,17 +12,19 @@ const TableHeader: React.FC<TableHeaderProps> = ({ onSelectAll, allSelected = fa
   return (
     <thead className={styles.tableHeader}>
       <tr>
+        {/* Checkbox Column */}
         <th className={styles.checkboxCell}>
-          <div className={`${styles.checkboxWrapper} ${!isEditMode ? styles.hidden : ''}`}>
-            <input 
-              type="checkbox" 
+          {isEditMode && (
+            <input
+              type="checkbox"
               onChange={(e) => onSelectAll?.(e.target.checked)}
               checked={allSelected}
               className={styles.checkbox}
-              disabled={!isEditMode}
             />
-          </div>
+          )}
         </th>
+
+        {/* Other Headers */}
         {headers.map((header, index) => (
           <th key={index} className={styles.headerCell}>
             {header}
@@ -33,4 +35,4 @@ const TableHeader: React.FC<TableHeaderProps> = ({ onSelectAll, allSelected = fa
   );
 };
 
-export default TableHeader; 
+export default TableHeader;

@@ -1,8 +1,7 @@
 .fieldContainer {
     display: flex;
     flex-direction: column;
-    gap: .25rem;
-    width: 100%;
+    width: 20rem;
 }
 
 .label {
@@ -23,15 +22,20 @@
     letter-spacing: 0.42px;
 }
 
+.input::placeholder {
+    color: var(--color-lightgray);
+    font-size: .8rem;
+}
+
 .suggestionsList {
     list-style: none;
-    margin: 6rem 0 0;
+    margin: 5rem 0 0;
     padding: 0;
     border: 1px solid #ccc;
     background-color: white;
     position: absolute;
     z-index: 10;
-    width: 100%;
+    width: 20rem;
     max-height: 150px;
     overflow-y: auto;
     border-radius: 6px;
