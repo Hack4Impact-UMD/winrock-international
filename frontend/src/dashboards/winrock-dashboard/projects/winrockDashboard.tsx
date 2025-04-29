@@ -17,6 +17,7 @@ import ReportsDropdown from '../components/ReportsDropdown';
 import KPICharts from '../components/KPICharts';
 import PopupMenu from '../components/PopupMenu';
 import { getAllProjects, updateProjectField } from "./winrockDashboardService";
+import { useNavigate } from 'react-router-dom';
 
 interface Project {
   id: number;
@@ -74,7 +75,7 @@ const WinrockDashboard: React.FC = () => {
   const [activeActionMenu, setActiveActionMenu] = useState<number | null>(null);
   const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
-
+  const navigate = useNavigate();
   const handleActionClick = (id: number | null, event?: React.MouseEvent) => {
     console.log('handleActionClick called with id:', id);
     if (id === null) {
@@ -280,15 +281,35 @@ const WinrockDashboard: React.FC = () => {
       <header className={styles.header}>
         <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
         <div className={styles.headerNavContainer}>
-          <button className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`} onClick={() => setActiveNavButton('Projects')}>
+          <button
+            className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
+            onClick={() => {
+              setActiveNavButton('Projects');
+              navigate('/dashboard/admin/projects');
+            }}
+          >
             <img src={projectsIcon} alt="Projects" />
             Projects
           </button>
-          <button className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`} onClick={() => setActiveNavButton('Notification Center')}>
+
+          <button
+            className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
+            onClick={() => {
+              setActiveNavButton('Notification Center');
+              navigate('/dashboard/admin/notification-center');
+            }}
+          >
             <img src={notificationIcon} alt="Notification Center" />
             Notification Center
           </button>
-          <button className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`} onClick={() => setActiveNavButton('Account Settings')}>
+
+          <button
+            className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
+            onClick={() => {
+              setActiveNavButton('Account Settings');
+              navigate('/dashboard/admin/account-settings');
+            }}
+          >
             <img src={accountSettingsIcon} alt="Account Settings" />
             Account Settings
           </button>
