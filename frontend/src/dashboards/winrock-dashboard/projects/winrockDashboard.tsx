@@ -35,33 +35,16 @@ interface Project {
   isActive: boolean;
 }
 
-async function fetchProjects(): Promise<Project[]> {
-  const result = await getAllProjects("projectName", false);
-
-  if (!result.success || !result.data?.projects) {
-    throw new Error("Failed to fetch projects");
-  }
-  return result.data.projects.map((p: any, index: number) => ({
-    id: index,
-    project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
-    supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
-    overallStatus: p.overallStatus,
-    analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
-      ? p.analysisStage.split(':')[1].trim()
-      : p.analysisStage,
-    spendCategory: p.spendCategory,
-    geography: p.geography,
-    lastUpdated: typeof p.lastUpdated === 'string' ? p.lastUpdated : new Date(p.lastUpdated).toISOString().split("T")[0],
-    startDate: typeof p.startDate === 'string' ? p.startDate : new Date(p.startDate).toISOString().split("T")[0],
-    activityType: 'Renewable Energy and Energy Efficiency',
-    isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
-  }));
-}
-
 const WinrockDashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [activeFilters, setActiveFilters] = useState<{
+    status: string[];
+    spend: string[];
+  }>({
+    status: [],
+    spend: [],
+  });
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -77,6 +60,10 @@ const WinrockDashboard: React.FC = () => {
   const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
   const navigate = useNavigate();
+  const [dateFilter, setDateFilter] = useState<DateRange>({
+    startDate: null,
+    endDate: null
+  });
   const handleActionClick = (id: number | null, event?: React.MouseEvent) => {
     console.log('handleActionClick called with id:', id);
     if (id === null) {
@@ -89,6 +76,16 @@ const WinrockDashboard: React.FC = () => {
       setActiveActionMenu(id);
     }
   };
+  const mapStatusToId = (status: string): string => {
+    const mapping: Record<string, string> = {
+      "On Track": "onTrack",
+      "At Risk": "atRisk",
+      "Paused": "paused",
+      "Completed": "completed",
+      "Completed (except for risk)": "completedRisk"
+    };
+    return mapping[status] || status;
+  };
   const handleToggleArchive = async (projectId: number) => {
     console.log('handleToggleArchive called with projectId:', projectId);
     const project = projects.find(p => p.id === projectId);
@@ -97,7 +94,7 @@ const WinrockDashboard: React.FC = () => {
       return;
     }
 
-    const newIsActive = !project.isActive; // flip the active status
+    const newIsActive = !project.isActive;
     console.log(`Setting isActive=${newIsActive} for project: ${project.project}`);
 
     try {
@@ -106,7 +103,7 @@ const WinrockDashboard: React.FC = () => {
 
       setActiveActionMenu(null);
 
-      // Update local state
+
       setProjects(prev => prev.map(p =>
         p.id === projectId ? { ...p, isActive: newIsActive } : p
       ));
@@ -118,19 +115,19 @@ const WinrockDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    const q = query(collection(db, "projects"), orderBy("projectName")); // optional: order by a field if you want
+    const q = query(collection(db, "projects"), orderBy("projectName"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const projectsData = snapshot.docs.map((doc, index) => {
         const p = doc.data();
         const parseDate = (date: any) => {
-          if (!date) return ""; // empty string if missing
+          if (!date) return "";
           if (date.toDate) {
-            // Firestore Timestamp object
+
             return date.toDate().toISOString().split("T")[0];
           }
           const parsed = new Date(date);
           if (isNaN(parsed.getTime())) {
-            // still not a valid date
+
             return "";
           }
           return parsed.toISOString().split("T")[0];
@@ -147,7 +144,7 @@ const WinrockDashboard: React.FC = () => {
           geography: p.geography,
           lastUpdated: parseDate(p.lastUpdated),
           startDate: parseDate(p.startDate),
-          activityType: 'Renewable Energy and Energy Efficiency', // default if missing
+          activityType: 'Renewable Energy and Energy Efficiency',
           isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
         };
       });
@@ -159,10 +156,8 @@ const WinrockDashboard: React.FC = () => {
       setLoading(false);
     });
 
-    return () => unsubscribe(); // 🚨 important: cleanup when component unmounts
+    return () => unsubscribe();
   }, []);
-
-
 
   const itemsPerPage = 10;
 
@@ -173,29 +168,36 @@ const WinrockDashboard: React.FC = () => {
   const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  const visibleProjects = useMemo(() => {
+  const filteredAndVisibleProjects = useMemo(() => {
     return projects
       .filter(p => viewMode === 'active' ? p.isActive : !p.isActive)
-      .filter(p => selectedTab === 'All Projects' ? true : p.activityType === selectedTab);
-  }, [projects, viewMode, selectedTab]);
+      .filter(p => selectedTab === 'All Projects' ? true : p.activityType === selectedTab)
+      .filter(p => {
+        const matchesStatus =
+          activeFilters.status.length === 0 || activeFilters.status.includes(mapStatusToId(p.overallStatus));
+        const matchesSpend =
+          activeFilters.spend.length === 0 || activeFilters.spend.includes(p.spendCategory);
+        return matchesStatus && matchesSpend;
+      })
+      .filter(p => {
+        if (dateFilter.startDate && new Date(p.startDate) < dateFilter.startDate) return false;
+        if (dateFilter.endDate && new Date(p.startDate) > dateFilter.endDate) return false;
+        return true;
+      });
+  }, [projects, viewMode, selectedTab, activeFilters, dateFilter]);
 
   // Memoize currentProjects (paging the visibleProjects)
   const currentProjects = useMemo(() => {
     const indexOfLastProject = currentPage * itemsPerPage;
     const indexOfFirstProject = indexOfLastProject - itemsPerPage;
-    return visibleProjects.slice(indexOfFirstProject, indexOfLastProject);
-  }, [visibleProjects, currentPage]);
+    return filteredAndVisibleProjects.slice(indexOfFirstProject, indexOfLastProject);
+  }, [filteredAndVisibleProjects, currentPage]);
 
   //date filter consts
   interface DateRange {
     startDate: Date | null;
     endDate: Date | null;
   }
-
-  const [dateFilter, setDateFilter] = useState<DateRange>({
-    startDate: null,
-    endDate: null
-  });
 
   // Reset to first page when changing tabs
   const handleTabChange = (tab: string) => {
@@ -208,12 +210,14 @@ const WinrockDashboard: React.FC = () => {
     setIsFilterPopupOpen(!isFilterPopupOpen);
   };
 
-  const toggleCategory = (categoryId: string) => {
-    if (selectedCategories.includes(categoryId)) {
-      setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
-    } else {
-      setSelectedCategories([...selectedCategories, categoryId]);
-    }
+  const toggleCategory = (section: 'status' | 'spend', categoryId: string) => {
+    setActiveFilters(prev => {
+      const current = prev[section];
+      const updated = current.includes(categoryId)
+        ? current.filter(id => id !== categoryId)
+        : [...current, categoryId];
+      return { ...prev, [section]: updated };
+    });
     setCurrentPage(1);
   };
 
@@ -271,8 +275,8 @@ const WinrockDashboard: React.FC = () => {
               <input
                 type="checkbox"
                 id={`${sectionKey}-${option.id}`}
-                checked={selectedCategories.includes(option.id)}
-                onChange={() => toggleCategory(option.id)}
+                checked={activeFilters.status.includes(option.id)}
+                onChange={() => toggleCategory('status', option.id)}
               />
               <label htmlFor={`${sectionKey}-${option.id}`}>
                 {sectionKey === 'status' && (
@@ -292,8 +296,8 @@ const WinrockDashboard: React.FC = () => {
               <input
                 type="checkbox"
                 id={`${sectionKey}-${option.id}`}
-                checked={selectedCategories.includes(option.id)}
-                onChange={() => toggleCategory(option.id)}
+                checked={activeFilters.spend.includes(option.id)}
+                onChange={() => toggleCategory('spend', option.id)}
               />
               <label htmlFor={`${sectionKey}-${option.id}`}>{option.label}</label>
             </div>
@@ -328,8 +332,15 @@ const WinrockDashboard: React.FC = () => {
 
 
   const handleSelectAll = (checked: boolean) => {
-    // TODO: select all checkboxes
-    console.log(checked)
+    setAllSelected(checked);
+    if (checked) {
+      // Select all visible rows on current page
+      const visibleIds = currentProjects.map(p => p.id);
+      setSelectedRows(visibleIds);
+    } else {
+      // Deselect all
+      setSelectedRows([]);
+    }
   };
 
   return (
