@@ -144,9 +144,11 @@
   }
 
   .selectDropdown {
-    width: 120px;
-    height: 47px;
+    width: 100px;
+    height: 40px;
     border-radius: 4px;
+    margin-left: 35px;
+    text-align: center;
   }
   
   .senderLabel {

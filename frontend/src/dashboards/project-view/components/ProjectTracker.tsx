@@ -64,32 +64,31 @@ const ProjectTracker = (props: ProjectTrackerProps) => {
 				<img src={dottedLine} style={{top: "calc(4rem + 320px)"}}></img>
 			</div>
 			<div className={styles.headerCont}>
-
-				<h2>Project Tracker</h2>
+				Project Tracker
 			</div>
 			<div className={`${styles.stageCont} ${props.currentStage === "Clarifying Initial Project Information" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(0)}
-				<h2>Clarifying Initial Project Information</h2>
+				Clarifying Initial Project Information
 			</div>
 			<div className={`${styles.stageCont} ${props.currentStage === "Clarifying Technical Details" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(1)}
-				<h2>Clarifying Technical Details</h2>
+				Clarifying Technical Details
 			</div>
 			<div className={`${styles.stageCont} ${props.currentStage === "GHG Assessment Analysis" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(2)}
-				<h2>GHG Assessment Analysis</h2>
+				GHG Assessment Analysis
 			</div>
 			<div className={`${styles.stageCont} ${props.currentStage === "Confirming Final Requirements" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(3)}
-				<h2>Confirming Final Requirements</h2>
+				Confirming Final Requirements
 			</div>
 			<div className={`${styles.stageCont} ${props.currentStage === "Risk & Co-benefit Assessment" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(4)}
-				<h2>Risks & Co-Benefits Assessment</h2>
+				Risks & Co-Benefits Assessment
 			</div>
 			<div className={`${styles.stageCont} ${props.currentStage === "Complete, and Excluded" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(5)}
-				<h2>Project Completed</h2>
+				Project Completed
 			</div>
 		</div>
 	);

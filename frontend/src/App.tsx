@@ -53,17 +53,17 @@ const updatesData: UpdateItem[] = [
 function App() {
   return (
     <> {/* Use a React.Fragment as the parent element */}
-      {/* <BrowserRouter>
+      <BrowserRouter>
         <div className="app-container">
           <Routes>
             <Route path="/" element={<SignupPage />} />
             <Route path="/dashboard" element={<WinrockDashboard />} />
           </Routes>
         </div>
-      </BrowserRouter> */}
+      </BrowserRouter>
 
       
-      <ProjectViewHeader data={{
+      {/* <ProjectViewHeader data={{
         id: 0,
         project: 'USAID Hamro Samman II',
         supplier: 'Cargil',
@@ -73,10 +73,10 @@ function App() {
         geography: 'North America',
         lastUpdated: '2 days ago',
         startDate: '06/12/2023'
-      }} />
+      }} /> */}
       {/* <ProjectTracker currentStage="Clarifying Initial Project Information" initialInfoStatus='completed' technicalStatus='completed' ghgStatus='in-progress' finalStatus='not-started' risksStatus='not-started'></ProjectTracker>
       <ProjectUpdates updates={updatesData}></ProjectUpdates> */}
-      <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
+      {/* <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
         <ProjectTracker 
           currentStage="Clarifying Initial Project Information" 
           initialInfoStatus='completed' 
@@ -86,7 +86,7 @@ function App() {
           risksStatus='not-started' 
         />
         <ProjectUpdates updates={updatesData} />
-      </div>
+      </div> */}
       
 
     </>

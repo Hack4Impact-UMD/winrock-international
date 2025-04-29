@@ -17,14 +17,17 @@
 	height: 60px;
 	position: absolute;
 	transform: translate(-50%, 0%);
-	left: calc(1rem + 10px);
+	left: calc(1rem + 30px);
+	margin-top: 30px;
 }
 
 .headerCont {
 	width: 100%;
 	height: calc(4rem - 27.5px);
 	padding-left: 1rem;
-	padding-top: 1rem;
+	font-size: 20px;
+	font-weight: 600;
+	margin-bottom: 30px;
 }
 
 h2 {
@@ -45,6 +48,7 @@ h2 {
 	width: 20px;
 	height: 20px;
 	margin-right: 20px;
+	font-weight: 600;
 }
 
 .currentStageCont {
