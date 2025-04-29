@@ -13,6 +13,7 @@ import RenewableProposalForm from './forms/project-proposal-forms/RenewablePropo
 import ForestryRisksForm from './forms/risks-and-co-benefit-forms/ForestryRisksForm';
 import TechEnergyRisksForm from './forms/risks-and-co-benefit-forms/TechEnergyRisksForm';
 import WinrockDashboard from './dashboards/winrock-dashboard/projects/winrockDashboard';
+import NotificationCenter from './dashboards/winrock-dashboard/notification-center/NotificationCenter';
 import PasswordChangedPage from './auth/pages/PasswordChangedPage';
 import CreateNewPasswordPage from './auth/pages/CreateNewPasswordPage';
 
@@ -34,11 +35,12 @@ function App() {
         <Route path="/forms/tech-energy-risks-form"          element={<TechEnergyRisksForm />} />
 
         <Route path="/dashboard/admin/projects"              element={<WinrockDashboard />} />
-        <Route path="/dashboard/admin/notification-center"   element={<></>} />
+        <Route path="/dashboard/admin/notification-center"   element={<NotificationCenter />} />
+        <Route path="/dashboard/admin/account-settings"      element={<></>} />
 
         <Route path="*"                                      element={<Navigate to="/" replace />} />
       </Routes>
-      </BrowserRouter>
+    </BrowserRouter>
   );
 }
 
