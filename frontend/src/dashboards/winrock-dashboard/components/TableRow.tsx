@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../css-modules/TableRow.module.css';
 import ColorText from '../components/ColorText';
 import RowCustomSelect from '../components/RowCustomSelect';
+import PopupMenu from './PopupMenu'; // ⬅️ Import the portal popup component (you need to create it too if you haven't yet)
 
-type StatusType = 
+type StatusType =
   | 'On Track'
   | 'At Risk'
   | 'Paused'
@@ -21,7 +22,7 @@ interface TableRowProps {
   data: {
     id: number;
     project: string;
-    supplier: string;
+    supplierName: string;
     overallStatus: StatusType;
     analysisStage: AnalysisStageType;
     spendCategory: string;
@@ -32,7 +33,10 @@ interface TableRowProps {
   isSelected?: boolean;
   onSelect?: (checked: boolean) => void;
   isEditMode?: boolean;
-  onFieldChange?: (field: keyof TableRowProps['data'], value: string) => void;
+  onSave?: (updatedFields: Partial<TableRowProps['data']>) => void;
+  onActionClick?: (id: number | null, event?: React.MouseEvent) => void; // 👈 updated here
+  onArchiveClick?: (id: number) => void;
+  activeActionMenuId?: number | null;
 }
 
 const statusOptions: StatusType[] = [
@@ -51,13 +55,46 @@ const analysisStageOptions: AnalysisStageType[] = [
   'Complete, and Excluded'
 ];
 
-const TableRow: React.FC<TableRowProps> = ({ 
-  data, 
-  isSelected = false, 
+const TableRow: React.FC<TableRowProps> = ({
+  data,
+  isSelected = false,
   onSelect,
   isEditMode = false,
-  onFieldChange
+  onSave,
+  onActionClick,         // ✅ ADD THIS
+  onArchiveClick,        // ✅ ADD THIS
+  activeActionMenuId,    // ✅ ADD THIS
 }) => {
+  // --- Local State for Editable Fields ---
+  const [localSupplierName, setLocalSupplierName] = useState(data.supplierName);
+  const [localOverallStatus, setLocalOverallStatus] = useState<StatusType>(data.overallStatus);
+  const [localAnalysisStage, setLocalAnalysisStage] = useState<AnalysisStageType>(data.analysisStage);
+  const [localSpendCategory, setLocalSpendCategory] = useState(data.spendCategory);
+  const [localGeography, setLocalGeography] = useState(data.geography);
+  const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+
+  // Refresh local states when `data` changes
+  useEffect(() => {
+    setLocalSupplierName(data.supplierName);
+    setLocalOverallStatus(data.overallStatus);
+    setLocalAnalysisStage(data.analysisStage);
+    setLocalSpendCategory(data.spendCategory);
+    setLocalGeography(data.geography);
+  }, [data]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest(`.${styles.actionMenuWrapper}`)) {
+        onActionClick?.(null); // close menu if clicked outside
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <tr className={styles.tableRow}>
       <td className={styles.checkboxCell}>
@@ -71,32 +108,31 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         </div>
       </td>
+
+      {/* Project Name - Not Editable */}
+      <td className={styles.cell}>{data.project}</td>
+
+      {/* Supplier Name */}
       <td className={styles.cell}>
         {isEditMode ? (
           <input
             type="text"
-            value={data.project}
-            onChange={(e) => onFieldChange?.('project', e.target.value)}
+            value={localSupplierName}
+            onChange={(e) => setLocalSupplierName(e.target.value)}
             className={styles.editableInput}
           />
-        ) : data.project}
+        ) : (
+          data.supplierName
+        )}
       </td>
-      <td className={styles.cell}>
-        {isEditMode ? (
-          <input
-            type="text"
-            value={data.supplier}
-            onChange={(e) => onFieldChange?.('supplier', e.target.value)}
-            className={styles.editableInput}
-          />
-        ) : data.supplier}
-      </td>
+
+      {/* Overall Status */}
       <td className={styles.cell}>
         {isEditMode ? (
           <RowCustomSelect
-            value={data.overallStatus}
+            value={localOverallStatus}
             options={statusOptions}
-            onChange={(value) => onFieldChange?.('overallStatus', value)}
+            onChange={(value) => setLocalOverallStatus(value as StatusType)}
             variant="status"
           />
         ) : (
@@ -107,12 +143,14 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         )}
       </td>
+
+      {/* Analysis Stage */}
       <td className={styles.cell}>
         {isEditMode ? (
           <RowCustomSelect
-            value={data.analysisStage}
+            value={localAnalysisStage}
             options={analysisStageOptions}
-            onChange={(value) => onFieldChange?.('analysisStage', value)}
+            onChange={(value) => setLocalAnalysisStage(value as AnalysisStageType)}
             variant="analysis"
           />
         ) : (
@@ -123,33 +161,90 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         )}
       </td>
+
+      {/* Spend Category */}
       <td className={styles.cell}>
         {isEditMode ? (
           <input
             type="text"
-            value={data.spendCategory}
-            onChange={(e) => onFieldChange?.('spendCategory', e.target.value)}
+            value={localSpendCategory}
+            onChange={(e) => setLocalSpendCategory(e.target.value)}
             className={styles.editableInput}
           />
-        ) : data.spendCategory}
+        ) : (
+          data.spendCategory
+        )}
       </td>
+
+      {/* Geography */}
       <td className={styles.cell}>
         {isEditMode ? (
           <input
             type="text"
-            value={data.geography}
-            onChange={(e) => onFieldChange?.('geography', e.target.value)}
+            value={localGeography}
+            onChange={(e) => setLocalGeography(e.target.value)}
             className={styles.editableInput}
           />
-        ) : data.geography}
+        ) : (
+          data.geography
+        )}
       </td>
+
+      {/* Last Updated - Not Editable */}
       <td className={styles.cell}>{data.lastUpdated}</td>
+
+      {/* Start Date - Not Editable */}
       <td className={styles.cell}>{data.startDate}</td>
+
+      {/* Actions */}
       <td className={styles.actionCell}>
-        <button className={styles.actionButton}>•••</button>
+        {isEditMode ? (
+          <button
+            className={styles.saveButton}
+            onClick={() => {
+              onSave?.({
+                supplierName: localSupplierName,
+                overallStatus: localOverallStatus,
+                analysisStage: localAnalysisStage,
+                spendCategory: localSpendCategory,
+                geography: localGeography,
+              });
+            }}
+          >
+            Save
+          </button>
+        ) : (
+          <div className={styles.actionMenuWrapper}>
+            <button
+              className={styles.actionButton}
+              onClick={(e) => {
+                const rect = (e.target as HTMLElement).getBoundingClientRect();
+                setButtonPosition({ x: rect.left, y: rect.bottom });
+                onActionClick?.(data.id, e);
+              }}
+            >
+              •••
+            </button>
+
+            {activeActionMenuId === data.id && (
+              <PopupMenu
+                x={buttonPosition.x}
+                y={buttonPosition.y}
+                onClose={() => onActionClick?.(null)}
+              >
+                <button onClick={(e) => {
+                  console.log('Archive button clicked for id:', data.id);
+                  e.stopPropagation(); // Stop event from bubbling up
+                  onArchiveClick?.(data.id);
+                }}>Archive</button>
+              </PopupMenu>
+            )}
+          </div>
+        )}
       </td>
+
     </tr>
   );
 };
 
-export default TableRow; 
+export default TableRow;

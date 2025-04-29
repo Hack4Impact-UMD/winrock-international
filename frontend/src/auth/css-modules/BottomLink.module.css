@@ -2,18 +2,19 @@
     display: flex;
     flex-direction: row;
     gap: .3rem;
-    width: 100%;
+    width: 20rem;
     justify-content: center;
-    font-size: .95rem;
     font-weight: 500;
 }
 
 .beforeText {
+    font-size: 1rem;
     color: gray;
     letter-spacing: .2px;
 }
 
 .link {
+    font-size: 1rem;
     color: black;
-    text-decoration: none;
+    cursor: pointer;
 }

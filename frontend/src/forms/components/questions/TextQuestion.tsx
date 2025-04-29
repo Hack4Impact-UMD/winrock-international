@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import styles from "../../css-modules/TextQuestion.module.css";
+import Popup from '../Popup';
 
 interface TextQuestionProps {
   label: string;
@@ -9,16 +10,21 @@ interface TextQuestionProps {
   disableOverwrite?: boolean;
   size?: 'small' | 'large';
   removeTopPadding?: boolean;
+  popup?: {
+    guidance: string;
+    example: string;
+  };
 }
 
-function TextQuestion({ 
-  label, 
-  onChange, 
-  controlledValue, 
-  required = false, 
+function TextQuestion({
+  label,
+  onChange,
+  controlledValue,
+  required = false,
   disableOverwrite = false,
   size = 'large',
-  removeTopPadding = false
+  removeTopPadding = false,
+  popup
 }: TextQuestionProps) {
   const [value, setValue] = useState(controlledValue);
   const [placeholder, setPlaceholder] = useState("Enter text here");
@@ -47,9 +53,14 @@ function TextQuestion({
 
   return (
     <div className={`${styles.container} ${size === 'small' ? styles.smallContainer : ''} ${removeTopPadding ? styles.noTopPadding : ''}`}>
-      <label className={`${styles.label} ${required ? styles.requiredLabel : ""} ${size === 'small' ? styles.smallLabel : ''}`}>
-        {label}
-      </label>
+      <div className={styles.labelRow}>
+        {popup && (
+          <Popup guidance={popup.guidance} example={popup.example} />
+        )}
+        <label className={`${styles.label} ${required ? styles.requiredLabel : ""} ${size === 'small' ? styles.smallLabel : ''}`}>
+          {label}
+        </label>
+      </div>
 
       <textarea
         className={`${styles.input} ${isValid ? styles.validInput : styles.invalidInput} ${disableOverwrite ? styles.disabledInput : ""} ${size === 'small' ? styles.smallInput : ''}`}

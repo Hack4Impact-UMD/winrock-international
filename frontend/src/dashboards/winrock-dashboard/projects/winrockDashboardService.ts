@@ -1,4 +1,3 @@
-import { FirebaseError } from "firebase/app";
 import {
     collection,
     deleteDoc,
@@ -12,9 +11,8 @@ import {
     updateDoc,
     where
 } from "firebase/firestore";
-import { db } from "../../firebaseConfig.js";
-import Result from "../../types/Result.js";
-
+import { db } from "../../../firebaseConfig.js";
+import Result, { handleFirebaseError } from "../../../types/Result.js";
 
 /**
  * Represents the overall status of a project.
@@ -38,7 +36,6 @@ enum AnalysisStage {
     STAGE_5 = "Stage 5: Risk & Co-benefit Assessment",
     STAGE_6 = "Stage 6: Complete, and Excluded"
 }
-
 
 /**
  * Represents a project stored in the database.
@@ -87,11 +84,11 @@ const createProject = async (
     isActive: boolean = true,
     isPinned: boolean = false
 ): Promise<Result> => {
-    try{
+    try {
         const docRef = doc(db, "projects", projectName);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            return { success: false, errorCode: "project-name-already-exists"}
+            return { success: false, errorCode: "project-name-already-exists" }
         }
 
         const now = Timestamp.now();
@@ -111,10 +108,7 @@ const createProject = async (
 
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -147,10 +141,7 @@ const getProjectByName = async (projectName: string): Promise<Result> => {
             data: project
         };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 
@@ -215,31 +206,28 @@ const getProjectsWithFilters = async (
 
         // Apply ordering
         filterQuery = query(filterQuery, orderBy(orderByField, desc ? "desc" : "asc"));
-	
-		const querySnapshot = await getDocs(filterQuery);
-		querySnapshot.forEach((doc) => {
-			const project = {
+
+        const querySnapshot = await getDocs(filterQuery);
+        querySnapshot.forEach((doc) => {
+            const project = {
                 ...doc.data(),
                 startDate: doc.data().startDate.toDate(),
                 lastUpdated: doc.data().lastUpdated.toDate()
             } as Project;
             projects.push(project);
             projectNames.push(project.projectName);
-		});
+        });
 
-		return {
+        return {
             success: true,
             data: {
                 projects: projects,
                 projectNames: projectNames
             }
         };
-	} catch (error) {
-		return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
-	}
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
 }
 
 /**
@@ -259,7 +247,7 @@ const updateProjectField = async (projectName: string, field: keyof Project, new
         const docRef = doc(db, `projects/${projectName}`);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
-            return { success: false, errorCode: "project-not-found"};
+            return { success: false, errorCode: "project-not-found" };
         }
 
         // Convert Dates to Firestore Timestamps
@@ -275,10 +263,7 @@ const updateProjectField = async (projectName: string, field: keyof Project, new
 
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 };
 
@@ -294,17 +279,14 @@ const deleteProject = async (projectName: string): Promise<Result> => {
         const docRef = doc(db, `projects/${projectName}`);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
-            return { success: false, errorCode: "project-not-found"};
+            return { success: false, errorCode: "project-not-found" };
         }
 
         await deleteDoc(docRef);
 
         return { success: true };
     } catch (error) {
-        return {
-            success: false,
-            errorCode: error instanceof FirebaseError ? error.code : "unknown"
-        };
+        return handleFirebaseError(error);
     }
 }
 

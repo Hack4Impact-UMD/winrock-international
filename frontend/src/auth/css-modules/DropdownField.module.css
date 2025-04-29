@@ -2,14 +2,13 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: .5rem;
-    margin-bottom: 1rem;
     width: 100%;
 }
 
 .label {
     font-size: 0.875rem;
     font-weight: 500;
+    line-height: 0;
     color: black;
 }
   
@@ -22,12 +21,13 @@
     background-color: #F7F8F9;
     color: black;
     letter-spacing: 0.42px;
+    appearance:none;
 }
 
 .selectIcon {
     position: absolute;
-    top: 50%;
-    right: 1rem;
+    top: 3.1rem;
+    right: .7rem;
     transform: translateY(-50%);
     pointer-events: none;
 }

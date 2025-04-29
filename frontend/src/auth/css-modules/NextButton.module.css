@@ -1,0 +1,26 @@
+.nextButton {
+    position: relative;
+    display: flex;
+    width: 20rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: .625rem;
+    cursor: pointer;
+}  
+
+.label {
+    position: absolute;
+    top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: .9rem;
+    font-weight: 300;
+    letter-spacing: .7px;
+}

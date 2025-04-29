@@ -27,6 +27,13 @@
    letter-spacing: 3%;
 }
 
+.labelRow {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   margin-bottom: 1.25rem;
+}
+
 .requiredLabel::after {
    content: '';
 }
