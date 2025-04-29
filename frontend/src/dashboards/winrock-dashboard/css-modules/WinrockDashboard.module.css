@@ -7,6 +7,16 @@
   min-height: 100vh;
 }
 
+.header {
+  padding: 2rem 2.5rem;
+  border-right: 1px solid #CCCCCC;
+  width: 18.75rem;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background-color: white;
+}
+
 html {
   font-size: 85%;
 }
