@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import styles from '../css-modules/WinrockDashboard.module.css';
-import winrockLogo from '../../../assets/winrock-international-logo.png';
-import projectsIcon from '../../../assets/projects-icon.svg';
-import notificationIcon from '../../../assets/notification-icon.svg';
+import styles from "./../css-modules/WinrockDashboard.module.css"
+import winrockLogo from "./../../../assets/winrock-international-logo.png"
+import projectsIcon from './../../../assets/projects-icon.svg';
+import notificationIcon from './../../../assets/notification-icon.svg';
 import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
+import searchIcon from "../../../assets/search-icon.svg"
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
@@ -12,8 +13,10 @@ import SortWrapper from '../components/SortWrapper';
 import DateFilter from '../components/DateFilter';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
-import { getAllProjects, updateProjectField } from "./winrockDashboardService"
+import ReportsDropdown from '../components/ReportsDropdown';
+import KPICharts from '../components/KPICharts';
 import PopupMenu from '../components/PopupMenu';
+import { getAllProjects, updateProjectField } from "./winrockDashboardService";
 
 interface Project {
   id: number;
@@ -28,7 +31,6 @@ interface Project {
   activityType: 'Renewable Energy and Energy Efficiency' | 'Agriculture' | 'Agroforestry' | 'Animal Agriculture and Manure Management';
   isActive: boolean;
 }
-
 
 async function fetchProjects(): Promise<Project[]> {
   const result = await getAllProjects("projectName", false);
@@ -49,12 +51,9 @@ async function fetchProjects(): Promise<Project[]> {
     lastUpdated: typeof p.lastUpdated === 'string' ? p.lastUpdated : new Date(p.lastUpdated).toISOString().split("T")[0],
     startDate: typeof p.startDate === 'string' ? p.startDate : new Date(p.startDate).toISOString().split("T")[0],
     activityType: 'Renewable Energy and Energy Efficiency',
-
-    // 🚀 ADD THIS
     isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
   }));
 }
-
 
 const WinrockDashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('All Projects');
@@ -281,24 +280,15 @@ const WinrockDashboard: React.FC = () => {
       <header className={styles.header}>
         <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
         <div className={styles.headerNavContainer}>
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Projects')}
-          >
+          <button className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`} onClick={() => setActiveNavButton('Projects')}>
             <img src={projectsIcon} alt="Projects" />
             Projects
           </button>
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Notification Center')}
-          >
+          <button className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`} onClick={() => setActiveNavButton('Notification Center')}>
             <img src={notificationIcon} alt="Notification Center" />
             Notification Center
           </button>
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Account Settings')}
-          >
+          <button className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`} onClick={() => setActiveNavButton('Account Settings')}>
             <img src={accountSettingsIcon} alt="Account Settings" />
             Account Settings
           </button>
@@ -309,21 +299,14 @@ const WinrockDashboard: React.FC = () => {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Projects</h1>
           <div className={styles.viewModeButtons}>
-            <button
-              className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`}
-              onClick={() => setViewMode('active')}
-            >
-              Active
-            </button>
-            <button
-              className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`}
-              onClick={() => setViewMode('archived')}
-            >
-              Archived
-            </button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => setViewMode('active')}>Active</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => setViewMode('archived')}>Archived</button>
           </div>
         </div>
 
+        <ReportsDropdown>
+          <KPICharts projects={projects} />
+        </ReportsDropdown>
         <div className={styles.tabsContainer}>
           <FilterTabs
             tabs={tabs}
@@ -425,6 +408,7 @@ const WinrockDashboard: React.FC = () => {
           itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
         />
+
       </main>
     </div>
   );
@@ -438,7 +422,6 @@ const tabs = [
   'Animal Agriculture and Manure Management'
 ];
 
-// options for the dropdowns
 const spendCategories = [
   { id: 'acids', label: 'Acids & Alkalis' },
   { id: 'animal-products', label: 'Animal Products' },
@@ -456,6 +439,5 @@ const overallCategories = [
   { id: 'completed', label: <ColorText text="Completed" category="Completed" variant="status" /> },
   { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" category="Completed (except for risk)" variant="status" /> }
 ];
-
 
 export default WinrockDashboard;
