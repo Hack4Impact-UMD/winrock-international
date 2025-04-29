@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from "./../css-modules/WinrockDashboard.module.css"
 import winrockLogo from "./../../../assets/winrock-international-logo.png"
 import projectsIcon from './../../../assets/projects-icon.svg';
@@ -18,6 +18,8 @@ import KPICharts from '../components/KPICharts';
 import PopupMenu from '../components/PopupMenu';
 import { getAllProjects, updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { db } from "../../../firebaseConfig.js";
 
 interface Project {
   id: number;
@@ -63,7 +65,6 @@ const WinrockDashboard: React.FC = () => {
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
-  //const [projects, setProjects] = useState<Project[]>(allProjects);
   const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
   const [allSelected, setAllSelected] = useState(false);
@@ -117,17 +118,50 @@ const WinrockDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchProjects()
-      .then(data => {
-        setProjects(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setError("Failed to load projects");
-        setLoading(false);
+    const q = query(collection(db, "projects"), orderBy("projectName")); // optional: order by a field if you want
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const projectsData = snapshot.docs.map((doc, index) => {
+        const p = doc.data();
+        const parseDate = (date: any) => {
+          if (!date) return ""; // empty string if missing
+          if (date.toDate) {
+            // Firestore Timestamp object
+            return date.toDate().toISOString().split("T")[0];
+          }
+          const parsed = new Date(date);
+          if (isNaN(parsed.getTime())) {
+            // still not a valid date
+            return "";
+          }
+          return parsed.toISOString().split("T")[0];
+        };
+        return {
+          id: index,
+          project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
+          supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
+          overallStatus: p.overallStatus,
+          analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
+            ? p.analysisStage.split(':')[1].trim()
+            : p.analysisStage,
+          spendCategory: p.spendCategory,
+          geography: p.geography,
+          lastUpdated: parseDate(p.lastUpdated),
+          startDate: parseDate(p.startDate),
+          activityType: 'Renewable Energy and Energy Efficiency', // default if missing
+          isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
+        };
       });
+      setProjects(projectsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error listening to projects:", error);
+      setError("Failed to load projects");
+      setLoading(false);
+    });
+
+    return () => unsubscribe(); // 🚨 important: cleanup when component unmounts
   }, []);
+
 
 
   const itemsPerPage = 10;
@@ -139,14 +173,18 @@ const WinrockDashboard: React.FC = () => {
   const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  const visibleProjects = projects
-    .filter(p => viewMode === 'active' ? p.isActive : !p.isActive)
-    .filter(p => selectedTab === 'All Projects' ? true : p.activityType === selectedTab);
+  const visibleProjects = useMemo(() => {
+    return projects
+      .filter(p => viewMode === 'active' ? p.isActive : !p.isActive)
+      .filter(p => selectedTab === 'All Projects' ? true : p.activityType === selectedTab);
+  }, [projects, viewMode, selectedTab]);
 
-
-  const indexOfLastProject = currentPage * itemsPerPage;
-  const indexOfFirstProject = indexOfLastProject - itemsPerPage;
-  const currentProjects = visibleProjects.slice(indexOfFirstProject, indexOfLastProject);
+  // Memoize currentProjects (paging the visibleProjects)
+  const currentProjects = useMemo(() => {
+    const indexOfLastProject = currentPage * itemsPerPage;
+    const indexOfFirstProject = indexOfLastProject - itemsPerPage;
+    return visibleProjects.slice(indexOfFirstProject, indexOfLastProject);
+  }, [visibleProjects, currentPage]);
 
   //date filter consts
   interface DateRange {
@@ -202,8 +240,26 @@ const WinrockDashboard: React.FC = () => {
 
   // Handler for sort selection - just updates the state
   const handleSortChange = (sortOption: string) => {
+    const sortedProjects = [...projects]; // clone the array so you don't mutate state directly
+
+    if (sortOption === "recently-updated") {
+      sortedProjects.sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
+    } else if (sortOption === "newest-first") {
+      sortedProjects.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+    } else if (sortOption === "oldest-first") {
+      sortedProjects.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    } else if (sortOption === "a-to-z") {
+      sortedProjects.sort((a, b) => b.project.localeCompare(a.project));
+    } else if (sortOption === "z-to-a") {
+      sortedProjects.sort((a, b) => a.project.localeCompare(b.project));
+    } else {
+      // fallback: maybe do nothing
+    }
+
+    setProjects(sortedProjects);
     setSelectedSort(sortOption);
   };
+
 
 
   const renderFilterContent = (sectionKey: string) => {
