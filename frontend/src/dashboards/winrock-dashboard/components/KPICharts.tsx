@@ -78,6 +78,7 @@ const KPICharts: React.FC<KPIChartsProps> = ({ projects }) => {
     </ResponsiveContainer>
   );
 
+  
 
   const renderLegend = (data: ChartData[], variant: 'status' | 'analysis', colors: { [key: string]: string }) => (
     <div className={styles.legendContainer}>
