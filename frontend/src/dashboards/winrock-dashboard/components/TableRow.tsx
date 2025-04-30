@@ -3,6 +3,7 @@ import styles from '../css-modules/TableRow.module.css';
 import ColorText from '../components/ColorText';
 import RowCustomSelect from '../components/RowCustomSelect';
 import PopupMenu from './PopupMenu'; // ⬅️ Import the portal popup component (you need to create it too if you haven't yet)
+import { useNavigate } from 'react-router-dom';
 
 type StatusType =
   | 'On Track'
@@ -20,7 +21,7 @@ type AnalysisStageType =
 
 interface TableRowProps {
   data: {
-    id: number;
+    id: string;
     project: string;
     supplierName: string;
     overallStatus: StatusType;
@@ -34,9 +35,10 @@ interface TableRowProps {
   onSelect?: (checked: boolean) => void;
   isEditMode?: boolean;
   onSave?: (updatedFields: Partial<TableRowProps['data']>) => void;
-  onActionClick?: (id: number | null, event?: React.MouseEvent) => void; // 👈 updated here
-  onArchiveClick?: (id: number) => void;
-  activeActionMenuId?: number | null;
+  onActionClick?: (id: string | null, event?: React.MouseEvent) => void; // 👈 updated here
+  onArchiveClick?: (id: string) => void;
+  activeActionMenuId?: string | null;
+  onRowClick?: () => void;
 }
 
 const statusOptions: StatusType[] = [
@@ -64,6 +66,7 @@ const TableRow: React.FC<TableRowProps> = ({
   onActionClick,         // ✅ ADD THIS
   onArchiveClick,        // ✅ ADD THIS
   activeActionMenuId,    // ✅ ADD THIS
+  onRowClick,
 }) => {
   // --- Local State for Editable Fields ---
   const [localSupplierName, setLocalSupplierName] = useState(data.supplierName);
@@ -72,6 +75,7 @@ const TableRow: React.FC<TableRowProps> = ({
   const [localSpendCategory, setLocalSpendCategory] = useState(data.spendCategory);
   const [localGeography, setLocalGeography] = useState(data.geography);
   const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+  const navigate = useNavigate();
 
   // Refresh local states when `data` changes
   useEffect(() => {
@@ -107,6 +111,16 @@ const TableRow: React.FC<TableRowProps> = ({
             disabled={!isEditMode}
           />
         </div>
+      </td>
+      <td
+      className={`${styles.cell} ${styles.projectLink}`}
+        onClick={() => {
+          navigate(`/projects/${data.id}`); // 👈 go to the project page
+          onRowClick?.(); // optional callback if needed
+        }}
+        style={{ cursor: 'pointer', textDecoration: 'underline' }}
+      >
+        {data.project}
       </td>
 
       {/* Project Name - Not Editable */}

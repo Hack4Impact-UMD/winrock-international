@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import styles from '../css-modules/ProjectUpdates.module.css';
 
 interface UpdateItem {
-  id: number;
+  id: string;
+  projectId: string;
   title: string;
   description?: string;
   timestamp: string;
@@ -16,9 +17,31 @@ interface ProjectUpdatesProps {
 }
 
 const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
-  const [requestTexts, setRequestTexts] = useState<Record<number, string>>({});
-  const [updateMessages, setUpdateMessages] = useState<Record<number, { sender: 'user' | 'supplier' | 'client'; text: string }[]>>({});
-  const [selectedCounterparties, setSelectedCounterparties] = useState<Record<number, "supplier" | "client">>({});
+  const [requestTexts, setRequestTexts] = useState<Record<string, string>>({});
+  const [updateMessages, setUpdateMessages] = useState<Record<string, { sender: 'user' | 'supplier' | 'client'; text: string }[]>>({});
+  const [selectedCounterparties, setSelectedCounterparties] = useState<Record<string, "supplier" | "client">>({});
+  const parseRelativeTimestamp = (timestamp: string): number => {
+    const regex = /(\d+)\s+(minute|hour|day|week|month|year)s?\s+ago/;
+    const match = timestamp.match(regex);
+  
+    if (!match) return 0;
+  
+    const value = parseInt(match[1]);
+    const unit = match[2];
+  
+    const now = new Date().getTime();
+    const unitsToMs: Record<string, number> = {
+      minute: 60 * 1000,
+      hour: 60 * 60 * 1000,
+      day: 24 * 60 * 60 * 1000,
+      week: 7 * 24 * 60 * 60 * 1000,
+      month: 30 * 24 * 60 * 60 * 1000, // rough estimate
+      year: 365 * 24 * 60 * 60 * 1000, // rough estimate
+    };
+  
+    return now - value * unitsToMs[unit];
+  };
+  
 
   const generateCounterpartyReply = (userMessage: string, counterpartyType: "supplier" | "client"): string => {
     const supplierReplies = [
@@ -43,7 +66,7 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
   
   
 
-  const handleRequestInfo = (updateId: number) => {
+  const handleRequestInfo = (updateId: string) => {
     const text = requestTexts[updateId];
     if (text && text.trim() !== '') {
       const counterparty = selectedCounterparties[updateId] || 'supplier'; // Default to supplier if not selected
@@ -70,14 +93,18 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
   
   
 
-  const handleInputChange = (updateId: number, value: string) => {
+  const handleInputChange = (updateId: string, value: string) => {
     setRequestTexts(prev => ({
       ...prev,
       [updateId]: value,
     }));
   };
 
-  const sortedUpdates = [...updates].sort((a, b) => b.id - a.id);
+  // const sortedUpdates = [...updates].sort((a, b) => b.id - a.id);
+  const sortedUpdates = [...updates].sort(
+    (a, b) => parseRelativeTimestamp(b.timestamp) - parseRelativeTimestamp(a.timestamp)
+  );
+  
 
   return (
     <div className={styles.container}>

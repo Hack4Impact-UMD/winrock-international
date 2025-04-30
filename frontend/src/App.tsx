@@ -16,6 +16,7 @@ import WinrockDashboard from './dashboards/winrock-dashboard/projects/winrockDas
 import NotificationCenter from './dashboards/winrock-dashboard/notification-center/NotificationCenter';
 import PasswordChangedPage from './auth/pages/PasswordChangedPage';
 import CreateNewPasswordPage from './auth/pages/CreateNewPasswordPage';
+import ProjectViewWrapper from './dashboards/project-view/ProjectViewWrapper';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/forms/tech-energy-risks-form"          element={<TechEnergyRisksForm />} />
 
         <Route path="/dashboard/admin/projects"              element={<WinrockDashboard />} />
+        <Route path="/dashboard/admin/projects/:projectId"   element={<ProjectViewWrapper />} />
         <Route path="/dashboard/admin/notification-center"   element={<NotificationCenter />} />
         <Route path="/dashboard/admin/account-settings"      element={<></>} />
 

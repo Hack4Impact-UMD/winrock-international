@@ -5,7 +5,7 @@ import ColorText from './ColorText';
 
 interface KPIChartsProps {
   projects: {
-    id: number;
+    id: string;
     overallStatus: string;
     analysisStage: string;
   }[];

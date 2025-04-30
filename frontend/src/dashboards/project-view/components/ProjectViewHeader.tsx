@@ -18,9 +18,9 @@ type AnalysisStageType =
 
 interface ProjectViewHeaderProps {
     data: {
-        id: number;
+        id: string;
         project: string;
-        supplier: string;
+        supplierName: string;
         overallStatus: StatusType;
         analysisStage: AnalysisStageType;
         spendCategory: string;
@@ -64,7 +64,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data }) => {
             </thead>
 
             <tr className={styles.tableRow}>
-                <td className={styles.cell}>{data.supplier}</td>
+                <td className={styles.cell}>{data.supplierName}</td>
                 <td className={styles.cell}>
                     <ColorText
                         text={data.overallStatus}
