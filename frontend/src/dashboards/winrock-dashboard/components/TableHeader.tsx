@@ -14,14 +14,14 @@ const TableHeader: React.FC<TableHeaderProps> = ({ onSelectAll, allSelected = fa
       <tr>
         {/* Checkbox Column */}
         <th className={styles.checkboxCell}>
-          {isEditMode && (
+        <div className={`${styles.checkboxWrapper} ${!isEditMode ? styles.hidden : ''}`}>
             <input
               type="checkbox"
               onChange={(e) => onSelectAll?.(e.target.checked)}
               checked={allSelected}
               className={styles.checkbox}
             />
-          )}
+          </div>
         </th>
 
         {/* Other Headers */}
