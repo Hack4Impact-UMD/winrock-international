@@ -190,6 +190,7 @@ const WinrockDashboard: React.FC = () => {
   const currentProjects = useMemo(() => {
     const indexOfLastProject = currentPage * itemsPerPage;
     const indexOfFirstProject = indexOfLastProject - itemsPerPage;
+    console.log(filteredAndVisibleProjects)
     return filteredAndVisibleProjects.slice(indexOfFirstProject, indexOfLastProject);
   }, [filteredAndVisibleProjects, currentPage]);
 
@@ -511,13 +512,13 @@ const tabs = [
 ];
 
 const spendCategories = [
-  { id: 'acids', label: 'Acids & Alkalis' },
-  { id: 'animal-products', label: 'Animal Products' },
-  { id: 'cereals', label: 'Cereals & Grains' },
-  { id: 'commodities', label: 'Commodities' },
-  { id: 'cocoa', label: 'Cocoa' },
-  { id: 'electricity', label: 'Electricity' },
-  { id: 'emulsifiers', label: 'Emulsifiers' },
+  { id: 'Acids & Alkalis', label: 'Acids & Alkalis' },
+  { id: 'Animal Products', label: 'Animal Products' },
+  { id: 'Cereals & Grains', label: 'Cereals & Grains' },
+  { id: 'Commodities', label: 'Commodities' },
+  { id: 'Cocoa', label: 'Cocoa' },
+  { id: 'Electricity', label: 'Electricity' },
+  { id: 'Emulsifiers', label: 'Emulsifiers' },
 ];
 
 const overallCategories = [
