@@ -1,5 +1,5 @@
 export interface UpdateItem {
-    id: number;
+    id: string;
     title: string;
     description?: string;
     timestamp: string;

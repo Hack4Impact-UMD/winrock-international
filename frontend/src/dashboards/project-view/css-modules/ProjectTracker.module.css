@@ -5,6 +5,7 @@
 	justify-content: start;
 	width: 300px;
 	gap: 0;
+	margin-left: 270px;
 }
 
 .lineCont {
@@ -19,6 +20,7 @@
 	transform: translate(-50%, 0%);
 	left: calc(1rem + 30px);
 	margin-top: 30px;
+	margin-left: 263px;
 }
 
 .headerCont {
