@@ -495,18 +495,6 @@ html {
   transform: rotate(-135deg);
 }
 
-.sortButton {
-  padding: 0.5rem 1rem;
-  border: none;
-  background-color: white;
-  color: #374151;
-  font-size: 0.875rem;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  margin-left: 0.5rem;
-}
-
 .filterPopup {
   position: absolute;
   top: 100%;
@@ -521,9 +509,8 @@ html {
 /* Table container style */
 .tableContainer {
   position: relative;
-  margin-top: 1rem;
   overflow-x: auto;
-  border: 1px solid #ddd;
+
 }
 
 /* Error message styling */

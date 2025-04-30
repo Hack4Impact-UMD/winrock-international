@@ -412,6 +412,7 @@ const WinrockDashboard: React.FC = () => {
 
         <div className={styles.toolbarContainer}>
           <div className={styles.searchContainer}>
+          <img src={searchIcon} alt="Search" className={styles.searchIcon} />
             <input
               type="text"
               placeholder="Search projects..."
