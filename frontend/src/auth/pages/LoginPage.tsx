@@ -1,83 +1,94 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Result from "../../types/Result";
+import Result, { toReadableError } from "../../types/Result";
 import { handleLogin } from "../authService";
+import "../styles/LoginPage.css"
 
-import AuthLogoHeader from "../components/AuthLogoHeader";
-import AuthForm from "../components/AuthForm";
-import AuthTextField from "../components/AuthTextField";
-import AuthPasswordField from "../components/AuthPasswordField";
+import LogoHeader from "../components/LogoHeader";
 import OutlookButton from "../components/OutlookButton";
 import Divider from "../components/Divider";
-import AuthBottomLink from "../components/AuthBottomLink";
+import TextField from "../components/TextField";
+import PasswordField from "../components/PasswordField";
+import BottomLink from "../components/BottomLink";
+import NextButton from "../components/NextButton";
+import ToastMessage from "../components/ToastMessage";
 
-function LoginPage() {
+const LoginPage: React.FC = () => {
   const navigate = useNavigate();
 
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  
+
   async function handleLoginClick() {
     if (!email) {
-      console.error("Error logging in: Missing email");
+      setErrorMessage("Missing email.");
       return;
     }
 
-    if (!password) {
-      console.error("Error logging in: Missing password")
-      return;
-    }
-    
     const result: Result = await handleLogin({ email, password });
     if (result.success) {
-      navigate("/dashboard");
+      navigate("/dashboard/admin/projects");
     } else {
       console.error("Error logging in: ", result.errorCode);
+      setErrorMessage(toReadableError(result.errorCode));
     }
   }
 
   return (
     <>
-      <AuthLogoHeader />
+      <LogoHeader />
 
-      <AuthForm
-        nextLabel="Login"
-        onNext={handleLoginClick}
-        afterChild={
-          <AuthBottomLink
-            beforeText="Don't have an account yet?"
-            linkLabel="Sign up"
-            link="/signup"
-          />
-        }
-        remSpacing={[7, 3, 2.3, 6, 7.7, 2.7, 2.3, 3]}
-      >
-        <>
-          <OutlookButton
-            label="Continue with Outlook"
-            onClick={() => {return;}}
-          />
+      <div className="page-container">
+      <div className="login-form-container">
+        {errorMessage &&
+          <ToastMessage
+            message={errorMessage}
+            isError={true}
+          />}
 
-          <Divider label="OR" />
+        <OutlookButton
+          label="Continue with Outlook"
+          onClick={() => {return;}}
+        />
 
-          <div style={{textAlign: "center", fontSize: ".95rem", color: "var(--color-primary)", letterSpacing: ".48px"}}>
-            Sign in with email
-          </div>
+        <Divider label="OR" />
 
-          <AuthTextField
-            label="Email"
-            onChange={(value) => setEmail(value)}
-          />
+        <div className="sign-in-with-email">
+          Sign in with email
+        </div>
 
-          <AuthPasswordField
-            label="Password"
-            toggleHidden={true}
-            linkLabel="Forgot password?"
-            link="/forgot-password"
-            onChange={(value) => setPassword(value)}
-          />
-        </>
-      </AuthForm>
+        <TextField
+          label="Email"
+          onChange={(value) => {
+            setErrorMessage("");
+            setEmail(value);
+          }}
+        />
+
+        <PasswordField
+          label="Password"
+          toggleHidden={true}
+          linkLabel="Forgot password?"
+          link="/auth/forgot-password"
+          onChange={(value) => {
+            setErrorMessage("");
+            setPassword(value)
+          }}
+        />
+
+        <NextButton
+          label="Login"
+          onClick={handleLoginClick}
+        />
+
+        <BottomLink
+          beforeText="Don't have an account yet?"
+          actionLabel="Sign up"
+          onClick={() => navigate("/auth/signup")}
+        />
+      </div>
+      </div>
     </>
   )
 }

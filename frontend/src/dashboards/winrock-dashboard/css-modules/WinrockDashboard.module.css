@@ -17,22 +17,121 @@
   background-color: white;
 }
 
+html {
+  font-size: 85%;
+}
+
+.headerNavContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 7rem;
+  margin-left: -2.5rem;
+  margin-right: -2.5rem;
+  gap: 1rem;
+}
+
+.headerNavButton {
+  display: flex;
+  gap: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5875em;
+  align-items: center;
+  height: 3.125rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding-left: 2.5rem;
+}
+
+.headerNavButton.active {
+  background-color: #F6F7F9;
+}
+
+.headerNavButton img {
+  width: 1.25rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerNavButton:hover {
+  background-color: #F6F7F9;
+}
+
 .mainContent {
   width: calc(100% - 18.75rem);
   margin-left: 18.75rem;
-  padding-bottom: 5.625rem; /* Match pagination height */
+  padding-bottom: 5.625rem;
 }
 
 .logo {
   height: 3.5rem;
 }
 
+/* Updated title and added titleContainer */
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3rem 1.5625rem 1.6875rem 1.5625rem;
+}
+
 .title {
   color: black;
   font-size: 2.25rem;
-  font-weight: 600; 
+  font-weight: 600;
   letter-spacing: 1.80px;
-  padding: 5.125rem 0 1.6875rem 1.5625rem;
+  margin: 0;
+}
+
+/* Added view mode buttons styling */
+.viewModeButtons {
+  display: flex;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  align-items: end;
+}
+
+.viewModeButton {
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.viewModeButton.active {
+  background-color: #1e5288;
+  /* Dark blue color like in the image */
+  color: white;
+}
+
+.tabsContainer {
+  display: flex;
+  padding-right: 2rem;
+}
+
+.editButton {
+  background-color: white;
+  border: 1.29px solid var(--color-primary);
+  color: var(--color-primary);
+  height: 2.25rem;
+  width: 5.625rem;
+  border-radius: .4rem;
+  cursor: pointer;
+  font-size: 0.65rem;
+  margin-left: auto;
+  margin-top: 0.5rem;
+}
+
+.editButton.active {
+  background-color: var(--color-primary);
+  color: white;
 }
 
 .toolbarContainer {
@@ -40,30 +139,50 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 0.5rem 1.5625rem;
-  border: 1px solid #CCCCCC;
+  height: 2.5rem;
+  border-top: 1px solid #CCCCCC;
   background-color: white;
+  padding-left: 1.5rem;
 }
 
 .searchContainer {
+  height: 100%;
+  position: relative;
   flex: 1;
-  max-width: 600px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .searchInput {
   width: 100%;
   padding: 0.5rem;
   border: none;
-  font-size: 0.875rem;
+  padding-left: 4rem;
+  letter-spacing: 3%;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+.searchInput::placeholder {
+  color: #C1C7CE;
+  font-weight: 400;
+  letter-spacing: 3%;
+  font-size: 1rem;
 }
 
 .filterContainer {
   align-items: center;
-  border-left: 1px solid #CCCCCC;
-  padding-left: 1rem;
   position: relative;
   display: flex;
-  gap: 0.5rem;
+  height: 100%;
+  width: 37.5rem;
 }
 
 .status {
@@ -236,30 +355,13 @@
 .filterPopup {
   position: absolute;
   top: 100%;
-  left: 0; 
+  width: 18.75rem;
+  left: 0;
   z-index: 100;
-  margin-top: 4px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  box-shadow: 0px 4px 4px 0px #00000040;
   background-color: white;
-  border-radius: 4px;
+  border-radius: 45x;
   overflow: hidden;
-}
-
-.filterButton.active {
-  background-color: #f3f4f6;
-  border-color: #d1d5db;
-}
-
-.filterButton,
-.sortButton {
-  padding: 1rem 1.5rem;
-  width: 10rem;
-  border: 1px solid #e5e7eb;
-  background-color: white;
-  color: #374151;
-  font-size: 0.8rem;
-  text-align: center;
 }
 
 .table {
@@ -271,7 +373,7 @@
 .table th,
 .table td {
   padding: 0.75rem 0.3125rem;
-  text-align: left; 
+  text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -282,51 +384,62 @@
 /* Column widths */
 .table th:first-child,
 .table td:first-child {
-  width: 4rem; /* Checkbox column */
+  width: 4rem;
+  /* Checkbox column */
 }
 
 .table th:nth-child(2),
 .table td:nth-child(2) {
-  width: 10%; /* Project name */
+  width: 10%;
+  /* Project name */
 }
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-  width: 10%; /* Supplier */
+  width: 10%;
+  /* Supplier */
 }
 
 .table th:nth-child(4),
 .table td:nth-child(4) {
-  width: 10%; /* Overall Status */
+  width: 10%;
+  /* Overall Status */
 }
 
 .table th:nth-child(5),
 .table td:nth-child(5) {
-  width: 16%; /* Analysis Stage */
+  width: 16%;
+  /* Analysis Stage */
 }
 
 .table th:nth-child(6),
 .table td:nth-child(6) {
-  width: 8%; /* Spend Category */
+  width: 8%;
+  /* Spend Category */
 }
 
 .table th:nth-child(7),
 .table td:nth-child(7) {
-  width: 10%; /* Geography */
+  width: 10%;
+  /* Geography */
 }
 
 .table th:nth-child(8),
 .table td:nth-child(8) {
-  width: 8%; /* Last Updated */
+  width: 8%;
+  /* Last Updated */
 }
 
 .table th:nth-child(9),
 .table td:nth-child(9) {
-  width: 8%; /* Start Date */
+  width: 8%;
+  /* Start Date */
 }
+
 .table th:nth-child(10),
 .table td:nth-child(10) {
-  width: 6%; /* Actions column */
+  width: 6%;
+  /* Actions column */
 }
 
 .searchInput:focus {
@@ -334,35 +447,51 @@
 }
 
 
-.filterButton {
-  width: 14rem;
-  padding: 0.5rem 1rem;
+.filterButton,
+.sortButton {
   background-color: white;
-  color: #374151;
-  font-size: 0.875rem;
+  width: 18.75rem;
+  color: #1E1E1E;
+  font-size: 1em;
+  letter-spacing: 3%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
   border: none;
+  height: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid #CCCCCC;
+  border-bottom: 1.5px solid #ffffff00;
+  border-top: none;
 }
 
-.filterButton::after {
+.sortButton {
+  border-left: none;
+}
+
+.filterButton::after,
+.sortButton::after {
   content: '';
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid #666;
-  border-bottom: 2px solid #666;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid #666;
+  border-bottom: 1.5px solid #666;
   transform: rotate(45deg);
   transition: transform 0.2s ease;
   display: inline-block;
 }
 
-.filterButton.active {
+.filterButton.active,
+.sortButton.active {
   background-color: white;
+  border: 1.5px solid #005293;
+  border-top: none;
+  color: #005293;
 }
 
-.filterButton.active::after {
+.filterButton.active::after,
+.sortButton.active::after {
   transform: rotate(-135deg);
 }
 
@@ -382,9 +511,68 @@
   position: absolute;
   top: 100%;
   right: 0;
-  width: 15rem; 
+  width: 21rem;
   background-color: white;
   overflow: hidden;
   border: 1px solid #CCCCCC;
   border-top: none;
+}
+
+/* Table container style */
+.tableContainer {
+  position: relative;
+  margin-top: 1rem;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+}
+
+/* Error message styling */
+.error {
+  color: #dc2626;
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: #fef2f2;
+  border-radius: 0.375rem;
+}
+
+/* Popup menu styles to match Figma design */
+.popupMenu {
+  position: absolute;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 1000;
+  min-width: 200px;
+}
+
+/* Updated archive button styling to match Figma design */
+.archiveButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.archiveButton:hover {
+  background-color: #f5f5f5;
+}
+
+/* Archive icon styling */
+.archiveButton:before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%231e5288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"></path><path d="M1 3h22v5H1z"></path><path d="M10 12h4"></path></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 12px;
 }

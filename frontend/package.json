@@ -13,13 +13,18 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@mui/icons-material": "^7.0.2",
+    "@types/react-datepicker": "^6.2.0",
     "firebase": "^11.3.1",
     "react": "^19.0.0",
+    "react-datepicker": "^8.3.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^6.30.0"
+    "react-router-dom": "^6.30.0",
+    "recharts": "^2.15.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
+    "@types/firebase": "^2.4.32",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",

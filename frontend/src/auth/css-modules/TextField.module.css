@@ -1,0 +1,52 @@
+.fieldContainer {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+}
+
+.label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 0;
+    color: black;
+}
+
+.input {
+    width: 100%;
+    padding: 1.15rem;
+    border: 1px solid #dadada;
+    border-radius: .625rem;
+    font-size: 0.95rem;
+    background-color: #F7F8F9;
+    color: #76797C;
+    letter-spacing: 0.42px;
+}
+
+.input::placeholder {
+    color: var(--color-lightgray);
+    font-size: .8rem;
+}
+
+.suggestionsList {
+    list-style: none;
+    margin: 5rem 0 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    background-color: white;
+    position: absolute;
+    z-index: 10;
+    width: 20rem;
+    max-height: 150px;
+    overflow-y: auto;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.suggestionItem {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.suggestionItem:hover {
+    background-color: #f2f2f2;
+}

@@ -1,95 +1,46 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom';
+
+import LoginPage from './auth/pages/LoginPage';
 import SignupPage from './auth/pages/SignupPage';
-import WinrockDashboard from './dashboards/winrock-dashboard/winrockDashboard';
-import ProjectTracker from './dashboards/project-view/components/ProjectTracker';
-import ProjectViewHeader from "./dashboards/project-view/components/ProjectViewHeader";
-import ProjectUpdates from './dashboards/project-view/components/ProjectUpdates';
-import { UpdateItem } from './types/UpdateItem';
-
-
-/*
-interface UpdateItem {
-  id: number;
-  title: string;
-  description?: string;
-  timestamp: string;
-  status: "received" | "sent" | "completed";
-  canRequestInfo?: boolean;
-}
-
-*/
-const updatesData: UpdateItem[] = [
-  {
-    id: 4,
-    title: "Project proposal received",
-    timestamp: '1 day ago',
-    status: 'received',
-    canRequestInfo: true,
-  },
-  {
-    id: 3,
-    title: 'Project proposal sent to client for review',
-    description: 'Awaiting approval from client',
-    timestamp: '5 days ago',
-    status: 'sent',
-  },
-  {
-    id: 2,
-    title: 'Project proposal looked at by client',
-    description: 'View file',
-    timestamp: '7 days ago',
-    status: 'completed',
-  },
-  {
-    id: 1,
-    title: 'Project proposal completed by supplier',
-    description: 'View file',
-    timestamp: '10 days ago',
-    status: 'completed',
-  },
-];
-
+import ForgotPasswordPage from './auth/pages/ForgotPasswordPage';
+import AgricultureProposalForm from './forms/project-proposal-forms/AgricultureProposalForm';
+import RenewableProposalForm from './forms/project-proposal-forms/RenewableProposalForm';
+import ForestryRisksForm from './forms/risks-and-co-benefit-forms/ForestryRisksForm';
+import TechEnergyRisksForm from './forms/risks-and-co-benefit-forms/TechEnergyRisksForm';
+import WinrockDashboard from './dashboards/winrock-dashboard/projects/winrockDashboard';
+import NotificationCenter from './dashboards/winrock-dashboard/notification-center/NotificationCenter';
+import PasswordChangedPage from './auth/pages/PasswordChangedPage';
+import CreateNewPasswordPage from './auth/pages/CreateNewPasswordPage';
 
 function App() {
   return (
-    <> {/* Use a React.Fragment as the parent element */}
-      <BrowserRouter>
-        <div className="app-container">
-          <Routes>
-            <Route path="/" element={<SignupPage />} />
-            <Route path="/dashboard" element={<WinrockDashboard />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/"                                      element={<LoginPage />} />
 
-      
-      {/* <ProjectViewHeader data={{
-        id: 0,
-        project: 'USAID Hamro Samman II',
-        supplier: 'Cargil',
-        overallStatus: 'On Track',
-        analysisStage: 'Risk & Co-benefit Assessment',
-        spendCategory: 'Cereals & Grains',
-        geography: 'North America',
-        lastUpdated: '2 days ago',
-        startDate: '06/12/2023'
-      }} /> */}
-      {/* <ProjectTracker currentStage="Clarifying Initial Project Information" initialInfoStatus='completed' technicalStatus='completed' ghgStatus='in-progress' finalStatus='not-started' risksStatus='not-started'></ProjectTracker>
-      <ProjectUpdates updates={updatesData}></ProjectUpdates> */}
-      {/* <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
-        <ProjectTracker 
-          currentStage="Clarifying Initial Project Information" 
-          initialInfoStatus='completed' 
-          technicalStatus='completed' 
-          ghgStatus='in-progress' 
-          finalStatus='not-started' 
-          risksStatus='not-started' 
-        />
-        <ProjectUpdates updates={updatesData} />
-      </div> */}
-      
+        <Route path="/auth/login"                            element={<LoginPage />} />
+        <Route path="/auth/signup"                           element={<SignupPage />} />
+        <Route path="/auth/forgot-password"                  element={<ForgotPasswordPage />} />
+        <Route path="/auth/create-new-password"              element={<CreateNewPasswordPage />} />
+        <Route path="/auth/password-changed"                 element={<PasswordChangedPage />} />
 
-    </>
+        <Route path="/forms/agriculture-proposal-form"       element={<AgricultureProposalForm />} />
+        <Route path="/forms/renewable-proposal-form"         element={<RenewableProposalForm />} />
+        <Route path="/forms/forestry-risks-form"             element={<ForestryRisksForm />} />
+        <Route path="/forms/tech-energy-risks-form"          element={<TechEnergyRisksForm />} />
+
+        <Route path="/dashboard/admin/projects"              element={<WinrockDashboard />} />
+        <Route path="/dashboard/admin/notification-center"   element={<NotificationCenter />} />
+        <Route path="/dashboard/admin/account-settings"      element={<></>} />
+
+        <Route path="*"                                      element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

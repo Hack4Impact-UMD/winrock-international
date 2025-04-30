@@ -1,59 +1,93 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { sendPasswordResetLink } from "../authService";
+import { toReadableError } from "../../types/Result";
+import "../styles/ForgotPasswordPage.css";
 
-import AuthLogoHeader from "../components/AuthLogoHeader";
-import AuthForm from "../components/AuthForm";
-import AuthTextField from "../components/AuthTextField";
-import AuthBottomLink from "../components/AuthBottomLink";
+import LogoHeader from "../components/LogoHeader";
+import TextField from "../components/TextField";
+import BottomLink from "../components/BottomLink";
+import PasswordResetSentPage from "./PasswordResetSentPage";
+import TitleHeader from "../components/TitleHeader";
+import BackButton from "../components/BackButton";
+import NextButton from "../components/NextButton";
+import ToastMessage from "../components/ToastMessage";
 
 function ForgotPasswordPage() {
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [email, setEmail] = useState("");
+  const [linkIsSent, setLinkIsSent] = useState(false);
+
   const navigate = useNavigate();
 
   async function handleSendLink() {
     if (!email) {
-      console.error("Error sending password reset link: Missing email");
+      setErrorMessage("Missing email");
       return;
     }
     
     const result = await sendPasswordResetLink(email);
     if (result.success) {
-      navigate("/forgot-password/reset");
+      setLinkIsSent(true);
     } else {
       console.error("Error sending password reset link: ", result.errorCode);
+      setErrorMessage(toReadableError(result.errorCode));
     }
+  }
+
+  if (linkIsSent) {
+    return (
+      <PasswordResetSentPage
+        email={email}
+        setEmail={setEmail}
+        setLinkIsSent={setLinkIsSent}
+      />
+    );
   }
 
   return (
     <>
-      <AuthLogoHeader />
+      <LogoHeader />
 
-      <AuthForm
-        title="Forgot password?"
-        subtitle="Don't worry! It occurs. Please enter the email address linked with your account."
-        titleStyle={2}
-        onBack={() => navigate("/login")}
-        nextLabel="Send Link"
-        onNext={handleSendLink}
-        afterChild={
-          <AuthBottomLink
-            beforeText="Remember password?"
-            linkLabel="Sign in"
-            link="/login"
-          />
-        }
-        remSpacing={[10, 8, 2.5, 12, 3]}
-      >
-        <>
-          <AuthTextField
-            placeholder="Enter your email"
-            onChange={(value) => setEmail(value)}
-          />
-        </>
-      </AuthForm>
+      <div className="page-container">
+      <div className="forgot-password-form-container">
+        {errorMessage &&
+            <ToastMessage
+              message={errorMessage}
+              isError={true}
+            />}
+
+        <BackButton onClick={() => navigate("/auth/login")} />
+
+        <TitleHeader
+          title="Forgot password?"
+          subtitle="Don't worry! It occurs. Please enter the email address linked with your account."
+          textAlign="left"
+          subtitleColor="gray"
+        />
+
+        <TextField
+          placeholder="Enter your email"
+          onChange={(value) => {
+            setEmail(value);
+            setErrorMessage("");
+          }}
+        />
+
+        <NextButton
+          label="Send Link"
+          onClick={handleSendLink}
+        />
+
+        <BottomLink
+          beforeText="Remember password?"
+          actionLabel="Sign in"
+          onClick={() => navigate("/auth/login")}
+        />
+      </div>
+      </div>
     </>
-  )
+  );
 }
 
 export default ForgotPasswordPage;

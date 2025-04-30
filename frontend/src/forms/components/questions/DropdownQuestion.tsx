@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
-import styles from '../../css-modules/DropdownQuestion.module.css'
-import chevron from '../../assets/chevron-up-svgrepo-com.svg'
+import { useEffect, useState } from 'react';
+import styles from '../../css-modules/DropdownQuestion.module.css';
+import chevron from '../../../assets/chevron-up-svgrepo-com.svg';
+import Popup from '../Popup';
 
 interface DropdownQuestionProps {
    label: string
@@ -8,6 +9,10 @@ interface DropdownQuestionProps {
    controlledValue: string;
    onSelect: (selected: string) => void
    required?: boolean
+   popup?: {
+      guidance: string;
+      example: string;
+   };
 }
 
 const DropdownQuestion = ({
@@ -16,13 +21,14 @@ const DropdownQuestion = ({
    controlledValue,
    onSelect,
    required = false,
+   popup
 }: DropdownQuestionProps) => {
    const [showDropdown, setShowDropdown] = useState<boolean>(false)
    const [selectedOption, setSelectedOption] = useState<string>(controlledValue)
    const [isValid, setIsValid] = useState(true)
 
    useEffect(() => {
-       setSelectedOption(controlledValue)
+      setSelectedOption(controlledValue)
    }, [controlledValue]);
 
    const toggleDropdownQuestion = () => {
@@ -53,12 +59,16 @@ const DropdownQuestion = ({
 
    return (
       <div className={styles.dropdownQuestion}>
-         <h3 className={`${styles.label} ${required ? styles.required : ''}`}>{label}</h3>
+         <div className={styles.labelRow}>
+            {popup && (
+               <Popup guidance={popup.guidance} example={popup.example} />
+            )}
+            <h3 className={`${styles.label} ${required ? styles.required : ''}`}>{label}</h3>
+         </div>
          <div className={styles.dropdownContainer}>
             <button
-               className={`${styles.dropdownButton} ${
-                  isValid ? styles.validDropdownButton : styles.invalidDropdownButton
-               }`}
+               className={`${styles.dropdownButton} ${isValid ? styles.validDropdownButton : styles.invalidDropdownButton
+                  }`}
                onMouseDown={toggleDropdownQuestion}
                onBlur={() => {
                   setShowDropdown(false) // clicking off the dropdown closes it
@@ -78,9 +88,8 @@ const DropdownQuestion = ({
                   {options.map(option => (
                      <div
                         key={option}
-                        className={`${styles.dropdownItem} ${
-                           selectedOption === option ? styles.selectedDropdownItem : ''
-                        }`}
+                        className={`${styles.dropdownItem} ${selectedOption === option ? styles.selectedDropdownItem : ''
+                           }`}
                         onMouseDown={() => selectOption(option)}
                      >
                         {option}

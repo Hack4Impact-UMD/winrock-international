@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
-import styles from "../css-modules/AuthPasswordField.module.css";
+import {
+    useEffect,
+    useState
+} from "react";
+import styles from "../css-modules/PasswordField.module.css";
 import { Link } from "react-router-dom";
 import toggleHiddenIcon from "../../assets/toggle-hidden.png";
 
-interface AuthPasswordFieldProps {
-    label: string;
+interface PasswordFieldProps {
+    label?: string;
+    placeholder?: string;
     autoComplete?: boolean;
     toggleHidden?: boolean;
     linkLabel?: string;
@@ -13,7 +17,16 @@ interface AuthPasswordFieldProps {
     onChange: (value: string) => void;
 }
 
-function AuthPasswordField({ label, autoComplete, toggleHidden=false, linkLabel, link, controlledValue, onChange }: AuthPasswordFieldProps) {
+const PasswordField: React.FC<PasswordFieldProps> = ({
+    label = "",
+    placeholder = "",
+    autoComplete,
+    toggleHidden=false,
+    linkLabel,
+    link,
+    controlledValue,
+    onChange
+}) => {
     const [value, setValue] = useState(controlledValue);
         
     useEffect(() => {
@@ -37,6 +50,7 @@ function AuthPasswordField({ label, autoComplete, toggleHidden=false, linkLabel,
                     className={styles.input}
                     type={isHidden ? "password" : "text"}
                     value={value}
+                    placeholder={placeholder}
                     autoComplete={autoComplete ? "on" : "off"}
                     onChange={(e) => handleChange(e)}
                 />
@@ -56,4 +70,4 @@ function AuthPasswordField({ label, autoComplete, toggleHidden=false, linkLabel,
     )
 }
 
-export default AuthPasswordField;
+export default PasswordField;
