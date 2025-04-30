@@ -51,11 +51,11 @@ const WinrockDashboard: React.FC = () => {
   const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
   const [allSelected, setAllSelected] = useState(false);
-
+  const [editableProjects, setEditableProjects] = useState<Project[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [searchQuery, setSearchQuery] = useState('');
   const [activeActionMenu, setActiveActionMenu] = useState<number | null>(null);
   const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
@@ -183,8 +183,12 @@ const WinrockDashboard: React.FC = () => {
         if (dateFilter.startDate && new Date(p.startDate) < dateFilter.startDate) return false;
         if (dateFilter.endDate && new Date(p.startDate) > dateFilter.endDate) return false;
         return true;
-      });
-  }, [projects, viewMode, selectedTab, activeFilters, dateFilter]);
+      })
+      .filter(p =>
+        searchQuery.trim() === '' ||
+        p.project.toLowerCase().startsWith(searchQuery.trim().toLowerCase())
+      );;
+  }, [projects, viewMode, selectedTab, activeFilters, dateFilter, searchQuery]);
 
   // Memoize currentProjects (paging the visibleProjects)
   const currentProjects = useMemo(() => {
@@ -404,19 +408,50 @@ const WinrockDashboard: React.FC = () => {
           />
           <button
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
-            onClick={() => setIsEditMode(!isEditMode)}
+            onClick={async () => {
+              if (isEditMode) {
+                // ✅ Save changes before exiting edit mode
+                for (const edited of editableProjects) {
+                  const original = projects.find(p => p.id === edited.id);
+                  if (!original) continue;
+
+                  const updatedFields: Partial<Project> = {};
+
+                  // Compare fields and collect differences
+                  for (const key in edited) {
+                    if (edited[key as keyof Project] !== original[key as keyof Project]) {
+                      updatedFields[key as keyof Project] = edited[key as keyof Project];
+                    }
+                  }
+
+                  // Save only if there are changes
+                  if (Object.keys(updatedFields).length > 0) {
+                    await handleSaveProject(edited.project, updatedFields);
+                  }
+                }
+
+                setEditableProjects([]);
+              } else {
+                // Going into edit mode
+                setEditableProjects(JSON.parse(JSON.stringify(projects)));
+              }
+
+              setIsEditMode(!isEditMode);
+            }}
           >
             {isEditMode ? 'Done' : 'Edit'}
           </button>
+
         </div>
 
         <div className={styles.toolbarContainer}>
           <div className={styles.searchContainer}>
-          <img src={searchIcon} alt="Search" className={styles.searchIcon} />
+            <img src={searchIcon} alt="Search" className={styles.searchIcon} />
             <input
               type="text"
               placeholder="Search projects..."
               className={styles.searchInput}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
@@ -454,14 +489,23 @@ const WinrockDashboard: React.FC = () => {
               isEditMode={isEditMode}
             />
             <tbody>
-              {currentProjects.map(project => (
+              {(isEditMode ? editableProjects : currentProjects).map(project => (
                 <TableRow
                   key={project.id}
                   data={project}
                   isSelected={selectedRows.includes(project.id)}
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
                   isEditMode={isEditMode}
-                  onSave={(updatedFields) => handleSaveProject(project.project, updatedFields)}
+                  onSave={(updatedFields) => {
+                    if (isEditMode) {
+                      setEditableProjects(prev =>
+                        prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
+                      );
+                    } else {
+                      handleSaveProject(project.project, updatedFields);
+                    }
+                  }}
+
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                 />

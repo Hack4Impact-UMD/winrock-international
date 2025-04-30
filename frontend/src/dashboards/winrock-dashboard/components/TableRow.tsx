@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from '../css-modules/TableRow.module.css';
 import ColorText from '../components/ColorText';
 import RowCustomSelect from '../components/RowCustomSelect';
-import PopupMenu from './PopupMenu'; // ⬅️ Import the portal popup component (you need to create it too if you haven't yet)
-
+import PopupMenu from './PopupMenu';
 type StatusType =
   | 'On Track'
   | 'At Risk'
@@ -232,11 +231,15 @@ const TableRow: React.FC<TableRowProps> = ({
                 y={buttonPosition.y}
                 onClose={() => onActionClick?.(null)}
               >
-                <button onClick={(e) => {
-                  console.log('Archive button clicked for id:', data.id);
-                  e.stopPropagation(); // Stop event from bubbling up
-                  onArchiveClick?.(data.id);
-                }}>Archive</button>
+                <button
+                  className={styles.archiveButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleArchive(activeActionMenu);
+                  }}
+                >
+                  {projects.find(p => p.id === activeActionMenu)?.isActive ? 'Archive' : 'Unarchive'}
+                </button>
               </PopupMenu>
             )}
           </div>
