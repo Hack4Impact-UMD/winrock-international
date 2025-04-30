@@ -100,11 +100,11 @@ const TableRow: React.FC<TableRowProps> = ({
             variant="status"
           />
         ) : (
-          <ColorText
-            text={data.overallStatus}
-            category={data.overallStatus}
-            variant="status"
-          />
+        <ColorText
+          text={data.overallStatus}
+          category={data.overallStatus}
+          variant="status"
+        />
         )}
       </td>
       <td className={styles.cell}>
@@ -116,11 +116,11 @@ const TableRow: React.FC<TableRowProps> = ({
             variant="analysis"
           />
         ) : (
-          <ColorText
-            text={data.analysisStage}
-            category={data.analysisStage}
-            variant="analysis"
-          />
+        <ColorText
+          text={data.analysisStage}
+          category={data.analysisStage}
+          variant="analysis"
+        />
         )}
       </td>
       <td className={styles.cell}>
