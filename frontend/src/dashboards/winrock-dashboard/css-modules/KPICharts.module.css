@@ -1,0 +1,53 @@
+.chartsContainer {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #F6F7F9;
+  }
+  
+  .chartWrapper {
+    flex: 1;
+    background-color: white;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+  }
+  
+  .chartTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #000000;
+  }
+  
+  .chartContent {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .pieChartSection {
+    flex: 0 0 180px;
+  }
+  
+  .legendSection {
+    flex: 1;
+  }
+  
+  .legendContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .legendItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .colorBox {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }

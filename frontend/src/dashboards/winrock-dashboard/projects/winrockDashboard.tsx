@@ -1,21 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import styles from '../css-modules/WinrockDashboard.module.css';
-import winrockLogo from '../../../assets/winrock-international-logo.png';
-import projectsIcon from '../../../assets/projects-icon.svg';
-import notificationIcon from '../../../assets/notification-icon.svg';
+import React, { useState, useEffect, useMemo } from 'react';
+import styles from "./../css-modules/WinrockDashboard.module.css"
+import winrockLogo from "./../../../assets/winrock-international-logo.png"
+import projectsIcon from './../../../assets/projects-icon.svg';
+import notificationIcon from './../../../assets/notification-icon.svg';
 import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
+import searchIcon from "../../../assets/search-icon.svg"
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
 import FilterWrapper from '../components/FilterWrapper';
-import SortWrapper from '../components/SortWrapper'; 
+import SortWrapper from '../components/SortWrapper';
 import DateFilter from '../components/DateFilter';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
-import { getAllProjects, updateProjectField } from "./winrockDashboardService"
+import ReportsDropdown from '../components/ReportsDropdown';
+import KPICharts from '../components/KPICharts';
+import { getAllProjects, updateProjectField } from "./winrockDashboardService";
+import { useNavigate } from 'react-router-dom';
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { db } from "../../../firebaseConfig.js";
 
 interface Project {
-  id: number;
+  id: string;
   project: string;
   supplierName: string;
   overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
@@ -25,86 +31,179 @@ interface Project {
   lastUpdated: string;
   startDate: string;
   activityType: 'Renewable Energy and Energy Efficiency' | 'Agriculture' | 'Agroforestry' | 'Animal Agriculture and Manure Management';
+  isActive: boolean;
 }
-
-async function fetchProjects(): Promise<Project[]> {
-  const result = await getAllProjects("projectName", false);
-
-  if (!result.success || !result.data?.projects) {
-    throw new Error("Failed to fetch projects");
-  }
-
-  return result.data.projects.map((p: any, index: number) => ({
-    id: index,
-    project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
-    supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
-    overallStatus: p.overallStatus,
-    analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
-      ? p.analysisStage.split(':')[1].trim()
-      : p.analysisStage,
-    spendCategory: p.spendCategory,
-    geography: p.geography,
-    lastUpdated: typeof p.lastUpdated === 'string' ? p.lastUpdated : new Date(p.lastUpdated).toISOString().split("T")[0],
-    startDate: typeof p.startDate === 'string' ? p.startDate : new Date(p.startDate).toISOString().split("T")[0],
-    activityType: 'Renewable Energy and Energy Efficiency',
-  }));
-}
-
 
 const WinrockDashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [activeFilters, setActiveFilters] = useState<{
+    status: string[];
+    spend: string[];
+  }>({
+    status: [],
+    spend: [],
+  });
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRows, setSelectedRows] = useState<String[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
-  //const [projects, setProjects] = useState<Project[]>(allProjects);
   const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
   const [allSelected, setAllSelected] = useState(false);
-
+  const [editableProjects, setEditableProjects] = useState<Project[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeActionMenu, setActiveActionMenu] = useState<number | null>(null);
+  const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+  const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
+  const navigate = useNavigate();
+  const [dateFilter, setDateFilter] = useState<DateRange>({
+    startDate: null,
+    endDate: null
+  });
+  const handleActionClick = (id: string | null, event?: React.MouseEvent) => {
+    console.log('handleActionClick called with id:', id);
+    if (id === null) {
+      setActiveActionMenu(null);
+    } else {
+      if (event) {
+        const rect = (event.target as HTMLElement).getBoundingClientRect();
+        setButtonPosition({ x: rect.left, y: rect.bottom });
+      }
+      setActiveActionMenu(id);
+    }
+  };
+  const mapStatusToId = (status: string): string => {
+    const mapping: Record<string, string> = {
+      "On Track": "onTrack",
+      "At Risk": "atRisk",
+      "Paused": "paused",
+      "Completed": "completed",
+      "Completed (except for risk)": "completedRisk"
+    };
+    return mapping[status] || status;
+  };
+  const handleToggleArchive = async (projectId: string) => {
+    console.log('handleToggleArchive called with projectId:', projectId);
+    const project = projects.find(p => p.id === String(projectId));
+    if (!project) {
+      console.error(`Project with ID ${projectId} not found`);
+      return;
+    }
+
+    const newIsActive = !project.isActive;
+    console.log(`Setting isActive=${newIsActive} for project: ${project.project}`);
+
+    try {
+      await handleSaveProject(project.project, { isActive: newIsActive });
+      console.log(`Successfully updated isActive for ${project.project}`);
+
+      setActiveActionMenu(null);
+
+
+      setProjects(prev => prev.map(p =>
+        p.id === String(projectId) ? { ...p, isActive: newIsActive } : p
+      ));
+
+      console.log(`Local state updated for project ID ${projectId}`);
+    } catch (error) {
+      console.error(`Failed to update project:`, error);
+    }
+  };
 
   useEffect(() => {
-    fetchProjects()
-      .then(data => {
-        setProjects(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setError("Failed to load projects");
-        setLoading(false);
-      });
-  }, []);
+    const q = query(collection(db, "projects"), orderBy("projectName"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const projectsData = snapshot.docs.map((doc, index) => {
+        const p = doc.data();
+        const parseDate = (date: any) => {
+          if (!date) return "";
+          if (date.toDate) {
 
+            return date.toDate().toISOString().split("T")[0];
+          }
+          const parsed = new Date(date);
+          if (isNaN(parsed.getTime())) {
+
+            return "";
+          }
+          return parsed.toISOString().split("T")[0];
+        };
+        console.log("HERE IT ISSS")
+        console.log(doc.id)
+        return {
+          id: doc.id,
+          project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
+          supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
+          overallStatus: p.overallStatus,
+          analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
+            ? p.analysisStage.split(':')[1].trim()
+            : p.analysisStage,
+          spendCategory: p.spendCategory,
+          geography: p.geography,
+          lastUpdated: parseDate(p.lastUpdated),
+          startDate: parseDate(p.startDate),
+          activityType: p.activityType,
+          isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
+        };
+      });
+      setProjects(projectsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error listening to projects:", error);
+      setError("Failed to load projects");
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const itemsPerPage = 10;
 
-  // Filter projects by selected activity type
+
   const filteredProjects = selectedTab === 'All Projects'
     ? projects
     : projects.filter(project => project.activityType === selectedTab);
   const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // Calculate the current page's projects from filtered projects
-  const indexOfLastProject = currentPage * itemsPerPage;
-  const indexOfFirstProject = indexOfLastProject - itemsPerPage;
-  const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
+  const filteredAndVisibleProjects = useMemo(() => {
+    return projects
+      .filter(p => viewMode === 'active' ? p.isActive : !p.isActive)
+      .filter(p => selectedTab === 'All Projects' ? true : p.activityType === selectedTab)
+      .filter(p => {
+        const matchesStatus =
+          activeFilters.status.length === 0 || activeFilters.status.includes(mapStatusToId(p.overallStatus));
+        const matchesSpend =
+          activeFilters.spend.length === 0 || activeFilters.spend.includes(p.spendCategory);
+        return matchesStatus && matchesSpend;
+      })
+      .filter(p => {
+        if (dateFilter.startDate && new Date(p.startDate) < dateFilter.startDate) return false;
+        if (dateFilter.endDate && new Date(p.startDate) > dateFilter.endDate) return false;
+        return true;
+      })
+      .filter(p =>
+        searchQuery.trim() === '' ||
+        p.project.toLowerCase().startsWith(searchQuery.trim().toLowerCase())
+      );;
+  }, [projects, viewMode, selectedTab, activeFilters, dateFilter, searchQuery]);
+
+  // Memoize currentProjects (paging the visibleProjects)
+  const currentProjects = useMemo(() => {
+    const indexOfLastProject = currentPage * itemsPerPage;
+    const indexOfFirstProject = indexOfLastProject - itemsPerPage;
+    console.log(filteredAndVisibleProjects)
+    return filteredAndVisibleProjects.slice(indexOfFirstProject, indexOfLastProject);
+  }, [filteredAndVisibleProjects, currentPage]);
 
   //date filter consts
   interface DateRange {
     startDate: Date | null;
     endDate: Date | null;
   }
-
-  const [dateFilter, setDateFilter] = useState<DateRange>({
-    startDate: null,
-    endDate: null
-  });
 
   // Reset to first page when changing tabs
   const handleTabChange = (tab: string) => {
@@ -117,16 +216,18 @@ const WinrockDashboard: React.FC = () => {
     setIsFilterPopupOpen(!isFilterPopupOpen);
   };
 
-  const toggleCategory = (categoryId: string) => {
-    if (selectedCategories.includes(categoryId)) {
-      setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
-    } else {
-      setSelectedCategories([...selectedCategories, categoryId]);
-    }
+  const toggleCategory = (section: 'status' | 'spend', categoryId: string) => {
+    setActiveFilters(prev => {
+      const current = prev[section];
+      const updated = current.includes(categoryId)
+        ? current.filter(id => id !== categoryId)
+        : [...current, categoryId];
+      return { ...prev, [section]: updated };
+    });
     setCurrentPage(1);
   };
 
-  const handleRowSelect = (id: number, checked: boolean) => {
+  const handleRowSelect = (id: string, checked: boolean) => {
     if (checked) {
       setSelectedRows([...selectedRows, id]);
     } else {
@@ -139,9 +240,9 @@ const WinrockDashboard: React.FC = () => {
       for (const [field, value] of Object.entries(updatedFields)) {
         await updateProjectField(projectName, field as keyof Project, value as any);
       }
-      console.log(`✅ Project ${projectName} updated successfully.`);
+      console.log(`Project ${projectName} updated successfully.`);
     } catch (error) {
-      console.error(`❌ Failed to update project ${projectName}:`, error);
+      console.error(`Failed to update project ${projectName}:`, error);
     }
   };
 
@@ -149,8 +250,26 @@ const WinrockDashboard: React.FC = () => {
 
   // Handler for sort selection - just updates the state
   const handleSortChange = (sortOption: string) => {
+    const sortedProjects = [...projects]; // clone the array so you don't mutate state directly
+
+    if (sortOption === "recently-updated") {
+      sortedProjects.sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
+    } else if (sortOption === "newest-first") {
+      sortedProjects.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+    } else if (sortOption === "oldest-first") {
+      sortedProjects.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    } else if (sortOption === "a-to-z") {
+      sortedProjects.sort((a, b) => b.project.localeCompare(a.project));
+    } else if (sortOption === "z-to-a") {
+      sortedProjects.sort((a, b) => a.project.localeCompare(b.project));
+    } else {
+      // fallback: maybe do nothing
+    }
+
+    setProjects(sortedProjects);
     setSelectedSort(sortOption);
   };
+
 
 
   const renderFilterContent = (sectionKey: string) => {
@@ -162,8 +281,8 @@ const WinrockDashboard: React.FC = () => {
               <input
                 type="checkbox"
                 id={`${sectionKey}-${option.id}`}
-                checked={selectedCategories.includes(option.id)}
-                onChange={() => toggleCategory(option.id)}
+                checked={activeFilters.status.includes(option.id)}
+                onChange={() => toggleCategory('status', option.id)}
               />
               <label htmlFor={`${sectionKey}-${option.id}`}>
                 {sectionKey === 'status' && (
@@ -183,8 +302,8 @@ const WinrockDashboard: React.FC = () => {
               <input
                 type="checkbox"
                 id={`${sectionKey}-${option.id}`}
-                checked={selectedCategories.includes(option.id)}
-                onChange={() => toggleCategory(option.id)}
+                checked={activeFilters.spend.includes(option.id)}
+                onChange={() => toggleCategory('spend', option.id)}
               />
               <label htmlFor={`${sectionKey}-${option.id}`}>{option.label}</label>
             </div>
@@ -219,7 +338,15 @@ const WinrockDashboard: React.FC = () => {
 
 
   const handleSelectAll = (checked: boolean) => {
-    // TODO: select all checkboxes
+    setAllSelected(checked);
+    if (checked) {
+      // Select all visible rows on current page
+      const visibleIds = currentProjects.map(p => p.id);
+      setSelectedRows(visibleIds);
+    } else {
+      // Deselect all
+      setSelectedRows([]);
+    }
   };
 
   return (
@@ -229,21 +356,32 @@ const WinrockDashboard: React.FC = () => {
         <div className={styles.headerNavContainer}>
           <button
             className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Projects')}
+            onClick={() => {
+              setActiveNavButton('Projects');
+              navigate('/dashboard/admin/projects');
+            }}
           >
             <img src={projectsIcon} alt="Projects" />
             Projects
           </button>
+
           <button
             className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Notification Center')}
+            onClick={() => {
+              setActiveNavButton('Notification Center');
+              navigate('/dashboard/admin/notification-center');
+            }}
           >
             <img src={notificationIcon} alt="Notification Center" />
             Notification Center
           </button>
+
           <button
             className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
-            onClick={() => setActiveNavButton('Account Settings')}
+            onClick={() => {
+              setActiveNavButton('Account Settings');
+              navigate('/dashboard/admin/account-settings');
+            }}
           >
             <img src={accountSettingsIcon} alt="Account Settings" />
             Account Settings
@@ -252,8 +390,17 @@ const WinrockDashboard: React.FC = () => {
       </header>
 
       <main className={styles.mainContent}>
-        <h1 className={styles.title}>Projects</h1>
+        <div className={styles.titleContainer}>
+          <h1 className={styles.title}>Projects</h1>
+          <div className={styles.viewModeButtons}>
+            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => setViewMode('active')}>Active</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => setViewMode('archived')}>Archived</button>
+          </div>
+        </div>
 
+        <ReportsDropdown>
+          <KPICharts projects={projects} />
+        </ReportsDropdown>
         <div className={styles.tabsContainer}>
           <FilterTabs
             tabs={tabs}
@@ -262,18 +409,50 @@ const WinrockDashboard: React.FC = () => {
           />
           <button
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
-            onClick={() => setIsEditMode(!isEditMode)}
+            onClick={async () => {
+              if (isEditMode) {
+                // ✅ Save changes before exiting edit mode
+                for (const edited of editableProjects) {
+                  const original = projects.find(p => p.id === edited.id);
+                  if (!original) continue;
+
+                  const updatedFields: Partial<Project> = {};
+
+                  // Compare fields and collect differences
+                  for (const key in edited) {
+                    if (edited[key as keyof Project] !== original[key as keyof Project]) {
+                      updatedFields[key as keyof Project] = edited[key as keyof Project];
+                    }
+                  }
+
+                  // Save only if there are changes
+                  if (Object.keys(updatedFields).length > 0) {
+                    await handleSaveProject(edited.project, updatedFields);
+                  }
+                }
+
+                setEditableProjects([]);
+              } else {
+                // Going into edit mode
+                setEditableProjects(JSON.parse(JSON.stringify(projects)));
+              }
+
+              setIsEditMode(!isEditMode);
+            }}
           >
             {isEditMode ? 'Done' : 'Edit'}
           </button>
+
         </div>
 
         <div className={styles.toolbarContainer}>
           <div className={styles.searchContainer}>
+            <img src={searchIcon} alt="Search" className={styles.searchIcon} />
             <input
               type="text"
               placeholder="Search projects..."
               className={styles.searchInput}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
@@ -311,18 +490,35 @@ const WinrockDashboard: React.FC = () => {
               isEditMode={isEditMode}
             />
             <tbody>
-              {currentProjects.map(project => (
+              {(isEditMode ? editableProjects : currentProjects).map(project => (
                 <TableRow
                   key={project.id}
                   data={project}
                   isSelected={selectedRows.includes(project.id)}
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
                   isEditMode={isEditMode}
-                  onSave={(updatedFields) => handleSaveProject(project.project, updatedFields)}
+                  onSave={(updatedFields) => {
+                    if (isEditMode) {
+                      setEditableProjects(prev =>
+                        prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
+                      );
+                    } else {
+                      handleSaveProject(project.project, updatedFields);
+                    }
+                  }}
+
+                  onActionClick={handleActionClick}
+                  onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
+                  onRowClick={() => {
+                    navigate(`/dashboard/admin/projects/${project.id}`, { state: { project } });
+                  }}
                 />
               ))}
             </tbody>
           </table>
+
+
+
         </div>
 
         <Pagination
@@ -332,6 +528,7 @@ const WinrockDashboard: React.FC = () => {
           itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
         />
+
       </main>
     </div>
   );
@@ -345,15 +542,14 @@ const tabs = [
   'Animal Agriculture and Manure Management'
 ];
 
-// options for the dropdowns
 const spendCategories = [
-  { id: 'acids', label: 'Acids & Alkalis' },
-  { id: 'animal-products', label: 'Animal Products' },
-  { id: 'cereals', label: 'Cereals & Grains' },
-  { id: 'commodities', label: 'Commodities' },
-  { id: 'cocoa', label: 'Cocoa' },
-  { id: 'electricity', label: 'Electricity' },
-  { id: 'emulsifiers', label: 'Emulsifiers' },
+  { id: 'Acids & Alkalis', label: 'Acids & Alkalis' },
+  { id: 'Animal Products', label: 'Animal Products' },
+  { id: 'Cereals & Grains', label: 'Cereals & Grains' },
+  { id: 'Commodities', label: 'Commodities' },
+  { id: 'Cocoa', label: 'Cocoa' },
+  { id: 'Electricity', label: 'Electricity' },
+  { id: 'Emulsifiers', label: 'Emulsifiers' },
 ];
 
 const overallCategories = [
@@ -363,6 +559,5 @@ const overallCategories = [
   { id: 'completed', label: <ColorText text="Completed" category="Completed" variant="status" /> },
   { id: 'completedRisk', label: <ColorText text="Completed (except for risk)" category="Completed (except for risk)" variant="status" /> }
 ];
-
 
 export default WinrockDashboard;

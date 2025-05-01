@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from '../../../forms/css-modules/SortWrapper.module.css';
+import mainStyles from '../css-modules/WinrockDashboard.module.css';
 
 interface SortOption {
   id: string;
@@ -40,7 +41,7 @@ const SortWrapper: React.FC<SortWrapperProps> = ({
   return (
     <div className={styles.sortWrapperContainer}>
       <button 
-        className={`${styles.sortButton} ${isOpen ? styles.active : ''}`}
+        className={`${mainStyles.sortButton} ${isOpen ? mainStyles.active : ''}`}
         onClick={toggleDropdown}
       >
         Sort
@@ -51,14 +52,14 @@ const SortWrapper: React.FC<SortWrapperProps> = ({
           {sortOptions.map(option => (
             <div 
               key={option.id}
-              className={`${styles.sortOption} ${selectedOption === option.id ? styles.selected : ''}`}
+              className={`${styles.sortOption} ${selectedOption === option.id ? mainStyles.selected : ''}`}
               onClick={() => handleOptionSelect(option.id)}
             >
               <span className={selectedOption === option.id ? styles.selectedText : ''}>
                 {option.label}
               </span>
               {selectedOption === option.id && (
-                <span className={styles.checkmark}>✓</span>
+                <span className={mainStyles.checkmark}>✓</span>
               )}
             </div>
           ))}

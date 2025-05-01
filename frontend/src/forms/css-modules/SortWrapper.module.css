@@ -1,21 +1,8 @@
 .sortWrapperContainer {
     position: relative;
     display: inline-block;
-    margin-left: 0.5rem;
-  }
-  
-  .sortButton {
-    padding: 0.5rem 1rem;
-    width: 14rem; 
-    border: none; 
-    background-color: white;
-    color: #374151;
-    font-size: 0.875rem;
-    text-align: left;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    width: 18.75rem;
+    height: 100%;
   }
   
   .sortButton:after {
@@ -37,7 +24,7 @@
     position: absolute;
     top: 100%;
     right: 0;
-    width: 15rem; /* equal to the widt of the filter popup width */
+    width: 18.75rem;
     background-color: white;
     border: 1px solid #CCCCCC;
     border-top: none;
@@ -47,8 +34,9 @@
   
   .sortOption {
     padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    color: #374151;
+    color: #1E1E1E;
+    font-size: 1em;
+    letter-spacing: 3%;
     cursor: pointer;
     display: flex;
     justify-content: space-between;

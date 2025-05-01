@@ -1,17 +1,21 @@
 .sectionHeader {
-    display: flex;
-    flex-direction: column;
-    padding: .8rem 2rem;
-    background: #005293;
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   padding: 0 2.5rem;
+   margin: 2.5rem 0;
+   background: #005293;
+   height: 4.125rem;
 }
 
 .label {
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: .05rem;
-    color: white;
-    padding-bottom: 0;
+   font-size: 1.25rem;
+   font-weight: 600;
+   letter-spacing: .05rem;
+   color: white;
+   padding-bottom: 0;
 }
+
 p {
    padding-bottom: 0;
 }

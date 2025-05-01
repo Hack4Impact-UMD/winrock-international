@@ -5,8 +5,7 @@
 .tableHeader tr {
   height: 3.125rem;
   width: 100%;
-  display: table;
-  table-layout: fixed;
+  
   border-bottom: 1px solid #CCCCCC;
   border-top: 1px solid #CCCCCC;
 }
