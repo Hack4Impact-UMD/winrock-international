@@ -15,7 +15,6 @@ import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 import ReportsDropdown from '../components/ReportsDropdown';
 import KPICharts from '../components/KPICharts';
-import PopupMenu from '../components/PopupMenu';
 import { getAllProjects, updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
@@ -517,24 +516,6 @@ const WinrockDashboard: React.FC = () => {
               ))}
             </tbody>
           </table>
-          {activeActionMenu !== null && (
-            <PopupMenu
-              x={buttonPosition.x}
-              y={buttonPosition.y}
-              onClose={() => setActiveActionMenu(null)}
-            >
-              <button
-                className={styles.archiveButton}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log('Archive/Unarchive button clicked for ID:', activeActionMenu);
-                  handleToggleArchive(activeActionMenu);
-                }}
-              >
-                {projects.find(p => p.id === activeActionMenu)?.isActive ? 'Archive' : 'Unarchive'}
-              </button>
-            </PopupMenu>
-          )}
 
 
 
