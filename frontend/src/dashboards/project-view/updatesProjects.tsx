@@ -3,7 +3,7 @@ interface Project {
     project: string;
     supplierName: string;
     overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
-    analysisStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded';
+    analysisStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded' | 'Clarifying Technical Details';
     spendCategory: string;
     geography: string;
     lastUpdated: string;
@@ -18,7 +18,7 @@ interface Project {
       project: 'Nestlé',
       supplierName: 'Cargill',
       overallStatus: 'On Track',
-      analysisStage: 'Risk & Co-benefit Assessment',
+      analysisStage: 'Clarifying Technical Details',
       spendCategory: 'Cereals & Grains',
       geography: 'United States of America',
       lastUpdated: '6 days',
