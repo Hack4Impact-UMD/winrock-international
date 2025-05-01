@@ -55,7 +55,7 @@ const WinrockDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeActionMenu, setActiveActionMenu] = useState<number | null>(null);
+  const [activeActionMenu, setActiveActionMenu] = useState<string | null>(null);
   const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
   const navigate = useNavigate();
@@ -87,7 +87,10 @@ const WinrockDashboard: React.FC = () => {
   };
   const handleToggleArchive = async (projectId: string) => {
     console.log('handleToggleArchive called with projectId:', projectId);
+    console.log('typeof projectId:', typeof projectId, '| projectId:', projectId);
+
     const project = projects.find(p => p.id === String(projectId));
+    
     if (!project) {
       console.error(`Project with ID ${projectId} not found`);
       return;
