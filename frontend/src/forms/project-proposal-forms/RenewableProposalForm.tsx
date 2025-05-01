@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import * as firestore from "firebase/firestore";
 import { db } from "../../firebaseConfig.js";
-import FormField from "../FormField.js";
+import { useNavigate } from "react-router-dom"; // Correctly import useNavigate
 
 import LogoHeader from "../components/headers/LogoHeader.js";
 import TitleHeader from "../components/headers/TitleHeader.js";
@@ -12,9 +12,11 @@ import DropdownQuestion from "../components/questions/DropdownQuestion.js";
 import NavigationButtons from "../components/NavigationButtons.js";
 import ConfirmationPage from "../ConfirmationPage.js";
 import Error from "../components/Error.js";
+import FormField from "../FormField.tsx";
+import GuidanceDropdown from "../components/GuidanceDropdown.tsx";
+import tableImage from '../../assets/table.png';
 
 interface RenewableProposalFormData {
-    // Generic Information
     parentVendorName: FormField;
     vendorCode: FormField;
     vendorSiteSAPName: FormField;
@@ -26,128 +28,66 @@ interface RenewableProposalFormData {
     projectDescription: FormField;
     projectImplementationYear: FormField;
     impactEvidence: FormField;
-    emissionFactor: FormField;
     volumeDelivered: FormField;
-
-    // Energy Consumption: Before Intervention
     beforeSourceOfEnergy: FormField;
     beforeEnergyConsumption: FormField;
     beforeEmissionFactor: FormField;
-
-    // Energy Consumption: After Intervention is Completed
     afterSourceOfEnergy: FormField;
     afterEnergyConsumption: FormField;
     afterEmissionFactor: FormField;
-
-    // Calculations
     impactReduction: FormField;
     impactTiming: FormField;
+    sourceEmissionFactor: FormField;
+    sourceEnergy: FormField;
 }
 
-function RenewableProposalForm() {
-    const title = "Renewable Energy Project Proposal Form"
-    const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 1;
+const RenewableProposalForm = () => {
+    const navigate = useNavigate();
+    const title = "Renewable Energy Project Proposal Form";
+    const [currentPage, setCurrentPage] = useState(1); // Start on Page 1
+    const totalPages = 2; // Set totalPages to 2 since we have two pages
 
     const collectionID = "project-proposal-form";
     const collectionRef = firestore.collection(db, collectionID);
     const answersRef = useRef<RenewableProposalFormData>({
         parentVendorName: new FormField('', true),
-        vendorCode: new FormField('', false),
-        vendorSiteSAPName: new FormField('', false),
+        vendorCode: new FormField('', true),
+        vendorSiteSAPName: new FormField('', true),
         spendCategory: new FormField('', true),
         level2Category: new FormField('', true),
-        vendorSiteCountry: new FormField('', true),
         vendorSiteCity: new FormField('', true),
-        projectType: new FormField('', false),
-        projectDescription: new FormField('', false),
-        projectImplementationYear: new FormField('', false),
-        impactEvidence: new FormField('', false),
-        emissionFactor: new FormField('', false),
+        vendorSiteCountry: new FormField('', true),
+        projectType: new FormField('', true),
+        projectDescription: new FormField('', true),
+        projectImplementationYear: new FormField('', true),
+        impactEvidence: new FormField('', true),
         volumeDelivered: new FormField('', true),
         beforeSourceOfEnergy: new FormField('', true),
         beforeEnergyConsumption: new FormField('', true),
-        beforeEmissionFactor: new FormField('', false),
-        afterSourceOfEnergy: new FormField('', false),
-        afterEnergyConsumption: new FormField('', false),
-        afterEmissionFactor: new FormField('', false),
+        beforeEmissionFactor: new FormField('', true),
+        afterSourceOfEnergy: new FormField('', true),
+        afterEnergyConsumption: new FormField('', true),
+        afterEmissionFactor: new FormField('', true),
         impactReduction: new FormField('', false),
-        impactTiming: new FormField('', false)
+        impactTiming: new FormField('', false),
+        sourceEmissionFactor: new FormField('', false),
+        sourceEnergy: new FormField('', true),
     });
-
-    // Used for when the "other" option is selected in the impact evidence question
-    const [displayImpactEvidenceTextQuestion, setDisplayImpactEvidenceTextQuestion] = useState(false);
-
-    useEffect(() => {
-        computeImpactReduction();
-    }, [answersRef.current.afterEnergyConsumption, answersRef.current.beforeEmissionFactor, answersRef.current.afterEmissionFactor]);
-
-    useEffect(() => {
-        computeImpactTiming();
-    }, [answersRef.current.projectImplementationYear]);
-
-    /**
-     * Sets impactReduction to the impact reduction after
-     * intervention based on the annualized impact given
-     * in the form.
-     * 
-     */
-    function computeImpactReduction(): void {
-        if (answersRef.current.afterEnergyConsumption.value === '' || answersRef.current.beforeEmissionFactor.value === ''
-            || answersRef.current.afterEmissionFactor.value === '') {
-            return;
-        }
-
-        const impactReduction =
-            (parseInt(answersRef.current.afterEnergyConsumption.value)
-                * (parseFloat(answersRef.current.beforeEmissionFactor.value) - parseFloat(answersRef.current.afterEmissionFactor.value))
-                / 1000.0).toString();
-
-        handleChange("impactReduction", impactReduction);
-    }
-
-    /**
-     * Sets impactTiming to a string corresponding to the project
-     * implementation's timing.
-     */
-    function computeImpactTiming(): void {
-        if (answersRef.current.projectImplementationYear.value === '') {
-            return;
-        }
-
-        const maxReductionYear = new Date().getFullYear();
-        const minReductionYear = maxReductionYear - 5;
-        const year = parseInt(answersRef.current.projectImplementationYear.value);
-
-        let impactTiming: string;
-        if (year < minReductionYear) {
-            impactTiming = "Before Nestlé Baseline";
-        } else if (year >= maxReductionYear + 1) {
-            impactTiming = `Potential Reduction - ${maxReductionYear + 1} Onwards`;
-        } else {
-            impactTiming = `Reduction - ${minReductionYear}-${maxReductionYear}`;
-        }
-
-        handleChange("impactTiming", impactTiming);
-    }
-
-    // Used to change the answersRef's fields dynamically
-    function handleChange(field: keyof RenewableProposalFormData, value: string) {
-        const isRequired = answersRef.current[field]!.isRequired;
-        answersRef.current = {
-            ...answersRef.current,
-            [field]: new FormField(value, isRequired)
-        }
-    }
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [error, setError] = useState('');
 
-    /**
-     * Insert a new RenewableProjectProposal document with the user-inputted
-     * fields into the RenewableProjectProposalForm collection.
-    */
-    async function handleSubmit() {
+    // Helper functions
+    const handleChange = (field: keyof RenewableProposalFormData, value: string) => {
+        const isRequired = answersRef.current[field]!.isRequired;
+        answersRef.current = {
+            ...answersRef.current,
+            [field]: new FormField(value, isRequired),
+        };
+    };
+
+    // Handling form submission
+    const handleSubmit = async () => {
         for (const [_, v] of Object.entries(answersRef.current)) {
             if (v.isRequired && v.value === '') {
                 setError("Cannot submit: You have not completed one or more sections in the form");
@@ -155,234 +95,159 @@ function RenewableProposalForm() {
             }
         }
 
-        // Convert the answersRef into a submission object
-        const submissionObj: Record<string, string> = {}
+        const submissionObj: Record<string, string> = {};
         Object.keys(answersRef.current).forEach((field) => {
             submissionObj[field] = answersRef.current[field as keyof RenewableProposalFormData]!.value;
         });
 
         try {
-            await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
+            await firestore.addDoc(collectionRef, submissionObj);
             setIsSubmitted(true);
         } catch (error) {
-            console.error("Error submitting RenewableProjectProposal", error);
             setError("Server error. Please try again later.");
         }
-    }
+    };
 
-    const saveChanges = () => {
-        console.log('Changes saved');
-    }
-
-    const saveAndExit = () => {
-        console.log('Changes saved and exiting');
-    }
-
+    // Navigate to Confirmation Page
     if (isSubmitted) {
-        return <ConfirmationPage formName={title} />
+        return <ConfirmationPage formName={title} />;
     }
 
     return (
         <>
             <LogoHeader />
-            <TitleHeader
-                title={title}
-                description="This is an intake form for renewable energy and energy reduction projects to support Nestlé's
-                             goal of achieving Net Zero GHG emissions by 2050."
-            />
+            <TitleHeader title={title} description="Please only focus on the top 80% of Energy Sources used linked to volume supplied to Nestlé (- if your number of sites do not fit on this spreadsheet, please use multiple Excel files). If you have not done any Renewable Electricity/Energy Intervention - please list total energy usage in kWh linked to Nestlé supply per site instead (see example row 11 for one site)" />
 
-            <ProgressBar
-                currentPage={currentPage}
-                totalPages={totalPages}
-                pageLabels={["Proposal Form (Page 1/1)"]}
-            />
 
-            <SectionHeader label="Generic Information" />
+            {/* Page 1 Content */}
+            {currentPage === 1 ? (
 
-            <TextQuestion
-                label="Parent Vendor Name"
-                controlledValue={answersRef.current.parentVendorName.value}
-                onChange={(value) => handleChange("parentVendorName", value)}
-                required={true}
-                size="small"
-            />
+                <div>
+                    <ProgressBar currentPage={currentPage} totalPages={totalPages} pageLabels={["Proposal Form (Page 1)", "Proposal Form (Page 2)"]} />
+                    <GuidanceDropdown />
+                    <SectionHeader label="Generic Information" />
+                    <TextQuestion label="1. Parent Vendor Name" controlledValue={answersRef.current.parentVendorName.value} onChange={(value) => handleChange("parentVendorName", value)} required={true} size="small" />
+                    <TextQuestion label="2. Vendor Code" controlledValue={answersRef.current.vendorCode.value} onChange={(value) => handleChange("vendorCode", value)} size="small" />
+                    <TextQuestion label="3. Vendor Site SAP Name" controlledValue={answersRef.current.vendorSiteSAPName.value} onChange={(value) => handleChange("vendorSiteSAPName", value)} size="small" />
+                    <DropdownQuestion label="4. Spend Category" options={["Ingredients", "Commodities", "Packaging", "Logistics"]} controlledValue={answersRef.current.spendCategory.value} onSelect={(value: string) => handleChange("spendCategory", value)} required={true} />
+                    <DropdownQuestion label="5. Level 2 Category" options={["Amino Acids", "Cereals & Grains", "Flexibles", "Warehousing Services"]} controlledValue={answersRef.current.level2Category.value} onSelect={(value: string) => handleChange("level2Category", value)} required={true} />
+                    <TextQuestion label="6. Vendor Site Country" controlledValue={answersRef.current.vendorSiteCountry.value} onChange={(value) => handleChange("vendorSiteCountry", value)} required={true} size="small" />
+                    <TextQuestion label="7. Vendor Site City" controlledValue={answersRef.current.vendorSiteCity.value} onChange={(value) => handleChange("vendorSiteCity", value)} required={true} size="small" />
 
-            <TextQuestion
-                label="Vendor Code"
-                controlledValue={answersRef.current.vendorCode.value}
-                onChange={(value) => handleChange("vendorCode", value)}
-                size="small"
-            />
 
-            <TextQuestion
-                label="Vendor Site SAP Name"
-                controlledValue={answersRef.current.vendorSiteSAPName.value}
-                onChange={(value) => handleChange("vendorSiteSAPName", value)}
-                size="small"
-            />
+                    <DropdownQuestion
+                        label="8. Project Type"
+                        options={["Project A", "Project B", "Project C"]}
+                        controlledValue={answersRef.current.projectType.value}
+                        onSelect={(value) => handleChange("projectType", value)}
+                        required={true}
+                    />
 
-            <DropdownQuestion
-                label="Spend Category"
-                options={["Ingredients", "Commodities", "Packaging", "Logistics"]}
-                controlledValue={answersRef.current.spendCategory.value}
-                onSelect={(value: string) => handleChange("spendCategory", value)}
-                required={true}
-            />
+                    <TextQuestion
+                        label="Please describe specific project activities."
+                        controlledValue={answersRef.current.projectDescription.value}
+                        onChange={(value) => handleChange("projectDescription", value)}
+                        required={true}
+                        size="small"
+                    />
 
-            <DropdownQuestion
-                label="Level 2 Category"
-                options={["Amino Acids", "Cereals & Grains", "Flexibles", "Warehousing Services"]}
-                controlledValue={answersRef.current.level2Category.value}
-                onSelect={(value: string) => handleChange("level2Category", value)}
-                required={true}
-            />
+                    <TextQuestion
+                        label="9. Project Implementation Year"
+                        controlledValue={answersRef.current.projectImplementationYear.value}
+                        onChange={(value) => handleChange("projectImplementationYear", value)}
+                        required={true}
+                        size="small"
+                    />
 
-            <TextQuestion
-                label="Vendor Site Country"
-                controlledValue={answersRef.current.vendorSiteCountry.value}
-                onChange={(value: string) => handleChange("vendorSiteCountry", value)}
-                required={true}
-                size="small"
-            />
+                    <DropdownQuestion
+                        label="10. How do you plan to evidence the project impact?"
+                        options={["Project implementation partner (2nd/3rd party)", "Electronic metering tool", "Other (please describe)"]}
+                        controlledValue={answersRef.current.impactEvidence.value}
+                        onSelect={(value) => handleChange("impactEvidence", value)}
+                        required={true}
+                    />
 
-            {/* This was a DropdownQuestion in the Excel form, but we changed it
-                to a TextQuestion because we don't know the vendor cities. */}
-            <TextQuestion
-                label="Vendor Site City"
-                controlledValue={answersRef.current.vendorSiteCity.value}
-                onChange={(value: string) => handleChange("vendorSiteCity", value)}
-                required={true}
-                size="small"
-            />
+                    <TextQuestion
+                        label="If other, please describe."
+                        controlledValue={answersRef.current.impactEvidence.value}
+                        onChange={(value) => handleChange("impactEvidence", value)}
+                        size="small"
+                    />
 
-            <TextQuestion
-                label="Project Type"
-                controlledValue={answersRef.current.projectType.value}
-                onChange={(value: string) => handleChange("projectType", value)}
-                size="small"
-            />
+                    <TextQuestion
+                        label="11. Volume of Material - Delivered to Nestlé in 2022 (Tons = Metric Tons)"
+                        controlledValue={answersRef.current.volumeDelivered.value}
+                        onChange={(value) => handleChange("volumeDelivered", value)}
+                        required={true}
+                        size="small"
+                    />
 
-            <TextQuestion
-                label="Project Description"
-                controlledValue={answersRef.current.projectDescription.value}
-                onChange={(value: string) => handleChange("projectDescription", value)}
-            />
+                    {/* Energy Consumption Sections */}
+                    <SectionHeader label="Energy Consumption: Before Intervention" />
+                    <DropdownQuestion label="12. Source of Energy" options={["Coal", "Natural Gas", "Electricity Grid"]} controlledValue={answersRef.current.beforeSourceOfEnergy.value} onSelect={(value) => handleChange("beforeSourceOfEnergy", value)} required={true} />
+                    <TextQuestion label="13. Energy Consumption (KWh/year) - Before Intervention" controlledValue={answersRef.current.beforeEnergyConsumption.value} onChange={(value) => handleChange("beforeEnergyConsumption", value)} required={true} size="small" />
+                    <TextQuestion label="14. Emission Factor of Energy (kgCO2/KWh) - Before Intervention" controlledValue={answersRef.current.beforeEmissionFactor.value} onChange={(value) => handleChange("beforeEmissionFactor", value)} size="small" />
 
-            <TextQuestion
-                label="Project Implementation Year"
-                controlledValue={answersRef.current.projectImplementationYear.value}
-                onChange={(value: string) => handleChange("projectImplementationYear", value)}
-                size="small"
-            />
+                    <SectionHeader label="Energy Consumption: After Intervention is Completed" />
+                    <DropdownQuestion label="15. Source of Energy" options={["Biogas/Green Gas", "Solar", "Renewable Electricity Certificate"]} controlledValue={answersRef.current.afterSourceOfEnergy.value} onSelect={(value) => handleChange("afterSourceOfEnergy", value)} />
+                    <TextQuestion label="16. Energy Consumption (KWh/year) - After Intervention" controlledValue={answersRef.current.afterEnergyConsumption.value} onChange={(value) => handleChange("afterEnergyConsumption", value)} size="small" />
+                    <TextQuestion label="17. Emission Factor of Energy (kgCO2/KWh) - After Intervention" controlledValue={answersRef.current.afterEmissionFactor.value} onChange={(value) => handleChange("afterEmissionFactor", value)} size="small" />
 
-            <DropdownQuestion
-                label="How do you plan to evidence the project impact?"
-                options={["Project implementation partner (2nd/3rd party)", "Electronic metering tool", "Other (please describe)"]}
-                controlledValue={answersRef.current.parentVendorName.value}
-                onSelect={(value: string) => {
-                    if (value === "Other (please describe)") {
-                        handleChange("impactEvidence", "");
-                        setDisplayImpactEvidenceTextQuestion(true);
-                    } else {
-                        handleChange("impactEvidence", value);
-                        setDisplayImpactEvidenceTextQuestion(false);
-                    }
-                }}
-            />
-            {displayImpactEvidenceTextQuestion &&
-                <TextQuestion
-                    label=""
-                    controlledValue={answersRef.current.impactEvidence.value}
-                    onChange={(value: string) => handleChange("impactEvidence", value)}
-                />}
+                    {/* New Questions for Page 1 */}
+                    <SectionHeader label="Comments/ Remarks" />
+                    <TextQuestion label="18. Source of Emission Factor" controlledValue={answersRef.current.sourceEmissionFactor.value} onChange={(value) => handleChange("sourceEmissionFactor", value)} required={true} size="small" />
+                    <SectionHeader label="Impact" />
+                    <DropdownQuestion label="19. Source of Energy" options={["Coal", "Natural Gas", "Electricity Grid"]} controlledValue={answersRef.current.sourceEnergy.value} onSelect={(value) => handleChange("sourceEnergy", value)} required={true} />
+                    <TextQuestion label="20. Impact Reduction On GHG EmissionAfter Intervention" controlledValue={answersRef.current.impactReduction.value} onChange={(value) => handleChange("impactReduction", value)} required={true} size="small" />
+                    <TextQuestion label="21. Impact Timing" controlledValue={answersRef.current.impactTiming.value} onChange={(value) => handleChange("impactTiming", value)} size="small" />
 
-            <TextQuestion
-                label="Please share any comments/remarks on the change in the source of energy (see below sections)"
-                controlledValue={answersRef.current.emissionFactor.value}
-                onChange={(value: string) => handleChange("emissionFactor", value)}
-            />
+                </div>
+            ) : (
+                // Page 2 Content
+                <div>
+                    <ProgressBar currentPage={currentPage} totalPages={totalPages} pageLabels={["Proposal Form (Page 1)", "Proposal Form (Page 2)"]} />
+                    <GuidanceDropdown />
+                    <SectionHeader label="Evidentiary Documentation Checklist" />
+                    <p style={{
+                        color: 'black',
+                        fontSize: '16px',
+                        fontFamily: 'Neue Haas Grotesk Display Pro',
+                        fontWeight: '500',
+                        lineHeight: '24px',
+                        letterSpacing: '0.48px',
+                        wordWrap: 'break-word',
+                        padding: '20px',
+                        margin: '0 60px',
+                    }}>
+                        This checklist represents information that will need to be gathered over the course of the project validation process. ***This information does not necessarily need to be provided by suppliers when the project form is initially submitted to your procurement manager. Filling out the "Project Submission Form" tab will be enough to trigger the commencement of the project validation process.***
+                        When suppliers fill out this checklist, the documentation can be attached on a separate tab, provided as a link in column I of this spreadsheet, or emailed along with this spreadsheet workbook. The following table provides a checklist of documents that will help our Technical Advisor evaluate the project. If you have any questions about the documents listed below, please refer to Nestlé's Renewable Energy FAQ, which is linked in the Guidance tab of this workbook.
+                    </p>
+                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                        <img
+                            src={tableImage}
+                            alt="Evidentiary Documentation Table"
+                            style={{ width: '100%', maxWidth: '1200px' }}
+                        />
+                    </div>
+                </div>
+            )}
 
-            <TextQuestion
-                label="Volume of Material (Metric Tons) Delivered to Nestlé in 2022"
-                controlledValue={answersRef.current.volumeDelivered.value}
-                onChange={(value: string) => handleChange("volumeDelivered", value)}
-                required={true}
-                size="small"
-            />
-
-            <SectionHeader label="Energy Consumption: Before Intervention" />
-
-            <DropdownQuestion
-                label="Source of Energy"
-                options={["Coal", "Natural Gas", "Electricity Grid"]}
-                controlledValue={answersRef.current.beforeSourceOfEnergy.value}
-                onSelect={(value: string) => handleChange("beforeSourceOfEnergy", value)}
-                required={true}
-            />
-
-            <TextQuestion
-                label="Share an energy consumption (KWh/year) estimate for Nestlé only (BEFORE intervention)"
-                controlledValue={answersRef.current.beforeEnergyConsumption.value}
-                onChange={((value) => handleChange("beforeEnergyConsumption", value))}
-                required={true}
-                size="small"
-            />
-
-            <TextQuestion
-                label="Emission Factor of Energy (kgCO2/KwH) (BEFORE intervention)"
-                controlledValue={answersRef.current.beforeEmissionFactor.value}
-                onChange={((value) => handleChange("beforeEmissionFactor", value))}
-                size="small"
-            />
-
-            <SectionHeader label="Energy Consumption: After Intervention is Completed" />
-
-            <DropdownQuestion
-                label="Source of Energy"
-                options={["Biogas/Green Gas - Grid (external)", "Solar", "Renewable Electricity Certificate"]}
-                controlledValue={answersRef.current.afterSourceOfEnergy.value}
-                onSelect={(value: string) => handleChange("afterSourceOfEnergy", value)}
-            />
-
-            <TextQuestion
-                label="Share an energy consumption (KWh/year) estimate for Nestlé only (AFTER Intervention)"
-                controlledValue={answersRef.current.afterEnergyConsumption.value}
-                onChange={(value: string) => handleChange("afterEnergyConsumption", value)}
-                size="small"
-            />
-
-            <TextQuestion
-                label="Emission Factor of Energy (kgCO2/KwH) (AFTER intervention)"
-                controlledValue={answersRef.current.afterEmissionFactor.value}
-                onChange={(value: string) => handleChange("afterEmissionFactor", value)}
-                size="small"
-            />
-
-            <SectionHeader label="Comments/Remarks" />
-
-            <TextQuestion
-                label="Impact Timing (based on Project Implementation Year)"
-                controlledValue={answersRef.current.impactTiming.value}
-                onChange={(value: string) => handleChange("impactTiming", value)}
-            />
-
+            {/* Navigation Buttons */}
             <NavigationButtons
                 onNext={() => {
                     if (currentPage < totalPages) {
-                        setCurrentPage(currentPage + 1);
-                        window.scroll(0, 0);
+                        setCurrentPage(currentPage + 1); // Update page when Next is clicked
                     } else {
                         handleSubmit();
                     }
                 }}
                 onBack={() => {
                     if (currentPage > 1) {
-                        setCurrentPage(currentPage - 1)
-                        window.scroll(0, 0);
+                        setCurrentPage(currentPage - 1); // Update page when Back is clicked
                     }
                 }}
-                onSaveChanges={saveChanges}
-                onSaveAndExit={saveAndExit}
+                onSaveChanges={() => console.log("Changes saved")}
+                onSaveAndExit={() => console.log("Changes saved and exiting")}
                 canGoBack={currentPage > 1}
                 nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
             />
@@ -390,6 +255,6 @@ function RenewableProposalForm() {
             <Error message={error} />
         </>
     );
-}
+};
 
 export default RenewableProposalForm;

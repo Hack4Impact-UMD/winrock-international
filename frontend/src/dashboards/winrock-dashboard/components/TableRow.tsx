@@ -30,6 +30,7 @@ interface TableRowProps {
     geography: string;
     lastUpdated: string;
     startDate: string;
+    isActive: boolean;
   };
   isSelected?: boolean;
   onSelect?: (checked: boolean) => void;
@@ -247,7 +248,8 @@ const TableRow: React.FC<TableRowProps> = ({
                   className={styles.archiveButton}
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleToggleArchive(activeActionMenu);
+                    // handleToggleArchive(activeActionMenu);
+                    onArchiveClick?.(data.id);
                   }}
                 >
                   {data.isActive ? 'Archive' : 'Unarchive'}

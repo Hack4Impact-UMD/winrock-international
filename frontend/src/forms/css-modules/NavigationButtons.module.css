@@ -8,8 +8,9 @@
 
 .navigationButton {
    border-radius: var(--border-radius);
-   font-weight: 400;
+   font-weight: 500;
    font-size: 1rem;
+   letter-spacing: 0.48px;
    cursor: pointer;
    border: none;
    width: 140px;

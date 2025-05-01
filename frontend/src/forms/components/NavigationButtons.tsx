@@ -1,15 +1,17 @@
-import styles from'../css-modules/NavigationButtons.module.css'
+import React from 'react';
+import styles from '../css-modules/NavigationButtons.module.css';
 
 interface NavigationButtonsProps {
-   onNext?: () => void
-   onBack?: () => void
-   onSaveChanges?: () => void
-   onSaveAndExit?: () => void
-   canGoNext?: boolean
-   canGoBack?: boolean
-   nextLabel?: string
-   backLabel?: string
-   showSaveOptions?: boolean
+   onNext?: () => void;
+   onBack?: () => void;
+   onSaveChanges?: () => void;
+   onSaveAndExit?: () => void;
+   canGoNext?: boolean;
+   canGoBack?: boolean;
+   nextLabel?: string;
+   backLabel?: string;
+   className?: string;
+   showSaveOptions?: boolean;
 }
 
 const NavigationButtons: React.FC<NavigationButtonsProps> = ({
@@ -21,39 +23,41 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
    canGoBack = true,
    nextLabel = 'Next',
    backLabel = 'Back',
+   className = '',
    showSaveOptions = true,
 }) => {
-   const handleNextClick = (e: React.MouseEvent) => {
+   const handleNextClick = () => {
       if (onNext) {
-         onNext()
+         onNext();
       }
-   }
+   };
 
-   const handleBackClick = (e: React.MouseEvent) => {
+   const handleBackClick = () => {
       if (onBack) {
-         onBack()
+         onBack();
       }
-   }
+   };
 
-   const handleSaveChangesClick = (e: React.MouseEvent) => {
+   const handleSaveChangesClick = () => {
       if (onSaveChanges) {
-         onSaveChanges()
+         onSaveChanges();
       }
-   }
+   };
 
-   const handleSaveAndExitClick = (e: React.MouseEvent) => {
+   const handleSaveAndExitClick = () => {
       if (onSaveAndExit) {
-         onSaveAndExit()
+         onSaveAndExit();
       }
-   }
+   };
 
    const getButtons = () => {
-      const buttons = []
+      const buttons = [];
 
+      // Back Button
       if (onBack) {
          buttons.push(
             <button
-               key='back'
+               key="back"
                className={`${styles.navigationButton} ${styles.backButton}`}
                onClick={handleBackClick}
                disabled={!canGoBack}
@@ -61,39 +65,42 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
             >
                {backLabel}
             </button>
-         )
+         );
       }
 
+      // Save Changes Button
       if (showSaveOptions && onSaveChanges) {
          buttons.push(
             <button
-               key='save-changes'
+               key="save-changes"
                className={`${styles.navigationButton} ${styles.saveButton}`}
                onClick={handleSaveChangesClick}
-               aria-label='Save Changes'
+               aria-label="Save Changes"
             >
                Save Changes
             </button>
-         )
+         );
       }
 
+      // Save and Exit Button
       if (showSaveOptions && onSaveAndExit) {
          buttons.push(
             <button
-               key='save-exit'
+               key="save-exit"
                className={`${styles.navigationButton} ${styles.saveButton}`}
                onClick={handleSaveAndExitClick}
-               aria-label='Save and Exit'
+               aria-label="Save and Exit"
             >
                Save and Exit
             </button>
-         )
+         );
       }
 
+      // Next Button (Submit Button)
       if (onNext) {
          buttons.push(
             <button
-               key='next'
+               key="next"
                className={`${styles.navigationButton} ${styles.nextButton}`}
                onClick={handleNextClick}
                disabled={!canGoNext}
@@ -101,13 +108,13 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
             >
                {nextLabel}
             </button>
-         )
+         );
       }
 
-      return buttons
-   }
+      return buttons;
+   };
 
-   return <div className={styles.navigationButtons}>{getButtons()}</div>
-}
+   return <div className={`${styles.navigationButtons} ${className}`}>{getButtons()}</div>;
+};
 
-export default NavigationButtons
+export default NavigationButtons;

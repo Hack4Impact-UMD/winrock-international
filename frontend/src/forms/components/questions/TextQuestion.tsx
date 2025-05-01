@@ -14,6 +14,8 @@ interface TextQuestionProps {
     guidance: string;
     example: string;
   };
+  hideInput?: boolean;  // Add this prop to conditionally hide the input box
+
 }
 
 function TextQuestion({
@@ -24,7 +26,8 @@ function TextQuestion({
   disableOverwrite = false,
   size = 'large',
   removeTopPadding = false,
-  popup
+  popup,
+  hideInput = false
 }: TextQuestionProps) {
   const [value, setValue] = useState(controlledValue);
   const [placeholder, setPlaceholder] = useState("Enter text here");
@@ -62,13 +65,15 @@ function TextQuestion({
         </label>
       </div>
 
-      <textarea
-        className={`${styles.input} ${isValid ? styles.validInput : styles.invalidInput} ${disableOverwrite ? styles.disabledInput : ""} ${size === 'small' ? styles.smallInput : ''}`}
-        value={value}
-        placeholder={placeholder}
-        onChange={handleChange}
-        onBlur={validate}
-      />
+      {!hideInput && (
+        <textarea
+          className={`${styles.input} ${isValid ? styles.validInput : styles.invalidInput} ${disableOverwrite ? styles.disabledInput : ""} ${size === 'small' ? styles.smallInput : ''}`}
+          value={value}
+          placeholder={placeholder}
+          onChange={handleChange}
+          onBlur={validate}
+        />
+      )}
     </div>
   );
 };
