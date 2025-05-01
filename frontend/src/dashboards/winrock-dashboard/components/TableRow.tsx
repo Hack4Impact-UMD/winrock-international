@@ -123,11 +123,6 @@ const TableRow: React.FC<TableRowProps> = ({
       >
         {data.project}
       </td>
-
-
-      {/* Project Name - Not Editable */}
-      <td className={styles.cell}>{data.project}</td>
-
       {/* Supplier Name */}
       <td className={styles.cell}>
         {isEditMode ? (
