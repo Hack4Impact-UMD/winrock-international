@@ -7,7 +7,15 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 5rem;
+    margin-top: 40px;
+    margin-left: 55px;
 }
+
+.projectTitle {
+    font-size: 36px;
+    font-weight: 600;
+  }
+  
 
 .btnContainer {
     display: flex;
@@ -24,9 +32,9 @@
 
 .headerCell {
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 16px;
     text-align: left;
-    padding: 0.75rem 0.3125rem;
+    /* padding: 0.75rem 0.3125rem; */
 }
 
 .tableRow {
@@ -36,14 +44,28 @@
     table-layout: fixed;
 }
 
-.cell {
+/* .cell {
     padding: 0.75rem 0.3125rem;
     text-align: left;
     font-weight: 500;
+    font-size: 12px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
+    margin-left: -50px;
+} */
+
+.cell {
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    white-space: normal; 
+    overflow: visible;
+    text-overflow: unset;
+    word-break: break-word;
+    margin-left: -100px;
+    
+  }
 
 .button {
     background-color: white;
@@ -62,3 +84,30 @@
     background-color: var(--color-primary);
     color: white;
 }
+
+.backButtonContainer {
+	padding: 1rem 2rem;
+    margin-top: -45px;
+    margin-left: -10px;
+  }
+  
+  .backButton {
+	background: none;
+	border: none;
+	color: var(--color-primary, #007bff);
+	font-size: 1rem;
+	cursor: pointer;
+	text-decoration: underline;
+	padding: 0;
+    margin-top: -50px;
+  }
+  
+  .backButton:hover {
+	text-decoration: none;
+	color: #0056b3; 
+  }
+
+  .backArrowIcon {
+    margin-left: -10px;
+    margin-top: -50px;
+  }

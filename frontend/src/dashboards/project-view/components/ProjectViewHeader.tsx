@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styles from "../css-modules/ProjectViewHeader.module.css";
 import ColorText from "../../winrock-dashboard/components/ColorText";
+import { useNavigate } from 'react-router-dom';
+import backArrow from "../assets/backArrow.svg"
 
 type StatusType =
     | 'On Track'
@@ -32,11 +34,17 @@ interface ProjectViewHeaderProps {
 
 const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data }) => {
     const [isEditMode, setIsEditMode] = useState(false);
-
+    const navigate = useNavigate();
     return (
         <div className={styles.viewContainer}>
+            <div className={styles.backButtonContainer}>
+                <button onClick={() => navigate('/dashboard/admin/projects')} className={styles.backButton}>
+                    <img src={backArrow} alt="Back" className={styles.backArrowIcon} />
+                </button>
+            </div>
             <div className={styles.titleContainer}>
-                <h1>{data.project}</h1>
+                
+                <h1 className={styles.projectTitle}>{data.project}</h1>
                 <div className={styles.btnContainer}>
                     <button
                         className={`${styles.button} ${isEditMode ? styles.active : ''}`}
@@ -79,6 +87,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data }) => {
                         variant="analysis"
                     />
                 </td>
+                {/* <td className={styles.cell}>{data.analysisStage}</td> */}
                 <td className={styles.cell}>{data.spendCategory}</td>
                 <td className={styles.cell}>{data.geography}</td>
                 <td className={styles.cell}>{data.lastUpdated}</td>

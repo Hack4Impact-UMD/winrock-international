@@ -4,6 +4,8 @@ import ProjectTracker from './components/ProjectTracker';
 import ProjectUpdates from './components/ProjectUpdates';
 import styles from '../project-view/css-modules/ProjectView.module.css';
 import Sidebar from '../winrock-dashboard/components/Sidebar';
+import { useNavigate } from 'react-router-dom';
+import backArrow from '../project-view/assets/backArrow.svg'
 
 import sampleUpdates from './updatesSamples'; // Static updates
 
@@ -36,9 +38,11 @@ interface ProjectViewProps {
 }
 
 const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
+    const navigate = useNavigate();
   return (
     <div className={styles.projectViewContainer}>
         <Sidebar currentTab="projects"></Sidebar>
+        
       <ProjectViewHeader data={project} />
 
       <div className={styles.mainContent}>
