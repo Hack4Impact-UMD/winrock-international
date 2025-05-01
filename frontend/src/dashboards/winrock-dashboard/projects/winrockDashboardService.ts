@@ -178,7 +178,7 @@ const getAllProjects = async (orderByField: string, desc: boolean): Promise<Resu
 const getProjectsWithFilters = async (
     orderByField: string,
     desc: boolean,
-    filterFields: string[],
+    filterFields: (keyof Project)[],
     filterValues: any[],
     startDate?: Date,
     endDate?: Date
@@ -291,6 +291,7 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 }
 
 export {
+    type Project,
     OverallStatus,
     AnalysisStage,
     createProject,
