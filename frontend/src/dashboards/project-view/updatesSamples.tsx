@@ -45,11 +45,42 @@ const sampleUpdates: UpdateItem[] = [
       timestamp: "12 days ago",
       status: "sent"
     },
+    // pixel
+    {
+        id: "201",
+        projectId: "Pixel",
+        title: "GHG data collection incomplete",
+        description: "Missing Scope 3 emissions data",
+        timestamp: "5 days ago",
+        status: "received",
+        canRequestInfo: true
+      },
+      {
+        id: "202",
+        projectId: "Pixel",
+        title: "Initial GHG report submitted",
+        timestamp: "12 days ago",
+        status: "sent"
+      },
+      {
+        id: "401",
+        projectId: "Pixel",
+        title: "Initial project scope clarified",
+        timestamp: "19 days ago",
+        status: "completed"
+      },
+      {
+        id: "402",
+        projectId: "Pixel",
+        title: "Project kickoff meeting completed",
+        timestamp: "21 days ago",
+        status: "completed"
+      },
   
     // Project 3 (Microsoft - Confirming Final Requirements)
     {
       id: "301",
-      projectId: "Project3",
+      projectId: "Microsoft",
       title: "Final requirements document sent",
       description: "Awaiting Microsoft sign-off",
       timestamp: "1 day ago",
@@ -57,7 +88,7 @@ const sampleUpdates: UpdateItem[] = [
     },
     {
       id: "302",
-      projectId: "Project3",
+      projectId: "Microsoft",
       title: "Technical specifications approved",
       timestamp: "3 days ago",
       status: "completed"
@@ -66,14 +97,14 @@ const sampleUpdates: UpdateItem[] = [
     // Project 4 (WebMD - Clarifying Initial Project Information)
     {
       id: "401",
-      projectId: "Project4",
+      projectId: "CloudForce",
       title: "Initial project scope clarified",
       timestamp: "2 days ago",
       status: "completed"
     },
     {
       id: "402",
-      projectId: "Project4",
+      projectId: "CloudForce",
       title: "Project kickoff meeting completed",
       timestamp: "5 days ago",
       status: "completed"
@@ -82,14 +113,14 @@ const sampleUpdates: UpdateItem[] = [
     // Project 5 (Kellogg - Complete, and Excluded)
     {
       id: "501",
-      projectId: "Project5",
+      projectId: "Nike",
       title: "Final project audit completed",
       timestamp: "1 day ago",
       status: "completed"
     },
     {
       id: "502",
-      projectId: "Project5",
+      projectId: "Nike",
       title: "Project excluded from active monitoring",
       timestamp: "3 days ago",
       status: "completed"

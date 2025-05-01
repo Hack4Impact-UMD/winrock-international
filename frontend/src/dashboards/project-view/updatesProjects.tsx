@@ -40,6 +40,58 @@ interface Project {
       isActive: true
     },
     {
+        id: "Pixel",
+        project: 'Pixel',
+        supplierName: 'Alphabet',
+        overallStatus: 'At Risk',
+        analysisStage: 'GHG Assessment Analysis',
+        spendCategory: 'Acids & Alkali',
+        geography: 'United States',
+        lastUpdated: '9 days',
+        startDate: '03/19/2025',
+        activityType: 'Renewable Energy and Energy Efficiency',
+        isActive: true
+    },
+    {
+        id: "Microsoft",
+        project: 'Copilot',
+        supplierName: 'Microsoft',
+        overallStatus: 'Completed',
+        analysisStage: 'GHG Assessment Analysis',
+        spendCategory: 'Acids & Alkali',
+        geography: 'United States',
+        lastUpdated: '1 day',
+        startDate: '04/23/2025',
+        activityType: 'Renewable Energy and Energy Efficiency',
+        isActive: true
+    },
+    {
+        id: "CloudForce",
+        project: 'Cloudforce',
+        supplierName: 'Microsoft',
+        overallStatus: 'On Track',
+        analysisStage: 'GHG Assessment Analysis',
+        spendCategory: 'Acids & Alkali',
+        geography: 'Singapore',
+        lastUpdated: '9 days',
+        startDate: '04/14/2025',
+        activityType: 'Agriculture',
+        isActive: true
+    },
+    {
+        id: "Nike",
+        project: 'Air Force 1',
+        supplierName: 'Nike',
+        overallStatus: 'Completed',
+        analysisStage: 'Confirming Final Requirements',
+        spendCategory: 'Acids & Alkali',
+        geography: 'United States',
+        lastUpdated: '7 days',
+        startDate: '04/24/2025',
+        activityType: 'Agriculture',
+        isActive: true
+    },
+    {
       id: "Project3",
       project: 'Microsoft',
       supplierName: 'Kiwi',
