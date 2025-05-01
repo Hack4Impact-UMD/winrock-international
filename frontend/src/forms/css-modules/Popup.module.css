@@ -10,7 +10,9 @@
     align-items: center;
     z-index: 1000;
 }
-
+container { 
+    position: relative; /* Ensure this is the case */
+}
 .infoBtn {
     height: 1.25rem;
     width: 1.25rem;

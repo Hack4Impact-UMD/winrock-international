@@ -1,4 +1,5 @@
-import styles from '../css-modules/ProgressBar.module.css'
+import React from 'react'
+import styles from '../css-modules/Progressbar.module.css'
 
 interface ProgressBarProps {
    currentPage: number
@@ -6,34 +7,36 @@ interface ProgressBarProps {
    pageLabels: string[]
 }
 
-function ProgressBar({ currentPage, totalPages, pageLabels }: ProgressBarProps) {
-   // Use provided pageLabels or default to the ones defined above
-   // Ensure we have the right number of labels
+const ProgressBar: React.FC<ProgressBarProps> = ({
+   currentPage,
+   totalPages,
+   pageLabels,
+}) => {
+   // Ensure correct number of labels
    const labels =
       pageLabels.length === totalPages
          ? pageLabels
          : Array(totalPages)
-              .fill('')
-              .map((_, i) => pageLabels[i] || `Page ${i + 1}`)
+            .fill('')
+            .map((_, i) => pageLabels[i] || `Page ${i + 1}`)
 
    return (
-      <div className={styles.progressBarContainer}>
+      <div className={styles.progressContainer}>
          <div className={styles.progressSteps}>
             {/* Progress bars */}
             <div className={styles.progressBars}>
                {Array.from({ length: totalPages }, (_, index) => {
-                  const pageNumber = index + 1
-                  let barClass = styles.progressBar
+                  const pageNumber = index + 1;
 
-                  if (pageNumber < currentPage) {
-                     barClass += ` ${styles.progressBarCompleted}`
-                  } else if (pageNumber === currentPage) {
-                     barClass += ` ${styles.progressBarCurrent}`
-                  } else {
-                     barClass += ` ${styles.progressBarUpcoming}`
-                  }
-
-                  return <div key={`bar-${pageNumber}`} className={barClass} />
+                  return (
+                     <div
+                        key={`bar-${pageNumber}`}
+                        className={`${styles.progressBar} 
+                                    ${pageNumber < currentPage ? styles.progressBarCompleted : ''} 
+                                    ${pageNumber === currentPage ? styles.progressBarCurrent : ''} 
+                                    ${pageNumber > currentPage ? styles.progressBarUpcoming : ''}`}
+                     />
+                  )
                })}
             </div>
 
@@ -47,7 +50,7 @@ function ProgressBar({ currentPage, totalPages, pageLabels }: ProgressBarProps) 
             </div>
          </div>
       </div>
-   )
-}
+   );
+};
 
-export default ProgressBar
+export default ProgressBar;
