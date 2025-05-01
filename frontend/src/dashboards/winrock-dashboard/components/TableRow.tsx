@@ -112,20 +112,17 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         </div>
       </td>
+      {/* Project Name - Not Editable */}
       <td
-      className={`${styles.cell} ${styles.projectLink}`}
+        className={`${styles.cell} ${styles.projectLink}`}
         onClick={() => {
-          navigate(`/projects/${data.id}`); // 👈 go to the project page
-          onRowClick?.(); // optional callback if needed
+          navigate(`/projects/${data.id}`);
+          onRowClick?.();
         }}
         style={{ cursor: 'pointer', textDecoration: 'underline' }}
       >
         {data.project}
       </td>
-
-      {/* Project Name - Not Editable */}
-      <td className={styles.cell}>{data.project}</td>
-
       {/* Supplier Name */}
       <td className={styles.cell}>
         {isEditMode ? (
@@ -233,7 +230,7 @@ const TableRow: React.FC<TableRowProps> = ({
               className={styles.actionButton}
               onClick={(e) => {
                 const rect = (e.target as HTMLElement).getBoundingClientRect();
-                setButtonPosition({ x: rect.left, y: rect.bottom });
+                setButtonPosition({ x: rect.left - 150, y: rect.bottom });
                 onActionClick?.(data.id, e);
               }}
             >
@@ -246,11 +243,15 @@ const TableRow: React.FC<TableRowProps> = ({
                 y={buttonPosition.y}
                 onClose={() => onActionClick?.(null)}
               >
-                <button onClick={(e) => {
-                  console.log('Archive button clicked for id:', data.id);
-                  e.stopPropagation(); // Stop event from bubbling up
-                  onArchiveClick?.(data.id);
-                }}>Archive</button>
+                <button
+                  className={styles.archiveButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleArchive(activeActionMenu);
+                  }}
+                >
+                  {data.isActive ? 'Archive' : 'Unarchive'}
+                </button>
               </PopupMenu>
             )}
           </div>

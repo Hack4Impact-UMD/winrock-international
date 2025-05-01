@@ -15,20 +15,20 @@ interface Project {
   supplierName: string;
   overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
   analysisStage:
-    | 'Risk & Co-benefit Assessment'
-    | 'GHG Assessment Analysis'
-    | 'Confirming Final Requirements'
-    | 'Clarifying Initial Project Information'
-    | 'Complete, and Excluded';
+  | 'Risk & Co-benefit Assessment'
+  | 'GHG Assessment Analysis'
+  | 'Confirming Final Requirements'
+  | 'Clarifying Initial Project Information'
+  | 'Complete, and Excluded';
   spendCategory: string;
   geography: string;
   lastUpdated: string;
   startDate: string;
   activityType:
-    | 'Renewable Energy and Energy Efficiency'
-    | 'Agriculture'
-    | 'Agroforestry'
-    | 'Animal Agriculture and Manure Management';
+  | 'Renewable Energy and Energy Efficiency'
+  | 'Agriculture'
+  | 'Agroforestry'
+  | 'Animal Agriculture and Manure Management';
   isActive: boolean;
 }
 
@@ -41,8 +41,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
     const navigate = useNavigate();
   return (
     <div className={styles.projectViewContainer}>
-        <Sidebar currentTab="projects"></Sidebar>
-        
+      <Sidebar currentTab="projects"></Sidebar>
       <ProjectViewHeader data={project} />
 
       <div className={styles.mainContent}>
@@ -58,7 +57,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
         </div>
 
         <div className={styles.rightPanel}>
-            <ProjectUpdates updates={sampleUpdates.filter(update => update.projectId === project.id)} />
+          <ProjectUpdates updates={sampleUpdates.filter(update => update.projectId === project.id)} />
         </div>
       </div>
     </div>

@@ -22,25 +22,25 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/"                                      element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
 
-        <Route path="/auth/login"                            element={<LoginPage />} />
-        <Route path="/auth/signup"                           element={<SignupPage />} />
-        <Route path="/auth/forgot-password"                  element={<ForgotPasswordPage />} />
-        <Route path="/auth/create-new-password"              element={<CreateNewPasswordPage />} />
-        <Route path="/auth/password-changed"                 element={<PasswordChangedPage />} />
+        <Route path="/auth/login" element={<LoginPage />} />
+        <Route path="/auth/signup" element={<SignupPage />} />
+        <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/auth/create-new-password" element={<CreateNewPasswordPage />} />
+        <Route path="/auth/password-changed" element={<PasswordChangedPage />} />
 
-        <Route path="/forms/agriculture-proposal-form"       element={<AgricultureProposalForm />} />
-        <Route path="/forms/renewable-proposal-form"         element={<RenewableProposalForm />} />
-        <Route path="/forms/forestry-risks-form"             element={<ForestryRisksForm />} />
-        <Route path="/forms/tech-energy-risks-form"          element={<TechEnergyRisksForm />} />
+        <Route path="/forms/agriculture-proposal-form" element={<AgricultureProposalForm />} />
+        <Route path="/forms/renewable-proposal-form" element={<RenewableProposalForm />} />
+        <Route path="/forms/forestry-risks-form" element={<ForestryRisksForm />} />
+        <Route path="/forms/tech-energy-risks-form" element={<TechEnergyRisksForm />} />
 
-        <Route path="/dashboard/admin/projects"              element={<WinrockDashboard />} />
-        <Route path="/dashboard/admin/projects/:projectId"   element={<ProjectViewWrapper />} />
-        <Route path="/dashboard/admin/notification-center"   element={<NotificationCenter />} />
-        <Route path="/dashboard/admin/account-settings"      element={<></>} />
+        <Route path="/dashboard/admin/projects" element={<WinrockDashboard />} />
+        <Route path="/dashboard/admin/projects/:projectId" element={<ProjectViewWrapper />} />
+        <Route path="/dashboard/admin/notification-center" element={<NotificationCenter />} />
+        <Route path="/dashboard/admin/account-settings" element={<></>} />
 
-        <Route path="*"                                      element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
