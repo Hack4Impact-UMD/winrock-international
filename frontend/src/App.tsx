@@ -38,7 +38,7 @@ function App() {
         <Route path="/dashboard/admin/projects" element={<WinrockDashboard />} />
         <Route path="/dashboard/admin/projects/:projectId" element={<ProjectViewWrapper />} />
         <Route path="/dashboard/admin/notification-center" element={<NotificationCenter />} />
-        <Route path="/dashboard/admin/account-settings" element={<></>} />
+        <Route path="/dashboard/admin/account-settings" element={<WinrockDashboard />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
