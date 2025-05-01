@@ -100,9 +100,9 @@ function RenewableProposalForm() {
 
         const impactReduction =
             (parseInt(answersRef.current.afterEnergyConsumption.value)
-            * (parseFloat(answersRef.current.beforeEmissionFactor.value) - parseFloat(answersRef.current.afterEmissionFactor.value))
-            / 1000.0).toString();
-        
+                * (parseFloat(answersRef.current.beforeEmissionFactor.value) - parseFloat(answersRef.current.afterEmissionFactor.value))
+                / 1000.0).toString();
+
         handleChange("impactReduction", impactReduction);
     }
 
@@ -118,7 +118,7 @@ function RenewableProposalForm() {
         const maxReductionYear = new Date().getFullYear();
         const minReductionYear = maxReductionYear - 5;
         const year = parseInt(answersRef.current.projectImplementationYear.value);
-        
+
         let impactTiming: string;
         if (year < minReductionYear) {
             impactTiming = "Before Nestlé Baseline";
@@ -130,7 +130,7 @@ function RenewableProposalForm() {
 
         handleChange("impactTiming", impactTiming);
     }
- 
+
     // Used to change the answersRef's fields dynamically
     function handleChange(field: keyof RenewableProposalFormData, value: string) {
         const isRequired = answersRef.current[field]!.isRequired;
@@ -142,7 +142,7 @@ function RenewableProposalForm() {
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [error, setError] = useState('');
-  
+
     /**
      * Insert a new RenewableProjectProposal document with the user-inputted
      * fields into the RenewableProjectProposalForm collection.
@@ -154,7 +154,7 @@ function RenewableProposalForm() {
                 return;
             }
         }
-        
+
         // Convert the answersRef into a submission object
         const submissionObj: Record<string, string> = {}
         Object.keys(answersRef.current).forEach((field) => {
@@ -169,7 +169,7 @@ function RenewableProposalForm() {
             setError("Server error. Please try again later.");
         }
     }
-  
+
     const saveChanges = () => {
         console.log('Changes saved');
     }
@@ -363,8 +363,7 @@ function RenewableProposalForm() {
             <TextQuestion
                 label="Impact Timing (based on Project Implementation Year)"
                 controlledValue={answersRef.current.impactTiming.value}
-                onChange={(_: string) => {}}
-                disableOverwrite={true}
+                onChange={(value: string) => handleChange("impactTiming", value)}
             />
 
             <NavigationButtons

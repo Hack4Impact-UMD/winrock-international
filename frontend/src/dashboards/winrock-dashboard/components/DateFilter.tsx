@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../../../forms/css-modules/DateFilter.module.css';
-
+import { useEffect } from 'react';
 // Define an interface for the date range
 interface DateRange {
   startDate: Date | null;
@@ -11,16 +11,24 @@ interface DateRange {
 // Define the props interface with the callback type
 interface DateFilterProps {
   onFilterChange?: (dateRange: DateRange) => void;
+  selectedYear?: number;
+  onYearChange?: (year: number) => void;
 }
 
-const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
+const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange, selectedYear }) => {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [startDate, endDate] = dateRange;
   const [viewMode, setViewMode] = useState<'year' | 'month' | 'custom'>('year');
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [internalYear, setInternalYear] = useState<number>(selectedYear ?? new Date().getFullYear());
+
+  useEffect(() => {
+    if (selectedYear !== undefined) {
+      setInternalYear(selectedYear);
+    }
+  }, [selectedYear]);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
   const [currentMonthView, setCurrentMonthView] = useState<Date>(new Date());
-  
+
   // Generate years for selection (from current year to 10 years before)
   const generateYears = () => {
     const currentYear = new Date().getFullYear();
@@ -30,7 +38,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
     }
     return years;
   };
-  
+
   // Generate months for the year view
   const months = [
     { name: 'Jan', value: 0 },
@@ -46,22 +54,22 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
     { name: 'Nov', value: 10 },
     { name: 'Dec', value: 11 }
   ];
-  
+
   // Generate days for the calendar view
   const generateDaysForMonth = (year: number, month: number) => {
     const firstDayOfMonth = new Date(year, month, 1);
     const lastDayOfMonth = new Date(year, month + 1, 0);
     const daysInMonth = lastDayOfMonth.getDate();
-    
+
     // Get the day of the week for the first day (0 = Sunday, 6 = Saturday)
     const firstDayOfWeek = firstDayOfMonth.getDay();
-    
+
     // Create array for days of previous month to fill the first week
     const prevMonthDays = [];
     const prevMonth = month === 0 ? 11 : month - 1;
     const prevMonthYear = month === 0 ? year - 1 : year;
     const daysInPrevMonth = new Date(prevMonthYear, prevMonth + 1, 0).getDate();
-    
+
     for (let i = 0; i < firstDayOfWeek; i++) {
       prevMonthDays.unshift({
         day: daysInPrevMonth - i,
@@ -70,7 +78,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
         isCurrentMonth: false
       });
     }
-    
+
     // Create array for days of current month
     const currentMonthDays = [];
     for (let i = 1; i <= daysInMonth; i++) {
@@ -81,15 +89,15 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
         isCurrentMonth: true
       });
     }
-    
+
     // Create array for days of next month to fill the last week
     const nextMonthDays = [];
     const totalDaysDisplayed = prevMonthDays.length + currentMonthDays.length;
     const daysNeeded = Math.ceil(totalDaysDisplayed / 7) * 7 - totalDaysDisplayed;
-    
+
     const nextMonth = month === 11 ? 0 : month + 1;
     const nextMonthYear = month === 11 ? year + 1 : year;
-    
+
     for (let i = 1; i <= daysNeeded; i++) {
       nextMonthDays.push({
         day: i,
@@ -98,27 +106,28 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
         isCurrentMonth: false
       });
     }
-    
+
     return [...prevMonthDays, ...currentMonthDays, ...nextMonthDays];
   };
-  
+
   // Navigate to previous month in calendar view
   const goToPrevMonth = () => {
     const newDate = new Date(currentMonthView);
     newDate.setMonth(newDate.getMonth() - 1);
     setCurrentMonthView(newDate);
   };
-  
+
   // Navigate to next month in calendar view
   const goToNextMonth = () => {
     const newDate = new Date(currentMonthView);
     newDate.setMonth(newDate.getMonth() + 1);
     setCurrentMonthView(newDate);
   };
-  
+
   // Handle year selection
   const handleYearClick = (year: number) => {
-    setSelectedYear(year);
+    setInternalYear(year);
+    onYearChange?.(year); // 👈 this was missing
     if (viewMode === 'year') {
       const startDate = new Date(year, 0, 1);
       const endDate = new Date(year, 11, 31);
@@ -127,24 +136,24 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
       setViewMode('month');
     }
   };
-  
+
   // Handle month selection
   const handleMonthClick = (month: number) => {
     setSelectedMonth(month);
     if (viewMode === 'month') {
-      const startDate = new Date(selectedYear, month, 1);
-      const endDate = new Date(selectedYear, month + 1, 0);
+      const startDate = new Date(internalYear, month, 1);
+      const endDate = new Date(internalYear, month + 1, 0);
       setDateRange([startDate, endDate]);
     } else {
-      setCurrentMonthView(new Date(selectedYear, month));
+      setCurrentMonthView(new Date(internalYear, month));
       setViewMode('custom');
     }
   };
-  
+
   // Handle day selection
   const handleDayClick = (day: number, month: number, year: number) => {
     const clickedDate = new Date(year, month, day);
-    
+
     if (!startDate || (startDate && endDate)) {
       // If no date is selected or both dates are selected, start a new selection
       setDateRange([clickedDate, null]);
@@ -157,7 +166,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
       }
     }
   };
-  
+
   // Handle "Set" button click
   const handleSetClick = () => {
     if (startDate) {
@@ -167,11 +176,11 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
       });
     }
   };
-  
+
   // Format the selected range for display
   const formatSelectedRange = () => {
     if (!startDate) return 'Select a time period';
-    
+
     if (viewMode === 'year' && startDate) {
       return startDate.getFullYear().toString();
     } else if (viewMode === 'month' && startDate) {
@@ -181,10 +190,10 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
     } else if (startDate) {
       return startDate.toLocaleString('default', { month: 'short', day: 'numeric', year: 'numeric' });
     }
-    
+
     return 'Select a time period';
   };
-  
+
   // Render the appropriate picker based on view mode
   const renderPicker = () => {
     if (viewMode === 'year') {
@@ -207,11 +216,21 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
       return (
         <div className={styles.monthPicker}>
           <div className={styles.monthNavigator}>
-            <button className={styles.navButton} onClick={() => setSelectedYear(selectedYear - 1)}>
+            <button className={styles.navButton} onClick={() => {
+              const newYear = internalYear - 1;
+              setInternalYear(newYear);
+              onYearChange?.(newYear);
+            }}>
               &lt;
             </button>
-            <div className={styles.yearDisplay}>{selectedYear}</div>
-            <button className={styles.navButton} onClick={() => setSelectedYear(selectedYear + 1)}>
+
+            <div className={styles.yearDisplay}>{internalYear}</div>
+
+            <button className={styles.navButton} onClick={() => {
+              const newYear = internalYear + 1;
+              setInternalYear(newYear);
+              onYearChange?.(newYear);
+            }}>
               &gt;
             </button>
           </div>
@@ -234,7 +253,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
         currentMonthView.getFullYear(),
         currentMonthView.getMonth()
       );
-      
+
       return (
         <div className={styles.calendarPicker}>
           <div className={styles.monthNavigator}>
@@ -248,7 +267,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
               &gt;
             </button>
           </div>
-          
+
           <div className={styles.weekdayLabels}>
             <div>Sun</div>
             <div>Mon</div>
@@ -258,28 +277,28 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
             <div>Fri</div>
             <div>Sat</div>
           </div>
-          
+
           <div className={styles.calendarGrid}>
             {days.map((day, index) => {
               const date = new Date(day.year, day.month, day.day);
-              const isSelected = 
-                startDate && 
-                endDate && 
-                date >= startDate && 
+              const isSelected =
+                startDate &&
+                endDate &&
+                date >= startDate &&
                 date <= endDate;
-              
-              const isStart = 
-                startDate && 
-                date.getDate() === startDate.getDate() && 
-                date.getMonth() === startDate.getMonth() && 
+
+              const isStart =
+                startDate &&
+                date.getDate() === startDate.getDate() &&
+                date.getMonth() === startDate.getMonth() &&
                 date.getFullYear() === startDate.getFullYear();
-              
-              const isEnd = 
-                endDate && 
-                date.getDate() === endDate.getDate() && 
-                date.getMonth() === endDate.getMonth() && 
+
+              const isEnd =
+                endDate &&
+                date.getDate() === endDate.getDate() &&
+                date.getMonth() === endDate.getMonth() &&
                 date.getFullYear() === endDate.getFullYear();
-              
+
               return (
                 <button
                   key={index}
@@ -301,18 +320,18 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
       );
     }
   };
-  
+
   return (
     <div className={styles.dateFilter}>
       <div className={styles.datePickerHeader}>
         <span>Project start date</span>
         <span className={styles.headerIcon}>−</span>
       </div>
-      
+
       <div className={styles.datePickerContent}>
         <div className={styles.dateDisplay}>
           <span>{formatSelectedRange()}</span>
-          <button 
+          <button
             className={styles.setButton}
             disabled={!startDate}
             onClick={handleSetClick}
@@ -320,28 +339,28 @@ const DateFilter: React.FC<DateFilterProps> = ({ onFilterChange }) => {
             Set
           </button>
         </div>
-        
+
         <div className={styles.viewModeSelector}>
-          <button 
+          <button
             className={`${styles.modeButton} ${viewMode === 'year' ? styles.active : ''}`}
             onClick={() => setViewMode('year')}
           >
             Year
           </button>
-          <button 
+          <button
             className={`${styles.modeButton} ${viewMode === 'month' ? styles.active : ''}`}
             onClick={() => setViewMode('month')}
           >
             Month
           </button>
-          <button 
+          <button
             className={`${styles.modeButton} ${viewMode === 'custom' ? styles.active : ''}`}
             onClick={() => setViewMode('custom')}
           >
             Custom
           </button>
         </div>
-        
+
         {renderPicker()}
       </div>
     </div>
