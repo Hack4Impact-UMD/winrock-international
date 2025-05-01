@@ -408,7 +408,7 @@ const WinrockDashboard: React.FC = () => {
                 setEditableProjects([]);
               } else {
                 // Going into edit mode
-                setEditableProjects(JSON.parse(JSON.stringify(projects)));
+                setEditableProjects(JSON.parse(JSON.stringify(currentProjects)));
               }
 
               setIsEditMode(!isEditMode);
