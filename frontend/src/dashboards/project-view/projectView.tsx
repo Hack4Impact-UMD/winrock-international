@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ProjectViewHeader from './components/ProjectViewHeader';
 import ProjectTracker from './components/ProjectTracker';
 import ProjectUpdates from './components/ProjectUpdates';
 import styles from '../project-view/css-modules/ProjectView.module.css';
 import Sidebar from '../winrock-dashboard/components/Sidebar';
-import { useNavigate } from 'react-router-dom';
-import backArrow from '../project-view/assets/backArrow.svg'
+import ManageAccess from '../access-manager/components/ManageAccess';
 
 import sampleUpdates from './updatesSamples'; // Static updates
 
@@ -38,11 +37,20 @@ interface ProjectViewProps {
 }
 
 const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
-    const navigate = useNavigate();
+  const [showAccessManager, setShowAccessManager] = useState(false);
+
   return (
     <div className={styles.projectViewContainer}>
+      <ManageAccess
+            projectId={project.id}
+            visible={showAccessManager}
+            setVisible={setShowAccessManager}
+        />
       <Sidebar currentTab="projects"></Sidebar>
-      <ProjectViewHeader data={project} />
+      <ProjectViewHeader
+        data={project}
+        setShowAccessManager={setShowAccessManager}
+      />
 
       <div className={styles.mainContent}>
         <div className={styles.leftPanel}>

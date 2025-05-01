@@ -30,11 +30,13 @@ interface ProjectViewHeaderProps {
         lastUpdated: string;
         startDate: string;
     }
+    setShowAccessManager: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data }) => {
+const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAccessManager }) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
+
     return (
         <div className={styles.viewContainer}>
             <div className={styles.backButtonContainer}>
@@ -54,6 +56,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data }) => {
                     </button>
                     <button
                         className={styles.button}
+                        onClick={() => {setShowAccessManager(true)}}
                     >
                         Share
                     </button>

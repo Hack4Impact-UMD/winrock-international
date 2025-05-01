@@ -6,7 +6,7 @@ import BoxIcon from "@mui/icons-material/CheckBoxOutlineBlankRounded";
 import ChevronRight from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeft from "@mui/icons-material/ChevronLeftRounded";
 import CheckBadge from "@mui/icons-material/Verified";
-import { db } from "../firebaseConfig";
+import { db } from "../../../firebaseConfig";
 import { collection, getDocs, query, where, limit, addDoc, deleteDoc, doc } from "firebase/firestore";
 
 interface ManageAccessProps {
