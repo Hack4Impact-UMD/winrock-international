@@ -10,7 +10,7 @@ import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
 import FilterWrapper from '../components/FilterWrapper';
 import SortWrapper from '../components/SortWrapper';
-import DateFilter from '../components/DateFilter';
+import DateFilter, { DateRange } from '../components/DateFilter';
 import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 import ReportsDropdown from '../components/ReportsDropdown';
@@ -48,7 +48,7 @@ const WinrockDashboard: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<String[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [activeNavButton, setActiveNavButton] = useState('Projects');
-  const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
+  const [selectedSort, setSelectedSort] = useState('newest-first');
   const [allSelected, setAllSelected] = useState(false);
   const [editableProjects, setEditableProjects] = useState<Project[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -59,22 +59,17 @@ const WinrockDashboard: React.FC = () => {
   const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
   const navigate = useNavigate();
-  const [dateFilter, setDateFilter] = useState<DateRange>({
+
+  // These are used to control the date, i.e. save changes to the date filter calendar
+  const [dateRange, setDateRange] = useState<DateRange>({
     startDate: null,
-    endDate: null
+    endDate: new Date()
   });
-  const handleActionClick = (id: string | null, event?: React.MouseEvent) => {
-    console.log('handleActionClick called with id:', id);
-    if (id === null) {
-      setActiveActionMenu(null);
-    } else {
-      if (event) {
-        const rect = (event.target as HTMLElement).getBoundingClientRect();
-        setButtonPosition({ x: rect.left, y: rect.bottom });
-      }
+
+  const handleActionClick = (id: string | null) => {
       setActiveActionMenu(id);
-    }
   };
+
   const mapStatusToId = (status: string): string => {
     const mapping: Record<string, string> = {
       "On Track": "onTrack",
@@ -86,9 +81,6 @@ const WinrockDashboard: React.FC = () => {
     return mapping[status] || status;
   };
   const handleToggleArchive = async (projectId: string) => {
-    console.log('handleToggleArchive called with projectId:', projectId);
-    console.log('typeof projectId:', typeof projectId, '| projectId:', projectId);
-
     const project = projects.find(p => p.id === String(projectId));
     
     if (!project) {
@@ -97,11 +89,9 @@ const WinrockDashboard: React.FC = () => {
     }
 
     const newIsActive = !project.isActive;
-    console.log(`Setting isActive=${newIsActive} for project: ${project.project}`);
 
     try {
       await handleSaveProject(project.project, { isActive: newIsActive });
-      console.log(`Successfully updated isActive for ${project.project}`);
 
       setActiveActionMenu(null);
 
@@ -109,8 +99,6 @@ const WinrockDashboard: React.FC = () => {
       setProjects(prev => prev.map(p =>
         p.id === String(projectId) ? { ...p, isActive: newIsActive } : p
       ));
-
-      console.log(`Local state updated for project ID ${projectId}`);
     } catch (error) {
       console.error(`Failed to update project:`, error);
     }
@@ -124,7 +112,6 @@ const WinrockDashboard: React.FC = () => {
         const parseDate = (date: any) => {
           if (!date) return "";
           if (date.toDate) {
-
             return date.toDate().toISOString().split("T")[0];
           }
           const parsed = new Date(date);
@@ -134,8 +121,6 @@ const WinrockDashboard: React.FC = () => {
           }
           return parsed.toISOString().split("T")[0];
         };
-        console.log("HERE IT ISSS")
-        console.log(doc.id)
         return {
           id: doc.id,
           project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
@@ -150,7 +135,7 @@ const WinrockDashboard: React.FC = () => {
           startDate: parseDate(p.startDate),
           activityType: p.activityType,
           isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
-        };
+        } as Project;
       });
       setProjects(projectsData);
       setLoading(false);
@@ -164,7 +149,6 @@ const WinrockDashboard: React.FC = () => {
   }, []);
 
   const itemsPerPage = 10;
-
 
   const filteredProjects = selectedTab === 'All Projects'
     ? projects
@@ -184,29 +168,25 @@ const WinrockDashboard: React.FC = () => {
         return matchesStatus && matchesSpend;
       })
       .filter(p => {
-        if (dateFilter.startDate && new Date(p.startDate) < dateFilter.startDate) return false;
-        if (dateFilter.endDate && new Date(p.startDate) > dateFilter.endDate) return false;
+        // TODO: There's a bug causing the date to be a day off, we should fix this later
+        let trueStartDate = new Date(p.startDate);
+        trueStartDate.setDate(trueStartDate.getDate() + 1);
+        if (dateRange.startDate && trueStartDate < dateRange.startDate) return false;
+        if (dateRange.endDate && trueStartDate > dateRange.endDate) return false;
         return true;
       })
       .filter(p =>
         searchQuery.trim() === '' ||
         p.project.toLowerCase().startsWith(searchQuery.trim().toLowerCase())
       );;
-  }, [projects, viewMode, selectedTab, activeFilters, dateFilter, searchQuery]);
+  }, [projects, viewMode, selectedTab, activeFilters, dateRange, searchQuery]);
 
   // Memoize currentProjects (paging the visibleProjects)
   const currentProjects = useMemo(() => {
     const indexOfLastProject = currentPage * itemsPerPage;
     const indexOfFirstProject = indexOfLastProject - itemsPerPage;
-    console.log(filteredAndVisibleProjects)
     return filteredAndVisibleProjects.slice(indexOfFirstProject, indexOfLastProject);
   }, [filteredAndVisibleProjects, currentPage]);
-
-  //date filter consts
-  interface DateRange {
-    startDate: Date | null;
-    endDate: Date | null;
-  }
 
   // Reset to first page when changing tabs
   const handleTabChange = (tab: string) => {
@@ -273,8 +253,6 @@ const WinrockDashboard: React.FC = () => {
     setSelectedSort(sortOption);
   };
 
-
-
   const renderFilterContent = (sectionKey: string) => {
     if (sectionKey === 'status') {
       return (
@@ -317,21 +295,16 @@ const WinrockDashboard: React.FC = () => {
       // Return the DateFilter component for date filtering
       return (
         <DateFilter
-          onFilterChange={(dateRange) => {
-            // Make sure this state updater function is defined in your component
-            setDateFilter({
-              startDate: dateRange.startDate,
-              endDate: dateRange.endDate
-            });
+          onDateRangeChange={(newDateRange) => {
+            setDateRange(newDateRange);
 
-            // Reset to first page when filter changes
             setCurrentPage(1);
 
-            // Close the filter popup if needed
             if (isFilterPopupOpen) {
               toggleFilterPopup();
             }
           }}
+          controlledDateRange={dateRange}
         />
       );
     }
@@ -437,7 +410,7 @@ const WinrockDashboard: React.FC = () => {
                 setEditableProjects([]);
               } else {
                 // Going into edit mode
-                setEditableProjects(JSON.parse(JSON.stringify(projects)));
+                setEditableProjects(JSON.parse(JSON.stringify(currentProjects)));
               }
 
               setIsEditMode(!isEditMode);

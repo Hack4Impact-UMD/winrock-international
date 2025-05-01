@@ -23,10 +23,9 @@
     padding-bottom: 0;
 }
 
-
-
 /* Dropdown container styling */
 .dropdownContainer {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 80%;
@@ -77,6 +76,8 @@
 
 /* Dropdown menu styling */
 .dropdownMenu {
+    position: absolute;
+    top: 2.5rem;
     text-align: left;
     width: 290px;
     /* Same width as the dropdown button */
