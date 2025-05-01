@@ -22,7 +22,7 @@ import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
 
 interface Project {
-  id: number;
+  id: string;
   project: string;
   supplierName: string;
   overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
@@ -46,7 +46,7 @@ const WinrockDashboard: React.FC = () => {
     spend: [],
   });
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRows, setSelectedRows] = useState<String[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first'); // Starting with the option shown in your image
@@ -64,7 +64,7 @@ const WinrockDashboard: React.FC = () => {
     startDate: null,
     endDate: null
   });
-  const handleActionClick = (id: number | null, event?: React.MouseEvent) => {
+  const handleActionClick = (id: string | null, event?: React.MouseEvent) => {
     console.log('handleActionClick called with id:', id);
     if (id === null) {
       setActiveActionMenu(null);
@@ -86,9 +86,9 @@ const WinrockDashboard: React.FC = () => {
     };
     return mapping[status] || status;
   };
-  const handleToggleArchive = async (projectId: number) => {
+  const handleToggleArchive = async (projectId: string) => {
     console.log('handleToggleArchive called with projectId:', projectId);
-    const project = projects.find(p => p.id === projectId);
+    const project = projects.find(p => p.id === String(projectId));
     if (!project) {
       console.error(`Project with ID ${projectId} not found`);
       return;
@@ -105,7 +105,7 @@ const WinrockDashboard: React.FC = () => {
 
 
       setProjects(prev => prev.map(p =>
-        p.id === projectId ? { ...p, isActive: newIsActive } : p
+        p.id === String(projectId) ? { ...p, isActive: newIsActive } : p
       ));
 
       console.log(`Local state updated for project ID ${projectId}`);
@@ -132,8 +132,10 @@ const WinrockDashboard: React.FC = () => {
           }
           return parsed.toISOString().split("T")[0];
         };
+        console.log("HERE IT ISSS")
+        console.log(doc.id)
         return {
-          id: index,
+          id: doc.id,
           project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
           supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
           overallStatus: p.overallStatus,
@@ -144,7 +146,7 @@ const WinrockDashboard: React.FC = () => {
           geography: p.geography,
           lastUpdated: parseDate(p.lastUpdated),
           startDate: parseDate(p.startDate),
-          activityType: 'Renewable Energy and Energy Efficiency',
+          activityType: p.activityType,
           isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
         };
       });
@@ -226,7 +228,7 @@ const WinrockDashboard: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const handleRowSelect = (id: number, checked: boolean) => {
+  const handleRowSelect = (id: string, checked: boolean) => {
     if (checked) {
       setSelectedRows([...selectedRows, id]);
     } else {
@@ -508,6 +510,9 @@ const WinrockDashboard: React.FC = () => {
 
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
+                  onRowClick={() => {
+                    navigate(`/dashboard/admin/projects/${project.id}`, { state: { project } });
+                  }}
                 />
               ))}
             </tbody>
