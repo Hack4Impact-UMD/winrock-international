@@ -385,18 +385,21 @@ html {
 .table th:first-child,
 .table td:first-child {
   width: 4rem;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
   /* Checkbox column */
 }
 
 .table th:nth-child(2),
 .table td:nth-child(2) {
-  width: 10%;
+  width: 11%;
   /* Project name */
 }
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-  width: 10%;
+  width: 11%;
   /* Supplier */
 }
 
@@ -408,13 +411,13 @@ html {
 
 .table th:nth-child(5),
 .table td:nth-child(5) {
-  width: 16%;
+  width: 17%;
   /* Analysis Stage */
 }
 
 .table th:nth-child(6),
 .table td:nth-child(6) {
-  width: 8%;
+  width: 10%;
   /* Spend Category */
 }
 
@@ -426,19 +429,19 @@ html {
 
 .table th:nth-child(8),
 .table td:nth-child(8) {
-  width: 8%;
+  width: 10%;
   /* Last Updated */
 }
 
 .table th:nth-child(9),
 .table td:nth-child(9) {
-  width: 8%;
+  width: 10%;
   /* Start Date */
 }
 
 .table th:nth-child(10),
 .table td:nth-child(10) {
-  width: 6%;
+  width: 8%;
   /* Actions column */
 }
 
