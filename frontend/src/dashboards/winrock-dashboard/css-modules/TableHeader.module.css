@@ -15,12 +15,6 @@
   font-size: 1rem;
 }
 
-.checkboxCell {
-  width: 4rem;
-  padding: 0;
-  text-align: center;
-  vertical-align: middle;
-}
 
 .checkboxWrapper {
   display: flex;
