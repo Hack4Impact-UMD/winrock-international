@@ -57,8 +57,8 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
           <ProjectTracker
             currentStage={project.analysisStage}
             initialInfoStatus="completed"
-            technicalStatus="in-progress"
-            ghgStatus="not-started"
+            technicalStatus="completed"
+            ghgStatus="in-progress"
             risksStatus="not-started"
             finalStatus="not-started"
           />
