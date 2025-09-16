@@ -20,7 +20,7 @@ Welcome to the Winrock International/Hack4Impact-UMD repository! This is where w
   <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="250" width="800" alt="A group photo of the Winrock team" style="object-fit:cover;"/>
 </p>
 
-This is the team working on Winrock! We're a crew of problem-solvers, designers, and builders, and we're excited to be working on this project together in a collaboration with Winrock and Hack4Impact-UMD.
+We are a crew of problem-solvers, designers, and builders, and we're super excited to be working on this project together in a collaboration between Winrock and Hack4Impact-UMD.
 
 <table align="center">
   <tr>
