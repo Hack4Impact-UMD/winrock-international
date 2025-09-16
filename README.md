@@ -53,7 +53,7 @@ This is the team working on Winrock! We're a crew of problem-solvers, designers,
     </td>
     <td align="center" height="150" width="150">
       <a href="https://www.linkedin.com/in/debarshi-dey/">
-        <img src="frontend/src/assets/winrock-profile-pictures/debarshi-dey-headshot-.jpeg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/debarshi-dey-headshot.jpeg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Debarshi Dey</b><br/><br/>
         <img src="https://img.shields.io/badge/🛠️_technical_lead-FF5733?style=flat-square"/>
       </a>
