@@ -3,13 +3,207 @@
 Welcome to the Winrock International/Hack4Impact-UMD repository! This is where we will be committing all our code throughout the semester. Please make sure to go through the table of contents and complete the project set up. Also note that PR Instructions is MANDATORY to read through - we need all engineers to follow this to ensure efficient code review. As always, please let us know if you have any questions!
 
 ## 📚 Table of Contents
-1️⃣ [Project Set Up](#%EF%B8%8F-project-set-up)
+1️⃣ [Meet the Team]
 
-2️⃣ [System Design](#-system-design)
+2️⃣ [Project Set Up](#%EF%B8%8F-project-set-up)
 
-3️⃣ [PR Instructions](#-pr-logistics)
+3️⃣ [System Design](#-system-design)
 
-4️⃣ [Miscellaneous](#%EF%B8%8F-miscellaneous)
+4️⃣ [PR Instructions](#-pr-logistics)
+
+5️⃣ [Miscellaneous](#%EF%B8%8F-miscellaneous)
+
+---
+###  Meet the Team 
+
+<p align="center">
+  <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="250" width="800" alt="A group photo of the Winrock team" style="object-fit:cover;"/>
+</p>
+
+This is the team working on Winrock! We're a crew of problem-solvers, designers, and builders, and we're excited to be working on this project together in a collaboration with Winrock and Hack4Impact-UMD.
+
+<table align="center">
+  <tr>
+    <td align="center" width="150">
+      <a href="https://www.linkedin.com/in/faith-comising/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Faith Comising</b><br/><br/>
+        <img src="https://img.shields.io/badge/👩‍💼_product_manager-007ACC?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://www.linkedin.com/in/suhani-agrawal-90502a225/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Suhani Agrawal</b><br/><br/>
+        <img src="https://img.shields.io/badge/👩‍💼_product_manager-007ACC?style=flat-square"/>
+      </a>
+    </td>
+  </tr>
+</table>
+
+
+<table align="center">
+  <tr>
+    <td align="center" height="150" width="150">
+      <a href="https://www.linkedin.com/in/hita-thota/">
+        <img src="frontend/src/assets/winrock-profile-pictures/hita-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Hita Thota</b><br/><br/>
+        <img src="https://img.shields.io/badge/🛠️_technical_lead-FF5733?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" height="150" width="150">
+      <a href="https://www.linkedin.com/in/debarshi-dey/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Debarshi Dey</b><br/><br/>
+        <img src="https://img.shields.io/badge/🛠️_technical_lead-FF5733?style=flat-square"/>
+      </a>
+    </td>
+  </tr>
+</table>
+
+<table align="center">
+  <tr>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Nynika Badam</b><br/><br/>
+        <img src="https://img.shields.io/badge/🎨_designer-9B59B6?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b style="font-size: 0.3em;">Samundara Srinivas</b>
+        <img src="https://img.shields.io/badge/🎨_designer-9B59B6?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Indira Shafii</b><br/><br/>
+        <img src="https://img.shields.io/badge/🎨_designer-9B59B6?style=flat-square"/>
+      </a>
+    </td>
+  </tr>
+</table>
+
+
+<table align="center">
+  <tr>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b style="font-size: 10px;">Aakash Kalmady</b>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Indra Pabba</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Jai Patel</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Leia Spagnola</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+    </td>
+     <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b style="font-size: 10px;">Nadia Meyerovich</b>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Rishi Agarwal</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Srinidhi Gubba</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+    </td>
+  </tr>
+</table>
+
+<table align="center">
+  <tr>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Brian McAbee</b><br/><br/>
+        <img src="https://img.shields.io/badge/🧑‍🏫_mentor-95A5A6?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Laura Mills</b><br/><br/>
+        <img src="https://img.shields.io/badge/🧑‍🏫_mentor-95A5A6?style=flat-square"/>
+      </a>
+    </td>
+  </tr>
+</table>
+
+#### 🌟 Our Alumni
+
+<table align="center">
+  <tr>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Kalpana Iyer</b><br/><br/>
+        <img src="https://img.shields.io/badge/👩‍💼_product_manager-007ACC?style=flat-square"/>
+      </a>
+    </td>
+    <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Om Arya</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+    </td>
+      <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b style="font-size: 0.3em;">Kaavya Radhakrishnan</b>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+    </td>
+   <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Arjun Mahendra</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+   </td>
+   <td align="center" width="150">
+      <a href="https://umd.hack4impact.org/">
+        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Kyle Cho</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+      </a>
+   </td>
+   
+
+  </tr>
+</table>
 
 ---
 
