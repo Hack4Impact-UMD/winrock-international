@@ -26,14 +26,14 @@ This is the team working on Winrock! We're a crew of problem-solvers, designers,
   <tr>
     <td align="center" width="150">
       <a href="https://www.linkedin.com/in/faith-comising/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/faith-comising.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Faith Comising</b><br/><br/>
         <img src="https://img.shields.io/badge/👩‍💼_product_manager-007ACC?style=flat-square"/>
       </a>
     </td>
     <td align="center" width="150">
       <a href="https://www.linkedin.com/in/suhani-agrawal-90502a225/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/suhani-agrawal-headshot.png" height="100" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Suhani Agrawal</b><br/><br/>
         <img src="https://img.shields.io/badge/👩‍💼_product_manager-007ACC?style=flat-square"/>
       </a>
@@ -46,7 +46,7 @@ This is the team working on Winrock! We're a crew of problem-solvers, designers,
   <tr>
     <td align="center" height="150" width="150">
       <a href="https://www.linkedin.com/in/hita-thota/">
-        <img src="frontend/src/assets/winrock-profile-pictures/hita-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/hita-thota-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Hita Thota</b><br/><br/>
         <img src="https://img.shields.io/badge/🛠️_technical_lead-FF5733?style=flat-square"/>
       </a>
