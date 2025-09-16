@@ -113,7 +113,7 @@ We are a crew of problem-solvers, designers, and builders, and we're super excit
     </td>
     <td align="center" width="150">
       <a href="https://leiaspagnola.com/">
-        <img src="frontend/src/assets/winrock-profile-pictures/leia-spagnola-headshot.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/leia-spagnola-headshot.jpeg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Leia Spagnola</b><br/><br/>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
