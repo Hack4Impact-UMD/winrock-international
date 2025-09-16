@@ -17,10 +17,10 @@ Welcome to the Winrock International/Hack4Impact-UMD repository! This is where w
 ### 👥 Meet the Team 
 
 <p align="center">
-  <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="250" width="800" alt="A group photo of the Winrock team" style="object-fit:cover;"/>
+  <img src="frontend/src/assets/winrock-profile-pictures/winrock-team-picture.png" height="250" width="800" alt="A group photo of the Winrock team" style="object-fit:cover;"/>
 </p>
 
-We are a crew of problem-solvers, designers, and builders, and we're super excited to be working on this project together in a collaboration between Winrock and Hack4Impact-UMD.
+Meet our wonderful team comprised of Product Managers, Designers, Tech Leads, and Designers!
 
 <table align="center">
   <tr>
