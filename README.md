@@ -64,21 +64,21 @@ We are a crew of problem-solvers, designers, and builders, and we're super excit
 <table align="center">
   <tr>
     <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
+      <a href="https://www.linkedin.com/in/nynika-badam/">
         <img src="frontend/src/assets/winrock-profile-pictures/nynika-badam-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Nynika Badam</b><br/><br/>
         <img src="https://img.shields.io/badge/🎨_designer-9B59B6?style=flat-square"/>
       </a>
     </td>
     <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
+      <a href="https://www.linkedin.com/in/samundarasrinivas/">
         <img src="frontend/src/assets/winrock-profile-pictures/samundara-srinivas-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b style="font-size: 0.3em;">Samundara Srinivas</b>
         <img src="https://img.shields.io/badge/🎨_designer-9B59B6?style=flat-square"/>
       </a>
     </td>
     <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
+      <a href="https://www.linkedin.com/in/indira-shafii/">
         <img src="frontend/src/assets/winrock-profile-pictures/indira-shafii-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Indira Shafii</b><br/><br/>
         <img src="https://img.shields.io/badge/🎨_designer-9B59B6?style=flat-square"/>
@@ -152,7 +152,7 @@ We are a crew of problem-solvers, designers, and builders, and we're super excit
 <table align="center">
   <tr>
     <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
+      <a href="https://www.linkedin.com/in/brian-mcabee/">
         <img src="frontend/src/assets/winrock-profile-pictures/brian-mcabee-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Brian McAbee</b><br/><br/>
         <img src="https://img.shields.io/badge/🧑‍🏫_mentor-95A5A6?style=flat-square"/>
@@ -173,35 +173,35 @@ We are a crew of problem-solvers, designers, and builders, and we're super excit
 <table align="center">
   <tr>
     <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
+      <a href="https://www.linkedin.com/in/kalpanaiyer/">
         <img src="frontend/src/assets/winrock-profile-pictures/kalpana-iyer-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Kalpana Iyer</b><br/><br/>
         <img src="https://img.shields.io/badge/👩‍💼_product_manager-007ACC?style=flat-square"/>
       </a>
     </td>
     <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
+      <a href="https://www.linkedin.com/in/om-arya/">
         <img src="frontend/src/assets/winrock-profile-pictures/om-arya-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Om Arya</b><br/><br/>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
     </td>
       <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
+      <a href="https://www.linkedin.com/in/kaavyaradhakrishnan/">
         <img src="frontend/src/assets/winrock-profile-pictures/kaavya-radhakrishnan-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b style="font-size: 0.3em;">Kaavya Radhakrishnan</b>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
     </td>
    <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
+      <a href="https://www.linkedin.com/in/arjun-mahendra-1a1996238/">
         <img src="frontend/src/assets/winrock-profile-pictures/arjun-mahendra-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Arjun Mahendra</b><br/><br/>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
    </td>
    <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
+      <a href="https://www.linkedin.com/in/kylej-cho/">
         <img src="frontend/src/assets/winrock-profile-pictures/kyle-cho-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Kyle Cho</b><br/><br/>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
