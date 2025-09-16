@@ -118,30 +118,37 @@ This is the team working on Winrock! We're a crew of problem-solvers, designers,
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
     </td>
-     <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
-        <b style="font-size: 10px;">Nadia Meyerovich</b>
-        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
-      </a>
-    </td>
-    <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
-        <b>Rishi Agarwal</b><br/><br/>
-        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
-      </a>
-    </td>
-    <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
-        <b>Srinidhi Gubba</b><br/><br/>
-        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
-      </a>
+  </tr>
+  <tr>
+    <td colspan="4" align="center">
+        <table align="center">
+          <tr>
+            <td align="center" width="150">
+                <a href="https://umd.hack4impact.org/">
+                <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+                <b style="font-size: 10px;">Nadia Meyerovich</b>
+                <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+                </a>
+            </td>
+            <td align="center" width="150">
+                <a href="https://umd.hack4impact.org/">
+                <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+                <b>Rishi Agarwal</b><br/><br/>
+                <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+                </a>
+            </td>
+            <td align="center" width="150">
+                <a href="https://umd.hack4impact.org/">
+                <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+                <b>Srinidhi Gubba</b><br/><br/>
+                <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+                </a>
+            </td>
+          </tr>
+        </table>
     </td>
   </tr>
 </table>
-
 <table align="center">
   <tr>
     <td align="center" width="150">
