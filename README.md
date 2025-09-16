@@ -14,7 +14,7 @@ Welcome to the Winrock International/Hack4Impact-UMD repository! This is where w
 5️⃣ [Miscellaneous](#%EF%B8%8F-miscellaneous)
 
 ---
-###  Meet the Team 
+### 👥 Meet the Team 
 
 <p align="center">
   <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="250" width="800" alt="A group photo of the Winrock team" style="object-fit:cover;"/>
