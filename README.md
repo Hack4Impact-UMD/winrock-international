@@ -153,7 +153,7 @@ This is the team working on Winrock! We're a crew of problem-solvers, designers,
   <tr>
     <td align="center" width="150">
       <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/brian-mcabee-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Brian McAbee</b><br/><br/>
         <img src="https://img.shields.io/badge/🧑‍🏫_mentor-95A5A6?style=flat-square"/>
       </a>
@@ -174,35 +174,35 @@ This is the team working on Winrock! We're a crew of problem-solvers, designers,
   <tr>
     <td align="center" width="150">
       <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/kalpana-iyer-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Kalpana Iyer</b><br/><br/>
         <img src="https://img.shields.io/badge/👩‍💼_product_manager-007ACC?style=flat-square"/>
       </a>
     </td>
     <td align="center" width="150">
       <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/om-arya-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Om Arya</b><br/><br/>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
     </td>
       <td align="center" width="150">
       <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/kaavya-radhakrishnan-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b style="font-size: 0.3em;">Kaavya Radhakrishnan</b>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
     </td>
    <td align="center" width="150">
       <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/arjun-mahendra-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Arjun Mahendra</b><br/><br/>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
    </td>
    <td align="center" width="150">
       <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <img src="frontend/src/assets/winrock-profile-pictures/kyle-cho-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Kyle Cho</b><br/><br/>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
