@@ -3,7 +3,7 @@
 Welcome to the Winrock International/Hack4Impact-UMD repository! This is where we will be committing all our code throughout the semester. Please make sure to go through the table of contents and complete the project set up. Also note that PR Instructions is MANDATORY to read through - we need all engineers to follow this to ensure efficient code review. As always, please let us know if you have any questions!
 
 ## 📚 Table of Contents
-1️⃣ [Meet the Team](#meet-the-team)
+1️⃣ [Meet the Team](#-meet-the-team)
 
 2️⃣ [Project Set Up](#%EF%B8%8F-project-set-up)
 
@@ -93,7 +93,7 @@ Meet our wonderful team comprised of Product Managers, Designers, Tech Leads, En
     <td align="center" width="150">
       <a href="https://umd.hack4impact.org/">
         <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
-        <b>Aakash Kalmady</b><br/><br/>
+        <b style="font-size: 0.3em;">Aakash Kalmady</b>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
     </td>
@@ -126,7 +126,7 @@ Meet our wonderful team comprised of Product Managers, Designers, Tech Leads, En
             <td align="center" width="150">
                 <a href="https://www.linkedin.com/in/nadia-meyerovich-4a30a9215/">
                 <img src="frontend/src/assets/winrock-profile-pictures/nadia-meyerovich-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
-                <b>Nadia Meyerovich</b><br/><br/>
+                <b style="font-size: 0.3em;">Nadia Meyerovich</b>
                 <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
                 </a>
             </td>
