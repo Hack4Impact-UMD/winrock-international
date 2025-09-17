@@ -124,8 +124,8 @@ We are a crew of problem-solvers, designers, and builders, and we're super excit
         <table align="center">
           <tr>
             <td align="center" width="150">
-                <a href="https://umd.hack4impact.org/">
-                <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+                <a href="https://www.linkedin.com/in/nadia-meyerovich-4a30a9215/">
+                <img src="frontend/src/assets/winrock-profile-pictures/nadia-meyerovich-headshot.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
                 <b style="font-size: 10px;">Nadia Meyerovich</b>
                 <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
                 </a>
