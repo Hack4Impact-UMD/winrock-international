@@ -91,8 +91,8 @@ Meet our wonderful team comprised of Product Managers, Designers, Tech Leads, En
 <table align="center">
   <tr>
     <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+      <a href="https://www.linkedin.com/in/aakashkalmady/">
+        <img src="frontend/src/assets/winrock-profile-pictures/aakash-kalmady-headshot.JPEG" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b style="font-size: 0.3em;">Aakash Kalmady</b>
         <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
       </a>
