@@ -1,4 +1,4 @@
-import { runTransaction } from "firebase/firestore";
+import { runTransaction, FieldValue } from "firebase/firestore";
 import {
     collection,
     deleteDoc,
@@ -38,6 +38,10 @@ export enum AnalysisStage {
     STAGE_5 = "Risk & Co-benefit Assessment",
     STAGE_6 = "Complete, and Excluded",
 }
+type ProjectFirestoreWrite = Omit<Project, 'startDate' | 'lastUpdated'> & {
+    startDate: Timestamp | FieldValue;
+    lastUpdated: FieldValue;
+};
 
 type ActivityType =
     | "Renewable Energy and Energy Efficiency"
@@ -70,15 +74,15 @@ const createProject = async (
                 throw new Error("project-name-already-exists");
             }
 
-            const newProject: Project = {
+            const newProject: ProjectFirestoreWrite = {
                 projectName,
                 supplierName,
                 spendCategory,
                 geography,
                 overallStatus,
-                analysisStage: analysisStage,
-                startDate: startDate ? Timestamp.fromDate(startDate) : serverTimestamp() as any,
-                lastUpdated: serverTimestamp() as any,
+                analysisStage,
+                startDate: startDate ? Timestamp.fromDate(startDate) : serverTimestamp(),
+                lastUpdated: serverTimestamp(),
                 isActive,
                 isPinned,
                 id: docRef.id,
@@ -202,12 +206,9 @@ const getProjectsWithFilters = async (
  */
 const updateProjectField = async (
     projectName: string,
-    field: keyof Project,
+    field: Exclude<keyof Project, 'id' | 'projectName' | 'lastUpdated'>,
     newValue: any
 ): Promise<Result> => {
-    if (field === "projectName" || field === "id") {
-        return { success: false, errorCode: "field-not-editable" };
-    }
     try {
         const docRef = doc(db, "projects", projectName);
         const docSnap = await getDoc(docRef);
@@ -219,10 +220,10 @@ const updateProjectField = async (
             newValue = Timestamp.fromDate(newValue);
         }
 
-        const updateData: Partial<Project> & { lastUpdated: Timestamp } = {
+        const updateData: Record<string, unknown> = {
             [field]: newValue,
-            lastUpdated: field === "lastUpdated" ? newValue : Timestamp.now(),
-        } as any;
+            lastUpdated: serverTimestamp(),
+        };
 
         await updateDoc(docRef, updateData);
         return { success: true };

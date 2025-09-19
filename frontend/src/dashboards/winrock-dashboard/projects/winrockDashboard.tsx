@@ -80,7 +80,7 @@ const WinrockDashboard: React.FC = () => {
     const newIsActive = !project.isActive;
 
     try {
-      await handleSaveProject(project.projectName, { isActive: newIsActive });
+      await handleSaveProject(project.id, { isActive: newIsActive });
 
       setActiveActionMenu(null);
 
@@ -166,9 +166,14 @@ const WinrockDashboard: React.FC = () => {
   // Define which fields can be updated (exclude projectName and id)
   type UpdatableProjectFields = Exclude<keyof Project, 'projectName' | 'id'>;
 
-  const handleSaveProject = async (projectName: string, updatedFields: Partial<Record<UpdatableProjectFields, Project[UpdatableProjectFields]>>) => {
+  const handleSaveProject = async (
+    docId: string,
+    updatedFields: Partial<Record<UpdatableProjectFields, Project[UpdatableProjectFields]>>
+  ) => {
     try {
-      for (const [key, rawValue] of Object.entries(updatedFields)) {
+      for (const [key, rawValue] of Object.entries(updatedFields).filter(
+        ([k]) => k !== 'id' && k !== 'projectName'
+      )) {
         const field = key as UpdatableProjectFields;
         let value: any = rawValue;
 
@@ -177,11 +182,11 @@ const WinrockDashboard: React.FC = () => {
           value = Timestamp.fromDate(value);
         }
 
-        await updateProjectField(projectName, field, value);
+        await updateProjectField(docId, field, value);
       }
-      console.log(`Project ${projectName} updated successfully.`);
+      console.log(`Project ${docId} updated successfully.`);
     } catch (error) {
-      console.error(`Failed to update project ${projectName}:`, error);
+      console.error(`Failed to update project ${docId}:`, error);
     }
   };
 
@@ -415,8 +420,9 @@ const WinrockDashboard: React.FC = () => {
 
                   // Save only if there are changes
                   if (Object.keys(updatedFields).length > 0) {
-                    await handleSaveProject(edited.projectName, updatedFields);
+                    await handleSaveProject(edited.id, updatedFields);
                   }
+
                 }
 
                 setEditableProjects([]);
@@ -491,7 +497,7 @@ const WinrockDashboard: React.FC = () => {
                         prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
                       );
                     } else {
-                      handleSaveProject(project.projectName, updatedFields);
+                      handleSaveProject(project.id, updatedFields);
                     }
                   }}
 
