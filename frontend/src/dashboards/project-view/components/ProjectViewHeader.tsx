@@ -16,12 +16,13 @@ type AnalysisStageType =
     | 'GHG Assessment Analysis'
     | 'Confirming Final Requirements'
     | 'Clarifying Initial Project Information'
-    | 'Complete, and Excluded';
+    | 'Complete, and Excluded'
+    | 'Clarifying Technical Details'; // included to match possible values
 
 interface ProjectViewHeaderProps {
     data: {
         id: string;
-        project: string;
+        projectName: string;
         supplierName: string;
         overallStatus: StatusType;
         analysisStage: AnalysisStageType;
@@ -45,8 +46,8 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                 </button>
             </div>
             <div className={styles.titleContainer}>
-                
-                <h1 className={styles.projectTitle}>{data.project}</h1>
+
+                <h1 className={styles.projectTitle}>{data.projectName}</h1>
                 <div className={styles.btnContainer}>
                     <button
                         className={`${styles.button} ${isEditMode ? styles.active : ''}`}
@@ -56,7 +57,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                     </button>
                     <button
                         className={styles.button}
-                        onClick={() => {setShowAccessManager(true)}}
+                        onClick={() => { setShowAccessManager(true) }}
                     >
                         Share
                     </button>

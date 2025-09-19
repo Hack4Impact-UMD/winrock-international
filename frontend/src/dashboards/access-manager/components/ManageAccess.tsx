@@ -25,6 +25,7 @@ interface UserData {
     lastName: string;
     email: string;
     role: string;
+    name?: string;
 }
 
 interface AlertData {
@@ -78,18 +79,18 @@ const ManageAccess = (props: ManageAccessProps) => {
                 limit(5)
             );
 
-			const lastNameQuery = query(
+            const lastNameQuery = query(
                 collection(db, "users"),
-				where("lastName", ">=", partialEmail),
+                where("lastName", ">=", partialEmail),
                 where("lastName", "<=", partialEmail + "\uf8ff"),
                 limit(5)
             );
-            
+
             // Execute all queries
             const [emailSnapshot, firstNameSnapshot, lastNameSnapshot] = await Promise.all([
                 getDocs(emailQuery),
                 getDocs(firstNameQuery),
-				getDocs(lastNameQuery)
+                getDocs(lastNameQuery)
             ]);
 
             // Process email query results
@@ -115,7 +116,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                 }
             });
 
-			lastNameSnapshot.forEach((doc) => {
+            lastNameSnapshot.forEach((doc) => {
                 const userData = doc.data();
                 // Check if this user is already in results
                 if (!results.some(user => user.email === userData.email)) {

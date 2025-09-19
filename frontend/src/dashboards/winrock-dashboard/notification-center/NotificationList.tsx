@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { NotificationTab } from "./NotificationCenter";
 import styles from "../css-modules/NotificationCenter.module.css";
 
@@ -13,7 +12,7 @@ interface Notification {
     message: string;
     read: boolean;
 }
-
+// @ts-expect-error
 const mockNotifications: Notification[] = [
     {
         id: 1,
@@ -72,12 +71,13 @@ interface NotificationListProps {
 
 const EnvelopeIcon = () => (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: 8, verticalAlign: 'middle' }}>
-        <rect x="3" y="5" width="14" height="10" rx="2" stroke="#205493" strokeWidth="1.5"/>
-        <path d="M3.5 5.5L10 11L16.5 5.5" stroke="#205493" strokeWidth="1.5"/>
+        <rect x="3" y="5" width="14" height="10" rx="2" stroke="#205493" strokeWidth="1.5" />
+        <path d="M3.5 5.5L10 11L16.5 5.5" stroke="#205493" strokeWidth="1.5" />
     </svg>
 );
 
 const NotificationList: React.FC<NotificationListProps> = ({
+    // @ts-expect-error
     tab,
     notifications,
     selectedRows,
