@@ -16,7 +16,7 @@ import WinrockDashboard from './dashboards/winrock-dashboard/projects/winrockDas
 import NotificationCenter from './dashboards/winrock-dashboard/notification-center/NotificationCenter';
 import PasswordChangedPage from './auth/pages/PasswordChangedPage';
 import CreateNewPasswordPage from './auth/pages/CreateNewPasswordPage';
-import ProjectViewWrapper from './dashboards/project-view/ProjectViewWrapper';
+import ProjectViewWrapper from './dashboards/project-view/projectViewWrapper';
 
 function App() {
   return (
