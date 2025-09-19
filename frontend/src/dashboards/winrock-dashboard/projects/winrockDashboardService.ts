@@ -206,7 +206,7 @@ const getProjectsWithFilters = async (
  */
 const updateProjectField = async (
     projectName: string,
-    field: Exclude<keyof Project, 'id' | 'projectName' | 'lastUpdated'>,
+    field: Exclude<keyof Project, 'id' | 'projectName'>, // lastUpdated stays auto
     newValue: any
 ): Promise<Result> => {
     try {
@@ -220,8 +220,12 @@ const updateProjectField = async (
             newValue = Timestamp.fromDate(newValue);
         }
 
-        const updateData: Record<string, unknown> = {
-            [field]: newValue,
+        const updateData: Record<string, FieldValue | string | number | boolean | null> = {
+            [field]: typeof newValue === "string" || typeof newValue === "number" || typeof newValue === "boolean"
+                ? newValue
+                : newValue instanceof Date
+                    ? Timestamp.fromDate(newValue)
+                    : null,
             lastUpdated: serverTimestamp(),
         };
 
