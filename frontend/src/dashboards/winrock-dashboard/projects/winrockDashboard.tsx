@@ -20,7 +20,7 @@ import { updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
-import { Project } from '../../../types/Project.ts'
+import { Project } from '../../../types/Project'
 
 
 const WinrockDashboard: React.FC = () => {
@@ -166,11 +166,11 @@ const WinrockDashboard: React.FC = () => {
   // Define which fields can be updated (exclude projectName and id)
   type UpdatableProjectFields = Exclude<keyof Project, 'projectName' | 'id'>;
 
-  const handleSaveProject = async (projectName: string, updatedFields: Partial<Project>) => {
+  const handleSaveProject = async (projectName: string, updatedFields: Partial<Record<UpdatableProjectFields, Project[UpdatableProjectFields]>>) => {
     try {
-      for (const key in updatedFields) {
+      for (const [key, rawValue] of Object.entries(updatedFields)) {
         const field = key as UpdatableProjectFields;
-        let value: any = updatedFields[field];
+        let value: any = rawValue;
 
         // Convert Date to Firestore Timestamp
         if (value instanceof Date) {
@@ -254,9 +254,9 @@ const WinrockDashboard: React.FC = () => {
     } else if (sortOption === "oldest-first") {
       sortedProjects.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
     } else if (sortOption === "a-to-z") {
-      sortedProjects.sort((a, b) => b.projectName.localeCompare(a.projectName));
-    } else if (sortOption === "z-to-a") {
       sortedProjects.sort((a, b) => a.projectName.localeCompare(b.projectName));
+    } else if (sortOption === "z-to-a") {
+      sortedProjects.sort((a, b) => b.projectName.localeCompare(a.projectName));
     } else {
       // fallback: maybe do nothing
     }

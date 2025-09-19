@@ -7,7 +7,7 @@ import Sidebar from '../winrock-dashboard/components/Sidebar';
 import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
 import sampleUpdates from './updatesSamples'; // Static updates
-import { UpdateItem } from 'types/UpdateItem';
+import { UpdateItem } from '../../types/UpdateItem';
 
 
 interface ProjectViewProps {

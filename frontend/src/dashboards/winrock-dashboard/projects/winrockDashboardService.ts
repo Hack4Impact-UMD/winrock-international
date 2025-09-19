@@ -1,3 +1,4 @@
+import { runTransaction } from "firebase/firestore";
 import {
     collection,
     deleteDoc,
@@ -10,6 +11,7 @@ import {
     Timestamp,
     updateDoc,
     where,
+    serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
 import Result, { handleFirebaseError } from "../../../types/Result.js";
@@ -30,12 +32,12 @@ export enum OverallStatus {
  * Represents the stage of analysis the project is currently in.
  */
 export enum AnalysisStage {
-    STAGE_1 = "Stage 1: Clarifying Initial Project Information",
-    STAGE_2 = "Stage 2: Clarifying Technical Details",
-    STAGE_3 = "Stage 3: GHG Assessment Analysis",
-    STAGE_4 = "Stage 4: Confirming Final Requirements",
-    STAGE_5 = "Stage 5: Risk & Co-benefit Assessment",
-    STAGE_6 = "Stage 6: Complete, and Excluded",
+    STAGE_1 = "Clarifying Initial Project Information",
+    STAGE_2 = "Clarifying Technical Details",
+    STAGE_3 = "GHG Assessment Analysis",
+    STAGE_4 = "Confirming Final Requirements",
+    STAGE_5 = "Risk & Co-benefit Assessment",
+    STAGE_6 = "Complete, and Excluded",
 }
 
 type ActivityType =
@@ -53,7 +55,7 @@ const createProject = async (
     supplierName: string,
     spendCategory: string,
     geography: string,
-    activityType: ActivityType, // Add this parameter
+    activityType: ActivityType,
     overallStatus: OverallStatus = OverallStatus.ON_TRACK,
     analysisStage: AnalysisStage = AnalysisStage.STAGE_1,
     startDate?: Date,
@@ -62,33 +64,44 @@ const createProject = async (
 ): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectName);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            return { success: false, errorCode: "project-name-already-exists" };
-        }
 
-        const now = Timestamp.now();
-        const newProject: Project = {
-            projectName,
-            supplierName,
-            spendCategory,
-            geography,
-            overallStatus,
-            analysisStage: analysisStage as any,
-            startDate: (startDate ? Timestamp.fromDate(startDate) : now) as any,
-            lastUpdated: now as any,
-            isActive,
-            isPinned,
-            id: projectName,
-            activityType, // Use the parameter
-        };
-        await setDoc(docRef, newProject);
+        await runTransaction(db, async (tx) => {
+            const snap = await tx.get(docRef);
+            if (snap.exists()) {
+                throw new Error("project-name-already-exists");
+            }
+
+            const now = Timestamp.now();
+            const newProject: Project = {
+                projectName,
+                supplierName,
+                spendCategory,
+                geography,
+                overallStatus,
+                analysisStage: analysisStage,
+                startDate: startDate ? Timestamp.fromDate(startDate) : serverTimestamp() as any,
+                lastUpdated: serverTimestamp() as any,
+                isActive,
+                isPinned,
+                id: docRef.id,
+                activityType,
+            };
+
+            tx.set(docRef, newProject);
+        });
 
         return { success: true };
     } catch (error) {
         return handleFirebaseError(error);
     }
 };
+function mapDocToProject(d: any): Project {
+    return {
+        ...d,
+        startDate: d.startDate instanceof Timestamp ? d.startDate.toDate().toISOString() : d.startDate,
+        lastUpdated: d.lastUpdated instanceof Timestamp ? d.lastUpdated.toDate().toISOString() : d.lastUpdated,
+    };
+}
 
 /**
  * Retrieves a project by name.
@@ -101,7 +114,7 @@ const getProjectByName = async (projectName: string): Promise<Result> => {
             return { success: false, errorCode: "project-not-found" };
         }
 
-        const projectData = docSnap.data() as Project;
+        const projectData = mapDocToProject(docSnap.data());
         return {
             success: true,
             data: projectData,
@@ -141,31 +154,38 @@ const getProjectsWithFilters = async (
         filterFields.forEach((field, index) => {
             const value = filterValues[index];
             if (Array.isArray(value)) {
+                if (value.length === 0) {
+                    return; // skip this filter
+                }
+                if (value.length > 10) {
+                    throw new Error("Firestore 'in' supports 1–10 values");
+                }
                 filterQuery = query(filterQuery, where(field as string, "in", value));
             } else {
                 filterQuery = query(filterQuery, where(field as string, "==", value));
             }
         });
 
-        if (startDate)
-            filterQuery = query(
-                filterQuery,
-                where("startDate", ">=", Timestamp.fromDate(startDate))
-            );
-        if (endDate)
-            filterQuery = query(
-                filterQuery,
-                where("startDate", "<=", Timestamp.fromDate(endDate))
-            );
+        if (startDate) {
+            filterQuery = query(filterQuery, where("startDate", ">=", Timestamp.fromDate(startDate)));
+        }
+        if (endDate) {
+            filterQuery = query(filterQuery, where("startDate", "<=", Timestamp.fromDate(endDate)));
+        }
 
-        filterQuery = query(
-            filterQuery,
-            orderBy(orderByField as string, desc ? "desc" : "asc")
-        );
+        if (startDate || endDate) {
+            filterQuery = query(filterQuery, orderBy("startDate", desc ? "desc" : "asc"));
+            if (orderByField !== "startDate") {
+                filterQuery = query(filterQuery, orderBy(orderByField as string, desc ? "desc" : "asc"));
+            }
+        } else {
+            filterQuery = query(filterQuery, orderBy(orderByField as string, desc ? "desc" : "asc"));
+        }
+
 
         const querySnapshot = await getDocs(filterQuery);
         querySnapshot.forEach((docSnap) => {
-            const project = docSnap.data() as Project;
+            const project = mapDocToProject(docSnap.data());
             projects.push(project);
             projectNames.push(project.projectName);
         });
@@ -187,6 +207,9 @@ const updateProjectField = async (
     field: keyof Project,
     newValue: any
 ): Promise<Result> => {
+    if (field === "projectName" || field === "id") {
+        return { success: false, errorCode: "field-not-editable" };
+    }
     try {
         const docRef = doc(db, "projects", projectName);
         const docSnap = await getDoc(docRef);
