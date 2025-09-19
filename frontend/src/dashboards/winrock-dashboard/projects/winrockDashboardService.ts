@@ -152,6 +152,7 @@ const getProjectsWithFilters = async (
 
     try {
         let filterQuery = query(collection(db, "projects"));
+        let usedIn = false;
 
         filterFields.forEach((field, index) => {
             const value = filterValues[index];
@@ -162,6 +163,10 @@ const getProjectsWithFilters = async (
                 if (value.length > 10) {
                     throw new Error("Firestore 'in' supports 1–10 values");
                 }
+                if (usedIn) {
+                    throw new Error("Firestore allows at most one 'in' filter per query");
+                }
+                usedIn = true;
                 filterQuery = query(filterQuery, where(field as string, "in", value));
             } else {
                 filterQuery = query(filterQuery, where(field as string, "==", value));
