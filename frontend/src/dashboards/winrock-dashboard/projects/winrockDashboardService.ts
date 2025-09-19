@@ -7,7 +7,6 @@ import {
     getDocs,
     orderBy,
     query,
-    setDoc,
     Timestamp,
     updateDoc,
     where,
@@ -71,7 +70,6 @@ const createProject = async (
                 throw new Error("project-name-already-exists");
             }
 
-            const now = Timestamp.now();
             const newProject: Project = {
                 projectName,
                 supplierName,
