@@ -1,6 +1,7 @@
 .container {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 1.5rem;
     width: 105%;
     background: #F6F7F9;
@@ -217,4 +218,18 @@
     color: white;
   }
   
-  
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    background-color: var(--color-primary);
+    border: 1.29px solid var(--color-primary);
+    color: white;
+    height: 3rem;
+    border-radius: .4rem;
+    cursor: pointer;
+    font-size: 13.42px;
+    padding: 13.42px 10px;
+    margin-left: auto;
+    margin-top: 15rem;
+}

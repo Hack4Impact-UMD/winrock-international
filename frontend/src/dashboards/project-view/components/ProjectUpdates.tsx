@@ -108,96 +108,101 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.pageTitle}>Updates</h2>
-      {sortedUpdates.map((update, index) => {
-        const isMostRecent = index === 0; 
-        const activeColor = '#1a4b8b';
-        const inactiveColor = '#000000';
-        const displayNumber = sortedUpdates.length - index;
-        const messages = updateMessages[update.id] || [];
+      <div>
+        <h2 className={styles.pageTitle}>Updates</h2>
+        {sortedUpdates.map((update, index) => {
+          const isMostRecent = index === 0; 
+          const activeColor = '#1a4b8b';
+          const inactiveColor = '#000000';
+          const displayNumber = sortedUpdates.length - index;
+          const messages = updateMessages[update.id] || [];
 
-        return (
-          <div key={update.id} className={styles.updateCard}>
-            <div className={styles.updateHeader}>
-            <div className={styles.leftSide}>
-                <div
-                className={styles.updateNumberCircle}
-                style={{
-                    backgroundColor: isMostRecent ? '#1a4b8b' : '#d3d3d3',
-                    color: isMostRecent ? '#ffffff' : '#ffffff',
-                }}
-                >
-                {displayNumber}
-                </div>
-                <div className={styles.updateTitle}>
-                <h3 style={{ color: isMostRecent ? activeColor : inactiveColor }}>
-                    {update.title}
-                </h3>
-                {update.description && (
-                    <p className={styles.description}>{update.description}</p>
-                )}
-                </div>
-            </div>
-            <div className={styles.updateTime}>{update.timestamp}</div>
-            </div>
-
-            {update.canRequestInfo && (
-              <div className={styles.requestInfoSection}>
-                <button className={styles.viewFileButton}>View file</button>
-                <div className={styles.counterpartySelector}>
-                {/* <label>Select Contact:</label> */}
-                <select
-                    value={selectedCounterparties[update.id] || "supplier"}
-                    onChange={(e) =>
-                    setSelectedCounterparties(prev => ({
-                        ...prev,
-                        [update.id]: e.target.value as "supplier" | "client",
-                    }))
-                    }
-                    className={styles.selectDropdown}
-                >
-                    <option value="supplier">Supplier</option>
-                    <option value="client">Client</option>
-                </select>
-                </div>
-
-                <div className={styles.messageList}>
-                {messages.map((msg, idx) => (
-                    <div
-                    key={idx}
-                    className={`${styles.messageItem} ${msg.sender === 'user' ? styles.userMessage : styles.supplierMessage}`}
-                    >
-                    <div className={styles.senderLabel}>
-                        {msg.sender === 'user' ? 'You' : (msg.sender === 'supplier' ? 'Supplier' : 'Client')}
-                    </div>
-
-                    <div className={styles.messageText}>
-                        {msg.text}
-                    </div>
-                    </div>
-                ))}
-                </div>
-
-                <div className={styles.requestDescription}>Request Additional information</div>
-                <textarea
-                  placeholder="Enter text here"
-                  value={requestTexts[update.id] || ''}
-                  onChange={(e) => handleInputChange(update.id, e.target.value)}
-                  className={styles.textArea}
-                />
-                <div className={styles.buttonWrapper}>
-                    <button
-                    className={styles.sendButton}
-                    onClick={() => handleRequestInfo(update.id)}
-                    >
-                    Send
-                    </button>
-                </div>
+          return (
+            <div key={update.id} className={styles.updateCard}>
+              <div className={styles.updateHeader}>
+              <div className={styles.leftSide}>
+                  <div
+                  className={styles.updateNumberCircle}
+                  style={{
+                      backgroundColor: isMostRecent ? '#1a4b8b' : '#d3d3d3',
+                      color: isMostRecent ? '#ffffff' : '#ffffff',
+                  }}
+                  >
+                  {displayNumber}
+                  </div>
+                  <div className={styles.updateTitle}>
+                  <h3 style={{ color: isMostRecent ? activeColor : inactiveColor }}>
+                      {update.title}
+                  </h3>
+                  {update.description && (
+                      <p className={styles.description}>{update.description}</p>
+                  )}
+                  </div>
               </div>
-            )}
-          </div>
-        );
-      })}
+              <div className={styles.updateTime}>{update.timestamp}</div>
+              </div>
+
+              {update.canRequestInfo && (
+                <div className={styles.requestInfoSection}>
+                  <button className={styles.viewFileButton}>View file</button>
+                  <div className={styles.counterpartySelector}>
+                  {/* <label>Select Contact:</label> */}
+                  <select
+                      value={selectedCounterparties[update.id] || "supplier"}
+                      onChange={(e) =>
+                      setSelectedCounterparties(prev => ({
+                          ...prev,
+                          [update.id]: e.target.value as "supplier" | "client",
+                      }))
+                      }
+                      className={styles.selectDropdown}
+                  >
+                      <option value="supplier">Supplier</option>
+                      <option value="client">Client</option>
+                  </select>
+                  </div>
+
+                  <div className={styles.messageList}>
+                  {messages.map((msg, idx) => (
+                      <div
+                      key={idx}
+                      className={`${styles.messageItem} ${msg.sender === 'user' ? styles.userMessage : styles.supplierMessage}`}
+                      >
+                      <div className={styles.senderLabel}>
+                          {msg.sender === 'user' ? 'You' : (msg.sender === 'supplier' ? 'Supplier' : 'Client')}
+                      </div>
+
+                      <div className={styles.messageText}>
+                          {msg.text}
+                      </div>
+                      </div>
+                  ))}
+                  </div>
+
+                  <div className={styles.requestDescription}>Request Additional information</div>
+                  <textarea
+                    placeholder="Enter text here"
+                    value={requestTexts[update.id] || ''}
+                    onChange={(e) => handleInputChange(update.id, e.target.value)}
+                    className={styles.textArea}
+                  />
+                  <div className={styles.buttonWrapper}>
+                      <button
+                      className={styles.sendButton}
+                      onClick={() => handleRequestInfo(update.id)}
+                      >
+                      Send
+                      </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <button className={styles.button}>
+        Mark stage as complete
+      </button>
     </div>
   );
 };
