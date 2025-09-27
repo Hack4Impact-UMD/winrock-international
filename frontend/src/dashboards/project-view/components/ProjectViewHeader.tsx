@@ -16,7 +16,8 @@ type AnalysisStageType =
     | 'GHG Assessment Analysis'
     | 'Confirming Final Requirements'
     | 'Clarifying Initial Project Information'
-    | 'Complete, and Excluded';
+    | 'Complete, and Excluded'
+	| 'Clarifying Technical Details';
 
 interface ProjectViewHeaderProps {
     data: {

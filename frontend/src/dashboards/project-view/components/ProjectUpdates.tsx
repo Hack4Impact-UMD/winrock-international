@@ -14,9 +14,10 @@ interface UpdateItem {
 
 interface ProjectUpdatesProps {
   updates: UpdateItem[];
+  completeProjectStage: () => void;
 }
 
-const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
+const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates, completeProjectStage }) => {
   const [requestTexts, setRequestTexts] = useState<Record<string, string>>({});
   const [updateMessages, setUpdateMessages] = useState<Record<string, { sender: 'user' | 'supplier' | 'client'; text: string }[]>>({});
   const [selectedCounterparties, setSelectedCounterparties] = useState<Record<string, "supplier" | "client">>({});
@@ -200,7 +201,7 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
           );
         })}
       </div>
-      <button className={styles.button}>
+      <button className={styles.button} onClick={completeProjectStage}>
         Mark stage as complete
       </button>
     </div>

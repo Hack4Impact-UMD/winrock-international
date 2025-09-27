@@ -3,17 +3,9 @@ import notStarted from "../assets/stage-not-started.svg"
 import inProgress from "../assets/stage-in-progress.svg"
 import completed from "../assets/stage-completed.svg"
 import dottedLine from "../assets/dotted-line.svg"
+import { ProjectStageInfo } from "../projectView"
 
-interface ProjectTrackerProps {
-	currentStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded' | 'Clarifying Technical Details';
-	initialInfoStatus: "not-started" | "in-progress" | "completed";
-	technicalStatus: "not-started" | "in-progress" | "completed";
-	ghgStatus: "not-started" | "in-progress" | "completed";
-	risksStatus: "not-started" | "in-progress" | "completed";
-	finalStatus: "not-started" | "in-progress" | "completed";
-}
-
-const ProjectTracker = (props: ProjectTrackerProps) => {
+const ProjectTracker = (props: ProjectStageInfo) => {
 
 	const getStatusIcon = (statusNum: number) => {
 
@@ -35,7 +27,7 @@ const ProjectTracker = (props: ProjectTrackerProps) => {
 			status = props.risksStatus
 		}
 		else {
-			if (props.initialInfoStatus === "completed" && props.technicalStatus === "completed" && props.ghgStatus === "completed" && props.finalStatus === "completed") {
+			if (props.initialInfoStatus === "completed" && props.technicalStatus === "completed" && props.ghgStatus === "completed" && props.finalStatus === "completed" && props.risksStatus === "completed") {
 				return <img src={completed}></img>;
 			}
 			else {
