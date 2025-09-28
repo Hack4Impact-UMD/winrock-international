@@ -1,6 +1,7 @@
 interface Project {
     id: string;
     project: string;
+    clientName: string,
     supplierName: string;
     overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
     analysisStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded' | 'Clarifying Technical Details';
@@ -16,6 +17,7 @@ interface Project {
     {
       id: "Project1",
       project: 'Nestlé',
+      clientName: 'Nestlé',
       supplierName: 'Cargill',
       overallStatus: 'On Track',
       analysisStage: 'Clarifying Technical Details',
@@ -29,6 +31,7 @@ interface Project {
     {
       id: "Project2",
       project: 'McCormick',
+      clientName: 'McCormick',
       supplierName: 'Orange',
       overallStatus: 'At Risk',
       analysisStage: 'Clarifying Initial Project Information',
@@ -42,6 +45,7 @@ interface Project {
     {
         id: "Pixel",
         project: 'Pixel',
+        clientName: 'Google',
         supplierName: 'Alphabet',
         overallStatus: 'At Risk',
         analysisStage: 'GHG Assessment Analysis',
@@ -55,6 +59,7 @@ interface Project {
     {
         id: "Microsoft",
         project: 'Copilot',
+        clientName: 'Microsoft',
         supplierName: 'Microsoft',
         overallStatus: 'Completed',
         analysisStage: 'GHG Assessment Analysis',
@@ -68,6 +73,7 @@ interface Project {
     {
         id: "CloudForce",
         project: 'Cloudforce',
+        clientName: 'Salesforce',
         supplierName: 'Microsoft',
         overallStatus: 'On Track',
         analysisStage: 'GHG Assessment Analysis',
@@ -81,6 +87,7 @@ interface Project {
     {
         id: "Nike",
         project: 'Air Force 1',
+        clientName: 'Nike',
         supplierName: 'Nike',
         overallStatus: 'Completed',
         analysisStage: 'Confirming Final Requirements',
@@ -94,6 +101,7 @@ interface Project {
     {
       id: "Project3",
       project: 'Microsoft',
+      clientName: 'Microsoft',
       supplierName: 'Kiwi',
       overallStatus: 'Paused',
       analysisStage: 'Confirming Final Requirements',
@@ -107,6 +115,7 @@ interface Project {
     {
       id: "Project4",
       project: 'WebMD',
+      clientName: 'WebMD',
       supplierName: 'Apple',
       overallStatus: 'Completed',
       analysisStage: 'Clarifying Initial Project Information',
@@ -119,7 +128,8 @@ interface Project {
     },
     {
       id: "Project5",
-      project: 'Kellogg',
+      project: 'Kellogg', 
+      clientName: 'Kellogg',
       supplierName: 'Grape',
       overallStatus: 'Completed (except for risk)',
       analysisStage: 'Complete, and Excluded',
@@ -133,6 +143,7 @@ interface Project {
     {
       id: "Project6",
       project: 'Lululemon',
+      clientName: 'Lululemon',
       supplierName: 'Orange',
       overallStatus: 'On Track',
       analysisStage: 'Clarifying Initial Project Information',
@@ -146,6 +157,7 @@ interface Project {
     {
       id: "Project7",
       project: 'Cheetos',
+      clientName: 'Cheetos',
       supplierName: 'Orange',
       overallStatus: 'On Track',
       analysisStage: 'Risk & Co-benefit Assessment',
@@ -159,6 +171,7 @@ interface Project {
     {
       id: "Project8",
       project: 'Cheezits',
+      clientName: 'Cheezits',
       supplierName: 'Orange',
       overallStatus: 'Paused',
       analysisStage: 'Confirming Final Requirements',
@@ -172,6 +185,7 @@ interface Project {
     {
       id: "Project9",
       project: 'Cheerios',
+      clientName: 'Cheerios',
       supplierName: 'Orange',
       overallStatus: 'Paused',
       analysisStage: 'Clarifying Initial Project Information',
@@ -185,6 +199,7 @@ interface Project {
     {
       id: "Project10",
       project: 'McCormick',
+      clientName: 'McCormick',
       supplierName: 'Orange',
       overallStatus: 'Paused',
       analysisStage: 'Risk & Co-benefit Assessment',
@@ -198,6 +213,7 @@ interface Project {
     {
       id: "Project11",
       project: 'Tesla',
+      clientName: 'Tesla',
       supplierName: 'Lithium Corp',
       overallStatus: 'At Risk',
       analysisStage: 'GHG Assessment Analysis',
@@ -211,6 +227,7 @@ interface Project {
     {
       id: "Project12",
       project: 'Starbucks',
+      clientName: 'Starbucks',
       supplierName: 'Coffee Beans Co',
       overallStatus: 'On Track',
       analysisStage: 'Confirming Final Requirements',
@@ -224,6 +241,7 @@ interface Project {
     {
       id: "Project13",
       project: 'Nike',
+      clientName: 'Nike',
       supplierName: 'Cotton Express',
       overallStatus: 'Completed',
       analysisStage: 'Complete, and Excluded',
@@ -237,6 +255,7 @@ interface Project {
     {
       id: "Project14",
       project: 'Samsung',
+      clientName: 'Samsung',
       supplierName: 'Green Energy Ltd',
       overallStatus: 'Completed (except for risk)',
       analysisStage: 'Risk & Co-benefit Assessment',
@@ -250,6 +269,7 @@ interface Project {
     {
       id: "Project15",
       project: 'Unilever',
+      clientName: 'Unilever',
       supplierName: 'Palm Oil Inc',
       overallStatus: 'At Risk',
       analysisStage: 'Clarifying Initial Project Information',

@@ -23,6 +23,7 @@ import { db } from "../../../firebaseConfig.js";
 interface Project {
   id: string;
   project: string;
+  clientName: string;
   supplierName: string;
   overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
   analysisStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded';
@@ -124,6 +125,7 @@ const WinrockDashboard: React.FC = () => {
         return {
           id: doc.id,
           project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
+          clientName: typeof p.clientName === 'string' ? (p.clientName.charAt(0).toUpperCase() + p.clientName.slice(1)): "Unknown Client",
           supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
           overallStatus: p.overallStatus,
           analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
@@ -462,7 +464,7 @@ const WinrockDashboard: React.FC = () => {
             <TableHeader
               onSelectAll={handleSelectAll}
               allSelected={allSelected}
-              headers={['Project', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
+              headers={['Project', 'Client', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
               isEditMode={isEditMode}
             />
             <tbody>

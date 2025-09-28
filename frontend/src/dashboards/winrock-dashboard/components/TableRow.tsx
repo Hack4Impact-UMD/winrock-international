@@ -23,6 +23,7 @@ interface TableRowProps {
   data: {
     id: string;
     project: string;
+    clientName: string;
     supplierName: string;
     overallStatus: StatusType;
     analysisStage: AnalysisStageType;
@@ -124,6 +125,12 @@ const TableRow: React.FC<TableRowProps> = ({
       >
         {data.project}
       </td>
+
+      {/* Client Name - Not Editable */}
+      <td className={styles.cell}>
+        {data.clientName}
+      </td>
+      
       {/* Supplier Name */}
       <td className={styles.cell}>
         {isEditMode ? (
