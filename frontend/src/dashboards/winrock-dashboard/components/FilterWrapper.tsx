@@ -13,7 +13,7 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
   title,
   children,
   isExpanded = false,
-  onToggle = () => {},
+  onToggle = () => { },
 }) => {
   return (
     <div className={styles.filterSection}>
@@ -40,7 +40,8 @@ const FilterWrapper: React.FC<FilterWrapperProps> = ({
   children,
   title = 'Filters'
 }) => {
-  const [expandedSection, setExpandedSection] = useState<string | null>(); 
+  console.log(title); // to avoid unused variable warning
+  const [expandedSection, setExpandedSection] = useState<string | null>();
 
   const toggleSection = (sectionTitle: string) => {
     if (expandedSection === sectionTitle) {
@@ -59,7 +60,7 @@ const FilterWrapper: React.FC<FilterWrapperProps> = ({
 
   return (
     <div className={styles.filterWrapper}>
-      
+
       <div className={styles.filtersContainer}>
         {filterSections.map((section) => (
           <FilterSection

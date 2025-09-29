@@ -16,13 +16,15 @@ type AnalysisStageType =
   | 'Risk & Co-benefit Assessment'
   | 'GHG Assessment Analysis'
   | 'Confirming Final Requirements'
+  | 'Clarifying Technical Details'  // ← Add this line
   | 'Clarifying Initial Project Information'
   | 'Complete, and Excluded';
+
 
 interface TableRowProps {
   data: {
     id: string;
-    project: string;
+    projectName: string;
     supplierName: string;
     overallStatus: StatusType;
     analysisStage: AnalysisStageType;
@@ -54,6 +56,7 @@ const analysisStageOptions: AnalysisStageType[] = [
   'Risk & Co-benefit Assessment',
   'GHG Assessment Analysis',
   'Confirming Final Requirements',
+  'Clarifying Technical Details',  // ← Add this line
   'Clarifying Initial Project Information',
   'Complete, and Excluded'
 ];
@@ -122,7 +125,7 @@ const TableRow: React.FC<TableRowProps> = ({
         }}
         style={{ cursor: 'pointer', textDecoration: 'underline' }}
       >
-        {data.project}
+        {data.projectName}
       </td>
       {/* Supplier Name */}
       <td className={styles.cell}>

@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import * as firestore from "firebase/firestore";
 import { db } from "../../firebaseConfig.js";
-import { useNavigate } from "react-router-dom"; // Correctly import useNavigate
-
 import LogoHeader from "../components/headers/LogoHeader.js";
 import TitleHeader from "../components/headers/TitleHeader.js";
 import ProgressBar from "../components/ProgressBar.js";
@@ -42,7 +40,6 @@ interface RenewableProposalFormData {
 }
 
 const RenewableProposalForm = () => {
-    const navigate = useNavigate();
     const title = "Renewable Energy Project Proposal Form";
     const [currentPage, setCurrentPage] = useState(1); // Start on Page 1
     const totalPages = 2; // Set totalPages to 2 since we have two pages
