@@ -23,6 +23,7 @@ interface TableRowProps {
   data: {
     id: string;
     project: string;
+    clientName: string;
     supplierName: string;
     overallStatus: StatusType;
     analysisStage: AnalysisStageType;
@@ -70,6 +71,7 @@ const TableRow: React.FC<TableRowProps> = ({
   onRowClick,
 }) => {
   // --- Local State for Editable Fields ---
+  const [localClientName, setLocalClientName] = useState(data.clientName);
   const [localSupplierName, setLocalSupplierName] = useState(data.supplierName);
   const [localOverallStatus, setLocalOverallStatus] = useState<StatusType>(data.overallStatus);
   const [localAnalysisStage, setLocalAnalysisStage] = useState<AnalysisStageType>(data.analysisStage);
@@ -80,6 +82,7 @@ const TableRow: React.FC<TableRowProps> = ({
 
   // Refresh local states when `data` changes
   useEffect(() => {
+    setLocalClientName(data.clientName);
     setLocalSupplierName(data.supplierName);
     setLocalOverallStatus(data.overallStatus);
     setLocalAnalysisStage(data.analysisStage);
@@ -124,6 +127,21 @@ const TableRow: React.FC<TableRowProps> = ({
       >
         {data.project}
       </td>
+      
+      {/* Client Name */}
+      <td className={styles.cell}>
+        {isEditMode ? (
+          <input
+            type="text"
+            value={localClientName}
+            onChange={(e) => setLocalClientName(e.target.value)}
+            className={styles.editableInput}
+          />
+        ) : (
+          data.clientName
+        )}
+      </td>
+
       {/* Supplier Name */}
       <td className={styles.cell}>
         {isEditMode ? (

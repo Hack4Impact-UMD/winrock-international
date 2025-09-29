@@ -42,6 +42,7 @@ enum AnalysisStage {
  */
 interface Project {
     projectName: string;
+    clientName: string;
     supplierName: string;
     spendCategory: string;
     geography: string;
@@ -60,6 +61,7 @@ interface Project {
  * Saves a project with the given fields into the database.
  * 
  * @param {string} projectName - Must be unique across all projects.
+ * @param {string} clientName
  * @param {string} supplierName
  * @param {string} spendCategory
  * @param {string} geography
@@ -75,6 +77,7 @@ interface Project {
  */
 const createProject = async (
     projectName: string,
+    clientName: string,
     supplierName: string,
     spendCategory: string,
     geography: string,
@@ -94,6 +97,7 @@ const createProject = async (
         const now = Timestamp.now();
         const newProject: Project = {
             projectName,
+            clientName,
             supplierName,
             spendCategory,
             geography,
