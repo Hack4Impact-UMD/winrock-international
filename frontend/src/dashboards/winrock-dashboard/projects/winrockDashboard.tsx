@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Timestamp } from "firebase/firestore";
 import styles from "./../css-modules/WinrockDashboard.module.css"
 import winrockLogo from "./../../../assets/winrock-international-logo.png"
 import projectsIcon from './../../../assets/projects-icon.svg';
@@ -15,26 +16,15 @@ import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 import ReportsDropdown from '../components/ReportsDropdown';
 import KPICharts from '../components/KPICharts';
-import { getAllProjects, updateProjectField } from "./winrockDashboardService";
+import { updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
+import { Project } from '../../../types/Project'
 
-interface Project {
-  id: string;
-  project: string;
-  supplierName: string;
-  overallStatus: 'On Track' | 'At Risk' | 'Paused' | 'Completed' | 'Completed (except for risk)';
-  analysisStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded';
-  spendCategory: string;
-  geography: string;
-  lastUpdated: string;
-  startDate: string;
-  activityType: 'Renewable Energy and Energy Efficiency' | 'Agriculture' | 'Agroforestry' | 'Animal Agriculture and Manure Management';
-  isActive: boolean;
-}
 
 const WinrockDashboard: React.FC = () => {
+
   const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilters, setActiveFilters] = useState<{
@@ -56,7 +46,6 @@ const WinrockDashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeActionMenu, setActiveActionMenu] = useState<string | null>(null);
-  const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
   const navigate = useNavigate();
 
@@ -67,7 +56,7 @@ const WinrockDashboard: React.FC = () => {
   });
 
   const handleActionClick = (id: string | null) => {
-      setActiveActionMenu(id);
+    setActiveActionMenu(id);
   };
 
   const mapStatusToId = (status: string): string => {
@@ -82,7 +71,7 @@ const WinrockDashboard: React.FC = () => {
   };
   const handleToggleArchive = async (projectId: string) => {
     const project = projects.find(p => p.id === String(projectId));
-    
+
     if (!project) {
       console.error(`Project with ID ${projectId} not found`);
       return;
@@ -91,7 +80,7 @@ const WinrockDashboard: React.FC = () => {
     const newIsActive = !project.isActive;
 
     try {
-      await handleSaveProject(project.project, { isActive: newIsActive });
+      await handleSaveProject(project.id, { isActive: newIsActive });
 
       setActiveActionMenu(null);
 
@@ -103,50 +92,6 @@ const WinrockDashboard: React.FC = () => {
       console.error(`Failed to update project:`, error);
     }
   };
-
-  useEffect(() => {
-    const q = query(collection(db, "projects"), orderBy("projectName"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const projectsData = snapshot.docs.map((doc, index) => {
-        const p = doc.data();
-        const parseDate = (date: any) => {
-          if (!date) return "";
-          if (date.toDate) {
-            return date.toDate().toISOString().split("T")[0];
-          }
-          const parsed = new Date(date);
-          if (isNaN(parsed.getTime())) {
-
-            return "";
-          }
-          return parsed.toISOString().split("T")[0];
-        };
-        return {
-          id: doc.id,
-          project: typeof p.projectName === 'string' ? (p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1)) : "Unknown Project",
-          supplierName: typeof p.supplierName === 'string' ? (p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1)) : "Unknown Supplier",
-          overallStatus: p.overallStatus,
-          analysisStage: typeof p.analysisStage === 'string' && p.analysisStage.includes(':')
-            ? p.analysisStage.split(':')[1].trim()
-            : p.analysisStage,
-          spendCategory: p.spendCategory,
-          geography: p.geography,
-          lastUpdated: parseDate(p.lastUpdated),
-          startDate: parseDate(p.startDate),
-          activityType: p.activityType,
-          isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
-        } as Project;
-      });
-      setProjects(projectsData);
-      setLoading(false);
-    }, (error) => {
-      console.error("Error listening to projects:", error);
-      setError("Failed to load projects");
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const itemsPerPage = 10;
 
@@ -177,7 +122,7 @@ const WinrockDashboard: React.FC = () => {
       })
       .filter(p =>
         searchQuery.trim() === '' ||
-        p.project.toLowerCase().startsWith(searchQuery.trim().toLowerCase())
+        p.projectName.toLowerCase().startsWith(searchQuery.trim().toLowerCase())
       );;
   }, [projects, viewMode, selectedTab, activeFilters, dateRange, searchQuery]);
 
@@ -218,16 +163,88 @@ const WinrockDashboard: React.FC = () => {
     }
   };
 
-  const handleSaveProject = async (projectName: string, updatedFields: Partial<Project>) => {
+  // Define which fields can be updated (exclude projectName and id)
+  type UpdatableProjectFields = Exclude<keyof Project, 'projectName' | 'id'>;
+
+  const handleSaveProject = async (
+    docId: string,
+    updatedFields: Partial<Record<UpdatableProjectFields, Project[UpdatableProjectFields]>>
+  ) => {
     try {
-      for (const [field, value] of Object.entries(updatedFields)) {
-        await updateProjectField(projectName, field as keyof Project, value as any);
+      for (const [key, rawValue] of Object.entries(updatedFields).filter(
+        ([k]) => k !== 'id' && k !== 'projectName'
+      )) {
+        const field = key as UpdatableProjectFields;
+        let value: any = rawValue;
+
+        // Convert Date to Firestore Timestamp
+        if (value instanceof Date) {
+          value = Timestamp.fromDate(value);
+        }
+
+        await updateProjectField(docId, field, value);
       }
-      console.log(`Project ${projectName} updated successfully.`);
+      console.log(`Project ${docId} updated successfully.`);
     } catch (error) {
-      console.error(`Failed to update project ${projectName}:`, error);
+      console.error(`Failed to update project ${docId}:`, error);
     }
   };
+
+  // Map Firestore analysisStage enum to frontend-friendly string
+  const mapAnalysisStage = (stage: string): string => {
+    switch (stage) {
+      case "Stage 1: Clarifying Initial Project Information": return "Clarifying Initial Project Information";
+      case "Stage 2: Clarifying Technical Details": return "Clarifying Technical Details";
+      case "Stage 3: GHG Assessment Analysis": return "GHG Assessment Analysis";
+      case "Stage 4: Confirming Final Requirements": return "Confirming Final Requirements";
+      case "Stage 5: Risk & Co-benefit Assessment": return "Risk & Co-benefit Assessment";
+      case "Stage 6: Complete, and Excluded": return "Complete, and Excluded";
+      default: return stage;
+    }
+  };
+
+  // Firestore snapshot mapping
+  useEffect(() => {
+    const q = query(collection(db, "projects"), orderBy("projectName"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const projectsData: Project[] = snapshot.docs.map((doc) => {
+        const p = doc.data() as Project;
+
+        const parseDate = (date: any) => {
+          if (!date) return "";
+          if (date.toDate) return date.toDate().toISOString().split("T")[0];
+          const parsed = new Date(date);
+          if (isNaN(parsed.getTime())) return "";
+          return parsed.toISOString().split("T")[0];
+        };
+
+        return {
+          id: doc.id, // local frontend ID for table rendering
+          projectName: p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1),
+          supplierName: p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1),
+          overallStatus: p.overallStatus,
+          analysisStage: mapAnalysisStage(p.analysisStage as string),
+          spendCategory: p.spendCategory,
+          geography: p.geography,
+          lastUpdated: parseDate(p.lastUpdated),
+          startDate: parseDate(p.startDate),
+          activityType: p.activityType, // ← ADD THIS LINE
+          isActive: p.isActive,
+          isPinned: p.isPinned,
+        } as Project;
+      });
+
+      setProjects(projectsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error listening to projects:", error);
+      setError("Failed to load projects");
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
 
   // per category
 
@@ -242,9 +259,9 @@ const WinrockDashboard: React.FC = () => {
     } else if (sortOption === "oldest-first") {
       sortedProjects.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
     } else if (sortOption === "a-to-z") {
-      sortedProjects.sort((a, b) => b.project.localeCompare(a.project));
+      sortedProjects.sort((a, b) => a.projectName.localeCompare(b.projectName));
     } else if (sortOption === "z-to-a") {
-      sortedProjects.sort((a, b) => a.project.localeCompare(b.project));
+      sortedProjects.sort((a, b) => b.projectName.localeCompare(a.projectName));
     } else {
       // fallback: maybe do nothing
     }
@@ -397,14 +414,15 @@ const WinrockDashboard: React.FC = () => {
                   // Compare fields and collect differences
                   for (const key in edited) {
                     if (edited[key as keyof Project] !== original[key as keyof Project]) {
-                      updatedFields[key as keyof Project] = edited[key as keyof Project];
+                      (updatedFields as any)[key] = (edited as any)[key];
                     }
                   }
 
                   // Save only if there are changes
                   if (Object.keys(updatedFields).length > 0) {
-                    await handleSaveProject(edited.project, updatedFields);
+                    await handleSaveProject(edited.id, updatedFields);
                   }
+
                 }
 
                 setEditableProjects([]);
@@ -479,7 +497,7 @@ const WinrockDashboard: React.FC = () => {
                         prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
                       );
                     } else {
-                      handleSaveProject(project.project, updatedFields);
+                      handleSaveProject(project.id, updatedFields);
                     }
                   }}
 

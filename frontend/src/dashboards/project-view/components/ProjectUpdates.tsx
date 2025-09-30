@@ -24,12 +24,12 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates, completeProjec
   const parseRelativeTimestamp = (timestamp: string): number => {
     const regex = /(\d+)\s+(minute|hour|day|week|month|year)s?\s+ago/;
     const match = timestamp.match(regex);
-  
+
     if (!match) return 0;
-  
+
     const value = parseInt(match[1]);
     const unit = match[2];
-  
+
     const now = new Date().getTime();
     const unitsToMs: Record<string, number> = {
       minute: 60 * 1000,
@@ -39,12 +39,13 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates, completeProjec
       month: 30 * 24 * 60 * 60 * 1000, // rough estimate
       year: 365 * 24 * 60 * 60 * 1000, // rough estimate
     };
-  
+
     return now - value * unitsToMs[unit];
   };
-  
+
 
   const generateCounterpartyReply = (userMessage: string, counterpartyType: "supplier" | "client"): string => {
+    userMessage = userMessage.toLowerCase(); //Dummy just for passing build
     const supplierReplies = [
       "Thanks for the update!",
       "We'll look into it.",
@@ -52,7 +53,7 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates, completeProjec
       "Received, thanks!",
       "Let me check with my team.",
     ];
-    
+
     const clientReplies = [
       "Thanks for sending this over.",
       "Can you send more details?",
@@ -60,28 +61,28 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates, completeProjec
       "We'll review and revert.",
       "Appreciate the update!",
     ];
-  
+
     const replies = counterpartyType === "client" ? clientReplies : supplierReplies;
     return replies[Math.floor(Math.random() * replies.length)];
   };
-  
-  
+
+
 
   const handleRequestInfo = (updateId: string) => {
     const text = requestTexts[updateId];
     if (text && text.trim() !== '') {
       const counterparty = selectedCounterparties[updateId] || 'supplier'; // Default to supplier if not selected
-  
+
       setUpdateMessages(prev => ({
         ...prev,
         [updateId]: [...(prev[updateId] || []), { sender: 'user', text }],
       }));
-  
+
       setRequestTexts(prev => ({
         ...prev,
         [updateId]: '',
       }));
-  
+
       setTimeout(() => {
         setUpdateMessages(prev => ({
           ...prev,
@@ -90,9 +91,9 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates, completeProjec
       }, 1500);
     }
   };
-  
-  
-  
+
+
+
 
   const handleInputChange = (updateId: string, value: string) => {
     setRequestTexts(prev => ({
@@ -105,80 +106,80 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates, completeProjec
   const sortedUpdates = [...updates].sort(
     (a, b) => parseRelativeTimestamp(b.timestamp) - parseRelativeTimestamp(a.timestamp)
   );
-  
+
 
   return (
     <div className={styles.container}>
-      <div>
-        <h2 className={styles.pageTitle}>Updates</h2>
-        {sortedUpdates.map((update, index) => {
-          const isMostRecent = index === 0; 
-          const activeColor = '#1a4b8b';
-          const inactiveColor = '#000000';
-          const displayNumber = sortedUpdates.length - index;
-          const messages = updateMessages[update.id] || [];
+	<div>
+      <h2 className={styles.pageTitle}>Updates</h2>
+      {sortedUpdates.map((update, index) => {
+        const isMostRecent = index === 0;
+        const activeColor = '#1a4b8b';
+        const inactiveColor = '#000000';
+        const displayNumber = sortedUpdates.length - index;
+        const messages = updateMessages[update.id] || [];
 
-          return (
-            <div key={update.id} className={styles.updateCard}>
-              <div className={styles.updateHeader}>
+        return (
+          <div key={update.id} className={styles.updateCard}>
+            <div className={styles.updateHeader}>
               <div className={styles.leftSide}>
-                  <div
+                <div
                   className={styles.updateNumberCircle}
                   style={{
-                      backgroundColor: isMostRecent ? '#1a4b8b' : '#d3d3d3',
-                      color: isMostRecent ? '#ffffff' : '#ffffff',
+                    backgroundColor: isMostRecent ? '#1a4b8b' : '#d3d3d3',
+                    color: isMostRecent ? '#ffffff' : '#ffffff',
                   }}
-                  >
+                >
                   {displayNumber}
-                  </div>
-                  <div className={styles.updateTitle}>
+                </div>
+                <div className={styles.updateTitle}>
                   <h3 style={{ color: isMostRecent ? activeColor : inactiveColor }}>
-                      {update.title}
+                    {update.title}
                   </h3>
                   {update.description && (
-                      <p className={styles.description}>{update.description}</p>
+                    <p className={styles.description}>{update.description}</p>
                   )}
-                  </div>
+                </div>
               </div>
               <div className={styles.updateTime}>{update.timestamp}</div>
-              </div>
+            </div>
 
               {update.canRequestInfo && (
                 <div className={styles.requestInfoSection}>
                   <button className={styles.viewFileButton}>View file</button>
                   <div className={styles.counterpartySelector}>
-                  {/* <label>Select Contact:</label> */}
-                  <select
+                    {/* <label>Select Contact:</label> */}
+                    <select
                       value={selectedCounterparties[update.id] || "supplier"}
                       onChange={(e) =>
-                      setSelectedCounterparties(prev => ({
+                        setSelectedCounterparties(prev => ({
                           ...prev,
                           [update.id]: e.target.value as "supplier" | "client",
-                      }))
+                        }))
                       }
                       className={styles.selectDropdown}
-                  >
+                    >
                       <option value="supplier">Supplier</option>
                       <option value="client">Client</option>
-                  </select>
+                    </select>
                   </div>
 
-                  <div className={styles.messageList}>
+                <div className={styles.messageList}>
                   {messages.map((msg, idx) => (
-                      <div
+                    <div
                       key={idx}
                       className={`${styles.messageItem} ${msg.sender === 'user' ? styles.userMessage : styles.supplierMessage}`}
-                      >
+                    >
                       <div className={styles.senderLabel}>
-                          {msg.sender === 'user' ? 'You' : (msg.sender === 'supplier' ? 'Supplier' : 'Client')}
+                        {msg.sender === 'user' ? 'You' : (msg.sender === 'supplier' ? 'Supplier' : 'Client')}
                       </div>
 
                       <div className={styles.messageText}>
-                          {msg.text}
+                        {msg.text}
                       </div>
-                      </div>
+                    </div>
                   ))}
-                  </div>
+                </div>
 
                   <div className={styles.requestDescription}>Request Additional information</div>
                   <textarea

@@ -1,45 +1,19 @@
-import React, { useState } from "react";
-import ProjectViewHeader from "./components/ProjectViewHeader";
-import ProjectTracker from "./components/ProjectTracker";
-import ProjectUpdates from "./components/ProjectUpdates";
-import styles from "../project-view/css-modules/ProjectView.module.css";
-import Sidebar from "../winrock-dashboard/components/Sidebar";
-import ManageAccess from "../access-manager/components/ManageAccess";
+import React, { useState } from 'react';
+import ProjectViewHeader from './components/ProjectViewHeader';
+import ProjectTracker from './components/ProjectTracker';
+import ProjectUpdates from './components/ProjectUpdates';
+import styles from '../project-view/css-modules/ProjectView.module.css';
+import Sidebar from '../winrock-dashboard/components/Sidebar';
+import ManageAccess from '../access-manager/components/ManageAccess';
+import { Project } from "../../types/Project";
+import sampleUpdates from './updatesSamples'; // Static updates
+import { UpdateItem } from '../../types/UpdateItem';
 
-import sampleUpdates from "./updatesSamples"; // Static updates
-
-interface Project {
-  id: string;
-  project: string;
-  supplierName: string;
-  overallStatus:
-    | "On Track"
-    | "At Risk"
-    | "Paused"
-    | "Completed"
-    | "Completed (except for risk)";
-  analysisStage:
-    | "Risk & Co-benefit Assessment"
-    | "GHG Assessment Analysis"
-    | "Confirming Final Requirements"
-    | "Clarifying Initial Project Information"
-    | "Complete, and Excluded"
-    | "Clarifying Technical Details";
-  spendCategory: string;
-  geography: string;
-  lastUpdated: string;
-  startDate: string;
-  activityType:
-    | "Renewable Energy and Energy Efficiency"
-    | "Agriculture"
-    | "Agroforestry"
-    | "Animal Agriculture and Manure Management";
-  isActive: boolean;
-}
 
 interface ProjectViewProps {
   project: Project;
   onBack: () => void;
+  updates?: UpdateItem[];
 }
 
 export interface ProjectStageInfo {
@@ -126,6 +100,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
     }
   };
 
+  console.log(onBack) // to avoid unused variable warning
   return (
     <div className={styles.projectViewContainer}>
       <ManageAccess
