@@ -308,22 +308,24 @@ When you run these commands, you will see a "create a PR" URL that will be provi
 
 We want to be able to quickly review your code and merge it into the codebase so we can progress faster. This is why we really need you to follow these steps to ensure that this is possible.
 
-1. Title - Please follow this format so we know exactly what we're reviewing from the getgo:
+1. PR Checklist - [Checklist](https://docs.google.com/document/d/1p7APUrBXLvQoC83oYh1hOphujpJn7k1jlA4KYOO94uU/edit?usp=sharing)
+
+2. Title - Please follow this format so we know exactly what we're reviewing from the getgo:
 
    `[FRONTEND/BACKEND] <Brief Title Description>`
 
    Pick FRONTEND or BACKEND based on whatever you're committing. The title description should also be identifiable (ex. "Pull Reading Assignments", "Configure Auth With Firebase")
 
-2. Summary - This can be either in bullet points or a short paragraph, but essentially we want you to hit the following points:
+3. Summary - This can be either in bullet points or a short paragraph, but essentially we want you to hit the following points:
 
    - Files changed
    - Brief mention of the task assigned
    - A summary of the code changes made (needs to be more detailed but no need to fully describe every single change)
    - If you are doing something frontend related, please attach a screenshot or a short video of what you have built
 
-3. Request a review from both of the TLs (Github usernames are spoofle (Hita) and debarshidey23 (Debarshi)). You can do this on the right side of the PR page towards the top.
-4. If we do not respond to your PR within 48 hours, please message us in your TL/Engineer group chat (this is between you and the two TLs). We will message you in this same chat when your PR is reviewed.
-5. If your PR gets approved and there are merge conflicts, **please** resolve your merge conflicts before merging your PR. We will include a reminder to resolve merge conflicts in our message if necessary, so please take care of this before merging your code.
+4. Request a review from both of the TLs (Github usernames are spoofle (Hita) and debarshidey23 (Debarshi)). You can do this on the right side of the PR page towards the top.
+5. If we do not respond to your PR within 48 hours, please message us in your TL/Engineer group chat (this is between you and the two TLs). We will message you in this same chat when your PR is reviewed.
+6. If your PR gets approved and there are merge conflicts, **please** resolve your merge conflicts before merging your PR. We will include a reminder to resolve merge conflicts in our message if necessary, so please take care of this before merging your code.
 
 ---
 
