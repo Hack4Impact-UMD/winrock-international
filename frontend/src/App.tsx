@@ -20,7 +20,7 @@ import ProjectViewWrapper from './dashboards/project-view/projectViewWrapper';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/winrock-international">
       <Routes>
         <Route path="/" element={<LoginPage />} />
 
