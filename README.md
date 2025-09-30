@@ -159,8 +159,8 @@ Meet our wonderful team comprised of Product Managers, Designers, Tech Leads, En
       </a>
     </td>
     <td align="center" width="150">
-      <a href="https://umd.hack4impact.org/">
-        <img src="frontend/src/assets/winrock-profile-pictures/pending-image.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+      <a href="https://www.linkedin.com/in/laurakkmills/">
+        <img src="frontend/src/assets/winrock-profile-pictures/laura_mills.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Laura Mills</b><br/><br/>
         <img src="https://img.shields.io/badge/🧑‍🏫_mentor-95A5A6?style=flat-square"/>
       </a>
