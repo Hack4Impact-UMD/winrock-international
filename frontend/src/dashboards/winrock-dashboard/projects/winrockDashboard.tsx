@@ -221,6 +221,7 @@ const WinrockDashboard: React.FC = () => {
         return {
           id: doc.id, // local frontend ID for table rendering
           projectName: p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1),
+          clientName: p.clientName.split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' '),
           supplierName: p.supplierName.charAt(0).toUpperCase() + p.supplierName.slice(1),
           overallStatus: p.overallStatus,
           analysisStage: mapAnalysisStage(p.analysisStage as string),
@@ -480,7 +481,7 @@ const WinrockDashboard: React.FC = () => {
             <TableHeader
               onSelectAll={handleSelectAll}
               allSelected={allSelected}
-              headers={['Project', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
+              headers={['Project', 'Client', 'Supplier', 'Overall Status', 'Analysis stage', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Action']}
               isEditMode={isEditMode}
             />
             <tbody>

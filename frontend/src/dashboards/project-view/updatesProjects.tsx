@@ -4,6 +4,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project1",
     projectName: "Nestlé",
+    clientName: 'Philipp Navratil',
     supplierName: "Cargill",
     overallStatus: "On Track",
     analysisStage: "Clarifying Technical Details",
@@ -18,6 +19,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project2",
     projectName: "McCormick",
+    clientName: 'Brendan Foley',
     supplierName: "Orange",
     overallStatus: "At Risk",
     analysisStage: "Clarifying Initial Project Information",
@@ -32,6 +34,7 @@ const sampleProjects: Project[] = [
   {
     id: "Pixel",
     projectName: "Pixel",
+    clientName: 'Sundar Pichai',
     supplierName: "Alphabet",
     overallStatus: "At Risk",
     analysisStage: "GHG Assessment Analysis",
@@ -46,6 +49,7 @@ const sampleProjects: Project[] = [
   {
     id: "Microsoft",
     projectName: "Copilot",
+    clientName: 'Mustafa Suleyman',
     supplierName: "Microsoft",
     overallStatus: "Completed",
     analysisStage: "GHG Assessment Analysis",
@@ -60,6 +64,7 @@ const sampleProjects: Project[] = [
   {
     id: "CloudForce",
     projectName: "Cloudforce",
+    clientName: 'Husein Sharaf',
     supplierName: "Microsoft",
     overallStatus: "On Track",
     analysisStage: "GHG Assessment Analysis",
@@ -74,6 +79,7 @@ const sampleProjects: Project[] = [
   {
     id: "Nike",
     projectName: "Air Force 1",
+    clientName: 'Elliott Hill',
     supplierName: "Nike",
     overallStatus: "Completed",
     analysisStage: "Confirming Final Requirements",
@@ -88,6 +94,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project3",
     projectName: "Microsoft",
+    clientName: 'Satya Nadella',
     supplierName: "Kiwi",
     overallStatus: "Paused",
     analysisStage: "Confirming Final Requirements",
@@ -102,6 +109,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project4",
     projectName: "WebMD",
+    clientName: 'Robert Brisco',
     supplierName: "Apple",
     overallStatus: "Completed",
     analysisStage: "Clarifying Initial Project Information",
@@ -116,6 +124,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project5",
     projectName: "Kellogg",
+    clientName: 'Gary Pilnick',
     supplierName: "Grape",
     overallStatus: "Completed (except for risk)",
     analysisStage: "Complete, and Excluded",
@@ -130,6 +139,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project6",
     projectName: "Lululemon",
+    clientName: 'Calvin McDonald',
     supplierName: "Orange",
     overallStatus: "On Track",
     analysisStage: "Clarifying Initial Project Information",
@@ -144,6 +154,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project7",
     projectName: "Cheetos",
+    clientName: 'Richard Montañez',
     supplierName: "Orange",
     overallStatus: "On Track",
     analysisStage: "Risk & Co-benefit Assessment",
@@ -158,6 +169,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project8",
     projectName: "Cheezits",
+    clientName: 'Steve Cahillane',
     supplierName: "Orange",
     overallStatus: "Paused",
     analysisStage: "Confirming Final Requirements",
@@ -172,6 +184,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project9",
     projectName: "Cheerios",
+    clientName: 'Jeff Harmening',
     supplierName: "Orange",
     overallStatus: "Paused",
     analysisStage: "Clarifying Initial Project Information",
@@ -186,6 +199,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project10",
     projectName: "McCormick",
+    clientName: 'Brendan Foley',
     supplierName: "Orange",
     overallStatus: "Paused",
     analysisStage: "Risk & Co-benefit Assessment",
@@ -200,6 +214,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project11",
     projectName: "Tesla",
+    clientName: 'Elon Musk',
     supplierName: "Lithium Corp",
     overallStatus: "At Risk",
     analysisStage: "GHG Assessment Analysis",
@@ -214,6 +229,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project12",
     projectName: "Starbucks",
+    clientName: 'Brian Niccol',
     supplierName: "Coffee Beans Co",
     overallStatus: "On Track",
     analysisStage: "Confirming Final Requirements",
@@ -228,6 +244,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project13",
     projectName: "Nike",
+    clientName: 'Elliott Hill',
     supplierName: "Cotton Express",
     overallStatus: "Completed",
     analysisStage: "Complete, and Excluded",
@@ -242,6 +259,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project14",
     projectName: "Samsung",
+    clientName: 'Jun Young-hyun',
     supplierName: "Green Energy Ltd",
     overallStatus: "Completed (except for risk)",
     analysisStage: "Risk & Co-benefit Assessment",
@@ -256,6 +274,7 @@ const sampleProjects: Project[] = [
   {
     id: "Project15",
     projectName: "Unilever",
+    clientName: 'Fernando Fernández',
     supplierName: "Palm Oil Inc",
     overallStatus: "At Risk",
     analysisStage: "Clarifying Initial Project Information",
