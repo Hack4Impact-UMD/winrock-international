@@ -2,6 +2,7 @@
 export interface Project {
     id: string;
     projectName: string;
+    clientName: string;
     supplierName: string;
     overallStatus:
     | "On Track"

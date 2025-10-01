@@ -365,9 +365,9 @@ html {
 }
 
 .table {
-  width: 100%;
+  width: calc(100% + 6rem);
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 .table th,
