@@ -257,7 +257,7 @@ const addProject = async (projectName: string, clientName: string, supplierName:
 			overallStatus: "-",
 			projectName: projectName,
 			spendCategory: "-",
-			startDate: new Date(0),
+			startDate: new Date(),
 			supplier: "-",
 			supplierName: supplierName
 		});
