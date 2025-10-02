@@ -8,6 +8,7 @@ import {
     orderBy,
     query,
     Timestamp,
+	setDoc,
     updateDoc,
     where,
     serverTimestamp,
@@ -242,6 +243,32 @@ const updateProjectField = async (
 };
 
 /**
+ * Adds a new project.
+ */
+const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string): Promise<Result> => {
+	try {
+		await setDoc(doc(db, "projects", projectName), {
+			activityType: "-",
+			analysisStage: "-",
+			clientName: clientName,
+			geography: "-",
+			isActive: true,
+			lastUpdated: serverTimestamp(),
+			overallStatus: "-",
+			projectName: projectName,
+			spendCategory: "-",
+			startDate: new Date(0),
+			supplier: "-",
+			supplierName: supplierName
+		});
+
+		return { success: true };
+	} catch (error) {
+		return handleFirebaseError(error);
+	}
+}
+
+/**
  * Deletes a project by name.
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
@@ -260,6 +287,7 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 };
 
 export {
+	addProject,
     createProject,
     getProjectByName,
     getAllProjects,
