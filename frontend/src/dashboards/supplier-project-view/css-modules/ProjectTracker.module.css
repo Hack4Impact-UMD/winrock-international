@@ -1,0 +1,59 @@
+.container {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: start;
+	width: 300px;
+	gap: 0;
+	margin-left: 270px;
+	margin-top: 47px;
+}
+
+.lineCont {
+	position: absolute;
+	left: 0px;
+	height: 100%;
+}
+
+.lineCont img {
+	height: 60px;
+	position: absolute;
+	transform: translate(-50%, 0%);
+	left: calc(1rem + 30px);
+	margin-top: 30px;
+	margin-left: 263px;
+}
+
+.headerCont {
+	width: 100%;
+	height: calc(4rem - 27.5px);
+	padding-left: 1rem;
+	font-size: 20px;
+	font-weight: 600;
+	margin-bottom: 30px;
+}
+
+h2 {
+	font-size: 0.7rem;
+	font-weight: 600;
+}
+
+.stageCont {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: start;
+	width: 100%;
+	padding: 27.5px 1rem;
+}
+
+.stageCont img {
+	width: 20px;
+	height: 20px;
+	margin-right: 20px;
+	font-weight: 600;
+}
+
+.currentStageCont {
+	background-color: #F6F7F9;
+}
