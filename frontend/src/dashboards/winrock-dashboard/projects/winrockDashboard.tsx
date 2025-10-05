@@ -400,7 +400,7 @@ const WinrockDashboard: React.FC = () => {
             selectedTab={selectedTab}
             onTabSelect={handleTabChange}
           />
-		  <button onClick={() => addProject("new", "test", "test", "test")}>Add Project</button>
+		  <button onClick={() => addProject("Project59", "Aaron Rodgers", "Roger Goodell", "winrockhack4impact@gmail.com")}>Add Project</button>
           <button
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
             onClick={async () => {
