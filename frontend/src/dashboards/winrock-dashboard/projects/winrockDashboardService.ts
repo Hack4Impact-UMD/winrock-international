@@ -8,7 +8,6 @@ import {
     orderBy,
     query,
     Timestamp,
-	setDoc,
     updateDoc,
     where,
     serverTimestamp,
@@ -58,6 +57,7 @@ type ActivityType =
 const createProject = async (
     projectName: string,
     supplierName: string,
+	clientName: string,
     spendCategory: string,
     geography: string,
     activityType: ActivityType,
@@ -248,20 +248,20 @@ const updateProjectField = async (
  */
 const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string): Promise<Result> => {
 	try {
-		await setDoc(doc(db, "projects", projectName), {
-			activityType: "-",
-			analysisStage: "-",
-			clientName: clientName,
-			geography: "-",
-			isActive: true,
-			lastUpdated: serverTimestamp(),
-			overallStatus: "-",
-			projectName: projectName,
-			spendCategory: "-",
-			startDate: new Date(),
-			supplier: "-",
-			supplierName: supplierName
-		});
+		await createProject(
+			projectName,
+			supplierName,
+			clientName,
+			"-",
+			"-",
+			"Agriculture",
+			OverallStatus.ON_TRACK,
+			AnalysisStage.STAGE_1,
+			undefined,
+			true,
+			false
+		);
+
         await emailSupplier(projectName, supplierName, supplierEmail);
 		return { success: true };
 	} catch (error) {
