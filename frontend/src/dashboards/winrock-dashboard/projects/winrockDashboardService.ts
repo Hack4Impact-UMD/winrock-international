@@ -15,6 +15,7 @@ import {
 import { db } from "../../../firebaseConfig.js";
 import Result, { handleFirebaseError } from "../../../types/Result.js";
 import { Project } from "types/Project.ts";
+import { sendStageCompletionNotification } from "../notification-center/notificationService.js";
 
 /**
  * Represents the overall status of a project.
@@ -221,6 +222,9 @@ const updateProjectField = async (
             return { success: false, errorCode: "project-not-found" };
         }
 
+        const currentProject = docSnap.data() as Project;
+        const oldAnalysisStage = currentProject.analysisStage;
+
         if (newValue instanceof Date) {
             newValue = Timestamp.fromDate(newValue);
         }
@@ -235,6 +239,23 @@ const updateProjectField = async (
         };
 
         await updateDoc(docRef, updateData);
+
+        // Check if analysis stage changed and send notification
+        if (field === 'analysisStage' && oldAnalysisStage !== newValue) {
+            // Send notification to suppliers about stage completion
+            const notificationResult = await sendStageCompletionNotification(
+                projectName,
+                currentProject.supplierName,
+                oldAnalysisStage,
+                newValue as string
+            );
+
+            // Log notification result but don't fail the update if notification fails
+            if (!notificationResult.success) {
+                console.warn(`Failed to send stage completion notification for project ${projectName}:`, notificationResult.errorCode);
+            }
+        }
+
         return { success: true };
     } catch (error) {
         return handleFirebaseError(error);

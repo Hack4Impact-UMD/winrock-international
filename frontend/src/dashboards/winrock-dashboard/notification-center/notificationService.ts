@@ -385,6 +385,99 @@ const markNotificationAsUnread = async (userId: string, notificationId: string):
     }
 }
 
+/**
+ * Finds supplier users by company name.
+ * 
+ * @param companyName - The name of the company to find suppliers for.
+ * @returns {Promise<Result>} A promise resolving to a `Result` object:
+ *      - On success: `{ success: true, data: supplierUserIds }`
+ *      - On failure: `{ success: false, errorCode: string }`
+ */
+const findSupplierUsersByCompany = async (companyName: string): Promise<Result> => {
+    try {
+        const usersQuery = query(
+            collection(db, "users"),
+            where("role", "==", "supplier"),
+            where("company", "==", companyName)
+        );
+
+        const querySnapshot = await getDocs(usersQuery);
+        const supplierUserIds: string[] = [];
+
+        querySnapshot.forEach((doc) => {
+            supplierUserIds.push(doc.id);
+        });
+
+        return {
+            success: true,
+            data: supplierUserIds
+        };
+    } catch (error) {
+        return {
+            success: false,
+            errorCode: error instanceof FirebaseError ? error.code : "unknown"
+        };
+    }
+};
+
+/**
+ * Sends a notification when a project stage is completed.
+ * 
+ * @param projectName - The name of the project.
+ * @param supplierName - The name of the supplier company.
+ * @param completedStage - The stage that was completed.
+ * @param newStage - The new stage the project moved to (optional).
+ * @returns {Promise<Result>} A promise resolving to a `Result` object:
+ *      - On success: `{ success: true }`
+ *      - On failure: `{ success: false, errorCode: string }`
+ */
+const sendStageCompletionNotification = async (
+    projectName: string,
+    supplierName: string,
+    completedStage: string,
+    newStage?: string
+): Promise<Result> => {
+    try {
+        // Find supplier users for this company
+        const supplierResult = await findSupplierUsersByCompany(supplierName);
+        if (!supplierResult.success) {
+            return supplierResult;
+        }
+
+        const supplierUserIds = supplierResult.data as string[];
+        
+        if (supplierUserIds.length === 0) {
+            // No suppliers found for this company, but this isn't an error
+            return { success: true };
+        }
+
+        // Create the notification message
+        const stageMessage = newStage 
+            ? `The project "${projectName}" has moved from "${completedStage}" to "${newStage}".`
+            : `The project "${projectName}" has completed the "${completedStage}" stage.`;
+
+        const message = `An update has been made to your project.\n\n${stageMessage}`;
+
+        // Send notification with email
+        const notificationResult = await sendNotification(
+            supplierUserIds,
+            "stage_completion",
+            projectName,
+            message,
+            undefined, // date - will use current date
+            "unread",
+            true // shouldSendEmail
+        );
+
+        return notificationResult;
+    } catch (error) {
+        return {
+            success: false,
+            errorCode: error instanceof FirebaseError ? error.code : "unknown"
+        };
+    }
+};
+
 export {
     type Notification,
     type NotificationStatus,
@@ -396,5 +489,7 @@ export {
     countReadNotifications,
     countUnreadNotifications,
     markNotificationAsRead,
-    markNotificationAsUnread
+    markNotificationAsUnread,
+    findSupplierUsersByCompany,
+    sendStageCompletionNotification
 };
