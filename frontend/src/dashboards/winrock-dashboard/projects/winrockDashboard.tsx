@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
 import { Project } from '../../../types/Project'
+import { sendEmail } from '../../../api/apiClient.ts';
 
 
 const WinrockDashboard: React.FC = () => {
@@ -171,6 +172,23 @@ const WinrockDashboard: React.FC = () => {
     updatedFields: Partial<Record<UpdatableProjectFields, Project[UpdatableProjectFields]>>
   ) => {
     try {
+      
+      if (updatedFields.overallStatus) {
+        const currentProject = projects.find((p) => p.id === docId);
+        if (
+          currentProject &&
+          currentProject.overallStatus !== updatedFields.overallStatus
+        ) {
+          // Send email notification for status change
+          await sendEmail({
+            recipientNames: [currentProject.supplierName],
+            recipientEmails: "temp@temp.com",
+            subject: "An update has been made to your project.",
+            message: "Email Content inserted here",
+          });
+        }
+      }
+
       for (const [key, rawValue] of Object.entries(updatedFields).filter(
         ([k]) => k !== 'id' && k !== 'projectName'
       )) {
