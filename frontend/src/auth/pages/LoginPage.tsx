@@ -35,6 +35,12 @@ const LoginPage: React.FC = () => {
     }
   }
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' && email && password) {
+      handleLoginClick();
+    }
+  }
+
   return (
     <>
       <LogoHeader />
@@ -64,6 +70,7 @@ const LoginPage: React.FC = () => {
             setErrorMessage("");
             setEmail(value);
           }}
+          onKeyDown={handleKeyDown}
         />
 
         <PasswordField
@@ -75,6 +82,7 @@ const LoginPage: React.FC = () => {
             setErrorMessage("");
             setPassword(value)
           }}
+          onKeyDown={handleKeyDown}
         />
 
         <NextButton

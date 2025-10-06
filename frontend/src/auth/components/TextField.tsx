@@ -12,6 +12,7 @@ interface TextFieldProps {
     onChange: (value: string) => void;
     suggestions?: string[];
     onSuggestionClick?: (value: string) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const TextField: React.FC<TextFieldProps> = ({
@@ -21,7 +22,8 @@ const TextField: React.FC<TextFieldProps> = ({
     controlledValue,
     onChange,
     suggestions = [],
-    onSuggestionClick = () => { }
+    onSuggestionClick = () => { },
+    onKeyDown
 }) => {
     const [value, setValue] = useState(controlledValue);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -56,6 +58,7 @@ const TextField: React.FC<TextFieldProps> = ({
                 placeholder={placeholder}
                 autoComplete={autoComplete ? "on" : "off"}
                 onChange={handleChange}
+                onKeyDown={onKeyDown}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 100)} // Delay to allow click
                 onFocus={() => setShowSuggestions(true)}
             />

@@ -15,6 +15,7 @@ interface PasswordFieldProps {
     link?: string;
     controlledValue?: string;
     onChange: (value: string) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const PasswordField: React.FC<PasswordFieldProps> = ({
@@ -25,7 +26,8 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
     linkLabel,
     link,
     controlledValue,
-    onChange
+    onChange,
+    onKeyDown
 }) => {
     const [value, setValue] = useState(controlledValue);
         
@@ -53,6 +55,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
                     placeholder={placeholder}
                     autoComplete={autoComplete ? "on" : "off"}
                     onChange={(e) => handleChange(e)}
+                    onKeyDown={onKeyDown}
                 />
                 {toggleHidden &&
                     <img

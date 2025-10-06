@@ -35,6 +35,12 @@ function ForgotPasswordPage() {
     }
   }
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' && email) {
+      handleSendLink();
+    }
+  }
+
   if (linkIsSent) {
     return (
       <PasswordResetSentPage
@@ -72,6 +78,7 @@ function ForgotPasswordPage() {
             setEmail(value);
             setErrorMessage("");
           }}
+          onKeyDown={handleKeyDown}
         />
 
         <NextButton
