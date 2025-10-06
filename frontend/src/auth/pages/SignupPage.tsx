@@ -317,9 +317,9 @@ const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPasswo
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+  async function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter' && answersRef.current.email && answersRef.current.password && confirmPassword) {
-      handleCreateAccount();
+      await handleCreateAccount();
     }
   }
   

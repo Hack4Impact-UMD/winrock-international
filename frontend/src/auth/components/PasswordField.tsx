@@ -39,6 +39,10 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
         setValue(e.target.value);
         onChange(e.target.value);
     }
+
+    function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault(); // Prevent default form submission
+    }
     
     const [isHidden, setIsHidden] = useState(true);
 
@@ -47,7 +51,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
             <p className={styles.label}>
                 {label}
             </p>
-            <form className={styles.inputContainer}>
+            <form className={styles.inputContainer} onSubmit={handleFormSubmit}>
                 <input
                     className={styles.input}
                     type={isHidden ? "password" : "text"}

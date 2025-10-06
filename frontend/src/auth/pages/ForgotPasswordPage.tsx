@@ -35,9 +35,9 @@ function ForgotPasswordPage() {
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+  async function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter' && email) {
-      handleSendLink();
+      await handleSendLink();
     }
   }
 
