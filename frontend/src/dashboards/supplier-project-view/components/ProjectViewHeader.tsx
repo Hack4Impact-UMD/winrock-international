@@ -41,7 +41,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
     return (
         <div className={styles.viewContainer}>
             <div className={styles.backButtonContainer}>
-                <button onClick={() => navigate('/dashboard/admin/projects')} className={styles.backButton}>
+                <button onClick={() => navigate('/dashboard/supplier/projects')} className={styles.backButton}>
                     <img src={backArrow} alt="Back" className={styles.backArrowIcon} />
                 </button>
             </div>

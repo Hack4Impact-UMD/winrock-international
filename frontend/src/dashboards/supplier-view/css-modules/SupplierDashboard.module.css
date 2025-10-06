@@ -367,7 +367,7 @@ html {
 .table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  /* table-layout: fixed; */
 }
 
 .table th,
@@ -384,65 +384,45 @@ html {
 /* Column widths */
 .table th:first-child,
 .table td:first-child {
-  width: 4rem;
+  width: 3rem; /* Checkbox column */
   padding: 0;
   text-align: center;
   vertical-align: middle;
-  /* Checkbox column */
 }
 
 .table th:nth-child(2),
 .table td:nth-child(2) {
-  width: 11%;
-  /* Project name */
+  width: 15%; /* Project */
 }
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-  width: 11%;
-  /* Supplier */
+  width: 13%; /* Overall Status */
 }
 
 .table th:nth-child(4),
 .table td:nth-child(4) {
-  width: 10%;
-  /* Overall Status */
+  width: 15%; /* Spend Category */
 }
 
 .table th:nth-child(5),
 .table td:nth-child(5) {
-  width: 17%;
-  /* Analysis Stage */
+  width: 13%; /* Geography */
 }
 
 .table th:nth-child(6),
 .table td:nth-child(6) {
-  width: 10%;
-  /* Spend Category */
+  width: 13%; /* Last Updated */
 }
 
 .table th:nth-child(7),
 .table td:nth-child(7) {
-  width: 10%;
-  /* Geography */
+  width: 13%; /* Start Date */
 }
 
 .table th:nth-child(8),
 .table td:nth-child(8) {
-  width: 10%;
-  /* Last Updated */
-}
-
-.table th:nth-child(9),
-.table td:nth-child(9) {
-  width: 10%;
-  /* Start Date */
-}
-
-.table th:nth-child(10),
-.table td:nth-child(10) {
-  width: 8%;
-  /* Actions column */
+  width: 11%; /* Actions */
 }
 
 .searchInput:focus {
