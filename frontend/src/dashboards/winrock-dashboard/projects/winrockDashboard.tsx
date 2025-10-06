@@ -16,7 +16,7 @@ import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 import ReportsDropdown from '../components/ReportsDropdown';
 import KPICharts from '../components/KPICharts';
-import { updateProjectField, addProject } from "./winrockDashboardService";
+import { updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
@@ -400,7 +400,6 @@ const WinrockDashboard: React.FC = () => {
             selectedTab={selectedTab}
             onTabSelect={handleTabChange}
           />
-		  <button onClick={() => addProject("Project61", "test", "Roger Goodell", "winrockhack4impact@gmail.com")}>Add Project</button>
           <button
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
             onClick={async () => {
