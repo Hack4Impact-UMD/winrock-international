@@ -15,6 +15,7 @@ import {
 import { db } from "../../../firebaseConfig.js";
 import Result, { handleFirebaseError } from "../../../types/Result.js";
 import { Project } from "types/Project.ts";
+import { sendEmail } from "../../../api/apiClient.js";
 
 /**
  * Represents the overall status of a project.
@@ -57,6 +58,7 @@ const createProject = async (
     projectName: string,
     clientName: string,
     supplierName: string,
+	clientName: string,
     spendCategory: string,
     geography: string,
     activityType: ActivityType,
@@ -244,6 +246,32 @@ const updateProjectField = async (
 };
 
 /**
+ * Adds a new project.
+ */
+const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string): Promise<Result> => {
+	try {
+		await createProject(
+			projectName,
+			supplierName,
+			clientName,
+			"-",
+			"-",
+			"Agriculture",
+			OverallStatus.ON_TRACK,
+			AnalysisStage.STAGE_1,
+			undefined,
+			true,
+			false
+		);
+
+        await emailSupplier(projectName, supplierName, supplierEmail);
+		return { success: true };
+	} catch (error) {
+		return handleFirebaseError(error);
+	}
+}
+
+/**
  * Deletes a project by name.
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
@@ -261,7 +289,36 @@ const deleteProject = async (projectName: string): Promise<Result> => {
     }
 };
 
+/**
+ * Send an project invitation email to the supplier
+ */
+const emailSupplier = async (projectName: string, supplierName : string, supplierEmail : string) : Promise<Result> => {
+    try {
+        const recipient: string = `${supplierName} <${supplierEmail}>`;
+        const subject = `Invitation: Collaborate on ${projectName}`;
+        const message = 
+        [
+            `Hi ${supplierName}`,
+            '',
+            `You have been invited to collaborate on the project "${projectName}" on the Winrock Dashboard.`,
+            '',
+            'Regards,',
+            'Winrock Team'
+        ].join('\n');
+        await sendEmail({
+            recipientNames: [recipient],
+            recipientEmails: [supplierEmail],
+            subject,
+            message
+        });
+        return { success: true };
+    } catch (error) {
+        return { success: false, errorCode: (error as Error).message || 'Failed to send email' };
+    }
+};
+
 export {
+	addProject,
     createProject,
     getProjectByName,
     getAllProjects,

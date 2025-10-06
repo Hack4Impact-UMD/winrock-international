@@ -3,8 +3,8 @@ import { emailApiKey } from "./emailApiKey";
 const EMAIL_API_URL = "https://api.smtp2go.com/v3/email";
 const EMAIL_API_BATCH_LIMIT = 99; // The API has a limit of 100, subtract 1 because we need to send to the sender
 
-const sender = "Om Arya <omarya@umd.edu>"; // REPLACE THIS
-const replyRecipient = "Om Arya <omarya@umd.edu>"; // REPLACE THIS
+const sender = "Jai Patel <jpatel01@umd.edu>"; // REPLACE THIS
+const replyRecipient = "Jai Patel <jpatel01@umd.edu>"; // REPLACE THIS
 
 function isValidEmail(email: string) {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
