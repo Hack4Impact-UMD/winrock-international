@@ -55,6 +55,7 @@ type ActivityType =
  */
 const createProject = async (
     projectName: string,
+    clientName: string,
     supplierName: string,
     spendCategory: string,
     geography: string,
@@ -76,6 +77,7 @@ const createProject = async (
 
             const newProject: ProjectFirestoreWrite = {
                 projectName,
+                clientName,
                 supplierName,
                 spendCategory,
                 geography,
