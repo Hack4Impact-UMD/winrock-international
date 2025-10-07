@@ -33,7 +33,7 @@ const SupplierDashboard: React.FC = () => {
     spend: [],
   });
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<String[]>([]);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first');
