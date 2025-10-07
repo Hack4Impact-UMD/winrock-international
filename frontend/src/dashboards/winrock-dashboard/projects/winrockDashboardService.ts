@@ -56,7 +56,6 @@ type ActivityType =
  */
 const createProject = async (
     projectName: string,
-    clientName: string,
     supplierName: string,
 	clientName: string,
     spendCategory: string,
