@@ -188,19 +188,6 @@ const SupplierDashboard: React.FC = () => {
     }
   };
 
-  // Map Firestore analysisStage enum to frontend-friendly string
-  const mapAnalysisStage = (stage: string): string => {
-    switch (stage) {
-      case "Stage 1: Clarifying Initial Project Information": return "Clarifying Initial Project Information";
-      case "Stage 2: Clarifying Technical Details": return "Clarifying Technical Details";
-      case "Stage 3: GHG Assessment Analysis": return "GHG Assessment Analysis";
-      case "Stage 4: Confirming Final Requirements": return "Confirming Final Requirements";
-      case "Stage 5: Risk & Co-benefit Assessment": return "Risk & Co-benefit Assessment";
-      case "Stage 6: Complete, and Excluded": return "Complete, and Excluded";
-      default: return stage;
-    }
-  };
-
   // Firestore snapshot mapping
   useEffect(() => {
     const q = query(collection(db, "projects"), orderBy("projectName"));
@@ -347,7 +334,7 @@ const SupplierDashboard: React.FC = () => {
             className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
             onClick={() => {
               setActiveNavButton('Projects');
-              navigate('/dashboard/admin/projects');
+              navigate('/dashboard/supplier/projects');
             }}
           >
             <img src={projectsIcon} alt="Projects" />
@@ -358,7 +345,7 @@ const SupplierDashboard: React.FC = () => {
             className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
             onClick={() => {
               setActiveNavButton('Notification Center');
-              navigate('/dashboard/admin/notification-center');
+              navigate('/dashboard/supplier/notification-center');
             }}
           >
             <img src={notificationIcon} alt="Notification Center" />
@@ -369,7 +356,7 @@ const SupplierDashboard: React.FC = () => {
             className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
             onClick={() => {
               setActiveNavButton('Account Settings');
-              navigate('/dashboard/admin/account-settings');
+              navigate('/dashboard/supplier/account-settings');
             }}
           >
             <img src={accountSettingsIcon} alt="Account Settings" />

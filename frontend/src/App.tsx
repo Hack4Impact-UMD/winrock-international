@@ -19,7 +19,7 @@ import CreateNewPasswordPage from './auth/pages/CreateNewPasswordPage';
 import ProjectViewWrapper from './dashboards/project-view/projectViewWrapper';
 import SupplierDashboard from './dashboards/supplier-view/projects/supplierDashboard';
 import SupplierProjectViewWrapper from './dashboards/supplier-project-view/supplierProjectViewWrapper.tsx';
-import SupplierNotificationCenter from './dashboards/winrock-dashboard/notification-center/NotificationCenter';
+import SupplierNotificationCenter from './dashboards/supplier-view/notification-center/NotificationCenter';
 
 function App() {
   return (
