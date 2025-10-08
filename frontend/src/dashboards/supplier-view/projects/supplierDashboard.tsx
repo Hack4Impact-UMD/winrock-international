@@ -6,20 +6,19 @@ import projectsIcon from './../../../assets/projects-icon.svg';
 import notificationIcon from './../../../assets/notification-icon.svg';
 import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
 import searchIcon from "../../../assets/search-icon.svg"
-import FilterTabs from '../components/FilterTabs.js';
-import Pagination from '../components/Pagination.js';
-import TableHeader from '../components/TableHeader.js';
-import FilterWrapper from '../components/FilterWrapper.js';
-import SortWrapper from '../components/SortWrapper.js';
-import DateFilter, { DateRange } from '../components/DateFilter.js';
-import ColorText from '../components/ColorText.js';
-import TableRow from '../components/TableRow.js';
-import { updateProjectField } from "./supplierDashboardService.js";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-import { db } from "../../../firebaseConfig.js";
-import { Project } from '../../../types/Project.js'
-
+import FilterTabs from '../components/FilterTabs';
+import Pagination from '../components/Pagination';
+import TableHeader from '../components/TableHeader';
+import FilterWrapper from '../components/FilterWrapper';
+import SortWrapper from '../components/SortWrapper';
+import DateFilter, { DateRange } from '../components/DateFilter';
+import ColorText from '../components/ColorText';
+import TableRow from '../components/TableRow';
+import { updateProjectField } from "./supplierDashboardService";
+import { db } from "../../../firebaseConfig";
+import { Project } from '../../../types/Project';
 
 const SupplierDashboard: React.FC = () => {
 
@@ -121,7 +120,7 @@ const SupplierDashboard: React.FC = () => {
       .filter(p =>
         searchQuery.trim() === '' ||
         p.projectName.toLowerCase().startsWith(searchQuery.trim().toLowerCase())
-      );;
+      );
   }, [projects, viewMode, selectedTab, activeFilters, dateRange, searchQuery]);
 
   // Memoize currentProjects (paging the visibleProjects)

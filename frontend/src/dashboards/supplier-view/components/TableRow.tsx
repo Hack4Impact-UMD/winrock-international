@@ -97,7 +97,7 @@ const TableRow: React.FC<TableRowProps> = ({
       <td
         className={`${styles.cell} ${styles.projectLink}`}
         onClick={() => {
-          navigate(`/projects/${data.id}`);
+          navigate(`/dashboard/supplier/projects/${data.id}`);
           onRowClick?.();
         }}
         style={{ cursor: 'pointer', textDecoration: 'underline' }}

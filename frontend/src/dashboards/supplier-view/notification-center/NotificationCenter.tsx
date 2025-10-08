@@ -56,7 +56,7 @@ const mockNotifications = [
 
 const ITEMS_PER_PAGE = 10;
 
-const NotificationCenter: React.FC = () => {
+const SupplierNotificationCenter: React.FC = () => {
   const [tab, setTab] = useState<NotificationTab>("Unread");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
@@ -161,4 +161,4 @@ const NotificationCenter: React.FC = () => {
   );
 };
 
-export default NotificationCenter;
+export default SupplierNotificationCenter;

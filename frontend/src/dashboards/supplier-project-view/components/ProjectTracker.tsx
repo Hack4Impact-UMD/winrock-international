@@ -36,32 +36,32 @@ const ProjectTracker = (props: ProjectTrackerProps) => {
 		}
 		else {
 			if (props.initialInfoStatus === "completed" && props.technicalStatus === "completed" && props.ghgStatus === "completed" && props.finalStatus === "completed") {
-				return <img src={completed}></img>;
+				return <img src={completed} alt="Completed status icon" />;
 			}
 			else {
-				return <img src={notStarted}></img>;
+				return <img src={notStarted} alt="Not started status icon" />;
 			}
 		}
 
 		if (status === "not-started") {
-			return <img src={notStarted}></img>;
+			return <img src={notStarted} alt="Not started status icon" />;
 		}
 		else if (status === "in-progress") {
-			return <img src={inProgress}></img>;
+			return <img src={inProgress} alt="In progress status icon" />;
 		}
 		else {
-			return <img src={completed}></img>;
+			return <img src={completed} alt="Completed status icon" />;
 		}
 	}
 
 	return (
 		<div className={styles.container}>
 			<div className={styles.lineCont}>
-				<img src={dottedLine} style={{top: "calc(4rem + 20px)"}}></img>
-				<img src={dottedLine} style={{top: "calc(4rem + 95px)"}}></img>
-				<img src={dottedLine} style={{top: "calc(4rem + 170px)"}}></img>
-				<img src={dottedLine} style={{top: "calc(4rem + 245px)"}}></img>
-				<img src={dottedLine} style={{top: "calc(4rem + 320px)"}}></img>
+				<img src={dottedLine} style={{top: "calc(4rem + 20px)"}} alt="" />
+				<img src={dottedLine} style={{top: "calc(4rem + 95px)"}} alt="" />
+				<img src={dottedLine} style={{top: "calc(4rem + 170px)"}} alt="" />
+				<img src={dottedLine} style={{top: "calc(4rem + 245px)"}} alt="" />
+				<img src={dottedLine} style={{top: "calc(4rem + 320px)"}} alt="" />
 			</div>
 			<div className={styles.headerCont}>
 				Project Tracker

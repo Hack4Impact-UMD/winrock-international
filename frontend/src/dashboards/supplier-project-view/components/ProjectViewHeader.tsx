@@ -53,7 +53,8 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                     </button>
                 </div>
             </div>
-            <thead className={styles.tableHeader}>
+            <table className={styles.table}>
+              <thead className={styles.tableHeader}>
                 <tr>
                     <th className={styles.headerCell}>Overall Status</th>
                     <th className={styles.headerCell}>Spend Category</th>
@@ -62,20 +63,22 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                     <th className={styles.headerCell}>Start Date</th>
                 </tr>
             </thead>
-
-            <tr className={styles.tableRow}>
-                <td className={styles.cell}>
-                    <ColorText
-                        text={data.overallStatus}
-                        category={data.overallStatus}
-                        variant="status"
-                    />
-                </td>
-                <td className={styles.cell}>{data.spendCategory}</td>
-                <td className={styles.cell}>{data.geography}</td>
-                <td className={styles.cell}>{data.lastUpdated}</td>
-                <td className={styles.cell}>{data.startDate}</td>
-            </tr>
+              <tbody>
+                <tr className={styles.tableRow}>
+                    <td className={styles.cell}>
+                        <ColorText
+                            text={data.overallStatus}
+                            category={data.overallStatus}
+                            variant="status"
+                        />
+                    </td>
+                    <td className={styles.cell}>{data.spendCategory}</td>
+                    <td className={styles.cell}>{data.geography}</td>
+                    <td className={styles.cell}>{data.lastUpdated}</td>
+                    <td className={styles.cell}>{data.startDate}</td>
+                </tr>
+              </tbody>
+            </table>
         </div>
     );
 };
