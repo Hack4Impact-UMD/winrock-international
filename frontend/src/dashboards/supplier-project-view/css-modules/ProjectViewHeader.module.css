@@ -1,0 +1,127 @@
+.viewContainer {
+    margin-left: 280px;
+    margin-top: 5rem;
+}
+
+.titleContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5rem;
+    margin-top: 40px;
+    margin-left: 55px;
+}
+
+.projectTitle {
+    font-size: 36px;
+    font-weight: 600;
+  }
+  
+
+.btnContainer {
+    display: flex;
+    gap: 2rem;
+    margin-right: 3rem;
+}
+
+.tableHeader tr {
+    height: 3.125rem;
+    margin-left: 55px;
+    width: 70%;
+    display: table;
+    table-layout: fixed;
+}
+
+.headerCell {
+    font-weight: 600;
+    font-size: 16px;
+    text-align: left;
+    /* padding: 0.75rem 0.3125rem; */
+}
+
+.tableRow {
+    width: 70%;
+    margin-left: 55px;
+    height: 4.5rem;
+    display: table;
+    table-layout: fixed;
+}
+
+/* .cell {
+    padding: 0.75rem 0.3125rem;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: -50px;
+} */
+
+.cell {
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    white-space: normal; 
+    overflow: visible;
+    text-overflow: unset;
+    word-break: break-word;
+    margin-left: -100px;
+    
+  }
+
+.button {
+    background-color: white;
+    border: 1.29px solid var(--color-primary);
+    color: var(--color-primary);
+    height: 2.25rem;
+    width: 5.625rem;
+    border-radius: .4rem;
+    cursor: pointer;
+    font-size: 0.65rem;
+    margin-left: auto;
+    margin-top: 0.5rem;
+}
+
+.button.active {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.shareButton {
+    background-color: var(--color-primary);
+    color: white;
+    height: 2.25rem;
+    width: 5.625rem;
+    border-radius: .4rem;
+    cursor: pointer;
+    font-size: 0.65rem;
+    margin-left: auto;
+    margin-top: 0.5rem;
+}
+
+.backButtonContainer {
+	padding: 1rem 2rem;
+    margin-top: -45px;
+    margin-left: -10px;
+  }
+  
+  .backButton {
+	background: none;
+	border: none;
+	color: var(--color-primary, #007bff);
+	font-size: 1rem;
+	cursor: pointer;
+	text-decoration: underline;
+	padding: 0;
+    margin-top: -50px;
+  }
+  
+  .backButton:hover {
+	text-decoration: none;
+	color: #0056b3; 
+  }
+
+  .backArrowIcon {
+    margin-left: -10px;
+    margin-top: -50px;
+  }

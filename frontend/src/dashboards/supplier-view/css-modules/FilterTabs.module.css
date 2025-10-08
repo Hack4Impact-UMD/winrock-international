@@ -1,0 +1,27 @@
+.tabs {
+    display: flex;
+    gap: 0.125rem;
+    margin-left: 0.6875rem;
+  }
+  
+  .tab {
+    border: none;
+    background: none;
+    padding: 1.25rem;
+    color: #76797C;
+    cursor: pointer;
+    font-size: 0.875rem;
+    position: relative;
+  }
+
+  p {
+    padding-bottom: 0.9375rem;
+    font-size: 0.875rem;
+    border-bottom: 2px solid transparent;
+  }
+  
+  .activeTab {
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
+  }
+  

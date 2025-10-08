@@ -1,0 +1,548 @@
+* {
+  box-sizing: border-box;
+}
+
+.dashboardContainer {
+  display: flex;
+  min-height: 100vh;
+}
+
+.header {
+  padding: 2rem 2.5rem;
+  border-right: 1px solid #CCCCCC;
+  width: 18.75rem;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background-color: white;
+}
+
+html {
+  font-size: 85%;
+}
+
+.headerNavContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 7rem;
+  margin-left: -2.5rem;
+  margin-right: -2.5rem;
+  gap: 1rem;
+}
+
+.headerNavButton {
+  display: flex;
+  gap: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5875em;
+  align-items: center;
+  height: 3.125rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding-left: 2.5rem;
+}
+
+.headerNavButton.active {
+  background-color: #F6F7F9;
+}
+
+.headerNavButton img {
+  width: 1.25rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerNavButton:hover {
+  background-color: #F6F7F9;
+}
+
+.mainContent {
+  width: calc(100% - 18.75rem);
+  margin-left: 18.75rem;
+  padding-bottom: 5.625rem;
+}
+
+.logo {
+  height: 3.5rem;
+}
+
+/* Updated title and added titleContainer */
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3rem 1.5625rem 1.6875rem 1.5625rem;
+}
+
+.title {
+  color: black;
+  font-size: 2.25rem;
+  font-weight: 600;
+  letter-spacing: 1.80px;
+  margin: 0;
+}
+
+/* Added view mode buttons styling */
+.viewModeButtons {
+  display: flex;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  align-items: end;
+}
+
+.viewModeButton {
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.viewModeButton.active {
+  background-color: #1e5288;
+  /* Dark blue color like in the image */
+  color: white;
+}
+
+.tabsContainer {
+  display: flex;
+  padding-right: 2rem;
+}
+
+.editButton {
+  background-color: white;
+  border: 1.29px solid var(--color-primary);
+  color: var(--color-primary);
+  height: 2.25rem;
+  width: 5.625rem;
+  border-radius: .4rem;
+  cursor: pointer;
+  font-size: 0.65rem;
+  margin-left: auto;
+  margin-top: 0.5rem;
+}
+
+.editButton.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.toolbarContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 2.5rem;
+  border-top: 1px solid #CCCCCC;
+  background-color: white;
+  padding-left: 1.5rem;
+}
+
+.searchContainer {
+  height: 100%;
+  position: relative;
+  flex: 1;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  padding-left: 4rem;
+  letter-spacing: 3%;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+.searchInput::placeholder {
+  color: #C1C7CE;
+  font-weight: 400;
+  letter-spacing: 3%;
+  font-size: 1rem;
+}
+
+.filterContainer {
+  align-items: center;
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 37.5rem;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.OnTrack {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.AtRisk {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.Paused {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.Completed {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.analysisStage {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.actionButton {
+  border: none;
+  background: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.paginationControls button {
+  border: none;
+  background: none;
+  color: #374151;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.paginationControls button:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.headerDropdown {
+  width: 250px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.filterTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+.filterArrow {
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid #666;
+  border-bottom: 2px solid #666;
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+}
+
+.filterArrow.up {
+  transform: rotate(-135deg);
+}
+
+.filterSection {
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.filterSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.filterSectionHeader:hover {
+  background-color: #f5f5f5;
+}
+
+.expandIcon {
+  color: #2196f3;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.filterOptions {
+  padding: 8px 16px 16px;
+  background-color: #f9f9f9;
+}
+
+.checkboxItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.checkboxItem input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+.checkboxItem label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.statusIndicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+.filterPopup {
+  position: absolute;
+  top: 100%;
+  width: 18.75rem;
+  left: 0;
+  z-index: 100;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  background-color: white;
+  border-radius: 45x;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  /* table-layout: fixed; */
+}
+
+.table th,
+.table td {
+  padding: 0.75rem 0.3125rem;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 3%;
+  font-size: 1rem;
+}
+
+/* Column widths */
+.table th:first-child,
+.table td:first-child {
+  width: 3rem; /* Checkbox column */
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 15%; /* Project */
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 13%; /* Overall Status */
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 15%; /* Spend Category */
+}
+
+.table th:nth-child(5),
+.table td:nth-child(5) {
+  width: 13%; /* Geography */
+}
+
+.table th:nth-child(6),
+.table td:nth-child(6) {
+  width: 13%; /* Last Updated */
+}
+
+.table th:nth-child(7),
+.table td:nth-child(7) {
+  width: 13%; /* Start Date */
+}
+
+.table th:nth-child(8),
+.table td:nth-child(8) {
+  width: 11%; /* Actions */
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+
+.filterButton,
+.sortButton {
+  background-color: white;
+  width: 18.75rem;
+  color: #1E1E1E;
+  font-size: 1em;
+  letter-spacing: 3%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  height: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid #CCCCCC;
+  border-bottom: 1.5px solid #ffffff00;
+  border-top: none;
+}
+
+.sortButton {
+  border-left: none;
+}
+
+.filterButton::after,
+.sortButton::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid #666;
+  border-bottom: 1.5px solid #666;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.filterButton.active,
+.sortButton.active {
+  background-color: white;
+  border: 1.5px solid #005293;
+  border-top: none;
+  color: #005293;
+}
+
+.filterButton.active::after,
+.sortButton.active::after {
+  transform: rotate(-135deg);
+}
+
+.filterPopup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 21rem;
+  background-color: white;
+  overflow: hidden;
+  border: 1px solid #CCCCCC;
+  border-top: none;
+}
+
+/* Table container style */
+.tableContainer {
+  position: relative;
+  overflow-x: auto;
+
+}
+
+/* Error message styling */
+.error {
+  color: #dc2626;
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: #fef2f2;
+  border-radius: 0.375rem;
+}
+
+/* Popup menu styles to match Figma design */
+.popupMenu {
+  position: absolute;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 1000;
+  min-width: 200px;
+}
+
+/* Updated archive button styling to match Figma design */
+.archiveButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.archiveButton:hover {
+  background-color: #f5f5f5;
+}
+
+/* Archive icon styling */
+.archiveButton:before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%231e5288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"></path><path d="M1 3h22v5H1z"></path><path d="M10 12h4"></path></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 12px;
+}

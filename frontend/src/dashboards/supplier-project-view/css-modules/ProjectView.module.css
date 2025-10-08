@@ -1,0 +1,20 @@
+.projectViewContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mainContent {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    padding: 1rem;
+  }
+  
+  /* .leftPanel {
+    flex: 1;
+  }
+  
+  .rightPanel {
+    flex: 2;
+  } */
+   

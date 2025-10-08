@@ -1,0 +1,8 @@
+.colorText {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.325rem;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+  }
