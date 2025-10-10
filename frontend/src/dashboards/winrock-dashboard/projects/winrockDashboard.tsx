@@ -16,7 +16,7 @@ import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 import ReportsDropdown from '../components/ReportsDropdown';
 import KPICharts from '../components/KPICharts';
-import { updateProjectField } from "./winrockDashboardService";
+import { generateNewProjectSupplierToken, updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
@@ -401,6 +401,7 @@ const WinrockDashboard: React.FC = () => {
             selectedTab={selectedTab}
             onTabSelect={handleTabChange}
           />
+		  <button onClick={async () => console.log(await generateNewProjectSupplierToken("winrockhack4impact@gmail.com", "CloudForce"))}>Test</button>
           <button
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
             onClick={async () => {
