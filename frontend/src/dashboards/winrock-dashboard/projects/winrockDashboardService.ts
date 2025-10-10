@@ -1,4 +1,4 @@
-import { runTransaction, FieldValue } from "firebase/firestore";
+import { runTransaction, FieldValue, setDoc } from "firebase/firestore";
 import {
     collection,
     deleteDoc,
@@ -16,6 +16,7 @@ import { db } from "../../../firebaseConfig.js";
 import Result, { handleFirebaseError } from "../../../types/Result.js";
 import { Project } from "types/Project.ts";
 import { sendEmail } from "../../../api/apiClient.js";
+import { nanoid } from "nanoid";
 
 /**
  * Represents the overall status of a project.
@@ -270,6 +271,46 @@ const addProject = async (projectName: string, clientName: string, supplierName:
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const generateNewProjectSupplierToken = async (supplierEmail: string, projectName: string) => {
+	let token = nanoid();
+
+	let isUnique = false;
+
+	// associate token, supplier email, and project name in database
+	while (!isUnique) {
+		try {
+			// check for duplicate token (very unlikely but possible)
+			const docRef = doc(db, "newProjectSupplierTokens", token);
+			const docSnap = await getDoc(docRef);
+
+			if (docSnap.exists()) {
+				token = nanoid();
+				continue;
+			}
+			else {
+				isUnique = true;
+			}
+
+			await setDoc(docRef, {
+				projectName: projectName,
+				supplierEmail: supplierEmail,
+				token: token
+			});
+
+		} catch (error) {
+			return handleFirebaseError(error);
+		}
+	}
+	
+	return {
+		success: "true",
+		data: {
+			token: token
+		}
+	};
+}
+
 /**
  * Deletes a project by name.
  */
@@ -319,6 +360,7 @@ const emailSupplier = async (projectName: string, supplierName : string, supplie
 export {
 	addProject,
     createProject,
+	generateNewProjectSupplierToken,
     getProjectByName,
     getAllProjects,
     getProjectsWithFilters,
