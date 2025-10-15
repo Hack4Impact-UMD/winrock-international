@@ -263,8 +263,8 @@ const addProject = async (projectName: string, clientName: string, supplierName:
 			true,
 			false
 		);
-
-        await emailSupplier(projectName, supplierName, supplierEmail);
+        // Dont send email for now
+        // await emailSupplier(projectName, supplierName, supplierEmail);
 		return { success: true };
 	} catch (error) {
 		return handleFirebaseError(error);

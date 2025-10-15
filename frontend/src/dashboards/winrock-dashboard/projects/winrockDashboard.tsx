@@ -16,6 +16,7 @@ import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 import ReportsDropdown from '../components/ReportsDropdown';
 import KPICharts from '../components/KPICharts';
+import ProjectModal from '../components/ProjectModal.js';
 import { generateNewProjectSupplierToken, updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
@@ -47,6 +48,7 @@ const WinrockDashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeActionMenu, setActiveActionMenu] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
+  const [showModal, setShowModal] = useState(false);  
   const navigate = useNavigate();
 
   // These are used to control the date, i.e. save changes to the date filter calendar
@@ -401,7 +403,18 @@ const WinrockDashboard: React.FC = () => {
             selectedTab={selectedTab}
             onTabSelect={handleTabChange}
           />
-		  <button onClick={async () => console.log(await generateNewProjectSupplierToken("winrockhack4impact@gmail.com", "CloudForce"))}>Test</button>
+          {/* Add Project Button */}
+          <button
+            className={`${styles.addProjectButton}`}
+            onClick={async () => {
+              setShowModal(true);
+            }}
+          >
+            <div className={styles.addProjectContainer}>
+              <span className={styles.plusSign}>&#43;</span>
+              <span className={styles.addProjectLabel}>Add project</span>
+            </div>
+          </button>
           <button
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
             onClick={async () => {
@@ -525,6 +538,7 @@ const WinrockDashboard: React.FC = () => {
           onPageChange={setCurrentPage}
         />
 
+        {showModal && <ProjectModal onClose={() => setShowModal(false)} projects={projects} />}
       </main>
     </div>
   );
