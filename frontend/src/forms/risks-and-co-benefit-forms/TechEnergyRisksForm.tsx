@@ -134,6 +134,8 @@ function TechEnergyRisksForm() {
        ...answersRef.current,
        [field]: new FormField(value, isRequired)
     }
+    // Auto-save whenever form changes
+    saveChanges();
   }
 
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -167,12 +169,10 @@ function TechEnergyRisksForm() {
   }
 
   const saveChanges = () => {
+    // TODO: Implement save functionality
     console.log('Changes saved');
   }
 
-  const saveAndExit = () => {
-    console.log('Changes saved and exiting');
-  }
 
   if (isSubmitted) {
     return <ConfirmationPage formName={title} />
@@ -223,8 +223,6 @@ function TechEnergyRisksForm() {
             window.scroll(0, 0);
           }
         }}
-        onSaveChanges={saveChanges}
-        onSaveAndExit={saveAndExit}
         canGoBack={currentPage > 1}
         nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
       />

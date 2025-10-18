@@ -156,6 +156,8 @@ function ForestryRisksForm() {
    // Used to change the answersRef's dynamically
    function handleChange(field: keyof ForestryRisksFormData, value: string) {
       answersRef.current[field]!.value = value;
+      // Auto-save whenever form changes
+      saveChanges();
    }
 
    const [isSubmitted, setIsSubmitted] = useState(false)
@@ -189,12 +191,10 @@ function ForestryRisksForm() {
    }
 
    const saveChanges = () => {
-      console.log('Changes saved')
+      // TODO: Implement save functionality
+      console.log('Changes saved');
    }
 
-   const saveAndExit = () => {
-      console.log('Changes saved and exiting')
-   }
 
    if (isSubmitted) {
       return <ConfirmationPage formName={title} />
@@ -245,8 +245,6 @@ function ForestryRisksForm() {
                      window.scroll(0, 0)
                   }
             }}
-            onSaveChanges={saveChanges}
-            onSaveAndExit={saveAndExit}
             canGoBack={currentPage > 1}
             nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
          />

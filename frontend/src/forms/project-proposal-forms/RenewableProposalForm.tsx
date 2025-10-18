@@ -81,6 +81,8 @@ const RenewableProposalForm = () => {
             ...answersRef.current,
             [field]: new FormField(value, isRequired),
         };
+        // Auto-save whenever form changes
+        saveChanges();
     };
 
     // Handling form submission
@@ -104,6 +106,11 @@ const RenewableProposalForm = () => {
             setError("Server error. Please try again later.");
         }
     };
+
+    const saveChanges = () => {
+        // TODO: Implement save functionality
+        console.log('Changes saved');
+    }
 
     // Navigate to Confirmation Page
     if (isSubmitted) {
@@ -243,8 +250,6 @@ const RenewableProposalForm = () => {
                         setCurrentPage(currentPage - 1); // Update page when Back is clicked
                     }
                 }}
-                onSaveChanges={() => console.log("Changes saved")}
-                onSaveAndExit={() => console.log("Changes saved and exiting")}
                 canGoBack={currentPage > 1}
                 nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
             />

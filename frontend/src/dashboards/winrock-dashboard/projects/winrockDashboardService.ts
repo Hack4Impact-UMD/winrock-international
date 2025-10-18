@@ -58,7 +58,6 @@ const createProject = async (
     projectName: string,
     clientName: string,
     supplierName: string,
-	clientName: string,
     spendCategory: string,
     geography: string,
     activityType: ActivityType,
