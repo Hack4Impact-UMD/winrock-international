@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import * as firestore from "firebase/firestore";
 import { db } from "../../firebaseConfig.js";
 import FormField from "../FormField.js";
@@ -13,6 +13,7 @@ import NavigationButtons from "../components/NavigationButtons.js";
 import ConfirmationPage from "../ConfirmationPage.js";
 import GuidanceDropdownAgriculture from "../components/GuidanceDropdownAgriculture.tsx";
 import Error from "../components/Error.js";
+import FormLock from "../components/FormLock.js";
 import tableImage from '../../assets/connectiontovaluetable.png';
 import tableImage2 from '../../assets/table2.png';
 
@@ -149,7 +150,7 @@ function AgricultureProposalForm() {
     // Used to change the answersRef's fields dynamically
     function handleChange(field: keyof AgricultureProposalFormData, value: string) {
         if (locked) {
-            setShowLockedPopup(true);
+            handleLockedAction();
             return;
         }
         
@@ -164,14 +165,9 @@ function AgricultureProposalForm() {
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [error, setError] = useState('');
-    const [showLockedPopup, setShowLockedPopup] = useState(false);
 
-    // Show popup immediately when form loads if locked
-    useEffect(() => {
-        if (locked) {
-            setShowLockedPopup(true);
-        }
-    }, [locked]);
+    // Initialize form lock
+    const { handleLockedAction, LockedPopup } = FormLock({ locked });
 
     /**
      * Insert a new AgricultureProjectProposal document with the user-inputted
@@ -894,7 +890,7 @@ function AgricultureProposalForm() {
                     <NavigationButtons
                         onNext={() => {
                             if (locked) {
-                                setShowLockedPopup(true);
+                                handleLockedAction();
                                 return;
                             }
                             if (currentPage < totalPages) {
@@ -906,7 +902,7 @@ function AgricultureProposalForm() {
                         }}
                         onBack={() => {
                             if (locked) {
-                                setShowLockedPopup(true);
+                                handleLockedAction();
                                 return;
                             }
                             if (currentPage > 1) {
@@ -921,61 +917,7 @@ function AgricultureProposalForm() {
                     <Error message={error} />
 
                     {/* Locked Form Popup */}
-                    {showLockedPopup && (
-                        <div style={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            zIndex: 1000
-                        }}>
-                            <div style={{
-                                backgroundColor: 'white',
-                                padding: '30px',
-                                borderRadius: '8px',
-                                maxWidth: '500px',
-                                textAlign: 'center',
-                                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-                            }}>
-                                <h2 style={{
-                                    color: '#d32f2f',
-                                    marginBottom: '20px',
-                                    fontSize: '24px',
-                                    fontWeight: 'bold'
-                                }}>
-                                    Form Locked
-                                </h2>
-                                <p style={{
-                                    color: '#333',
-                                    marginBottom: '30px',
-                                    fontSize: '16px',
-                                    lineHeight: '1.5'
-                                }}>
-                                    This form is currently locked and cannot be edited. Please contact your administrator if you need to make changes.
-                                </p>
-                                <button
-                                    onClick={() => setShowLockedPopup(false)}
-                                    style={{
-                                        backgroundColor: '#1976d2',
-                                        color: 'white',
-                                        border: 'none',
-                                        padding: '12px 24px',
-                                        borderRadius: '4px',
-                                        fontSize: '16px',
-                                        cursor: 'pointer',
-                                        fontWeight: '500'
-                                    }}
-                                >
-                                    OK
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    {LockedPopup}
 
                 </>
             );

@@ -1,4 +1,4 @@
-import { RefObject, useRef, useState, useEffect } from 'react'
+import { RefObject, useRef, useState } from 'react'
 import * as firestore from "firebase/firestore"
 import { db } from "../../firebaseConfig.js"
 import FormField from "../FormField.js"
@@ -12,6 +12,7 @@ import RisksDropdownQuestion from '../components/questions/RisksDropdownQuestion
 import CoBenefitsDropdownQuestion from '../components/questions/CoBenefitsDropdownQuestion.js'
 import ConfirmationPage from '../ConfirmationPage.js'
 import Error from '../components/Error.js'
+import FormLock from '../components/FormLock.js'
 
 interface ForestryRisksFormData {
    // Risk Assessment
@@ -160,7 +161,7 @@ function ForestryRisksForm() {
    // Used to change the answersRef's dynamically
    function handleChange(field: keyof ForestryRisksFormData, value: string) {
       if (locked) {
-         setShowLockedPopup(true);
+         handleLockedAction();
          return;
       }
       
@@ -171,14 +172,9 @@ function ForestryRisksForm() {
 
    const [isSubmitted, setIsSubmitted] = useState(false)
    const [error, setError] = useState('')
-   const [showLockedPopup, setShowLockedPopup] = useState(false)
 
-   // Show popup immediately when form loads if locked
-   useEffect(() => {
-      if (locked) {
-         setShowLockedPopup(true);
-      }
-   }, [locked]);
+   // Initialize form lock
+   const { handleLockedAction, LockedPopup } = FormLock({ locked });
 
    /**
     * Insert a new ForestryRisksForm submission with the user-inputted
@@ -250,7 +246,7 @@ function ForestryRisksForm() {
          <NavigationButtons
             onNext={() => {
                if (locked) {
-                  setShowLockedPopup(true);
+                  handleLockedAction();
                   return;
                }
                if (currentPage < totalPages) {
@@ -262,7 +258,7 @@ function ForestryRisksForm() {
             }}
             onBack={() => {
                if (locked) {
-                  setShowLockedPopup(true);
+                  handleLockedAction();
                   return;
                }
                if (currentPage > 1) {
@@ -277,61 +273,7 @@ function ForestryRisksForm() {
          <Error message={error} />
 
          {/* Locked Form Popup */}
-         {showLockedPopup && (
-            <div style={{
-               position: 'fixed',
-               top: 0,
-               left: 0,
-               right: 0,
-               bottom: 0,
-               backgroundColor: 'rgba(0, 0, 0, 0.5)',
-               display: 'flex',
-               justifyContent: 'center',
-               alignItems: 'center',
-               zIndex: 1000
-            }}>
-               <div style={{
-                  backgroundColor: 'white',
-                  padding: '30px',
-                  borderRadius: '8px',
-                  maxWidth: '500px',
-                  textAlign: 'center',
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-               }}>
-                  <h2 style={{
-                     color: '#d32f2f',
-                     marginBottom: '20px',
-                     fontSize: '24px',
-                     fontWeight: 'bold'
-                  }}>
-                     Form Locked
-                  </h2>
-                  <p style={{
-                     color: '#333',
-                     marginBottom: '30px',
-                     fontSize: '16px',
-                     lineHeight: '1.5'
-                  }}>
-                     This form is currently locked and cannot be edited. Please contact your administrator if you need to make changes.
-                  </p>
-                  <button
-                     onClick={() => setShowLockedPopup(false)}
-                     style={{
-                        backgroundColor: '#1976d2',
-                        color: 'white',
-                        border: 'none',
-                        padding: '12px 24px',
-                        borderRadius: '4px',
-                        fontSize: '16px',
-                        cursor: 'pointer',
-                        fontWeight: '500'
-                     }}
-                  >
-                     OK
-                  </button>
-               </div>
-            </div>
-         )}
+         {LockedPopup}
       </>
    )
 }
