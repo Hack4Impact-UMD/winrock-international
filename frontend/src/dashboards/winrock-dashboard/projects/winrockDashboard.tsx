@@ -16,8 +16,9 @@ import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 import ReportsDropdown from '../components/ReportsDropdown';
 import KPICharts from '../components/KPICharts';
-import ProjectModal from '../components/ProjectModal.js';
-import { generateNewProjectSupplierToken, updateProjectField } from "./winrockDashboardService";
+import ProjectModal from '../components/ProjectModal';
+import LoginPopup from '../components/LoginPopup';
+import { getSupplierEmailByToken, updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
@@ -25,7 +26,6 @@ import { Project } from '../../../types/Project'
 
 
 const WinrockDashboard: React.FC = () => {
-
   const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilters, setActiveFilters] = useState<{
@@ -48,7 +48,9 @@ const WinrockDashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeActionMenu, setActiveActionMenu] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
-  const [showModal, setShowModal] = useState(false);  
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showLoginPopup, setShowLoginPopup] = useState<boolean>(false);
+  const [isExistingUser, setIsExistingUser] = useState<boolean>(false);
   const navigate = useNavigate();
 
   // These are used to control the date, i.e. save changes to the date filter calendar
@@ -345,6 +347,20 @@ const WinrockDashboard: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const params = new URLSearchParams(globalThis.location.search);
+      const token = params.get('t') ?? '';
+      const result = await getSupplierEmailByToken(token);
+      console.log('we are fetching data: ', Date.now());
+      if (result.success) {
+        setShowLoginPopup(true);
+        // setIsExistingUser();
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className={styles.dashboardContainer}>
       <header className={styles.header}>
@@ -537,7 +553,7 @@ const WinrockDashboard: React.FC = () => {
           itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
         />
-
+        {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
         {showModal && <ProjectModal onClose={() => setShowModal(false)} projects={projects} />}
       </main>
     </div>

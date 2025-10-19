@@ -312,6 +312,32 @@ const generateNewProjectSupplierToken = async (supplierEmail: string, projectNam
 }
 
 /**
+ * Find supplier email associated with provided email token
+ */
+const getSupplierEmailByToken = async (token : string) : Promise<Result> => {
+    try {
+        const docRef = doc(db, "newProjectSupplierTokens", token);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            return { success: false, errorCode: "token-not-found" };
+        }
+        const data = docSnap.data();
+        return { success: true, data: { supplierEmail: data.supplierEmail, projectName: data.projectName } };
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
+}
+
+/**
+ * Determine if accounts exists that is associated with supplier email 
+ */
+const checkIfSupplierAccountExists = async (supplierEmail : string) : Promise<Result> => {
+    // try {
+        // const docRec = doc(db, )
+    // }
+}
+
+/**
  * Deletes a project by name.
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
@@ -361,6 +387,7 @@ export {
 	addProject,
     createProject,
 	generateNewProjectSupplierToken,
+    getSupplierEmailByToken,
     getProjectByName,
     getAllProjects,
     getProjectsWithFilters,
