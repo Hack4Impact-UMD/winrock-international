@@ -10,7 +10,7 @@ import "../../../../auth/styles/LoginPage.css";
 import OutlookButton from "../../../../auth/components/OutlookButton";
 import Divider from "../../../../auth/components/Divider";
 import TextField from "../../../../auth/components/TextField";
-import PasswordField from "../../../../auth/components/PasswordField";
+import PasswordField from "./PasswordField";
 import BottomLink from "../../../../auth/components/BottomLink";
 import NextButton from "../../../../auth/components/NextButton";
 import ToastMessage from "../../../../auth/components/ToastMessage";
@@ -84,22 +84,16 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose, supplierToken }) => {
               setEmail(value);
             }}
           />
-          <div onClickCapture={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            setPageState("forgot_password");
-          }}>
-            <PasswordField
-              label="Password"
-              toggleHidden={true}
-              linkLabel="Forgot password?"
-              link="#"
-              onChange={(value) => {
-                setErrorMessage("");
-                setPassword(value)
-              }}
-            />
-          </div>
+          <PasswordField
+            label="Password"
+            toggleHidden={true}
+            linkLabel="Forgot password?"
+            onLinkClick={() => setPageState("forgot_password")}
+            onChange={(value) => {
+              setErrorMessage("");
+              setPassword(value)
+            }}
+          />
 
           <NextButton
             label="Login"
