@@ -17,8 +17,8 @@ import TableRow from '../components/TableRow';
 import ReportsDropdown from '../components/ReportsDropdown';
 import KPICharts from '../components/KPICharts';
 import ProjectModal from '../components/ProjectModal';
-import LoginPopup from '../components/LoginPopup';
-import { getSupplierEmailByToken, updateProjectField } from "./winrockDashboardService";
+import LoginPopup from '../components/LoginPopup/Login.js';
+import { isSupplierTokenValid, updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
@@ -36,7 +36,7 @@ const WinrockDashboard: React.FC = () => {
     spend: [],
   });
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<String[]>([]);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first');
@@ -50,7 +50,7 @@ const WinrockDashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showLoginPopup, setShowLoginPopup] = useState<boolean>(false);
-  const [isExistingUser, setIsExistingUser] = useState<boolean>(false);
+  const [supplierToken, setSupplierToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // These are used to control the date, i.e. save changes to the date filter calendar
@@ -350,16 +350,17 @@ const WinrockDashboard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const params = new URLSearchParams(globalThis.location.search);
-      const token = params.get('t') ?? '';
-      const result = await getSupplierEmailByToken(token);
-      console.log('we are fetching data: ', Date.now());
-      if (result.success) {
+      setSupplierToken(params.get('t'));
+      if (supplierToken === null) {
+        return;
+      }
+      const result = await isSupplierTokenValid(supplierToken);
+      if (result) {
         setShowLoginPopup(true);
-        // setIsExistingUser();
       }
     };
     fetchData();
-  }, []);
+  });
 
   return (
     <div className={styles.dashboardContainer}>
@@ -553,7 +554,7 @@ const WinrockDashboard: React.FC = () => {
           itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
         />
-        {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
+        {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} supplierToken={supplierToken ?? ''} />}
         {showModal && <ProjectModal onClose={() => setShowModal(false)} projects={projects} />}
       </main>
     </div>

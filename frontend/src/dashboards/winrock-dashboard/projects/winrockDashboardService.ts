@@ -314,7 +314,7 @@ const generateNewProjectSupplierToken = async (supplierEmail: string, projectNam
 /**
  * Find supplier email associated with provided email token
  */
-const getSupplierEmailByToken = async (token : string) : Promise<Result> => {
+const getSupplierDataByToken = async (token : string) : Promise<Result> => {
     try {
         const docRef = doc(db, "newProjectSupplierTokens", token);
         const docSnap = await getDoc(docRef);
@@ -329,12 +329,27 @@ const getSupplierEmailByToken = async (token : string) : Promise<Result> => {
 }
 
 /**
- * Determine if accounts exists that is associated with supplier email 
+ * Validate that the token is valid (has an email associated with it)
  */
-const checkIfSupplierAccountExists = async (supplierEmail : string) : Promise<Result> => {
-    // try {
-        // const docRec = doc(db, )
-    // }
+const isSupplierTokenValid = async (token : string) : Promise<boolean> => {
+    const res = await getSupplierDataByToken(token);
+    return res.success;
+}
+
+/**
+ * Validate that the supplier email matches the one associated with the token
+ */
+const validateSupplierEmail = async (token : string, supplierEmail : string) : Promise<boolean> => {
+    const res = await getSupplierDataByToken(token);
+    return res.success && res.data.supplierEmail === supplierEmail;
+}
+
+const getSupplierProjectNameByToken = async (token : string) : Promise<Result> => {
+    const res = await getSupplierDataByToken(token);
+    if (res.success) {
+        return { success: true, data: res.data.projectName };
+    }
+    return { success: false, errorCode: "project-name-not-found" };
 }
 
 /**
@@ -387,7 +402,9 @@ export {
 	addProject,
     createProject,
 	generateNewProjectSupplierToken,
-    getSupplierEmailByToken,
+    isSupplierTokenValid,
+    getSupplierProjectNameByToken,
+    validateSupplierEmail,
     getProjectByName,
     getAllProjects,
     getProjectsWithFilters,
