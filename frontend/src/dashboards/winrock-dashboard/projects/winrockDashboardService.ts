@@ -18,6 +18,10 @@ import { Project } from "types/Project.ts";
 import { sendEmail } from "../../../api/apiClient.js";
 import { nanoid } from "nanoid";
 
+// base url
+const BASE_URL = "http://localhost:5173/winrock-international";
+
+
 /**
  * Represents the overall status of a project.
  */
@@ -263,8 +267,17 @@ const addProject = async (projectName: string, clientName: string, supplierName:
 			true,
 			false
 		);
+
+        // token for supplier to join project
+		const tokenResult = await generateNewProjectSupplierToken(supplierEmail, projectName);
+		if (!tokenResult.success) {
+			return { success: false, errorCode: "Failed to generate supplier token" };
+		}
+
+		const token = tokenResult.data.token;
+
         // Dont send email for now
-        // await emailSupplier(projectName, supplierName, supplierEmail);
+        // await emailSupplier(projectName, supplierName, supplierEmail, token);
 		return { success: true };
 	} catch (error) {
 		return handleFirebaseError(error);
@@ -304,7 +317,7 @@ const generateNewProjectSupplierToken = async (supplierEmail: string, projectNam
 	}
 	
 	return {
-		success: "true",
+		success: true,
 		data: {
 			token: token
 		}
@@ -332,15 +345,23 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 /**
  * Send an project invitation email to the supplier
  */
-const emailSupplier = async (projectName: string, supplierName : string, supplierEmail : string) : Promise<Result> => {
+const emailSupplier = async (projectName: string, supplierName : string, supplierEmail : string, token:string) : Promise<Result> => {
     try {
+        // invite url with token
+        const inviteUrl = `${BASE_URL}/dashboard/admin/projects/${projectName}?token=${token}`;
+
         const recipient: string = `${supplierName} <${supplierEmail}>`;
         const subject = `Invitation: Collaborate on ${projectName}`;
         const message = 
         [
-            `Hi ${supplierName}`,
+            `Hi ${supplierName},`,
             '',
             `You have been invited to collaborate on the project "${projectName}" on the Winrock Dashboard.`,
+            '',
+            `Click the link below to access the project:`,
+            inviteUrl,
+            '',
+            'If you don\'t have an account yet, you\'ll be prompted to sign up or log in.',
             '',
             'Regards,',
             'Winrock Team'
