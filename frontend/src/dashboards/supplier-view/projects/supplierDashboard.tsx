@@ -232,8 +232,7 @@ const SupplierDashboard: React.FC = () => {
     // auto archives completed projects
     const autoArchiveCompleted = async () => {
       const completedProjects = projects.filter(p => 
-        (p.overallStatus === "Completed" || p.overallStatus === "Completed (except for risk)") && 
-        p.isActive === true 
+        p.overallStatus === "Completed" && p.isActive === true 
       );
 
       for (const project of completedProjects) {
