@@ -227,7 +227,29 @@ const SupplierDashboard: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
+  //automatic archiving if the project is completed
+  useEffect(() => {
+    // auto archives completed projects
+    const autoArchiveCompleted = async () => {
+      const completedProjects = projects.filter(p => 
+        (p.overallStatus === "Completed" || p.overallStatus === "Completed (except for risk)") && 
+        p.isActive === true 
+      );
 
+      for (const project of completedProjects) {
+        try {
+          await handleSaveProject(project.id, { isActive: false });
+          console.log(`Auto-archived completed project: ${project.projectName}`);
+        } catch (error) {
+          console.error(`Failed to auto-archive project ${project.projectName}:`, error);
+        }
+      }
+    };
+
+    if (projects.length > 0) {
+      autoArchiveCompleted();
+    }
+  }, [projects]);
   // per category
 
   // Handler for sort selection - just updates the state
