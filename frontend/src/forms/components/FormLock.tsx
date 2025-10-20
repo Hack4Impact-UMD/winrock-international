@@ -52,40 +52,68 @@ const FormLock = ({ locked, onLockedAction }: FormLockProps) => {
           padding: '30px',
           borderRadius: '8px',
           maxWidth: '500px',
-          textAlign: 'center',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+          textAlign: 'left',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+          position: 'relative'
         }}>
-          <h2 style={{
-            color: '#d32f2f',
-            marginBottom: '20px',
-            fontSize: '24px',
-            fontWeight: 'bold'
-          }}>
-            Form Locked
-          </h2>
-          <p style={{
-            color: '#333',
-            marginBottom: '30px',
-            fontSize: '16px',
-            lineHeight: '1.5'
-          }}>
-            This form is currently locked and cannot be edited. Please contact your administrator if you need to make changes.
-          </p>
+          {/* Close button */}
           <button
             onClick={closePopup}
             style={{
-              backgroundColor: '#1976d2',
-              color: 'white',
+              position: 'absolute',
+              top: '15px',
+              right: '15px',
+              background: 'none',
               border: 'none',
-              padding: '12px 24px',
-              borderRadius: '4px',
-              fontSize: '16px',
+              fontSize: '24px',
               cursor: 'pointer',
-              fontWeight: '500'
+              color: '#666',
+              padding: '5px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '30px',
+              height: '30px'
             }}
           >
-            OK
+            ×
           </button>
+          
+          <h2 style={{
+            color: '#000',
+            marginBottom: '15px',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            marginTop: '0'
+          }}>
+            This form is locked for editing.
+          </h2>
+          <p style={{
+            color: '#000',
+            marginBottom: '20px',
+            fontSize: '16px',
+            lineHeight: '1.5',
+            marginTop: '0'
+          }}>
+            Another user is currently making changes. Please check back later.
+          </p>
+          <div style={{ textAlign: 'right' }}>
+            <button
+              onClick={closePopup}
+              style={{
+                backgroundColor: '#005293',
+                color: 'white',
+                border: 'none',
+                padding: '10px 40px',
+                borderRadius: '4px',
+                fontSize: '14px',
+                cursor: 'pointer',
+                fontWeight: '500'
+              }}
+            >
+              Ok
+            </button>
+          </div>
         </div>
       </div>
     ) : null
