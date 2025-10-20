@@ -13,6 +13,7 @@ import NavigationButtons from "../components/NavigationButtons.js";
 import ConfirmationPage from "../ConfirmationPage.js";
 import GuidanceDropdownAgriculture from "../components/GuidanceDropdownAgriculture.tsx";
 import Error from "../components/Error.js";
+import FormLock from "../components/FormLock.js";
 import tableImage from '../../assets/connectiontovaluetable.png';
 import tableImage2 from '../../assets/table2.png';
 
@@ -89,6 +90,9 @@ interface AgricultureProposalFormData {
 
 function AgricultureProposalForm() {
     const title = "Greenhouse Gas Emissions Project Proposal Form for Project Validation"
+    
+    // TODO: Lock flag - set to true to prevent form editing
+    const locked = true;
 
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 4;
@@ -145,15 +149,25 @@ function AgricultureProposalForm() {
 
     // Used to change the answersRef's fields dynamically
     function handleChange(field: keyof AgricultureProposalFormData, value: string) {
+        if (locked) {
+            handleLockedAction();
+            return;
+        }
+        
         const isRequired = answersRef.current[field]!.isRequired;
         answersRef.current = {
             ...answersRef.current,
             [field]: new FormField(value, isRequired)
         }
+        // Auto-save whenever form changes
+        saveChanges();
     }
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [error, setError] = useState('');
+
+    // Initialize form lock
+    const { handleLockedAction, LockedPopup } = FormLock({ locked });
 
     /**
      * Insert a new AgricultureProjectProposal document with the user-inputted
@@ -182,12 +196,10 @@ function AgricultureProposalForm() {
     }
 
     const saveChanges = () => {
+        // TODO: Implement save functionality
         console.log('Changes saved');
     }
 
-    const saveAndExit = () => {
-        console.log('Changes saved and exiting');
-    }
 
     if (isSubmitted) {
         return <ConfirmationPage formName={title} />
@@ -877,6 +889,10 @@ function AgricultureProposalForm() {
             )}
                     <NavigationButtons
                         onNext={() => {
+                            if (locked) {
+                                handleLockedAction();
+                                return;
+                            }
                             if (currentPage < totalPages) {
                                 setCurrentPage(currentPage + 1);
                                 window.scroll(0, 0);
@@ -885,18 +901,23 @@ function AgricultureProposalForm() {
                             }
                         }}
                         onBack={() => {
+                            if (locked) {
+                                handleLockedAction();
+                                return;
+                            }
                             if (currentPage > 1) {
                                 setCurrentPage(currentPage - 1)
                                 window.scroll(0, 0);
                             }
                         }}
-                        onSaveChanges={saveChanges}
-                        onSaveAndExit={saveAndExit}
                         canGoBack={currentPage > 1}
                         nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
                     />
 
                     <Error message={error} />
+
+                    {/* Locked Form Popup */}
+                    {LockedPopup}
 
                 </>
             );

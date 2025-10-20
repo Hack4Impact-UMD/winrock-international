@@ -12,6 +12,7 @@ import ConfirmationPage from "../ConfirmationPage.js";
 import Error from "../components/Error.js";
 import FormField from "../FormField.tsx";
 import GuidanceDropdown from "../components/GuidanceDropdown.tsx";
+import FormLock from "../components/FormLock.js";
 import tableImage from '../../assets/table.png';
 
 interface RenewableProposalFormData {
@@ -41,6 +42,10 @@ interface RenewableProposalFormData {
 
 const RenewableProposalForm = () => {
     const title = "Renewable Energy Project Proposal Form";
+    
+    // TODO: Lock flag - set to true to prevent form editing
+    const locked = true;
+    
     const [currentPage, setCurrentPage] = useState(1); // Start on Page 1
     const totalPages = 2; // Set totalPages to 2 since we have two pages
 
@@ -74,13 +79,23 @@ const RenewableProposalForm = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [error, setError] = useState('');
 
+    // Initialize form lock
+    const { handleLockedAction, LockedPopup } = FormLock({ locked });
+
     // Helper functions
     const handleChange = (field: keyof RenewableProposalFormData, value: string) => {
+        if (locked) {
+            handleLockedAction();
+            return;
+        }
+        
         const isRequired = answersRef.current[field]!.isRequired;
         answersRef.current = {
             ...answersRef.current,
             [field]: new FormField(value, isRequired),
         };
+        // Auto-save whenever form changes
+        saveChanges();
     };
 
     // Handling form submission
@@ -104,6 +119,11 @@ const RenewableProposalForm = () => {
             setError("Server error. Please try again later.");
         }
     };
+
+    const saveChanges = () => {
+        // TODO: Implement save functionality
+        console.log('Changes saved');
+    }
 
     // Navigate to Confirmation Page
     if (isSubmitted) {
@@ -232,6 +252,10 @@ const RenewableProposalForm = () => {
             {/* Navigation Buttons */}
             <NavigationButtons
                 onNext={() => {
+                    if (locked) {
+                        handleLockedAction();
+                        return;
+                    }
                     if (currentPage < totalPages) {
                         setCurrentPage(currentPage + 1); // Update page when Next is clicked
                     } else {
@@ -239,17 +263,22 @@ const RenewableProposalForm = () => {
                     }
                 }}
                 onBack={() => {
+                    if (locked) {
+                        handleLockedAction();
+                        return;
+                    }
                     if (currentPage > 1) {
                         setCurrentPage(currentPage - 1); // Update page when Back is clicked
                     }
                 }}
-                onSaveChanges={() => console.log("Changes saved")}
-                onSaveAndExit={() => console.log("Changes saved and exiting")}
                 canGoBack={currentPage > 1}
                 nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
             />
 
             <Error message={error} />
+
+            {/* Locked Form Popup */}
+            {LockedPopup}
         </>
     );
 };

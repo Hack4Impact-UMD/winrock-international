@@ -12,6 +12,7 @@ import RisksDropdownQuestion from '../components/questions/RisksDropdownQuestion
 import CoBenefitsDropdownQuestion from '../components/questions/CoBenefitsDropdownQuestion.js'
 import ConfirmationPage from '../ConfirmationPage.js'
 import Error from '../components/Error.js'
+import FormLock from '../components/FormLock.js'
 
 interface ForestryRisksFormData {
    // Risk Assessment
@@ -93,6 +94,10 @@ interface ForestryRisksFormData {
 
 function ForestryRisksForm() {
    const title = "Forestry Risks and Co-Benefit Form"
+   
+   // TODO: Lock flag - set to true to prevent form editing
+   const locked = true;
+   
    const [currentPage, setCurrentPage] = useState(1)
    const totalPages = 3
 
@@ -155,11 +160,21 @@ function ForestryRisksForm() {
 
    // Used to change the answersRef's dynamically
    function handleChange(field: keyof ForestryRisksFormData, value: string) {
+      if (locked) {
+         handleLockedAction();
+         return;
+      }
+      
       answersRef.current[field]!.value = value;
+      // Auto-save whenever form changes
+      saveChanges();
    }
 
    const [isSubmitted, setIsSubmitted] = useState(false)
    const [error, setError] = useState('')
+
+   // Initialize form lock
+   const { handleLockedAction, LockedPopup } = FormLock({ locked });
 
    /**
     * Insert a new ForestryRisksForm submission with the user-inputted
@@ -189,12 +204,10 @@ function ForestryRisksForm() {
    }
 
    const saveChanges = () => {
-      console.log('Changes saved')
+      // TODO: Implement save functionality
+      console.log('Changes saved');
    }
 
-   const saveAndExit = () => {
-      console.log('Changes saved and exiting')
-   }
 
    if (isSubmitted) {
       return <ConfirmationPage formName={title} />
@@ -232,6 +245,10 @@ function ForestryRisksForm() {
 
          <NavigationButtons
             onNext={() => {
+               if (locked) {
+                  handleLockedAction();
+                  return;
+               }
                if (currentPage < totalPages) {
                    setCurrentPage(currentPage + 1)
                    window.scroll(0, 0)
@@ -240,18 +257,23 @@ function ForestryRisksForm() {
                }
             }}
             onBack={() => {
-                  if (currentPage > 1) {
+               if (locked) {
+                  handleLockedAction();
+                  return;
+               }
+               if (currentPage > 1) {
                      setCurrentPage(currentPage - 1)
                      window.scroll(0, 0)
                   }
             }}
-            onSaveChanges={saveChanges}
-            onSaveAndExit={saveAndExit}
             canGoBack={currentPage > 1}
             nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
          />
 
          <Error message={error} />
+
+         {/* Locked Form Popup */}
+         {LockedPopup}
       </>
    )
 }

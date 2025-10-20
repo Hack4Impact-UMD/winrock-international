@@ -12,6 +12,7 @@ import RisksDropdownQuestion from '../components/questions/RisksDropdownQuestion
 import CoBenefitsDropdownQuestion from '../components/questions/CoBenefitsDropdownQuestion.js';
 import ConfirmationPage from '../ConfirmationPage.js';
 import Error from '../components/Error.js';
+import FormLock from '../components/FormLock.js';
 
 interface TechEnergyRisksFormData {
   // Risk Assessment
@@ -81,6 +82,10 @@ interface TechEnergyRisksFormData {
 
 function TechEnergyRisksForm() {
   const title = "Tech & Energy Risks and Co-Benefit Form";
+  
+  // TODO: Lock flag - set to true to prevent form editing
+  const locked = false;
+  
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3;
 
@@ -129,15 +134,25 @@ function TechEnergyRisksForm() {
 
   // Used to change the answersRef's fields dynamically
   function handleChange(field: keyof TechEnergyRisksFormData, value: string) {
+    if (locked) {
+      handleLockedAction();
+      return;
+    }
+    
     const isRequired = answersRef.current[field]!.isRequired;
     answersRef.current = {
        ...answersRef.current,
        [field]: new FormField(value, isRequired)
     }
+    // Auto-save whenever form changes
+    saveChanges();
   }
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState('');
+
+  // Initialize form lock
+  const { handleLockedAction, LockedPopup } = FormLock({ locked });
 
   /**
   * Insert a new TechEnergyRisksForm submission with the user-inputted
@@ -167,12 +182,10 @@ function TechEnergyRisksForm() {
   }
 
   const saveChanges = () => {
+    // TODO: Implement save functionality
     console.log('Changes saved');
   }
 
-  const saveAndExit = () => {
-    console.log('Changes saved and exiting');
-  }
 
   if (isSubmitted) {
     return <ConfirmationPage formName={title} />
@@ -210,6 +223,10 @@ function TechEnergyRisksForm() {
 
       <NavigationButtons
         onNext={() => {
+            if (locked) {
+              handleLockedAction();
+              return;
+            }
             if (currentPage < totalPages) {
               setCurrentPage(currentPage + 1);
               window.scroll(0, 0);
@@ -218,18 +235,23 @@ function TechEnergyRisksForm() {
             }
         }}
         onBack={() => {
+          if (locked) {
+            handleLockedAction();
+            return;
+          }
           if (currentPage > 1) {
             setCurrentPage(currentPage - 1)
             window.scroll(0, 0);
           }
         }}
-        onSaveChanges={saveChanges}
-        onSaveAndExit={saveAndExit}
         canGoBack={currentPage > 1}
         nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
       />
 
       <Error message={error} />
+
+      {/* Locked Form Popup */}
+      {LockedPopup}
     </>
   )
 }
