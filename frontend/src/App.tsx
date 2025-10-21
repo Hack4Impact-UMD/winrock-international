@@ -17,6 +17,9 @@ import NotificationCenter from './dashboards/winrock-dashboard/notification-cent
 import PasswordChangedPage from './auth/pages/PasswordChangedPage';
 import CreateNewPasswordPage from './auth/pages/CreateNewPasswordPage';
 import ProjectViewWrapper from './dashboards/project-view/projectViewWrapper';
+import SupplierDashboard from './dashboards/supplier-view/projects/supplierDashboard';
+import SupplierProjectViewWrapper from './dashboards/supplier-project-view/supplierProjectViewWrapper.tsx';
+import SupplierNotificationCenter from './dashboards/supplier-view/notification-center/NotificationCenter';
 
 function App() {
   return (
@@ -39,6 +42,11 @@ function App() {
         <Route path="/dashboard/admin/projects/:projectId" element={<ProjectViewWrapper />} />
         <Route path="/dashboard/admin/notification-center" element={<NotificationCenter />} />
         <Route path="/dashboard/admin/account-settings" element={<WinrockDashboard />} />
+
+        <Route path="/dashboard/supplier/projects" element={<SupplierDashboard />} />
+        <Route path="/dashboard/supplier/projects/:projectId" element={<SupplierProjectViewWrapper />} />
+        <Route path="/dashboard/supplier/notification-center" element={<SupplierNotificationCenter />} />
+        <Route path="/dashboard/supplier/account-settings" element={<SupplierDashboard />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

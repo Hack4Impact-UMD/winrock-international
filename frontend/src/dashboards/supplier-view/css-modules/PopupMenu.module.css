@@ -1,0 +1,23 @@
+.popupMenu {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 8px;
+    z-index: 9999;
+    min-width: 120px;
+}
+
+.popupMenu button {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 8px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.popupMenu button:hover {
+    background-color: #f0f0f0;
+}
