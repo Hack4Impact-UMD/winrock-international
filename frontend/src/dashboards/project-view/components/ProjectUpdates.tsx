@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from '../css-modules/ProjectUpdates.module.css';
+import { sendMessage } from '../../chat/chatUtils';
 
 interface UpdateItem {
   id: string;
@@ -189,7 +190,7 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
                 <div className={styles.buttonWrapper}>
                   <button
                     className={styles.sendButton}
-                    onClick={() => handleRequestInfo(update.id)}
+                    onClick={() => sendMessage("Project1", "1", "2")}
                   >
                     Send
                   </button>
