@@ -190,7 +190,7 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
                 <div className={styles.buttonWrapper}>
                   <button
                     className={styles.sendButton}
-                    onClick={() => sendMessage("Project1", "1", "2")}
+                    onClick={() => sendMessage("Project1", "1", "winrock", "2")}
                   >
                     Send
                   </button>
