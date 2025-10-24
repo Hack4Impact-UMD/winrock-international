@@ -434,7 +434,7 @@ const SupplierDashboard: React.FC = () => {
               setIsEditMode(!isEditMode);
             }}
           >
-            {isEditMode ? 'Done' : 'Edit'}
+            {isEditMode ? 'Done' : 'Edit Projects'}
           </button>
 
         </div>
