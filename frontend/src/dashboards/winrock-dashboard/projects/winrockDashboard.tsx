@@ -95,11 +95,11 @@ const WinrockDashboard: React.FC = () => {
 
   const itemsPerPage = 10;
 
-  const filteredProjects = selectedTab === 'All Projects'
-    ? projects
-    : projects.filter(project => project.activityType === selectedTab);
-  const totalItems = filteredProjects.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  // const filteredProjects = selectedTab === 'All Projects'
+  //   ? projects
+  //   : projects.filter(project => project.activityType === selectedTab);
+  // const totalItems = filteredProjects.length;
+  // const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const filteredAndVisibleProjects = useMemo(() => {
     return projects
@@ -125,6 +125,9 @@ const WinrockDashboard: React.FC = () => {
         p.projectName.toLowerCase().startsWith(searchQuery.trim().toLowerCase())
       );;
   }, [projects, viewMode, selectedTab, activeFilters, dateRange, searchQuery]);
+
+  const totalItems = filteredAndVisibleProjects.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Memoize currentProjects (paging the visibleProjects)
   const currentProjects = useMemo(() => {
@@ -245,7 +248,28 @@ const WinrockDashboard: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-
+  //automatic archiving if the project is completed
+  useEffect(() => {
+    // auto archives completed projects
+    const autoArchiveCompleted = async () => {
+      const completedProjects = projects.filter(p => 
+        p.overallStatus === "Completed" && p.isActive === true 
+      );
+  
+      for (const project of completedProjects) {
+        try {
+          await handleSaveProject(project.id, { isActive: false });
+          console.log(`Auto-archived completed project: ${project.projectName}`);
+        } catch (error) {
+          console.error(`Failed to auto-archive project ${project.projectName}:`, error);
+        }
+      }
+    };
+  
+    if (projects.length > 0) {
+      autoArchiveCompleted();
+    }
+  }, [projects]);
   // per category
 
   // Handler for sort selection - just updates the state
@@ -386,8 +410,8 @@ const WinrockDashboard: React.FC = () => {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Projects</h1>
           <div className={styles.viewModeButtons}>
-            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => setViewMode('active')}>Active</button>
-            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => setViewMode('archived')}>Archived</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => {setViewMode('active'); setCurrentPage(1); }}>Active</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => {setViewMode('archived'); setCurrentPage(1);}}>Archived</button>
           </div>
         </div>
 
