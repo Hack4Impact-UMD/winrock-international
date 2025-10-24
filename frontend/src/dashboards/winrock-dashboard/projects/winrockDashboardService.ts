@@ -324,6 +324,47 @@ const generateNewProjectSupplierToken = async (supplierEmail: string, projectNam
 }
 
 /**
+ * Find supplier email associated with provided email token
+ */
+const getSupplierDataByToken = async (token : string) : Promise<Result> => {
+    try {
+        const docRef = doc(db, "newProjectSupplierTokens", token);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            return { success: false, errorCode: "token-not-found" };
+        }
+        const data = docSnap.data();
+        return { success: true, data: { supplierEmail: data.supplierEmail, projectName: data.projectName } };
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
+}
+
+/**
+ * Validate that the token is valid (has an email associated with it)
+ */
+const isSupplierTokenValid = async (token : string) : Promise<boolean> => {
+    const res = await getSupplierDataByToken(token);
+    return res.success;
+}
+
+/**
+ * Validate that the supplier email matches the one associated with the token
+ */
+const validateSupplierEmail = async (token : string, supplierEmail : string) : Promise<boolean> => {
+    const res = await getSupplierDataByToken(token);
+    return res.success && res.data.supplierEmail === supplierEmail;
+}
+
+const getSupplierProjectNameByToken = async (token : string) : Promise<Result> => {
+    const res = await getSupplierDataByToken(token);
+    if (res.success) {
+        return { success: true, data: res.data.projectName };
+    }
+    return { success: false, errorCode: "project-name-not-found" };
+}
+
+/**
  * Deletes a project by name.
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
@@ -381,6 +422,9 @@ export {
 	addProject,
     createProject,
 	generateNewProjectSupplierToken,
+    isSupplierTokenValid,
+    getSupplierProjectNameByToken,
+    validateSupplierEmail,
     getProjectByName,
     getAllProjects,
     getProjectsWithFilters,

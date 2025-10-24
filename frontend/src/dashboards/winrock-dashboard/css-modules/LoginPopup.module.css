@@ -1,0 +1,62 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3); 
+    backdrop-filter: blur(6px); 
+    display: flex;
+    align-items: center;    
+    justify-content: center;
+    z-index: 999;
+}
+
+.popupContainer {
+    background: white;
+    border-radius: 16px;
+}
+
+.title {
+    width: 20rem;
+    height: 3.3rem;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    letter-spacing: 0.03rem;
+    font-size: 1.5rem;
+    color: #005293;
+    margin: 1.5rem 0;
+}
+
+/* IMPORTED */
+
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-light);
+    border-radius: 16px;
+}
+
+.loginFormContainer {
+    position: relative;
+    display: grid;
+    grid-template-rows: 8rem 6rem 8rem 5rem 1.7rem 3.7rem 4rem 0.5rem; 
+    min-height: 35rem;
+    width: 27rem;
+    align-items: end;
+    justify-content: center;
+    background: white;
+    border-radius: 16px;
+}
+
+.signInWithEmail {
+    text-align: center;
+    font-size: .95rem;
+    color: var(--color-primary);
+    letter-spacing: .48px;
+}
