@@ -435,7 +435,7 @@ const WinrockDashboard: React.FC = () => {
               setIsEditMode(!isEditMode);
             }}
           >
-            {isEditMode ? 'Done' : 'Edit'}
+            {isEditMode ? 'Done' : 'Edit Projects'}
           </button>
 
         </div>
