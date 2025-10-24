@@ -1,0 +1,194 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3); 
+    backdrop-filter: blur(6px); 
+    display: flex;
+    align-items: center;    
+    justify-content: center;
+    z-index: 999;
+}
+
+.modalContainer {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    padding: 1rem 3rem;
+    z-index: 99;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    min-width: 20vw;
+    margin-bottom: 2rem;
+}
+
+.modalTitle {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 3rem;
+    cursor: pointer;
+    color: #005293;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* two equal columns */
+    gap: 2rem 7rem;
+    margin-bottom: 4rem;
+}
+
+.projectContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.randomButton {
+    cursor: pointer;
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.5rem;
+    fill: #444444;
+}
+
+.fieldContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.fieldContainer .note {
+    margin-bottom: 0.5rem
+}
+
+.fieldLabel {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.1rem;
+}
+
+.fieldInput {
+    padding: 0.5rem;
+    background: #f7f8f9;
+    border: 1px solid #dadada;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    width: 21rem;
+    height: 3.15rem;
+}
+
+.fieldInput[type="email"]:invalid {
+    border-color: red;
+}
+
+.fieldInput:focus {
+    outline: none;
+    background-color: white;
+    border-color: #005293;
+}
+
+.createContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.createButton {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: white;
+    background-color: #005293;
+    transition: background-color 0.3s ease;
+    height: 3rem;
+    width: 18.75rem;
+}
+
+.createButton:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.note {
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+    color: #757575;
+}
+
+/* Dropdown */
+
+.dropdownWrapper {
+    position: relative;
+    width: fit-content;
+    display: inline-block;
+}
+
+.dropdownMenu {
+    position: absolute;
+    transform: translateY(4rem);
+    width: 21rem;
+    max-height: 5rem;
+    overflow-y: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdownItem {
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover {
+    background-color: #f0f6ff;
+}
+
+.dropdownArrow {
+    background: none;
+    border: none;
+    fill: #005293;
+    cursor: pointer;
+    margin-left: auto;
+    position: absolute;
+    display: inline;
+    transform: translateY(2.3rem) translateX(18.75rem) rotate(180deg);
+    transition: transform 0.3s ease;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.dropdownArrow.flipped {
+    transform: translateY(2.3rem) translateX(18.75rem) rotate(0deg);
+}
