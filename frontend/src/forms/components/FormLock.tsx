@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface FormLockProps {
   locked: boolean;
+  projectId?: string;
   onLockedAction?: () => void;
 }
 
-const FormLock = ({ locked, onLockedAction }: FormLockProps) => {
+const FormLock = ({ locked, projectId, onLockedAction }: FormLockProps) => {
   const [showLockedPopup, setShowLockedPopup] = useState(false);
+  const navigate = useNavigate();
 
   // Show popup immediately when form loads if locked
   useEffect(() => {
@@ -28,6 +31,16 @@ const FormLock = ({ locked, onLockedAction }: FormLockProps) => {
   // Close popup
   const closePopup = () => {
     setShowLockedPopup(false);
+  };
+
+  // Handle back to project navigation
+  const handleBackToProject = () => {
+    if (projectId) {
+      navigate(`/dashboard/admin/projects/${projectId}`);
+    } else {
+      // Fallback if no projectId is provided
+      navigate('/dashboard/admin/projects');
+    }
   };
 
   return {
@@ -99,19 +112,19 @@ const FormLock = ({ locked, onLockedAction }: FormLockProps) => {
           </p>
           <div style={{ textAlign: 'right' }}>
             <button
-              onClick={closePopup}
+              onClick={handleBackToProject}
               style={{
                 backgroundColor: '#005293',
                 color: 'white',
                 border: 'none',
-                padding: '10px 40px',
+                padding: '10px 20px',
                 borderRadius: '4px',
                 fontSize: '14px',
                 cursor: 'pointer',
                 fontWeight: '500'
               }}
             >
-              Ok
+              Back to Project
             </button>
           </div>
         </div>

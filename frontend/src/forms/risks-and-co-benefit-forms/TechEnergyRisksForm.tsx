@@ -152,7 +152,10 @@ function TechEnergyRisksForm() {
   const [error, setError] = useState('');
 
   // Initialize form lock
-  const { handleLockedAction, LockedPopup } = FormLock({ locked });
+  const { handleLockedAction, LockedPopup } = FormLock({ 
+      locked, 
+      projectId: "Project2" // TODO: Replace with actual projectId from form data or props
+  });
 
   /**
   * Insert a new TechEnergyRisksForm submission with the user-inputted
