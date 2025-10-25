@@ -7,9 +7,10 @@ interface RisksDropdownQuestionProps {
     controlledValues: string[];
 	onSelect: (selected: string) => void;
     onChange: (value: string) => void;
+    disabled?: boolean;
 }
 
-function RisksDropdownQuestion({ label, options=['Yes', 'No', 'Not Applicable'], controlledValues, onSelect, onChange }: RisksDropdownQuestionProps) {
+function RisksDropdownQuestion({ label, options=['Yes', 'No', 'Not Applicable'], controlledValues, onSelect, onChange, disabled = false }: RisksDropdownQuestionProps) {
     return (
         <>
             <DropdownQuestion
@@ -18,12 +19,14 @@ function RisksDropdownQuestion({ label, options=['Yes', 'No', 'Not Applicable'],
                 controlledValue={controlledValues[0]}
                 onSelect={onSelect}
                 required={true}
+                disabled={disabled}
             />
             <TextQuestion
                 label="Please provide details including if a mitigation plan is in place. If not applicable, please justify."
                 controlledValue={controlledValues[1]}
                 onChange={onChange}
                 required={true}
+                disabled={disabled}
             />
         </>
     )

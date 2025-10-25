@@ -146,13 +146,13 @@ const RenewableProposalForm = () => {
                     <ProgressBar currentPage={currentPage} totalPages={totalPages} pageLabels={["Proposal Form (Page 1)", "Proposal Form (Page 2)"]} />
                     <GuidanceDropdown />
                     <SectionHeader label="Generic Information" />
-                    <TextQuestion label="1. Parent Vendor Name" controlledValue={answersRef.current.parentVendorName.value} onChange={(value) => handleChange("parentVendorName", value)} required={true} size="small" />
-                    <TextQuestion label="2. Vendor Code" controlledValue={answersRef.current.vendorCode.value} onChange={(value) => handleChange("vendorCode", value)} size="small" />
-                    <TextQuestion label="3. Vendor Site SAP Name" controlledValue={answersRef.current.vendorSiteSAPName.value} onChange={(value) => handleChange("vendorSiteSAPName", value)} size="small" />
-                    <DropdownQuestion label="4. Spend Category" options={["Ingredients", "Commodities", "Packaging", "Logistics"]} controlledValue={answersRef.current.spendCategory.value} onSelect={(value: string) => handleChange("spendCategory", value)} required={true} />
-                    <DropdownQuestion label="5. Level 2 Category" options={["Amino Acids", "Cereals & Grains", "Flexibles", "Warehousing Services"]} controlledValue={answersRef.current.level2Category.value} onSelect={(value: string) => handleChange("level2Category", value)} required={true} />
-                    <TextQuestion label="6. Vendor Site Country" controlledValue={answersRef.current.vendorSiteCountry.value} onChange={(value) => handleChange("vendorSiteCountry", value)} required={true} size="small" />
-                    <TextQuestion label="7. Vendor Site City" controlledValue={answersRef.current.vendorSiteCity.value} onChange={(value) => handleChange("vendorSiteCity", value)} required={true} size="small" />
+                    <TextQuestion label="1. Parent Vendor Name" controlledValue={answersRef.current.parentVendorName.value} onChange={(value) => handleChange("parentVendorName", value)} required={true} size="small" disabled={locked} />
+                    <TextQuestion label="2. Vendor Code" controlledValue={answersRef.current.vendorCode.value} onChange={(value) => handleChange("vendorCode", value)} size="small" disabled={locked} />
+                    <TextQuestion label="3. Vendor Site SAP Name" controlledValue={answersRef.current.vendorSiteSAPName.value} onChange={(value) => handleChange("vendorSiteSAPName", value)} size="small" disabled={locked} />
+                    <DropdownQuestion label="4. Spend Category" options={["Ingredients", "Commodities", "Packaging", "Logistics"]} controlledValue={answersRef.current.spendCategory.value} onSelect={(value: string) => handleChange("spendCategory", value)} required={true} disabled={locked} />
+                    <DropdownQuestion label="5. Level 2 Category" options={["Amino Acids", "Cereals & Grains", "Flexibles", "Warehousing Services"]} controlledValue={answersRef.current.level2Category.value} onSelect={(value: string) => handleChange("level2Category", value)} required={true} disabled={locked} />
+                    <TextQuestion label="6. Vendor Site Country" controlledValue={answersRef.current.vendorSiteCountry.value} onChange={(value) => handleChange("vendorSiteCountry", value)} required={true} size="small" disabled={locked} />
+                    <TextQuestion label="7. Vendor Site City" controlledValue={answersRef.current.vendorSiteCity.value} onChange={(value) => handleChange("vendorSiteCity", value)} required={true} size="small" disabled={locked} />
 
 
                     <DropdownQuestion
@@ -161,6 +161,7 @@ const RenewableProposalForm = () => {
                         controlledValue={answersRef.current.projectType.value}
                         onSelect={(value) => handleChange("projectType", value)}
                         required={true}
+                        disabled={locked}
                     />
 
                     <TextQuestion
@@ -168,6 +169,7 @@ const RenewableProposalForm = () => {
                         controlledValue={answersRef.current.projectDescription.value}
                         onChange={(value) => handleChange("projectDescription", value)}
                         required={true}
+                        disabled={locked}
                         size="small"
                     />
 
@@ -176,6 +178,7 @@ const RenewableProposalForm = () => {
                         controlledValue={answersRef.current.projectImplementationYear.value}
                         onChange={(value) => handleChange("projectImplementationYear", value)}
                         required={true}
+                        disabled={locked}
                         size="small"
                     />
 
@@ -185,6 +188,7 @@ const RenewableProposalForm = () => {
                         controlledValue={answersRef.current.impactEvidence.value}
                         onSelect={(value) => handleChange("impactEvidence", value)}
                         required={true}
+                        disabled={locked}
                     />
 
                     <TextQuestion
@@ -192,6 +196,7 @@ const RenewableProposalForm = () => {
                         controlledValue={answersRef.current.impactEvidence.value}
                         onChange={(value) => handleChange("impactEvidence", value)}
                         size="small"
+                        disabled={locked}
                     />
 
                     <TextQuestion
@@ -199,27 +204,28 @@ const RenewableProposalForm = () => {
                         controlledValue={answersRef.current.volumeDelivered.value}
                         onChange={(value) => handleChange("volumeDelivered", value)}
                         required={true}
+                        disabled={locked}
                         size="small"
                     />
 
                     {/* Energy Consumption Sections */}
                     <SectionHeader label="Energy Consumption: Before Intervention" />
-                    <DropdownQuestion label="12. Source of Energy" options={["Coal", "Natural Gas", "Electricity Grid"]} controlledValue={answersRef.current.beforeSourceOfEnergy.value} onSelect={(value) => handleChange("beforeSourceOfEnergy", value)} required={true} />
-                    <TextQuestion label="13. Energy Consumption (KWh/year) - Before Intervention" controlledValue={answersRef.current.beforeEnergyConsumption.value} onChange={(value) => handleChange("beforeEnergyConsumption", value)} required={true} size="small" />
-                    <TextQuestion label="14. Emission Factor of Energy (kgCO2/KWh) - Before Intervention" controlledValue={answersRef.current.beforeEmissionFactor.value} onChange={(value) => handleChange("beforeEmissionFactor", value)} size="small" />
+                    <DropdownQuestion label="12. Source of Energy" options={["Coal", "Natural Gas", "Electricity Grid"]} controlledValue={answersRef.current.beforeSourceOfEnergy.value} onSelect={(value) => handleChange("beforeSourceOfEnergy", value)} required={true} disabled={locked} />
+                    <TextQuestion label="13. Energy Consumption (KWh/year) - Before Intervention" controlledValue={answersRef.current.beforeEnergyConsumption.value} onChange={(value) => handleChange("beforeEnergyConsumption", value)} required={true} size="small" disabled={locked} />
+                    <TextQuestion label="14. Emission Factor of Energy (kgCO2/KWh) - Before Intervention" controlledValue={answersRef.current.beforeEmissionFactor.value} onChange={(value) => handleChange("beforeEmissionFactor", value)} size="small" disabled={locked} />
 
                     <SectionHeader label="Energy Consumption: After Intervention is Completed" />
-                    <DropdownQuestion label="15. Source of Energy" options={["Biogas/Green Gas", "Solar", "Renewable Electricity Certificate"]} controlledValue={answersRef.current.afterSourceOfEnergy.value} onSelect={(value) => handleChange("afterSourceOfEnergy", value)} />
-                    <TextQuestion label="16. Energy Consumption (KWh/year) - After Intervention" controlledValue={answersRef.current.afterEnergyConsumption.value} onChange={(value) => handleChange("afterEnergyConsumption", value)} size="small" />
-                    <TextQuestion label="17. Emission Factor of Energy (kgCO2/KWh) - After Intervention" controlledValue={answersRef.current.afterEmissionFactor.value} onChange={(value) => handleChange("afterEmissionFactor", value)} size="small" />
+                    <DropdownQuestion label="15. Source of Energy" options={["Biogas/Green Gas", "Solar", "Renewable Electricity Certificate"]} controlledValue={answersRef.current.afterSourceOfEnergy.value} onSelect={(value) => handleChange("afterSourceOfEnergy", value)} disabled={locked} />
+                    <TextQuestion label="16. Energy Consumption (KWh/year) - After Intervention" controlledValue={answersRef.current.afterEnergyConsumption.value} onChange={(value) => handleChange("afterEnergyConsumption", value)} size="small" disabled={locked} />
+                    <TextQuestion label="17. Emission Factor of Energy (kgCO2/KWh) - After Intervention" controlledValue={answersRef.current.afterEmissionFactor.value} onChange={(value) => handleChange("afterEmissionFactor", value)} size="small" disabled={locked} />
 
                     {/* New Questions for Page 1 */}
                     <SectionHeader label="Comments/ Remarks" />
-                    <TextQuestion label="18. Source of Emission Factor" controlledValue={answersRef.current.sourceEmissionFactor.value} onChange={(value) => handleChange("sourceEmissionFactor", value)} required={true} size="small" />
+                    <TextQuestion label="18. Source of Emission Factor" controlledValue={answersRef.current.sourceEmissionFactor.value} onChange={(value) => handleChange("sourceEmissionFactor", value)} required={true} size="small" disabled={locked} />
                     <SectionHeader label="Impact" />
-                    <DropdownQuestion label="19. Source of Energy" options={["Coal", "Natural Gas", "Electricity Grid"]} controlledValue={answersRef.current.sourceEnergy.value} onSelect={(value) => handleChange("sourceEnergy", value)} required={true} />
-                    <TextQuestion label="20. Impact Reduction On GHG EmissionAfter Intervention" controlledValue={answersRef.current.impactReduction.value} onChange={(value) => handleChange("impactReduction", value)} required={true} size="small" />
-                    <TextQuestion label="21. Impact Timing" controlledValue={answersRef.current.impactTiming.value} onChange={(value) => handleChange("impactTiming", value)} size="small" />
+                    <DropdownQuestion label="19. Source of Energy" options={["Coal", "Natural Gas", "Electricity Grid"]} controlledValue={answersRef.current.sourceEnergy.value} onSelect={(value) => handleChange("sourceEnergy", value)} required={true} disabled={locked} />
+                    <TextQuestion label="20. Impact Reduction On GHG EmissionAfter Intervention" controlledValue={answersRef.current.impactReduction.value} onChange={(value) => handleChange("impactReduction", value)} required={true} size="small" disabled={locked} />
+                    <TextQuestion label="21. Impact Timing" controlledValue={answersRef.current.impactTiming.value} onChange={(value) => handleChange("impactTiming", value)} size="small" disabled={locked} />
 
                 </div>
             ) : (
@@ -255,27 +261,26 @@ const RenewableProposalForm = () => {
             {/* Navigation Buttons */}
             <NavigationButtons
                 onNext={() => {
-                    if (locked) {
-                        handleLockedAction();
-                        return;
-                    }
                     if (currentPage < totalPages) {
                         setCurrentPage(currentPage + 1); // Update page when Next is clicked
                     } else {
+                        // Only check for lock when trying to submit
+                        if (locked) {
+                            handleLockedAction();
+                            return;
+                        }
                         handleSubmit();
                     }
                 }}
                 onBack={() => {
-                    if (locked) {
-                        handleLockedAction();
-                        return;
-                    }
                     if (currentPage > 1) {
                         setCurrentPage(currentPage - 1); // Update page when Back is clicked
                     }
                 }}
                 canGoBack={currentPage > 1}
                 nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
+                disableSubmit={locked}
+                isLastPage={currentPage === totalPages}
             />
 
             <Error message={error} />
