@@ -1,7 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import ProjectView from "./projectView";
-import sampleProjects from "./updatesProjects";
-import sampleUpdates from "./updatesSamples";
 import { db } from '../../firebaseConfig';
 import { useState, useEffect } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -41,6 +39,7 @@ const ProjectViewWrapper = () => {
           setProject(projectData);
 
           const updatesQuery = query(
+            collection(db, "updates"),
             where('projectId', '==', projectData.id)
           );
 
