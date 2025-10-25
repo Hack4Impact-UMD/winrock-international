@@ -1,4 +1,4 @@
-import { collection, serverTimestamp, addDoc } from "firebase/firestore";
+import { collection, serverTimestamp, addDoc, getDocs, query, where, orderBy, Timestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Result, { handleFirebaseError } from "../../types/Result"
 
@@ -8,8 +8,8 @@ export interface Message {
 	projectId: string;
 	senderId: string;
 	senderRole: SenderRole;
-	text: string;
-	timestamp: Date;
+	message: string;
+	timestamp: Timestamp;
 }
 
 export const sendMessage = async (projectId: string, senderId: string, senderRole: SenderRole, message: string): Promise<Result> => {
@@ -26,6 +26,24 @@ export const sendMessage = async (projectId: string, senderId: string, senderRol
 		return { success: true };
 	}
 	catch (e) {
+		return handleFirebaseError(e);
+	}
+}
+
+export const getMessages = async (projectId: string): Promise<Result> => {
+	try {
+		const q = query(
+			collection(db, "projectMessages"), 
+			where("projectId", "==", projectId), 
+		);
+		const querySnapshot = await getDocs(q);
+		if (querySnapshot.empty) {
+			return { success: true, data: [] };
+		}
+		const messages : Message[] = querySnapshot.docs.map(d => d.data() as Message);
+		messages.sort((a,b) => (a.timestamp.seconds + a.timestamp.nanoseconds / 1e9) - (b.timestamp.seconds + b.timestamp.nanoseconds / 1e9));
+		return { success: true, data : messages };
+	} catch (e) {
 		return handleFirebaseError(e);
 	}
 }

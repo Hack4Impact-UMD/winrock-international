@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../css-modules/ProjectUpdates.module.css';
+import { sendMessage, getMessages, Message, SenderRole } from '../../chat/chatUtils';
+import { useParams } from 'react-router-dom';
 
 interface UpdateItem {
   id: string;
@@ -18,8 +20,8 @@ interface ProjectUpdatesProps {
 
 const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
   const [requestTexts, setRequestTexts] = useState<Record<string, string>>({});
-  const [updateMessages, setUpdateMessages] = useState<Record<string, { sender: 'user' | 'supplier' | 'client'; text: string }[]>>({});
-  const [selectedCounterparties, setSelectedCounterparties] = useState<Record<string, "supplier" | "client">>({});
+  const [updateMessages, setUpdateMessages] = useState<Record<string, { sender: SenderRole; text: string }[]>>({});
+  const [selectedCounterparties, setSelectedCounterparties] = useState<Record<string, 'supplier' | 'winrock'>>({});
   const parseRelativeTimestamp = (timestamp: string): number => {
     const regex = /(\d+)\s+(minute|hour|day|week|month|year)s?\s+ago/;
     const match = timestamp.match(regex);
@@ -43,7 +45,7 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
   };
 
 
-  const generateCounterpartyReply = (userMessage: string, counterpartyType: "supplier" | "client"): string => {
+  const generateCounterpartyReply = (userMessage: string, counterpartyType: 'supplier' | 'winrock'): string => {
     userMessage = userMessage.toLowerCase(); //Dummy just for passing build
     const supplierReplies = [
       "Thanks for the update!",
@@ -53,7 +55,7 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
       "Let me check with my team.",
     ];
 
-    const clientReplies = [
+    const winrockReplies = [
       "Thanks for sending this over.",
       "Can you send more details?",
       "Looks good!",
@@ -61,20 +63,23 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
       "Appreciate the update!",
     ];
 
-    const replies = counterpartyType === "client" ? clientReplies : supplierReplies;
+    const replies = counterpartyType === "winrock" ? winrockReplies : supplierReplies;
     return replies[Math.floor(Math.random() * replies.length)];
   };
 
 
 
-  const handleRequestInfo = (updateId: string) => {
+  const handleRequestInfo = async (updateId: string) => {
     const text = requestTexts[updateId];
     if (text && text.trim() !== '') {
-      const counterparty = selectedCounterparties[updateId] || 'supplier'; // Default to supplier if not selected
+      const sender = 'supplier';
+      const counterparty = 'winrock';
+
+      await sendMessage(projectId, "1", sender, text.trim());
 
       setUpdateMessages(prev => ({
         ...prev,
-        [updateId]: [...(prev[updateId] || []), { sender: 'user', text }],
+        [updateId]: [...(prev[updateId] || []), { sender, text: text.trim() }],
       }));
 
       setRequestTexts(prev => ({
@@ -82,12 +87,14 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
         [updateId]: '',
       }));
 
-      setTimeout(() => {
-        setUpdateMessages(prev => ({
-          ...prev,
-          [updateId]: [...(prev[updateId] || []), { sender: counterparty, text: generateCounterpartyReply(text, counterparty) }],
-        }));
-      }, 1500);
+      // simulate delay
+      await new Promise(r => setTimeout(r, 1500));
+
+      await sendMessage(projectId, "1", counterparty, generateCounterpartyReply(text, counterparty));
+      setUpdateMessages(prev => ({
+        ...prev,
+        [updateId]: [...(prev[updateId] || []), { sender: counterparty, text: generateCounterpartyReply(text, counterparty) }],
+      }));
     }
   };
 
@@ -105,6 +112,30 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
   const sortedUpdates = [...updates].sort(
     (a, b) => parseRelativeTimestamp(b.timestamp) - parseRelativeTimestamp(a.timestamp)
   );
+
+  const params = useParams<{ projectId?: string }>();
+  const projectId = params.projectId ?? updates[0]?.projectId ?? '';
+  if (projectId === '') {
+    console.error('Project ID could not be retrieved');
+  }
+
+  useEffect(() => {
+    const loadProjectMessages = async () => {
+      if (!projectId) return;
+      const result = await getMessages(projectId);
+      const messages: Message[] = result.success && result.data ? result.data : [];
+      const groupedMessages: Record<string, { sender: SenderRole; text: string }[]> = {};
+      const updateId = updates[0].id;
+      for (const msg of messages) {
+        if (!groupedMessages[updateId]) {
+          groupedMessages[updateId] = [];
+        }
+        groupedMessages[updateId].push({ sender: msg.senderRole, text: msg.message });
+      }
+      setUpdateMessages(groupedMessages);
+    }
+    loadProjectMessages();
+  }, [projectId, updates]);
 
 
   return (
@@ -152,7 +183,7 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
                     onChange={(e) =>
                       setSelectedCounterparties(prev => ({
                         ...prev,
-                        [update.id]: e.target.value as "supplier" | "client",
+                        [update.id]: e.target.value as "winrock",
                       }))
                     }
                     className={styles.selectDropdown}
@@ -166,10 +197,10 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
                   {messages.map((msg, idx) => (
                     <div
                       key={idx}
-                      className={`${styles.messageItem} ${msg.sender === 'user' ? styles.userMessage : styles.supplierMessage}`}
+                      className={`${styles.messageItem} ${msg.sender === 'supplier' ? styles.userMessage : styles.winrockMessage}`}
                     >
                       <div className={styles.senderLabel}>
-                        {msg.sender === 'user' ? 'You' : (msg.sender === 'supplier' ? 'Supplier' : 'Client')}
+                        {msg.sender === 'supplier' ? 'Supplier (John Doe)' : 'Winrock (Mary Smith)'}
                       </div>
 
                       <div className={styles.messageText}>
