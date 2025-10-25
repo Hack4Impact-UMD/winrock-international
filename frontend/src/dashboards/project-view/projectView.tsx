@@ -17,6 +17,7 @@ interface ProjectViewProps {
 }
 
 const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
+  console.log('Project:', project);
   const [showAccessManager, setShowAccessManager] = useState(false);
   console.log(onBack) // to avoid unused variable warning
   return (

@@ -7,7 +7,7 @@ import sampleUpdates from "./updatesSamples";
 const SupplierProjectViewWrapper = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
-
+  console.log(projectId);
   const project = sampleProjects.find(p => p.id === projectId);
   const updates = sampleUpdates.filter(u => u.projectId === projectId);
 
