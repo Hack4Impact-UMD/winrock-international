@@ -90,10 +90,12 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
       // simulate delay
       await new Promise(r => setTimeout(r, 1500));
 
-      await sendMessage(projectId, "1", counterparty, generateCounterpartyReply(text, counterparty));
+      const generatedMessage = generateCounterpartyReply(text, counterparty);
+
+      await sendMessage(projectId, "1", counterparty, generatedMessage);
       setUpdateMessages(prev => ({
         ...prev,
-        [updateId]: [...(prev[updateId] || []), { sender: counterparty, text: generateCounterpartyReply(text, counterparty) }],
+        [updateId]: [...(prev[updateId] || []), { sender: counterparty, text: generatedMessage }],
       }));
     }
   };
@@ -124,15 +126,13 @@ const ProjectUpdates: React.FC<ProjectUpdatesProps> = ({ updates }) => {
       if (!projectId) return;
       const result = await getMessages(projectId);
       const messages: Message[] = result.success && result.data ? result.data : [];
-      const groupedMessages: Record<string, { sender: SenderRole; text: string }[]> = {};
+      messages.sort((a,b) => (a.timestamp.seconds + a.timestamp.nanoseconds / 1e9) - (b.timestamp.seconds + b.timestamp.nanoseconds / 1e9));
       const updateId = updates[0].id;
-      for (const msg of messages) {
-        if (!groupedMessages[updateId]) {
-          groupedMessages[updateId] = [];
-        }
-        groupedMessages[updateId].push({ sender: msg.senderRole, text: msg.message });
-      }
-      setUpdateMessages(groupedMessages);
+      const formattedMessages = messages.map(msg => ({ sender: msg.senderRole, text: msg.message }));
+      setUpdateMessages(prev => ({
+        ...prev,
+        [updateId]: formattedMessages,
+      }));
     }
     loadProjectMessages();
   }, [projectId, updates]);

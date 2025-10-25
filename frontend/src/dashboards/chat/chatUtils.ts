@@ -1,4 +1,4 @@
-import { collection, serverTimestamp, addDoc, getDocs, query, where, orderBy, Timestamp } from "firebase/firestore";
+import { collection, serverTimestamp, addDoc, getDocs, query, where, orderBy, Timestamp, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Result, { handleFirebaseError } from "../../types/Result"
 
@@ -41,7 +41,7 @@ export const getMessages = async (projectId: string): Promise<Result> => {
 			return { success: true, data: [] };
 		}
 		const messages : Message[] = querySnapshot.docs.map(d => d.data() as Message);
-		messages.sort((a,b) => (a.timestamp.seconds + a.timestamp.nanoseconds / 1e9) - (b.timestamp.seconds + b.timestamp.nanoseconds / 1e9));
+		messages.sort((a,b) => a.timestamp.seconds - b.timestamp.seconds);
 		return { success: true, data : messages };
 	} catch (e) {
 		return handleFirebaseError(e);
