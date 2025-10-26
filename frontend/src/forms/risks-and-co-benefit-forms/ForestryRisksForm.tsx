@@ -95,9 +95,6 @@ interface ForestryRisksFormData {
 function ForestryRisksForm() {
    const title = "Forestry Risks and Co-Benefit Form"
    
-   // TODO: Lock flag - set to true to prevent form editing
-   const locked = true;
-   
    const [currentPage, setCurrentPage] = useState(1)
    const totalPages = 3
 
@@ -160,7 +157,7 @@ function ForestryRisksForm() {
 
    // Used to change the answersRef's dynamically
    function handleChange(field: keyof ForestryRisksFormData, value: string) {
-      if (locked) {
+      if (isLocked) {
          handleLockedAction();
          return;
       }
@@ -174,9 +171,9 @@ function ForestryRisksForm() {
    const [error, setError] = useState('')
 
    // Initialize form lock
-   const { handleLockedAction, LockedPopup } = FormLock({ 
-       locked, 
-       projectId: "Project2" // TODO: Replace with actual projectId from form data or props
+   const projectId = "Project2"; // TODO: Replace with actual projectId from form data or props
+   const { handleLockedAction, LockedPopup, isLocked, isLoading } = FormLock({ 
+       projectId
    });
 
    /**

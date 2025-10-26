@@ -232,6 +232,7 @@ const WinrockDashboard: React.FC = () => {
           activityType: p.activityType, // ← ADD THIS LINE
           isActive: p.isActive,
           isPinned: p.isPinned,
+          isLocked: p.isLocked || false,
         } as Project;
       });
 

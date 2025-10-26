@@ -1,26 +1,89 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { checkProjectLock, lockProject, unlockProject } from '../../dashboards/winrock-dashboard/projects/winrockDashboardService';
 
 interface FormLockProps {
-  locked: boolean;
-  projectId?: string;
+  projectId: string;
   onLockedAction?: () => void;
+  onUnlock?: () => void;
 }
 
-const FormLock = ({ locked, projectId, onLockedAction }: FormLockProps) => {
+const FormLock = ({ projectId, onLockedAction, onUnlock }: FormLockProps) => {
   const [showLockedPopup, setShowLockedPopup] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Show popup immediately when form loads if locked
+  // Check project lock status and attempt to lock if not locked
   useEffect(() => {
-    if (locked) {
-      setShowLockedPopup(true);
-    }
-  }, [locked]);
+    const checkAndLockProject = async () => {
+      if (!projectId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        
+        // First check if project is already locked
+        const lockCheckResult = await checkProjectLock(projectId);
+        
+        if (!lockCheckResult.success) {
+          console.error('Failed to check project lock status:', lockCheckResult.errorCode);
+          setIsLoading(false);
+          return;
+        }
+
+        const { isLocked: projectIsLocked } = lockCheckResult.data as { isLocked: boolean };
+        
+        if (projectIsLocked) {
+          // Project is already locked, show popup
+          setIsLocked(true);
+          setShowLockedPopup(true);
+          setIsLoading(false);
+          return;
+        }
+
+        // Project is not locked, try to lock it
+        const lockResult = await lockProject(projectId);
+        
+        if (!lockResult.success) {
+          if (lockResult.errorCode === 'project-already-locked') {
+            // Another user locked it between our check and lock attempt
+            setIsLocked(true);
+            setShowLockedPopup(true);
+          } else {
+            console.error('Failed to lock project:', lockResult.errorCode);
+          }
+        } else {
+          // Successfully locked the project
+          setIsLocked(false);
+          if (onUnlock) {
+            onUnlock();
+          }
+        }
+      } catch (error) {
+        console.error('Error in project locking logic:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAndLockProject();
+
+    // Cleanup function to unlock project when component unmounts
+    return () => {
+      if (projectId && !isLocked) {
+        unlockProject(projectId).catch(error => {
+          console.error('Failed to unlock project on cleanup:', error);
+        });
+      }
+    };
+  }, [projectId, onUnlock]);
 
   // Handle locked actions (field changes, navigation, etc.)
   const handleLockedAction = () => {
-    if (locked) {
+    if (isLocked) {
       setShowLockedPopup(true);
       if (onLockedAction) {
         onLockedAction();
@@ -47,6 +110,8 @@ const FormLock = ({ locked, projectId, onLockedAction }: FormLockProps) => {
     showLockedPopup,
     handleLockedAction,
     closePopup,
+    isLocked,
+    isLoading,
     LockedPopup: showLockedPopup ? (
       <div style={{
         position: 'fixed',

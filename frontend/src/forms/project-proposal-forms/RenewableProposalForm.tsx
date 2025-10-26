@@ -43,9 +43,6 @@ interface RenewableProposalFormData {
 const RenewableProposalForm = () => {
     const title = "Renewable Energy Project Proposal Form";
     
-    // TODO: Lock flag - set to true to prevent form editing
-    const locked = true;
-    
     const [currentPage, setCurrentPage] = useState(1); // Start on Page 1
     const totalPages = 2; // Set totalPages to 2 since we have two pages
 
@@ -79,15 +76,15 @@ const RenewableProposalForm = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [error, setError] = useState('');
 
-    // Initialize form lock
-    const { handleLockedAction, LockedPopup } = FormLock({ 
-        locked, 
-        projectId: "Project2" // TODO: Replace with actual projectId from form data or props
+    // Initialize form lock - using projectId from URL params or default
+    const projectId = "Project2"; // TODO: Replace with actual projectId from form data or props
+    const { handleLockedAction, LockedPopup, isLocked, isLoading } = FormLock({ 
+        projectId
     });
 
     // Helper functions
     const handleChange = (field: keyof RenewableProposalFormData, value: string) => {
-        if (locked) {
+        if (isLocked) {
             handleLockedAction();
             return;
         }
