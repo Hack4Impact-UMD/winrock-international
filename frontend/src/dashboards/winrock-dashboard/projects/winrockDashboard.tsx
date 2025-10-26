@@ -56,7 +56,7 @@ const WinrockDashboard: React.FC = () => {
   // These are used to control the date, i.e. save changes to the date filter calendar
   const [dateRange, setDateRange] = useState<DateRange>({
     startDate: null,
-    endDate: new Date()
+    endDate: new Date('2099-12-31') //changed this to be a date in the future (would not show else)
   });
 
   const handleActionClick = (id: string | null) => {
@@ -171,7 +171,7 @@ const WinrockDashboard: React.FC = () => {
   };
 
   // Define which fields can be updated (exclude projectName and id)
-  type UpdatableProjectFields = Exclude<keyof Project, 'projectName' | 'id'>;
+  type UpdatableProjectFields = Exclude<keyof Project, 'id'>;
 
   const handleSaveProject = async (
     docId: string,
@@ -179,7 +179,7 @@ const WinrockDashboard: React.FC = () => {
   ) => {
     try {
       for (const [key, rawValue] of Object.entries(updatedFields).filter(
-        ([k]) => k !== 'id' && k !== 'projectName'
+        ([k]) => k !== 'id'
       )) {
         const field = key as UpdatableProjectFields;
         let value: any = rawValue;
@@ -191,7 +191,6 @@ const WinrockDashboard: React.FC = () => {
 
         await updateProjectField(docId, field, value);
       }
-      console.log(`Project ${docId} updated successfully.`);
     } catch (error) {
       console.error(`Failed to update project ${docId}:`, error);
     }
@@ -210,10 +209,13 @@ const WinrockDashboard: React.FC = () => {
     }
   };
 
+
   // Firestore snapshot mapping
   useEffect(() => {
     const q = query(collection(db, "projects"), orderBy("projectName"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      console.log("Firebase snapshot received, doc count:", snapshot.docs.length);
+
       const projectsData: Project[] = snapshot.docs.map((doc) => {
         const p = doc.data() as Project;
 
@@ -236,7 +238,7 @@ const WinrockDashboard: React.FC = () => {
           geography: p.geography,
           lastUpdated: parseDate(p.lastUpdated),
           startDate: parseDate(p.startDate),
-          activityType: p.activityType, // ← ADD THIS LINE
+          activityType: p.activityType,
           isActive: p.isActive,
           isPinned: p.isPinned,
         } as Project;
@@ -257,10 +259,10 @@ const WinrockDashboard: React.FC = () => {
   useEffect(() => {
     // auto archives completed projects
     const autoArchiveCompleted = async () => {
-      const completedProjects = projects.filter(p => 
-        p.overallStatus === "Completed" && p.isActive === true 
+      const completedProjects = projects.filter(p =>
+        p.overallStatus === "Completed" && p.isActive === true
       );
-  
+
       for (const project of completedProjects) {
         try {
           await handleSaveProject(project.id, { isActive: false });
@@ -270,7 +272,7 @@ const WinrockDashboard: React.FC = () => {
         }
       }
     };
-  
+
     if (projects.length > 0) {
       autoArchiveCompleted();
     }
@@ -430,8 +432,8 @@ const WinrockDashboard: React.FC = () => {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Projects</h1>
           <div className={styles.viewModeButtons}>
-            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => {setViewMode('active'); setCurrentPage(1); }}>Active</button>
-            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => {setViewMode('archived'); setCurrentPage(1);}}>Archived</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => { setViewMode('active'); setCurrentPage(1); }}>Active</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => { setViewMode('archived'); setCurrentPage(1); }}>Archived</button>
           </div>
         </div>
 
@@ -460,7 +462,6 @@ const WinrockDashboard: React.FC = () => {
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
             onClick={async () => {
               if (isEditMode) {
-                // ✅ Save changes before exiting edit mode
                 for (const edited of editableProjects) {
                   const original = projects.find(p => p.id === edited.id);
                   if (!original) continue;
@@ -473,7 +474,6 @@ const WinrockDashboard: React.FC = () => {
                       (updatedFields as any)[key] = (edited as any)[key];
                     }
                   }
-
                   // Save only if there are changes
                   if (Object.keys(updatedFields).length > 0) {
                     await handleSaveProject(edited.id, updatedFields);
@@ -549,6 +549,17 @@ const WinrockDashboard: React.FC = () => {
                   isEditMode={isEditMode}
                   onSave={(updatedFields) => {
                     if (isEditMode) {
+                      if (updatedFields.projectName) {
+                        const duplicateExists = projects.some(p =>
+                          p.projectName.toLowerCase() === updatedFields.projectName!.toLowerCase() &&
+                          p.id !== project.id
+                        );
+
+                        if (duplicateExists) {
+                          alert("A project with this name already exists. Please choose a different name.");
+                          return;
+                        }
+                      }
                       setEditableProjects(prev =>
                         prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
                       );
@@ -560,7 +571,7 @@ const WinrockDashboard: React.FC = () => {
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                   onRowClick={() => {
-                    navigate(`/dashboard/admin/projects/${project.id}`, { state: { project } });
+                    navigate(`/dashboard/admin/projects/${project.projectName}`, { state: { project } });
                   }}
                 />
               ))}

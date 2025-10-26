@@ -61,6 +61,7 @@ type ActivityType =
  */
 const createProject = async (
     projectName: string,
+    clientName: string,
     supplierName: string,
     spendCategory: string,
     geography: string,
@@ -72,11 +73,16 @@ const createProject = async (
     isPinned: boolean = false
 ): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
+        //const docRef = doc(db, "projects", projectName);
+        const docRef = doc(collection(db, "projects"));
 
         await runTransaction(db, async (tx) => {
-            const snap = await tx.get(docRef);
-            if (snap.exists()) {
+            //need to check if the project name already exists
+            const projectsRef = collection(db, "projects");
+            const nameQuery = query(projectsRef, where("projectName", "==", projectName));
+            const existingProjects = await getDocs(nameQuery);
+
+            if (!existingProjects.empty) {
                 throw new Error("project-name-already-exists");
             }
 
@@ -95,12 +101,11 @@ const createProject = async (
                 id: docRef.id,
                 activityType,
             };
-
             tx.set(docRef, newProject);
         });
-
         return { success: true };
     } catch (error) {
+        console.error("Error creating project:", error);
         return handleFirebaseError(error);
     }
 };
@@ -117,13 +122,13 @@ function mapDocToProject(d: any): Project {
  */
 const getProjectByName = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName)); 
+        const querySnapshot = await getDocs(q); 
+        if (querySnapshot.empty) { 
             return { success: false, errorCode: "project-not-found" };
         }
 
-        const projectData = mapDocToProject(docSnap.data());
+        const projectData = mapDocToProject(querySnapshot.docs[0].data());
         return {
             success: true,
             data: projectData,
@@ -217,16 +222,12 @@ const getProjectsWithFilters = async (
  * Updates a single field of a project.
  */
 const updateProjectField = async (
-    projectName: string,
-    field: Exclude<keyof Project, 'id' | 'projectName'>, // lastUpdated stays auto
+    projectId: string,
+    field: Exclude<keyof Project, 'id'>, // lastUpdated stays auto
     newValue: any
 ): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
-            return { success: false, errorCode: "project-not-found" };
-        }
+        const docRef = doc(db, "projects", projectId);
 
         if (newValue instanceof Date) {
             newValue = Timestamp.fromDate(newValue);
@@ -369,11 +370,13 @@ const getSupplierProjectNameByToken = async (token : string) : Promise<Result> =
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName)); 
+        const querySnapshot = await getDocs(q); 
+        if (querySnapshot.empty) { 
             return { success: false, errorCode: "project-not-found" };
         }
+
+        const docRef = querySnapshot.docs[0].ref;
 
         await deleteDoc(docRef);
         return { success: true };

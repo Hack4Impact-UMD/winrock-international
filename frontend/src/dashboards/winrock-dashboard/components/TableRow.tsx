@@ -75,6 +75,7 @@ const TableRow: React.FC<TableRowProps> = ({
 }) => {
   // --- Local State for Editable Fields ---
   const [localClientName, setLocalClientName] = useState(data.clientName);
+  const [localProjectName, setLocalProjectName] = useState(data.projectName);
   const [localSupplierName, setLocalSupplierName] = useState(data.supplierName);
   const [localOverallStatus, setLocalOverallStatus] = useState<StatusType>(data.overallStatus);
   const [localAnalysisStage, setLocalAnalysisStage] = useState<AnalysisStageType>(data.analysisStage);
@@ -86,6 +87,7 @@ const TableRow: React.FC<TableRowProps> = ({
   // Refresh local states when `data` changes
   useEffect(() => {
     setLocalClientName(data.clientName);
+    setLocalProjectName(data.projectName);
     setLocalSupplierName(data.supplierName);
     setLocalOverallStatus(data.overallStatus);
     setLocalAnalysisStage(data.analysisStage);
@@ -119,16 +121,26 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         </div>
       </td>
-      {/* Project Name - Not Editable */}
-      <td
-        className={`${styles.cell} ${styles.projectLink}`}
+      {/* Project Name - NOW EDITABLE */}
+      <td className={`${styles.cell} ${!isEditMode ? styles.projectLink : ''}`}
         onClick={() => {
-          navigate(`/projects/${data.id}`);
-          onRowClick?.();
+          if (!isEditMode) {
+            navigate(`/projects/${data.projectName}`);
+            onRowClick?.();
+          }
         }}
-        style={{ cursor: 'pointer', textDecoration: 'underline' }}
+        style={!isEditMode ? { cursor: 'pointer', textDecoration: 'underline' } : {}}
       >
-        {data.projectName}
+        {isEditMode ? (
+          <input
+            type="text"
+            value={localProjectName}
+            onChange={(e) => setLocalProjectName(e.target.value)}
+            className={styles.editableInput}
+          />
+        ) : (
+          data.projectName
+        )}
       </td>
 
       {/* Client Name */}
@@ -236,6 +248,7 @@ const TableRow: React.FC<TableRowProps> = ({
             className={styles.saveButton}
             onClick={() => {
               onSave?.({
+                projectName: localProjectName,
                 supplierName: localSupplierName,
                 overallStatus: localOverallStatus,
                 analysisStage: localAnalysisStage,
