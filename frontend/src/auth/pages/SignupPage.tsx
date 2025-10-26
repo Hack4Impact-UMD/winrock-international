@@ -316,6 +316,12 @@ const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPasswo
       setErrorMessage(toReadableError(result.errorCode));
     }
   }
+
+  async function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' && answersRef.current.email && answersRef.current.password && confirmPassword) {
+      await handleCreateAccount();
+    }
+  }
   
   return (
     <div
@@ -336,18 +342,21 @@ const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPasswo
         label="Email Address"
         controlledValue={answersRef.current.email}
         onChange={(value) => handleChange("email", value)}
+        onKeyDown={handleKeyDown}
       />
 
       <PasswordField
         label="Password"
         controlledValue={answersRef.current.password}
         onChange={(value) => handleChange("password", value)}
+        onKeyDown={handleKeyDown}
       />
 
       <PasswordField
         label="Confirm Password"
         controlledValue={confirmPassword}
         onChange={(value) => setConfirmPassword(value)}
+        onKeyDown={handleKeyDown}
       />
 
       <NextButton

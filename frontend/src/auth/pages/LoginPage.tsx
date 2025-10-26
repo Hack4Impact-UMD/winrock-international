@@ -35,6 +35,13 @@ const LoginPage: React.FC = () => {
     }
   }
 
+  async function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' && email && password) {
+      e.preventDefault(); // Prevent default form submission
+      await handleLoginClick();
+    }
+  }
+
   return (
     <>
       <LogoHeader />
@@ -64,6 +71,7 @@ const LoginPage: React.FC = () => {
             setErrorMessage("");
             setEmail(value);
           }}
+          onKeyDown={handleKeyDown}
         />
 
         <PasswordField
@@ -75,6 +83,7 @@ const LoginPage: React.FC = () => {
             setErrorMessage("");
             setPassword(value)
           }}
+          onKeyDown={handleKeyDown}
         />
 
         <NextButton

@@ -15,6 +15,7 @@ interface PasswordFieldProps {
     link?: string;
     controlledValue?: string;
     onChange: (value: string) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const PasswordField: React.FC<PasswordFieldProps> = ({
@@ -25,7 +26,8 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
     linkLabel,
     link,
     controlledValue,
-    onChange
+    onChange,
+    onKeyDown
 }) => {
     const [value, setValue] = useState(controlledValue);
         
@@ -37,6 +39,10 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
         setValue(e.target.value);
         onChange(e.target.value);
     }
+
+    function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault(); // Prevent default form submission
+    }
     
     const [isHidden, setIsHidden] = useState(true);
 
@@ -45,7 +51,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
             <p className={styles.label}>
                 {label}
             </p>
-            <form className={styles.inputContainer}>
+            <form className={styles.inputContainer} onSubmit={handleFormSubmit}>
                 <input
                     className={styles.input}
                     type={isHidden ? "password" : "text"}
@@ -53,6 +59,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
                     placeholder={placeholder}
                     autoComplete={autoComplete ? "on" : "off"}
                     onChange={(e) => handleChange(e)}
+                    onKeyDown={onKeyDown}
                 />
                 {toggleHidden &&
                     <img
