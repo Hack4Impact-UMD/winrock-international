@@ -1,74 +1,76 @@
-// ProjectViewWrapper.tsx
 import { useParams, useNavigate } from "react-router-dom";
 import ProjectView from "./supplierProjectView";
-import sampleProjects from "./updatesProjects";
-import sampleUpdates from "./updatesSamples";
 import { db } from "../../firebaseConfig";
 import { useState, useEffect } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, orderBy } from "firebase/firestore"; // Added orderBy
 
 const SupplierProjectViewWrapper = () => {
   const { projectName } = useParams();
   const navigate = useNavigate();
-  console.log(projectName);
-  const [updates, setUpdates] = useState([]);
-  const [project, setProject] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [updates, setUpdates] = useState<any[]>([]); // Added TypeScript type annotations
+  const [project, setProject] = useState<any | null>(null); // Added TypeScript type annotations
+  const [loading, setLoading] = useState<boolean>(true); // Added TypeScript type annotations
 
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
         const projectQuery = query(
           collection(db, "projects"),
-          where('projectName', '==', projectName)
+          where("projectName", "==", projectName)
         );
 
         const projectSnapshot = await getDocs(projectQuery);
-        const projectData = projectSnapshot.docs.map(doc => {
+
+        const projectData = projectSnapshot.docs.map((doc) => {
           const data = doc.data();
           // Convert Firestore Timestamps to ISO strings
           const convertedData = { ...data };
-          Object.keys(convertedData).forEach(key => {
+          Object.keys(convertedData).forEach((key) => {
             if (convertedData[key]?.toDate) {
               convertedData[key] = convertedData[key].toDate().toISOString();
             }
           });
           return { id: doc.id, ...convertedData };
         })[0];
+
         if (projectData) {
           setProject(projectData);
 
           const updatesQuery = query(
             collection(db, "updates"),
-            where('projectId', '==', projectData.id)
+            where("projectId", "==", projectData.id),
+            orderBy("timestamp", "desc") // Added orderBy to sort updates by timestamp
           );
 
           const updatesSnapshot = await getDocs(updatesQuery);
 
-          const updatesData = updatesSnapshot.docs.map(doc => {
+          const updatesData = updatesSnapshot.docs.map((doc) => {
             const data = doc.data();
-
             const convertedData = { ...data };
-            Object.keys(convertedData).forEach(key => {
+            Object.keys(convertedData).forEach((key) => {
               if (convertedData[key]?.toDate) {
                 convertedData[key] = convertedData[key].toDate().toISOString();
               }
             });
             return { id: doc.id, ...convertedData };
           });
+
           setUpdates(updatesData);
         } else {
-          console.warn("No project found with the given name.");
           setProject(null);
         }
       } catch (error) {
         console.error("Error fetching project data:", error);
         setProject(null);
+      } finally {
+        setLoading(false); // Ensure loading is cleared on error
       }
     };
+
     fetchProjectData();
   }, [projectName]);
 
+  if (loading) return <div>Loading...</div>; // Render loading state before "Project not found."
   if (!project) return <div>Project not found.</div>;
 
   return (

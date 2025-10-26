@@ -125,7 +125,7 @@ const TableRow: React.FC<TableRowProps> = ({
       <td className={`${styles.cell} ${!isEditMode ? styles.projectLink : ''}`}
         onClick={() => {
           if (!isEditMode) {
-            navigate(`/projects/${data.id}`);
+            navigate(`/projects/${data.projectName}`);
             onRowClick?.();
           }
         }}

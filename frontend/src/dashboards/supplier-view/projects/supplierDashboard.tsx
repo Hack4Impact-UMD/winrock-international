@@ -231,8 +231,8 @@ const SupplierDashboard: React.FC = () => {
   useEffect(() => {
     // auto archives completed projects
     const autoArchiveCompleted = async () => {
-      const completedProjects = projects.filter(p => 
-        p.overallStatus === "Completed" && p.isActive === true 
+      const completedProjects = projects.filter(p =>
+        p.overallStatus === "Completed" && p.isActive === true
       );
 
       for (const project of completedProjects) {
@@ -504,7 +504,7 @@ const SupplierDashboard: React.FC = () => {
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                   onRowClick={() => {
-                    navigate(`/dashboard/supplier/projects/${project.id}`, { state: { project } });
+                    navigate(`/dashboard/supplier/projects/${project.projectName}`, { state: { project } });
                   }}
                 />
               ))}
