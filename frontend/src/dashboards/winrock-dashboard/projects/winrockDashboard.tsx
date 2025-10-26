@@ -56,7 +56,7 @@ const WinrockDashboard: React.FC = () => {
   // These are used to control the date, i.e. save changes to the date filter calendar
   const [dateRange, setDateRange] = useState<DateRange>({
     startDate: null,
-    endDate: new Date()
+    endDate: new Date('2099-12-31') //changed this to be a date in the future (would not show else)
   });
 
   const handleActionClick = (id: string | null) => {
@@ -130,6 +130,7 @@ const WinrockDashboard: React.FC = () => {
       );;
   }, [projects, viewMode, selectedTab, activeFilters, dateRange, searchQuery]);
 
+
   // Memoize currentProjects (paging the visibleProjects)
   const currentProjects = useMemo(() => {
     const indexOfLastProject = currentPage * itemsPerPage;
@@ -188,7 +189,6 @@ const WinrockDashboard: React.FC = () => {
 
         await updateProjectField(docId, field, value);
       }
-      console.log(`Project ${docId} updated successfully.`);
     } catch (error) {
       console.error(`Failed to update project ${docId}:`, error);
     }
@@ -207,10 +207,13 @@ const WinrockDashboard: React.FC = () => {
     }
   };
 
+
   // Firestore snapshot mapping
   useEffect(() => {
     const q = query(collection(db, "projects"), orderBy("projectName"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      console.log("Firebase snapshot received, doc count:", snapshot.docs.length); 
+
       const projectsData: Project[] = snapshot.docs.map((doc) => {
         const p = doc.data() as Project;
 
@@ -233,7 +236,7 @@ const WinrockDashboard: React.FC = () => {
           geography: p.geography,
           lastUpdated: parseDate(p.lastUpdated),
           startDate: parseDate(p.startDate),
-          activityType: p.activityType, // ← ADD THIS LINE
+          activityType: p.activityType, 
           isActive: p.isActive,
           isPinned: p.isPinned,
         } as Project;
