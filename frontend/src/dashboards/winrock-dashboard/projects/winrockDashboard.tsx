@@ -212,7 +212,7 @@ const WinrockDashboard: React.FC = () => {
   useEffect(() => {
     const q = query(collection(db, "projects"), orderBy("projectName"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      console.log("Firebase snapshot received, doc count:", snapshot.docs.length); 
+      console.log("Firebase snapshot received, doc count:", snapshot.docs.length);
 
       const projectsData: Project[] = snapshot.docs.map((doc) => {
         const p = doc.data() as Project;
@@ -236,7 +236,7 @@ const WinrockDashboard: React.FC = () => {
           geography: p.geography,
           lastUpdated: parseDate(p.lastUpdated),
           startDate: parseDate(p.startDate),
-          activityType: p.activityType, 
+          activityType: p.activityType,
           isActive: p.isActive,
           isPinned: p.isPinned,
         } as Project;
@@ -527,11 +527,11 @@ const WinrockDashboard: React.FC = () => {
                   onSave={(updatedFields) => {
                     if (isEditMode) {
                       if (updatedFields.projectName) {
-                        const duplicateExists = projects.some(p => 
-                          p.projectName.toLowerCase() === updatedFields.projectName!.toLowerCase() && 
+                        const duplicateExists = projects.some(p =>
+                          p.projectName.toLowerCase() === updatedFields.projectName!.toLowerCase() &&
                           p.id !== project.id
                         );
-                        
+
                         if (duplicateExists) {
                           alert("A project with this name already exists. Please choose a different name.");
                           return;
@@ -548,7 +548,7 @@ const WinrockDashboard: React.FC = () => {
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                   onRowClick={() => {
-                    navigate(`/dashboard/admin/projects/${project.id}`, { state: { project } });
+                    navigate(`/dashboard/admin/projects/${project.projectName}`, { state: { project } });
                   }}
                 />
               ))}
