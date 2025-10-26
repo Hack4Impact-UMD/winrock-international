@@ -37,7 +37,7 @@
   -moz-appearance: none;
   position: relative;
   background-color: white;
-  margin: 0;
+  margin-left: 0.5rem;
   vertical-align: middle;
 }
 
