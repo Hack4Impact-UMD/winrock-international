@@ -222,18 +222,12 @@ const getProjectsWithFilters = async (
  * Updates a single field of a project.
  */
 const updateProjectField = async (
-    projectName: string,
-    field: Exclude<keyof Project, 'id' | 'projectName'>, // lastUpdated stays auto
+    projectId: string,
+    field: Exclude<keyof Project, 'id'>, // lastUpdated stays auto
     newValue: any
 ): Promise<Result> => {
     try {
-        const q = query(collection(db, "projects"), where("projectName", "==", projectName)); 
-        const querySnapshot = await getDocs(q); 
-        if (querySnapshot.empty) { 
-            return { success: false, errorCode: "project-not-found" };
-        }
-
-        const docRef = querySnapshot.docs[0].ref; 
+        const docRef = doc(db, "projects", projectId);
 
         if (newValue instanceof Date) {
             newValue = Timestamp.fromDate(newValue);

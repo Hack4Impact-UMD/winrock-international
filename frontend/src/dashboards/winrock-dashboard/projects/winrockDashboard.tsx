@@ -169,7 +169,7 @@ const WinrockDashboard: React.FC = () => {
   };
 
   // Define which fields can be updated (exclude projectName and id)
-  type UpdatableProjectFields = Exclude<keyof Project, 'projectName' | 'id'>;
+  type UpdatableProjectFields = Exclude<keyof Project, 'id'>;
 
   const handleSaveProject = async (
     docId: string,
@@ -177,7 +177,7 @@ const WinrockDashboard: React.FC = () => {
   ) => {
     try {
       for (const [key, rawValue] of Object.entries(updatedFields).filter(
-        ([k]) => k !== 'id' && k !== 'projectName'
+        ([k]) => k !== 'id'
       )) {
         const field = key as UpdatableProjectFields;
         let value: any = rawValue;
@@ -439,7 +439,6 @@ const WinrockDashboard: React.FC = () => {
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
             onClick={async () => {
               if (isEditMode) {
-                // ✅ Save changes before exiting edit mode
                 for (const edited of editableProjects) {
                   const original = projects.find(p => p.id === edited.id);
                   if (!original) continue;
@@ -452,7 +451,6 @@ const WinrockDashboard: React.FC = () => {
                       (updatedFields as any)[key] = (edited as any)[key];
                     }
                   }
-
                   // Save only if there are changes
                   if (Object.keys(updatedFields).length > 0) {
                     await handleSaveProject(edited.id, updatedFields);
@@ -528,6 +526,17 @@ const WinrockDashboard: React.FC = () => {
                   isEditMode={isEditMode}
                   onSave={(updatedFields) => {
                     if (isEditMode) {
+                      if (updatedFields.projectName) {
+                        const duplicateExists = projects.some(p => 
+                          p.projectName.toLowerCase() === updatedFields.projectName!.toLowerCase() && 
+                          p.id !== project.id
+                        );
+                        
+                        if (duplicateExists) {
+                          alert("A project with this name already exists. Please choose a different name.");
+                          return;
+                        }
+                      }
                       setEditableProjects(prev =>
                         prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
                       );
