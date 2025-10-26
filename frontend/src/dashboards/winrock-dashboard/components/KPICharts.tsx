@@ -35,7 +35,8 @@ const ANALYSIS_COLORS: { [key: string]: string } = {
   'GHG Assessment Analysis': '#FEDFF5',
   'Confirming Final Requirements': '#DFE9FE',
   'Clarifying Initial Project Information': '#DFF8FE',
-  'Complete, and Excluded': '#DFFEE5'
+  'Complete, and Excluded': '#DFFEE5',
+  'Clarifying Technical Details': '#FBFFC7'
 };
 
 const KPICharts: React.FC<KPIChartsProps> = ({ projects }) => {
