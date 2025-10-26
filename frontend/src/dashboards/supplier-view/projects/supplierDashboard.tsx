@@ -92,11 +92,11 @@ const SupplierDashboard: React.FC = () => {
 
   const itemsPerPage = 10;
 
-  const filteredProjects = selectedTab === 'All Projects'
-    ? projects
-    : projects.filter(project => project.activityType === selectedTab);
-  const totalItems = filteredProjects.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  // const filteredProjects = selectedTab === 'All Projects'
+  //   ? projects
+  //   : projects.filter(project => project.activityType === selectedTab);
+  // const totalItems = filteredProjects.length;
+  // const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const filteredAndVisibleProjects = useMemo(() => {
     return projects
@@ -122,6 +122,9 @@ const SupplierDashboard: React.FC = () => {
         p.projectName.toLowerCase().startsWith(searchQuery.trim().toLowerCase())
       );
   }, [projects, viewMode, selectedTab, activeFilters, dateRange, searchQuery]);
+
+  const totalItems = filteredAndVisibleProjects.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Memoize currentProjects (paging the visibleProjects)
   const currentProjects = useMemo(() => {
@@ -389,8 +392,8 @@ const SupplierDashboard: React.FC = () => {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Projects</h1>
           <div className={styles.viewModeButtons}>
-            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => setViewMode('active')}>Active</button>
-            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => setViewMode('archived')}>Archived</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => {setViewMode('active'); setCurrentPage(1); }}>Active</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => {setViewMode('archived'); setCurrentPage(1);}}>Archived</button>
           </div>
         </div>
 

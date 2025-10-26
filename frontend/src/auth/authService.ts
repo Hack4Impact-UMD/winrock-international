@@ -46,8 +46,8 @@ interface LoginInfo {
  * @param password of the user. 
  * @param firstName of the user.
  * @param lastName of the user.
- * @param role of the user (client, supplier, or Winrock employee).
- * @param company of the user (if role is "client" or "supplier").
+ * @param role of the user (supplier or Winrock employee).
+ * @param company of the user (if role is "supplier").
  * @returns a Promise<Result>.
  */
 const handleSignup = async ({ email, password, firstName, lastName, role, company }: SignupInfo): Promise<Result> => {
@@ -58,7 +58,7 @@ const handleSignup = async ({ email, password, firstName, lastName, role, compan
         // Email and password fields are checked by Firebase
 
         let companyField = {};
-        if (role === "client" || role === "supplier") {
+        if (role === "supplier") {
             if (!company) return { success: false, errorCode: "missing-company" };
 
             const companiesRef = collection(db, "companies");
