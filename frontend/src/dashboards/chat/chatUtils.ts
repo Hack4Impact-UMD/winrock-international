@@ -1,4 +1,4 @@
-import { collection, serverTimestamp, addDoc, getDocs, query, where, orderBy, Timestamp, deleteDoc } from "firebase/firestore";
+import { collection, serverTimestamp, addDoc, getDocs, query, where, Timestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Result, { handleFirebaseError } from "../../types/Result"
 
