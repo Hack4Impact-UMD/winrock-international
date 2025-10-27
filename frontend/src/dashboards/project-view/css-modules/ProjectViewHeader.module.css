@@ -58,13 +58,10 @@
 .cell {
     text-align: left;
     font-weight: 500;
-    font-size: 12px;
     white-space: normal; 
     overflow: visible;
     text-overflow: unset;
     word-break: break-word;
-    margin-left: -100px;
-    
   }
 
 .button {
@@ -110,4 +107,36 @@
   .backArrowIcon {
     margin-left: -10px;
     margin-top: -50px;
+  }
+
+  .editableInput {
+    padding: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    margin-left: -4px;
+  }
+
+  .editableInput:focus {
+    outline: none;
+    border-color: #000;
+  }
+
+  .editableTitle {
+    padding: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: inherit;
+    margin-left: -4px;
+    width: fit-content;
+  }
+
+  .editableTitle:focus {
+    outline: none;
+    border-color: #000;
   }
