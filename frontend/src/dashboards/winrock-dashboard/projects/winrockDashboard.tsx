@@ -16,7 +16,9 @@ import ColorText from '../components/ColorText';
 import TableRow from '../components/TableRow';
 import ReportsDropdown from '../components/ReportsDropdown';
 import KPICharts from '../components/KPICharts';
-import { updateProjectField } from "./winrockDashboardService";
+import ProjectModal from '../components/ProjectModal';
+import LoginPopup from '../components/LoginPopup/Login.js';
+import { isSupplierTokenValid, updateProjectField } from "./winrockDashboardService";
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
@@ -24,7 +26,6 @@ import { Project } from '../../../types/Project'
 
 
 const WinrockDashboard: React.FC = () => {
-
   const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilters, setActiveFilters] = useState<{
@@ -35,7 +36,7 @@ const WinrockDashboard: React.FC = () => {
     spend: [],
   });
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<String[]>([]);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first');
@@ -47,12 +48,15 @@ const WinrockDashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeActionMenu, setActiveActionMenu] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'active' | 'archived'>('active');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showLoginPopup, setShowLoginPopup] = useState<boolean>(false);
+  const [supplierToken, setSupplierToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // These are used to control the date, i.e. save changes to the date filter calendar
   const [dateRange, setDateRange] = useState<DateRange>({
     startDate: null,
-    endDate: new Date()
+    endDate: new Date('2099-12-31') //changed this to be a date in the future (would not show else)
   });
 
   const handleActionClick = (id: string | null) => {
@@ -95,11 +99,11 @@ const WinrockDashboard: React.FC = () => {
 
   const itemsPerPage = 10;
 
-  const filteredProjects = selectedTab === 'All Projects'
-    ? projects
-    : projects.filter(project => project.activityType === selectedTab);
-  const totalItems = filteredProjects.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  // const filteredProjects = selectedTab === 'All Projects'
+  //   ? projects
+  //   : projects.filter(project => project.activityType === selectedTab);
+  // const totalItems = filteredProjects.length;
+  // const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const filteredAndVisibleProjects = useMemo(() => {
     return projects
@@ -125,6 +129,9 @@ const WinrockDashboard: React.FC = () => {
         p.projectName.toLowerCase().startsWith(searchQuery.trim().toLowerCase())
       );;
   }, [projects, viewMode, selectedTab, activeFilters, dateRange, searchQuery]);
+
+  const totalItems = filteredAndVisibleProjects.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Memoize currentProjects (paging the visibleProjects)
   const currentProjects = useMemo(() => {
@@ -164,7 +171,7 @@ const WinrockDashboard: React.FC = () => {
   };
 
   // Define which fields can be updated (exclude projectName and id)
-  type UpdatableProjectFields = Exclude<keyof Project, 'projectName' | 'id'>;
+  type UpdatableProjectFields = Exclude<keyof Project, 'id'>;
 
   const handleSaveProject = async (
     docId: string,
@@ -172,7 +179,7 @@ const WinrockDashboard: React.FC = () => {
   ) => {
     try {
       for (const [key, rawValue] of Object.entries(updatedFields).filter(
-        ([k]) => k !== 'id' && k !== 'projectName'
+        ([k]) => k !== 'id'
       )) {
         const field = key as UpdatableProjectFields;
         let value: any = rawValue;
@@ -184,7 +191,6 @@ const WinrockDashboard: React.FC = () => {
 
         await updateProjectField(docId, field, value);
       }
-      console.log(`Project ${docId} updated successfully.`);
     } catch (error) {
       console.error(`Failed to update project ${docId}:`, error);
     }
@@ -203,10 +209,13 @@ const WinrockDashboard: React.FC = () => {
     }
   };
 
+
   // Firestore snapshot mapping
   useEffect(() => {
     const q = query(collection(db, "projects"), orderBy("projectName"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      console.log("Firebase snapshot received, doc count:", snapshot.docs.length);
+
       const projectsData: Project[] = snapshot.docs.map((doc) => {
         const p = doc.data() as Project;
 
@@ -229,7 +238,7 @@ const WinrockDashboard: React.FC = () => {
           geography: p.geography,
           lastUpdated: parseDate(p.lastUpdated),
           startDate: parseDate(p.startDate),
-          activityType: p.activityType, // ← ADD THIS LINE
+          activityType: p.activityType,
           isActive: p.isActive,
           isPinned: p.isPinned,
         } as Project;
@@ -246,7 +255,28 @@ const WinrockDashboard: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
+  //automatic archiving if the project is completed
+  useEffect(() => {
+    // auto archives completed projects
+    const autoArchiveCompleted = async () => {
+      const completedProjects = projects.filter(p =>
+        p.overallStatus === "Completed" && p.isActive === true
+      );
 
+      for (const project of completedProjects) {
+        try {
+          await handleSaveProject(project.id, { isActive: false });
+          console.log(`Auto-archived completed project: ${project.projectName}`);
+        } catch (error) {
+          console.error(`Failed to auto-archive project ${project.projectName}:`, error);
+        }
+      }
+    };
+
+    if (projects.length > 0) {
+      autoArchiveCompleted();
+    }
+  }, [projects]);
   // per category
 
   // Handler for sort selection - just updates the state
@@ -343,6 +373,21 @@ const WinrockDashboard: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const params = new URLSearchParams(globalThis.location.search);
+      setSupplierToken(params.get('t'));
+      if (supplierToken === null) {
+        return;
+      }
+      const result = await isSupplierTokenValid(supplierToken);
+      if (result) {
+        setShowLoginPopup(true);
+      }
+    };
+    fetchData();
+  });
+
   return (
     <div className={styles.dashboardContainer}>
       <header className={styles.header}>
@@ -387,8 +432,8 @@ const WinrockDashboard: React.FC = () => {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Projects</h1>
           <div className={styles.viewModeButtons}>
-            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => setViewMode('active')}>Active</button>
-            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => setViewMode('archived')}>Archived</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => { setViewMode('active'); setCurrentPage(1); }}>Active</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => { setViewMode('archived'); setCurrentPage(1); }}>Archived</button>
           </div>
         </div>
 
@@ -401,11 +446,22 @@ const WinrockDashboard: React.FC = () => {
             selectedTab={selectedTab}
             onTabSelect={handleTabChange}
           />
+          {/* Add Project Button */}
+          <button
+            className={`${styles.addProjectButton}`}
+            onClick={async () => {
+              setShowModal(true);
+            }}
+          >
+            <div className={styles.addProjectContainer}>
+              <span className={styles.plusSign}>&#43;</span>
+              <span className={styles.addProjectLabel}>Add project</span>
+            </div>
+          </button>
           <button
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
             onClick={async () => {
               if (isEditMode) {
-                // ✅ Save changes before exiting edit mode
                 for (const edited of editableProjects) {
                   const original = projects.find(p => p.id === edited.id);
                   if (!original) continue;
@@ -418,7 +474,6 @@ const WinrockDashboard: React.FC = () => {
                       (updatedFields as any)[key] = (edited as any)[key];
                     }
                   }
-
                   // Save only if there are changes
                   if (Object.keys(updatedFields).length > 0) {
                     await handleSaveProject(edited.id, updatedFields);
@@ -435,7 +490,7 @@ const WinrockDashboard: React.FC = () => {
               setIsEditMode(!isEditMode);
             }}
           >
-            {isEditMode ? 'Done' : 'Edit'}
+            {isEditMode ? 'Done' : 'Edit Projects'}
           </button>
 
         </div>
@@ -494,6 +549,17 @@ const WinrockDashboard: React.FC = () => {
                   isEditMode={isEditMode}
                   onSave={(updatedFields) => {
                     if (isEditMode) {
+                      if (updatedFields.projectName) {
+                        const duplicateExists = projects.some(p =>
+                          p.projectName.toLowerCase() === updatedFields.projectName!.toLowerCase() &&
+                          p.id !== project.id
+                        );
+
+                        if (duplicateExists) {
+                          alert("A project with this name already exists. Please choose a different name.");
+                          return;
+                        }
+                      }
                       setEditableProjects(prev =>
                         prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
                       );
@@ -505,7 +571,7 @@ const WinrockDashboard: React.FC = () => {
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                   onRowClick={() => {
-                    navigate(`/dashboard/admin/projects/${project.id}`, { state: { project } });
+                    navigate(`/dashboard/admin/projects/${project.projectName}`, { state: { project } });
                   }}
                 />
               ))}
@@ -523,7 +589,8 @@ const WinrockDashboard: React.FC = () => {
           itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
         />
-
+        {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} supplierToken={supplierToken ?? ''} />}
+        {showModal && <ProjectModal onClose={() => setShowModal(false)} projects={projects} />}
       </main>
     </div>
   );

@@ -39,12 +39,12 @@ function App() {
         <Route path="/forms/tech-energy-risks-form" element={<TechEnergyRisksForm />} />
 
         <Route path="/dashboard/admin/projects" element={<WinrockDashboard />} />
-        <Route path="/dashboard/admin/projects/:projectId" element={<ProjectViewWrapper />} />
+        <Route path="/dashboard/admin/projects/:projectName" element={<ProjectViewWrapper />} />
         <Route path="/dashboard/admin/notification-center" element={<NotificationCenter />} />
         <Route path="/dashboard/admin/account-settings" element={<WinrockDashboard />} />
 
         <Route path="/dashboard/supplier/projects" element={<SupplierDashboard />} />
-        <Route path="/dashboard/supplier/projects/:projectId" element={<SupplierProjectViewWrapper />} />
+        <Route path="/dashboard/supplier/projects/:projectName" element={<SupplierProjectViewWrapper />} />
         <Route path="/dashboard/supplier/notification-center" element={<SupplierNotificationCenter />} />
         <Route path="/dashboard/supplier/account-settings" element={<SupplierDashboard />} />
 

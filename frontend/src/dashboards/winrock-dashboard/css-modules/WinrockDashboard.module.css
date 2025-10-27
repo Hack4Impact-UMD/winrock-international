@@ -116,6 +116,36 @@ html {
   padding-right: 2rem;
 }
 
+.addProjectContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.addProjectButton {
+  background-color: white;
+  border: 1.29px solid var(--color-primary);
+  color: var(--color-primary);
+  height: 2.25rem;
+  width: 6.625rem;
+  border-radius: .4rem;
+  cursor: pointer;
+  font-size: 0.7rem;
+  margin-left: auto;
+  margin-top: 0.5rem;
+}
+
+.plusSign {
+  font-size: 1.5rem;
+  font-weight: light;
+  margin-right: 0.5rem;
+}
+
+.addProjectLabel {
+  margin-top: 0.05rem;
+}
+
 .editButton {
   background-color: white;
   border: 1.29px solid var(--color-primary);
@@ -125,7 +155,7 @@ html {
   border-radius: .4rem;
   cursor: pointer;
   font-size: 0.65rem;
-  margin-left: auto;
+  margin-left: 1.5rem;
   margin-top: 0.5rem;
 }
 

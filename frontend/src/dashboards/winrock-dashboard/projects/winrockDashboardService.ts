@@ -1,4 +1,4 @@
-import { runTransaction, FieldValue } from "firebase/firestore";
+import { runTransaction, FieldValue, setDoc } from "firebase/firestore";
 import {
     collection,
     deleteDoc,
@@ -16,6 +16,11 @@ import { db } from "../../../firebaseConfig.js";
 import Result, { handleFirebaseError } from "../../../types/Result.js";
 import { Project } from "types/Project.ts";
 import { sendEmail } from "../../../api/apiClient.js";
+import { nanoid } from "nanoid";
+
+// base url
+const BASE_URL = "http://localhost:5173/winrock-international";
+
 
 /**
  * Represents the overall status of a project.
@@ -68,11 +73,16 @@ const createProject = async (
     isPinned: boolean = false
 ): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
+        //const docRef = doc(db, "projects", projectName);
+        const docRef = doc(collection(db, "projects"));
 
         await runTransaction(db, async (tx) => {
-            const snap = await tx.get(docRef);
-            if (snap.exists()) {
+            //need to check if the project name already exists
+            const projectsRef = collection(db, "projects");
+            const nameQuery = query(projectsRef, where("projectName", "==", projectName));
+            const existingProjects = await getDocs(nameQuery);
+
+            if (!existingProjects.empty) {
                 throw new Error("project-name-already-exists");
             }
 
@@ -91,12 +101,11 @@ const createProject = async (
                 id: docRef.id,
                 activityType,
             };
-
             tx.set(docRef, newProject);
         });
-
         return { success: true };
     } catch (error) {
+        console.error("Error creating project:", error);
         return handleFirebaseError(error);
     }
 };
@@ -113,13 +122,13 @@ function mapDocToProject(d: any): Project {
  */
 const getProjectByName = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName)); 
+        const querySnapshot = await getDocs(q); 
+        if (querySnapshot.empty) { 
             return { success: false, errorCode: "project-not-found" };
         }
 
-        const projectData = mapDocToProject(docSnap.data());
+        const projectData = mapDocToProject(querySnapshot.docs[0].data());
         return {
             success: true,
             data: projectData,
@@ -213,16 +222,12 @@ const getProjectsWithFilters = async (
  * Updates a single field of a project.
  */
 const updateProjectField = async (
-    projectName: string,
-    field: Exclude<keyof Project, 'id' | 'projectName'>, // lastUpdated stays auto
+    projectId: string,
+    field: Exclude<keyof Project, 'id'>, // lastUpdated stays auto
     newValue: any
 ): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
-            return { success: false, errorCode: "project-not-found" };
-        }
+        const docRef = doc(db, "projects", projectId);
 
         if (newValue instanceof Date) {
             newValue = Timestamp.fromDate(newValue);
@@ -263,11 +268,101 @@ const addProject = async (projectName: string, clientName: string, supplierName:
 			false
 		);
 
-        await emailSupplier(projectName, supplierName, supplierEmail);
+        // token for supplier to join project
+		const tokenResult = await generateNewProjectSupplierToken(supplierEmail, projectName);
+		if (!tokenResult.success) {
+			return { success: false, errorCode: "Failed to generate supplier token" };
+		}
+
+		const token = tokenResult.data.token;
+
+        // Dont send email for now
+        // await emailSupplier(projectName, supplierName, supplierEmail, token);
 		return { success: true };
 	} catch (error) {
 		return handleFirebaseError(error);
 	}
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const generateNewProjectSupplierToken = async (supplierEmail: string, projectName: string) => {
+	let token = nanoid();
+
+	let isUnique = false;
+
+	// associate token, supplier email, and project name in database
+	while (!isUnique) {
+		try {
+			// check for duplicate token (very unlikely but possible)
+			const docRef = doc(db, "newProjectSupplierTokens", token);
+			const docSnap = await getDoc(docRef);
+
+			if (docSnap.exists()) {
+				token = nanoid();
+				continue;
+			}
+			else {
+				isUnique = true;
+			}
+
+			await setDoc(docRef, {
+				projectName: projectName,
+				supplierEmail: supplierEmail,
+				token: token
+			});
+
+		} catch (error) {
+			return handleFirebaseError(error);
+		}
+	}
+	
+	return {
+		success: true,
+		data: {
+			token: token
+		}
+	};
+}
+
+/**
+ * Find supplier email associated with provided email token
+ */
+const getSupplierDataByToken = async (token : string) : Promise<Result> => {
+    try {
+        const docRef = doc(db, "newProjectSupplierTokens", token);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            return { success: false, errorCode: "token-not-found" };
+        }
+        const data = docSnap.data();
+        return { success: true, data: { supplierEmail: data.supplierEmail, projectName: data.projectName } };
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
+}
+
+/**
+ * Validate that the token is valid (has an email associated with it)
+ */
+const isSupplierTokenValid = async (token : string) : Promise<boolean> => {
+    const res = await getSupplierDataByToken(token);
+    return res.success;
+}
+
+/**
+ * Validate that the supplier email matches the one associated with the token
+ */
+const validateSupplierEmail = async (token : string, supplierEmail : string) : Promise<boolean> => {
+    const res = await getSupplierDataByToken(token);
+    return res.success && res.data.supplierEmail === supplierEmail;
+}
+
+const getSupplierProjectNameByToken = async (token : string) : Promise<Result> => {
+    const res = await getSupplierDataByToken(token);
+    if (res.success) {
+        return { success: true, data: res.data.projectName };
+    }
+    return { success: false, errorCode: "project-name-not-found" };
 }
 
 /**
@@ -275,11 +370,13 @@ const addProject = async (projectName: string, clientName: string, supplierName:
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName)); 
+        const querySnapshot = await getDocs(q); 
+        if (querySnapshot.empty) { 
             return { success: false, errorCode: "project-not-found" };
         }
+
+        const docRef = querySnapshot.docs[0].ref;
 
         await deleteDoc(docRef);
         return { success: true };
@@ -291,15 +388,23 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 /**
  * Send an project invitation email to the supplier
  */
-const emailSupplier = async (projectName: string, supplierName : string, supplierEmail : string) : Promise<Result> => {
+const emailSupplier = async (projectName: string, supplierName : string, supplierEmail : string, token:string) : Promise<Result> => {
     try {
+        // invite url with token
+        const inviteUrl = `${BASE_URL}/dashboard/admin/projects/${projectName}?token=${token}`;
+
         const recipient: string = `${supplierName} <${supplierEmail}>`;
         const subject = `Invitation: Collaborate on ${projectName}`;
         const message = 
         [
-            `Hi ${supplierName}`,
+            `Hi ${supplierName},`,
             '',
             `You have been invited to collaborate on the project "${projectName}" on the Winrock Dashboard.`,
+            '',
+            `Click the link below to access the project:`,
+            inviteUrl,
+            '',
+            'If you don\'t have an account yet, you\'ll be prompted to sign up or log in.',
             '',
             'Regards,',
             'Winrock Team'
@@ -319,6 +424,10 @@ const emailSupplier = async (projectName: string, supplierName : string, supplie
 export {
 	addProject,
     createProject,
+	generateNewProjectSupplierToken,
+    isSupplierTokenValid,
+    getSupplierProjectNameByToken,
+    validateSupplierEmail,
     getProjectByName,
     getAllProjects,
     getProjectsWithFilters,

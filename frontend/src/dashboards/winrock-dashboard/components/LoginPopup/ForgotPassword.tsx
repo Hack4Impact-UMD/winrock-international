@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { sendPasswordResetLink } from "../authService";
-import { toReadableError } from "../../types/Result";
-import "../styles/ForgotPasswordPage.css";
+import { sendPasswordResetLink } from "../../../../auth/authService";
+import { toReadableError } from "../../../../types/Result";
+import "../../../../auth/styles/ForgotPasswordPage.css";
 
-import LogoHeader from "../components/LogoHeader";
-import TextField from "../components/TextField";
-import BottomLink from "../components/BottomLink";
-import PasswordResetSentPage from "./PasswordResetSentPage";
-import TitleHeader from "../components/TitleHeader";
-import BackButton from "../components/BackButton";
-import NextButton from "../components/NextButton";
-import ToastMessage from "../components/ToastMessage";
+import TextField from "../../../../auth/components/TextField";
+import BottomLink from "../../../../auth/components/BottomLink";
+import PasswordResetSentPage from "./PasswordResetSent";
+import TitleHeader from "../../../../auth/components/TitleHeader";
+import BackButton from "../../../../auth/components/BackButton";
+import NextButton from "../../../../auth/components/NextButton";
+import ToastMessage from "../../../../auth/components/ToastMessage";
 
-function ForgotPasswordPage() {
+import styles from "../../css-modules/LoginPopup.module.css";
+
+interface ForgotPasswordProps {
+  onBack: () => void;
+}
+
+function ForgotPassword({ onBack }: ForgotPasswordProps) {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [email, setEmail] = useState("");
   const [linkIsSent, setLinkIsSent] = useState(false);
@@ -35,27 +40,19 @@ function ForgotPasswordPage() {
     }
   }
 
-  async function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' && email) {
-      await handleSendLink();
-    }
-  }
-
   if (linkIsSent) {
     return (
       <PasswordResetSentPage
         email={email}
         setEmail={setEmail}
         setLinkIsSent={setLinkIsSent}
+        onBack={onBack}
       />
     );
   }
 
   return (
-    <>
-      <LogoHeader />
-
-      <div className="page-container">
+    <div className={styles.pageContainer}>
       <div className="forgot-password-form-container">
         {errorMessage &&
             <ToastMessage
@@ -63,7 +60,7 @@ function ForgotPasswordPage() {
               isError={true}
             />}
 
-        <BackButton onClick={() => navigate("/auth/login")} />
+        <BackButton onClick={onBack} />
 
         <TitleHeader
           title="Forgot password?"
@@ -78,7 +75,6 @@ function ForgotPasswordPage() {
             setEmail(value);
             setErrorMessage("");
           }}
-          onKeyDown={handleKeyDown}
         />
 
         <NextButton
@@ -92,9 +88,8 @@ function ForgotPasswordPage() {
           onClick={() => navigate("/auth/login")}
         />
       </div>
-      </div>
-    </>
+    </div>
   );
 }
 
-export default ForgotPasswordPage;
+export default ForgotPassword;

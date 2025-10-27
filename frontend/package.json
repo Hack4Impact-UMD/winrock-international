@@ -21,6 +21,7 @@
     "@mui/icons-material": "^7.0.2",
     "@types/react-datepicker": "^6.2.0",
     "firebase": "^11.3.1",
+    "nanoid": "^5.1.6",
     "react": "^19.0.0",
     "react-datepicker": "^8.3.0",
     "react-dom": "^19.0.0",

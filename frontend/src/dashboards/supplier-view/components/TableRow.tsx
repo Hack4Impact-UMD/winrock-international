@@ -97,7 +97,7 @@ const TableRow: React.FC<TableRowProps> = ({
       <td
         className={`${styles.cell} ${styles.projectLink}`}
         onClick={() => {
-          navigate(`/dashboard/supplier/projects/${data.id}`);
+          navigate(`/dashboard/supplier/projects/${data.projectName}`);
           onRowClick?.();
         }}
         style={{ cursor: 'pointer', textDecoration: 'underline' }}
@@ -178,7 +178,7 @@ const TableRow: React.FC<TableRowProps> = ({
               className={styles.actionButton}
               onClick={(e) => {
                 const rect = (e.target as HTMLElement).getBoundingClientRect();
-                setButtonPosition({ x: rect.left - 150, y: rect.bottom });
+                setButtonPosition({ x: rect.left - 150, y: rect.bottom - 40});
                 onActionClick?.(data.id, e);
               }}
             >

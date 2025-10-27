@@ -6,19 +6,22 @@ import styles from '../project-view/css-modules/ProjectView.module.css';
 import Sidebar from '../winrock-dashboard/components/Sidebar';
 import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
-import sampleUpdates from './updatesSamples'; // Static updates
 import { UpdateItem } from '../../types/UpdateItem';
 
 
 interface ProjectViewProps {
   project: Project;
   onBack: () => void;
-  updates?: UpdateItem[];
+  updates: UpdateItem[];
 }
 
-const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
+const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) => {
   const [showAccessManager, setShowAccessManager] = useState(false);
-  console.log(onBack) // to avoid unused variable warning
+
+  console.log("ProjectView - onBack:", onBack);
+  console.log("ProjectView - project:", project);
+  console.log("ProjectView - updates:", updates);
+
   return (
     <div className={styles.projectViewContainer}>
       <ManageAccess
@@ -45,7 +48,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
         </div>
 
         <div className={styles.rightPanel}>
-          <ProjectUpdates updates={sampleUpdates.filter(update => update.projectId === project.id)} />
+          <ProjectUpdates updates={updates} />
         </div>
       </div>
     </div>

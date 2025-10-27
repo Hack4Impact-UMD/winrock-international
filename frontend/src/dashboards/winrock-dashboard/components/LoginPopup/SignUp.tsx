@@ -3,26 +3,29 @@ import {
   useState
 } from "react";
 import { useNavigate } from "react-router-dom";
-import Result, { toReadableError } from "../../types/Result";
-import Role from "../../types/Role.js";
+import Result, { toReadableError } from "../../../../types/Result.js";
+import Role from "../../../../types/Role.js";
 import {
-  type SignupInfo,
   fetchCompanySuggestions,
-  handleSignup
-} from "../authService";
-import "../styles/SignupPage.css";
+  handleSignup,
+  SignupInfo
+} from "../../../../auth/authService.js";
+import { getSupplierProjectNameByToken, validateSupplierEmail } from "../../projects/winrockDashboardService.js";
 
-import LogoHeader from "../components/LogoHeader.js";
-import TitleHeader from "../components/TitleHeader.js";
-import BackButton from "../components/BackButton.js";
-import NextButton from "../components/NextButton.js";
-import DropdownField from "../components/DropdownField.js";
-import TextField from "../components/TextField.js";
-import BottomLink from "../components/BottomLink.js";
-import PasswordField from "../components/PasswordField.js";
-import Divider from "../components/Divider.js";
-import OutlookButton from "../components/OutlookButton.js";
-import ToastMessage from "../components/ToastMessage.js";
+import "../../../../auth/styles/SignupPage.css";
+
+import TitleHeader from "../../../../auth/components/TitleHeader.js";
+import BackButton from "../../../../auth/components/BackButton.js";
+import NextButton from "../../../../auth/components/NextButton.js";
+import DropdownField from "../../../../auth/components/DropdownField.js";
+import TextField from "../../../../auth/components/TextField.js";
+import BottomLink from "../../../../auth/components/BottomLink.js";
+import PasswordField from "../../../../auth/components/PasswordField.js";
+import Divider from "../../../../auth/components/Divider.js";
+import OutlookButton from "../../../../auth/components/OutlookButton.js";
+import ToastMessage from "../../../../auth/components/ToastMessage.js";
+
+import styles from "../../css-modules/LoginPopup.module.css";
 
 interface StepOneProps {
   answersRef: React.RefObject<SignupInfo>;
@@ -44,12 +47,14 @@ interface StepThreeProps {
   confirmPassword: string;
   setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  supplierToken: string;
+  onClose: () => void;
 }
 
 const MAX_FIELD_LENGTH = 256;
 const MIN_PASSWORD_LENGTH = 8;
 
-function SignupPage() {
+function SignupPopup({ onClose, supplierToken }: Readonly<{ onClose: () => void; supplierToken: string }>) {
   const answersRef = useRef<SignupInfo>({
     email: '',
     password: '',
@@ -72,10 +77,7 @@ function SignupPage() {
   }
 
   return (
-    <>
-      <LogoHeader />
-
-      <div className="page-container">
+      <div className={styles.pageContainer}>
         {currentStep === 1 &&
           <StepOne
             answersRef={answersRef}
@@ -99,9 +101,10 @@ function SignupPage() {
             confirmPassword={confirmPassword}
             setConfirmPassword={setConfirmPassword}
             setCurrentStep={setCurrentStep}
+            onClose={onClose}
+            supplierToken={supplierToken}
           />}
       </div>
-    </>
   )
 }
 
@@ -123,19 +126,20 @@ const StepOne = ({ answersRef, handleChange, role, setRole, setCurrentStep }: St
       setErrorMessage("Missing role");
       return;
     }
-
-    if (answersRef.current.role === "supplier") {
-      if (!answersRef.current.company) {
-        setErrorMessage("Missing company");
-        return;
-      }
-
-      if (answersRef.current.company.length > MAX_FIELD_LENGTH) {
-        setErrorMessage("Company name is too long");
-        return;
-      }
+    // Role must be supplier for this flow
+    if (answersRef.current.role !== 'supplier') {
+      setErrorMessage("Invalid role. Please select Supplier.");
+      return;
+    }
+    if (!answersRef.current.company) {
+      setErrorMessage("Missing company");
+      return;
     }
 
+    if (answersRef.current.company.length > MAX_FIELD_LENGTH) {
+      setErrorMessage("Company name is too long");
+      return;
+    }
     setCurrentStep(2);
   }
 
@@ -154,7 +158,7 @@ const StepOne = ({ answersRef, handleChange, role, setRole, setCurrentStep }: St
 
       <TitleHeader
         title="Create Your Account"
-        subtitle="Please enter your details to sign up."
+        subtitle="Create an account or log in to view content."
       />
 
       <DropdownField
@@ -238,7 +242,7 @@ const StepTwo = ({ answersRef, handleChange, setCurrentStep }: StepTwoProps) => 
         
       <TitleHeader
         title="Create Your Account"
-        subtitle="Please enter your details to sign up."
+        subtitle="Create an account or log in to view content."
       />
 
       <TextField
@@ -267,7 +271,7 @@ const StepTwo = ({ answersRef, handleChange, setCurrentStep }: StepTwoProps) => 
   )
 }
 
-const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPassword, setCurrentStep }: StepThreeProps) => {
+const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPassword, setCurrentStep, onClose, supplierToken }: StepThreeProps) => {
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -300,6 +304,12 @@ const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPasswo
 
     const companyField = answersRef.current.company ? { company: answersRef.current.company } : {};
 
+    const emailResult = await validateSupplierEmail(supplierToken, answersRef.current.email);
+    if (!emailResult) {
+      setErrorMessage("Unauthorized email.");
+      return;
+    }
+
     const result: Result = await handleSignup({
       email: answersRef.current.email,
       password: answersRef.current.password,
@@ -307,19 +317,19 @@ const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPasswo
       lastName: answersRef.current.lastName,
       role: answersRef.current.role,
       ...companyField
-    })
-
+    });
     if (result.success) {
-      navigate("/dashboard/admin/projects");
+      onClose();
+      const projectResult = await getSupplierProjectNameByToken(supplierToken);
+      if (projectResult.success) {
+        navigate(`/dashboard/admin/projects/${projectResult.data}`);
+      } else {
+        console.error("Error fetching project name: ", projectResult.errorCode);
+        setErrorMessage("Login successful, but failed to retrieve project information.");
+      }
     } else {
       console.error("Error signing up: ", result.errorCode);
       setErrorMessage(toReadableError(result.errorCode));
-    }
-  }
-
-  async function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' && answersRef.current.email && answersRef.current.password && confirmPassword) {
-      await handleCreateAccount();
     }
   }
   
@@ -342,21 +352,18 @@ const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPasswo
         label="Email Address"
         controlledValue={answersRef.current.email}
         onChange={(value) => handleChange("email", value)}
-        onKeyDown={handleKeyDown}
       />
 
       <PasswordField
         label="Password"
         controlledValue={answersRef.current.password}
         onChange={(value) => handleChange("password", value)}
-        onKeyDown={handleKeyDown}
       />
 
       <PasswordField
         label="Confirm Password"
         controlledValue={confirmPassword}
         onChange={(value) => setConfirmPassword(value)}
-        onKeyDown={handleKeyDown}
       />
 
       <NextButton
@@ -377,4 +384,4 @@ const StepThree = ({ answersRef, handleChange, confirmPassword, setConfirmPasswo
   )
 }
 
-export default SignupPage;
+export default SignupPopup;

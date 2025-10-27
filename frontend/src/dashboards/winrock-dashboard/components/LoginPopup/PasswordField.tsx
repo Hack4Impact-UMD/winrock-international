@@ -2,9 +2,8 @@ import {
     useEffect,
     useState
 } from "react";
-import styles from "../css-modules/PasswordField.module.css";
-import { Link } from "react-router-dom";
-import toggleHiddenIcon from "../../assets/toggle-hidden.png";
+import styles from "../../../../auth/css-modules/PasswordField.module.css";
+import toggleHiddenIcon from "../../../../assets/toggle-hidden.png";
 
 interface PasswordFieldProps {
     label?: string;
@@ -15,7 +14,7 @@ interface PasswordFieldProps {
     link?: string;
     controlledValue?: string;
     onChange: (value: string) => void;
-    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    onLinkClick?: (e?: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 const PasswordField: React.FC<PasswordFieldProps> = ({
@@ -24,10 +23,9 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
     autoComplete,
     toggleHidden=false,
     linkLabel,
-    link,
     controlledValue,
     onChange,
-    onKeyDown
+    onLinkClick
 }) => {
     const [value, setValue] = useState(controlledValue);
         
@@ -39,10 +37,6 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
         setValue(e.target.value);
         onChange(e.target.value);
     }
-
-    function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault(); // Prevent default form submission
-    }
     
     const [isHidden, setIsHidden] = useState(true);
 
@@ -51,7 +45,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
             <p className={styles.label}>
                 {label}
             </p>
-            <form className={styles.inputContainer} onSubmit={handleFormSubmit}>
+            <form className={styles.inputContainer}>
                 <input
                     className={styles.input}
                     type={isHidden ? "password" : "text"}
@@ -59,7 +53,6 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
                     placeholder={placeholder}
                     autoComplete={autoComplete ? "on" : "off"}
                     onChange={(e) => handleChange(e)}
-                    onKeyDown={onKeyDown}
                 />
                 {toggleHidden &&
                     <img
@@ -69,10 +62,18 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
                         onClick={() => setIsHidden(!isHidden)}
                     />}
             </form>
-            {linkLabel && link &&
-                <Link to={link} className={styles.link}>
+            {linkLabel &&
+                <span 
+                    className={styles.link} 
+                    style={{cursor: "pointer"}}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onLinkClick(e);
+                    }}
+                >
                     {linkLabel}
-                </Link>}
+                </span>}
         </div>
     )
 }
