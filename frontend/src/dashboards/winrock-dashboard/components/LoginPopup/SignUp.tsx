@@ -146,7 +146,7 @@ const StepOne = ({ answersRef, handleChange, role, setRole, setCurrentStep }: St
   return (
     <div
       className="step-one-form-container"
-      style={{gridTemplateRows: (role === "client" || role === "supplier")
+      style={{gridTemplateRows: role === "supplier"
         ? "8.5rem 8rem 7rem 6.5rem 3rem"
         : "8.5rem 8rem 13.5rem 3rem"
     }}>
@@ -164,8 +164,8 @@ const StepOne = ({ answersRef, handleChange, role, setRole, setCurrentStep }: St
       <DropdownField
         label="What is your role?"
         blankOption="I am a..."
-        options={["Client", "Supplier", "Winrock International Employee"]}
-        values={["client", "supplier", "admin"]}
+        options={["Supplier", "Winrock International Employee"]}
+        values={["supplier", "admin"]}
         controlledValue={answersRef.current.role}
         onSelect={(value) => {
           setRole(value as Role);
@@ -174,7 +174,7 @@ const StepOne = ({ answersRef, handleChange, role, setRole, setCurrentStep }: St
         }}
       />
 
-      {(role === "client" || role === "supplier") &&
+      {role === "supplier" &&
         <TextField
           label="Company name"
           controlledValue={answersRef.current.company!}
