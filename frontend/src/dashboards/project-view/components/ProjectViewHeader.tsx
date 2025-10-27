@@ -3,6 +3,7 @@ import styles from "../css-modules/ProjectViewHeader.module.css";
 import ColorText from "../../winrock-dashboard/components/ColorText";
 import { useNavigate } from 'react-router-dom';
 import backArrow from "../assets/backArrow.svg";
+import RowCustomSelect from '../../winrock-dashboard/components/RowCustomSelect';
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from '../../../firebaseConfig'
 
@@ -36,14 +37,32 @@ interface ProjectViewHeaderProps {
     setShowAccessManager: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const statusOptions: StatusType[] = [
+  'On Track',
+  'At Risk',
+  'Paused',
+  'Completed',
+  'Completed (except for risk)'
+];
+
+const analysisStageOptions: AnalysisStageType[] = [
+  'Risk & Co-benefit Assessment',
+  'GHG Assessment Analysis',
+  'Confirming Final Requirements',
+  'Clarifying Technical Details',  // ← Add this line
+  'Clarifying Initial Project Information',
+  'Complete, and Excluded'
+];
+
 const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAccessManager }) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editableData, setEditableData] = useState({ ...data });
     const [currentData, setData] = useState(data); // Local state to reflect changes in the UI
     const navigate = useNavigate();
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
-        setEditableData({ ...editableData, [field]: e.target.value });
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | string, field: string) => {
+        const value = typeof e === 'string' ? e : e.target.value; // Handle string for RowCustomSelect
+        setEditableData({ ...editableData, [field]: value });
     };
 
     const handleSave = async () => {
@@ -59,6 +78,8 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                 geography: editableData.geography,
                 projectName: editableData.projectName,
                 supplierName: editableData.supplierName,
+                analysisStage: editableData.analysisStage,
+                overallStatus: editableData.overallStatus,
                 // Add other fields as needed
             });
 
@@ -87,7 +108,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                         type="text"
                         value={editableData.projectName}
                         onChange={(e) => handleInputChange(e, 'projectName')}
-                        className={styles.projectTitleInput}
+                        className={styles.editableTitle}
                     />
                 ) : (
                     <h1 className={styles.projectTitle}>{currentData.projectName}</h1>
@@ -126,25 +147,43 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                             type="text"
                             value={editableData.supplierName}
                             onChange={(e) => handleInputChange(e, 'supplierName')}
-                            className={styles.cellInput}
+                            className={styles.editableInput}
                         />
                     ) : (
                         currentData.supplierName
                     )}
                 </td>
                 <td className={styles.cell}>
-                    <ColorText
-                        text={currentData.overallStatus}
-                        category={currentData.overallStatus}
-                        variant="status"
-                    />
+                    {isEditMode ? (
+                        <RowCustomSelect
+                            value={editableData.overallStatus}
+                            options={statusOptions}
+                            onChange={(e) => handleInputChange(e, 'overallStatus')}
+                            variant="status"
+                        />
+                        ) : (
+                        <ColorText
+                            text={currentData.overallStatus}
+                            category={currentData.overallStatus}
+                            variant="status"
+                        />
+                        )}
                 </td>
                 <td className={styles.cell}>
-                    <ColorText
-                        text={currentData.analysisStage}
-                        category={currentData.analysisStage}
-                        variant="analysis"
-                    />
+                    {isEditMode ? (
+                        <RowCustomSelect
+                            value={editableData.analysisStage}
+                            options={analysisStageOptions}
+                            onChange={(e) => handleInputChange(e, 'analysisStage')}
+                            variant="analysis"
+                        />
+                        ) : (
+                        <ColorText
+                            text={currentData.analysisStage}
+                            category={currentData.analysisStage}
+                            variant="analysis"
+                        />
+                        )}
                 </td>
                 <td className={styles.cell}>
                     {isEditMode ? (
@@ -152,7 +191,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                             type="text"
                             value={editableData.spendCategory}
                             onChange={(e) => handleInputChange(e, 'spendCategory')}
-                            className={styles.cellInput}
+                            className={styles.editableInput}
                         />
                     ) : (
                         currentData.spendCategory
@@ -164,14 +203,18 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                             type="text"
                             value={editableData.geography}
                             onChange={(e) => handleInputChange(e, 'geography')}
-                            className={styles.cellInput}
+                            className={styles.editableInput}
                         />
                     ) : (
                         currentData.geography
                     )}
                 </td>
-                <td className={styles.cell}>{currentData.lastUpdated}</td>
-                <td className={styles.cell}>{currentData.startDate}</td>
+                <td className={styles.cell}>
+                    {new Date(currentData.lastUpdated).toISOString().split('T')[0]}
+                </td>
+                <td className={styles.cell}>
+                    {new Date(currentData.startDate).toISOString().split('T')[0]}
+                </td>
             </tr>
         </div>
     );
