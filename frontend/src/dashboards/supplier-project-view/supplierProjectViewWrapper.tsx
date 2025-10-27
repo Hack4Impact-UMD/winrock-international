@@ -35,11 +35,10 @@ const SupplierProjectViewWrapper = () => {
 
         if (projectData) {
           setProject(projectData);
-
+          console.log(projectData)
           const updatesQuery = query(
-            collection(db, "updates"),
-            where("projectId", "==", projectData.id),
-            orderBy("timestamp", "desc") // Added orderBy to sort updates by timestamp
+            collection(db, "projects"),
+            where("projectId", "==", projectData.id)
           );
 
           const updatesSnapshot = await getDocs(updatesQuery);

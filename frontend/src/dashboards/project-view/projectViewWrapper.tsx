@@ -39,7 +39,7 @@ const ProjectViewWrapper = () => {
           setProject(projectData);
 
           const updatesQuery = query(
-            collection(db, "updates"),
+            collection(db, "projects"),
             where('projectId', '==', projectData.id)
           );
 
