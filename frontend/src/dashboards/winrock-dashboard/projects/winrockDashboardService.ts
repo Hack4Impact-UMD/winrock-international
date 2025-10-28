@@ -70,7 +70,8 @@ const createProject = async (
     analysisStage: AnalysisStage = AnalysisStage.STAGE_1,
     startDate?: Date,
     isActive: boolean = true,
-    isPinned: boolean = false
+    isPinned: boolean = false,
+    isLocked: boolean = false
 ): Promise<Result> => {
     try {
         //const docRef = doc(db, "projects", projectName);
@@ -98,6 +99,7 @@ const createProject = async (
                 lastUpdated: serverTimestamp(),
                 isActive,
                 isPinned,
+                isLocked,
                 id: docRef.id,
                 activityType,
             };
@@ -265,6 +267,7 @@ const addProject = async (projectName: string, clientName: string, supplierName:
 			AnalysisStage.STAGE_1,
 			undefined,
 			true,
+			false,
 			false
 		);
 
@@ -386,6 +389,85 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 };
 
 /**
+ * Check if a project is locked for editing
+ */
+const checkProjectLock = async (projectName: string): Promise<Result> => {
+    try {
+        const docRef = doc(db, "projects", projectName);
+        const docSnap = await getDoc(docRef);
+        
+        if (!docSnap.exists()) {
+            return { success: false, errorCode: "project-not-found" };
+        }
+
+        const projectData = docSnap.data();
+        const isLocked = projectData.isLocked || false;
+        
+        return { 
+            success: true, 
+            data: { isLocked } 
+        };
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
+};
+
+/**
+ * Lock a project for editing (set isLocked to true)
+ */
+const lockProject = async (projectName: string): Promise<Result> => {
+    try {
+        const docRef = doc(db, "projects", projectName);
+        
+        await runTransaction(db, async (tx) => {
+            const snap = await tx.get(docRef);
+            if (!snap.exists()) {
+                throw new Error("project-not-found");
+            }
+
+            const projectData = snap.data();
+            if (projectData.isLocked) {
+                throw new Error("project-already-locked");
+            }
+
+            tx.update(docRef, {
+                isLocked: true,
+                lastUpdated: serverTimestamp()
+            });
+        });
+
+        return { success: true };
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
+};
+
+/**
+ * Unlock a project (set isLocked to false)
+ */
+const unlockProject = async (projectName: string): Promise<Result> => {
+    try {
+        const docRef = doc(db, "projects", projectName);
+        
+        await runTransaction(db, async (tx) => {
+            const snap = await tx.get(docRef);
+            if (!snap.exists()) {
+                throw new Error("project-not-found");
+            }
+
+            tx.update(docRef, {
+                isLocked: false,
+                lastUpdated: serverTimestamp()
+            });
+        });
+
+        return { success: true };
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
+};
+
+/**
  * Send an project invitation email to the supplier
  */
 const emailSupplier = async (projectName: string, supplierName : string, supplierEmail : string, token:string) : Promise<Result> => {
@@ -433,4 +515,7 @@ export {
     getProjectsWithFilters,
     updateProjectField,
     deleteProject,
+    checkProjectLock,
+    lockProject,
+    unlockProject,
 };

@@ -8,6 +8,7 @@ interface TextQuestionProps {
   controlledValue: string;
   required?: boolean;
   disableOverwrite?: boolean;
+  disabled?: boolean;
   size?: 'small' | 'large';
   removeTopPadding?: boolean;
   popup?: {
@@ -24,6 +25,7 @@ function TextQuestion({
   controlledValue,
   required = false,
   disableOverwrite = false,
+  disabled = false,
   size = 'large',
   removeTopPadding = false,
   popup,
@@ -72,6 +74,7 @@ function TextQuestion({
           placeholder={placeholder}
           onChange={handleChange}
           onBlur={validate}
+          disabled={disabled}
         />
       )}
     </div>

@@ -84,7 +84,7 @@ function TechEnergyRisksForm() {
   const title = "Tech & Energy Risks and Co-Benefit Form";
   
   // TODO: Lock flag - set to true to prevent form editing
-  const locked = false;
+  const locked = true;
   
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3;
@@ -152,7 +152,9 @@ function TechEnergyRisksForm() {
   const [error, setError] = useState('');
 
   // Initialize form lock
-  const { handleLockedAction, LockedPopup } = FormLock({ locked });
+  const { handleLockedAction, LockedPopup } = FormLock({ 
+      projectId: "Project2" // TODO: Replace with actual projectId from form data or props
+  });
 
   /**
   * Insert a new TechEnergyRisksForm submission with the user-inputted
@@ -209,36 +211,36 @@ function TechEnergyRisksForm() {
         <PageOne
           handleChange={handleChange}
           answersRef={answersRef}
+          locked={locked}
         />}
       {currentPage === 2 &&
         <PageTwo
           handleChange={handleChange}
           answersRef={answersRef}
+          locked={locked}
         />}
       {currentPage === 3 &&
         <PageThree
           handleChange={handleChange}
           answersRef={answersRef}
+          locked={locked}
         />}
 
       <NavigationButtons
         onNext={() => {
-            if (locked) {
-              handleLockedAction();
-              return;
-            }
             if (currentPage < totalPages) {
               setCurrentPage(currentPage + 1);
               window.scroll(0, 0);
             } else {
+              // Only check for lock when trying to submit
+              if (locked) {
+                handleLockedAction();
+                return;
+              }
               handleSubmit();
             }
         }}
         onBack={() => {
-          if (locked) {
-            handleLockedAction();
-            return;
-          }
           if (currentPage > 1) {
             setCurrentPage(currentPage - 1)
             window.scroll(0, 0);
@@ -246,6 +248,8 @@ function TechEnergyRisksForm() {
         }}
         canGoBack={currentPage > 1}
         nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
+        disableSubmit={locked}
+        isLastPage={currentPage === totalPages}
       />
 
       <Error message={error} />
@@ -259,9 +263,10 @@ function TechEnergyRisksForm() {
 interface PageProps {
   answersRef: RefObject<TechEnergyRisksFormData>;
   handleChange: (field: keyof TechEnergyRisksFormData, value: string) => void;
+  locked: boolean;
 }
 
-const PageOne = ({ answersRef, handleChange }: PageProps) => {
+const PageOne = ({ answersRef, handleChange, locked }: PageProps) => {
   return (
     <>
       <SectionHeader label="Risk Assessment" />
@@ -272,6 +277,7 @@ const PageOne = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.riskAssessmentDetails.value]}
         onSelect={(value: string) => handleChange('riskAssessment', value)}
         onChange={(value: string) => handleChange('riskAssessmentDetails', value)}
+        disabled={locked}
       />
       
       <SectionHeader label="Climate Change Adaptation" />
@@ -282,6 +288,7 @@ const PageOne = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.climateChangeDetails.value]}
         onSelect={(value: string) => handleChange('climateChange', value)}
         onChange={(value: string) => handleChange('climateChangeDetails', value)}
+        disabled={locked}
       />
       
       <SectionHeader label="Technology Risks" />
@@ -292,6 +299,7 @@ const PageOne = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.technologyRiskDetails.value]}
         onSelect={(value: string) => handleChange('technologyRisk', value)}
         onChange={(value: string) => handleChange('technologyRiskDetails', value)}
+        disabled={locked}
       />
 
       <RisksDropdownQuestion
@@ -300,6 +308,7 @@ const PageOne = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.scalableTechnologyDetails.value]}
         onSelect={(value: string) => handleChange('scalableTechnology', value)}
         onChange={(value: string) => handleChange('scalableTechnologyDetails', value)}
+        disabled={locked}
       />
       
       <SectionHeader label="Sustainable Use and Protection of Water Resources" />
@@ -310,6 +319,7 @@ const PageOne = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.waterManagementDetails.value]}
         onSelect={(value: string) => handleChange('waterManagement', value)}
         onChange={(value: string) => handleChange('waterManagementDetails', value)}
+        disabled={locked}
       />
       
       <SectionHeader label="Pollution & Waste Control" />
@@ -320,6 +330,7 @@ const PageOne = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.pollutionPreventionDetails.value]}
         onSelect={(value: string) => handleChange('pollutionPrevention', value)}
         onChange={(value: string) => handleChange('pollutionPreventionDetails', value)}
+        disabled={locked}
       />
 
       <RisksDropdownQuestion
@@ -328,12 +339,13 @@ const PageOne = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.wasteMonitoringDetails.value]}
         onSelect={(value: string) => handleChange('wasteMonitoring', value)}
         onChange={(value: string) => handleChange('wasteMonitoringDetails', value)}
+        disabled={locked}
       />
     </>
   )
 }
 
-const PageTwo = ({ answersRef, handleChange }: PageProps) => {
+const PageTwo = ({ answersRef, handleChange, locked }: PageProps) => {
   return (
     <>
       <SectionHeader label="Transition to a Circular Economy" />
@@ -344,6 +356,7 @@ const PageTwo = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.circularEconomyDetails.value]}
         onSelect={(value: string) => handleChange('circularEconomy', value)}
         onChange={(value: string) => handleChange('circularEconomyDetails', value)}
+        disabled={locked}
       />
       
       <SectionHeader label="Protection and Restoration of Biodiversity and Ecosystems" />
@@ -354,6 +367,7 @@ const PageTwo = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.biodiversityImpactDetails.value]}
         onSelect={(value: string) => handleChange('biodiversityImpact', value)}
         onChange={(value: string) => handleChange('biodiversityImpactDetails', value)}
+        disabled={locked}
       />
 
       <RisksDropdownQuestion
@@ -362,6 +376,7 @@ const PageTwo = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.landFeaturesDetails.value]}
         onSelect={(value: string) => handleChange('landFeatures', value)}
         onChange={(value: string) => handleChange('landFeaturesDetails', value)}
+        disabled={locked}
       />
       
       <SectionHeader label="Human and Labor Rights" />
@@ -372,6 +387,7 @@ const PageTwo = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.responsibleSourcingDetails.value]}
         onSelect={(value: string) => handleChange('responsibleSourcing', value)}
         onChange={(value: string) => handleChange('responsibleSourcingDetails', value)}
+        disabled={locked}
       />
 
       <RisksDropdownQuestion
@@ -380,6 +396,7 @@ const PageTwo = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.laborFrameworksDetails.value]}
         onSelect={(value: string) => handleChange('laborFrameworks', value)}
         onChange={(value: string) => handleChange('laborFrameworksDetails', value)}
+        disabled={locked}
       />
 
       <RisksDropdownQuestion
@@ -388,6 +405,7 @@ const PageTwo = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.farmerHealthDetails.value]}
         onSelect={(value: string) => handleChange('farmerHealth', value)}
         onChange={(value: string) => handleChange('farmerHealthDetails', value)}
+        disabled={locked}
       />
       
       <SectionHeader label="Community Impacts" />
@@ -398,6 +416,7 @@ const PageTwo = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.communityEngagementDetails.value]}
         onSelect={(value: string) => handleChange('communityEngagement', value)}
         onChange={(value: string) => handleChange('communityEngagementDetails', value)}
+        disabled={locked}
       />
 
       <RisksDropdownQuestion
@@ -406,6 +425,7 @@ const PageTwo = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.negativeImpactsDetails.value]}
         onSelect={(value: string) => handleChange('negativeImpacts', value)}
         onChange={(value: string) => handleChange('negativeImpactsDetails', value)}
+        disabled={locked}
       />
 
       <SectionHeader label="Safeguards" />
@@ -416,12 +436,13 @@ const PageTwo = ({ answersRef, handleChange }: PageProps) => {
                            answersRef.current.effectiveSafeguardsDetails.value]}
         onSelect={(value: string) => handleChange('effectiveSafeguards', value)}
         onChange={(value: string) => handleChange('effectiveSafeguardsDetails', value)}
+        disabled={locked}
       />
     </>
   )
 }
 
-const PageThree = ({ answersRef, handleChange }: PageProps) => {
+const PageThree = ({ answersRef, handleChange, locked }: PageProps) => {
   return (
     <>
       <SectionHeader
@@ -441,6 +462,7 @@ const PageThree = ({ answersRef, handleChange }: PageProps) => {
         ]}
         onSelect={(value: string) => handleChange('waterBenefits', value)}
         onChange={(value: string) => handleChange('waterBenefitsDetails', value)}
+        disabled={locked}
       />
       
       <SectionHeader
@@ -461,6 +483,7 @@ const PageThree = ({ answersRef, handleChange }: PageProps) => {
         ]}
         onSelect={(value: string) => handleChange('biodiversityBenefits', value)}
         onChange={(value: string) => handleChange('biodiversityBenefitsDetails', value)}
+        disabled={locked}
       />
 
       <SectionHeader label="Project Community/Farmer Co-Benefits" />
@@ -478,6 +501,7 @@ const PageThree = ({ answersRef, handleChange }: PageProps) => {
         ]}
         onSelect={(value: string) => handleChange('communityBenefits', value)}
         onChange={(value: string) => handleChange('communityBenefitsDetails', value)}
+        disabled={locked}
       />
     </>
   )
