@@ -25,7 +25,6 @@ interface ProjectViewHeaderProps {
 }
 
 const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAccessManager }) => {
-    const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
 
     return (
@@ -39,12 +38,6 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
 
                 <h1 className={styles.projectTitle}>{data.projectName}</h1>
                 <div className={styles.btnContainer}>
-                    <button
-                        className={`${styles.button} ${isEditMode ? styles.active : ''}`}
-                        onClick={() => setIsEditMode(!isEditMode)}
-                    >
-                        {isEditMode ? 'Done' : 'Edit Project'}
-                    </button>
                     <button
                         className={styles.shareButton}
                         onClick={() => { setShowAccessManager(true) }}
