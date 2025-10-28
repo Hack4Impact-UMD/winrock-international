@@ -91,8 +91,6 @@ interface AgricultureProposalFormData {
 function AgricultureProposalForm() {
     const title = "Greenhouse Gas Emissions Project Proposal Form for Project Validation"
     
-    // TODO: Lock flag - set to true to prevent form editing
-    const locked = true;
 
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 4;
@@ -149,7 +147,7 @@ function AgricultureProposalForm() {
 
     // Used to change the answersRef's fields dynamically
     function handleChange(field: keyof AgricultureProposalFormData, value: string) {
-        if (locked) {
+        if (isLocked) {
             handleLockedAction();
             return;
         }
@@ -167,7 +165,10 @@ function AgricultureProposalForm() {
     const [error, setError] = useState('');
 
     // Initialize form lock
-    const { handleLockedAction, LockedPopup } = FormLock({ locked });
+    const projectId = "Project2"; // TODO: Replace with actual projectId from form data or props
+    const { handleLockedAction, LockedPopup, isLocked } = FormLock({ 
+        projectId
+    });
 
     /**
      * Insert a new AgricultureProjectProposal document with the user-inputted
@@ -237,6 +238,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.ingredientPrimary.value}
                         onSelect={(value: string) => handleChange("ingredientPrimary", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests written information on the primary category for the ingredient or crop (raw material) being supplied to Nestlé.",
                             example: "Cereals and Grains"
@@ -271,6 +273,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.ingredientSub.value}
                         onSelect={(value: string) => handleChange("ingredientSub", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "If known, please also provide a more specific sub-category for the ingredient or crop (raw material) you are supplying to Nestlé.",
                             example: "Within the 'Cereals & Grains' category, the sub-category of ingredient we are supplying is Corn Gluten Meal (CGM)."
@@ -282,6 +285,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.ingredientSub.value}  // Adjust based on actual data structure if needed
                         onChange={(value) => handleChange("ingredientSub", value)}  // Adjust based on actual data structure if needed
                         size="small"
+                        disabled={isLocked}
                     />
 
                     <SectionHeader label="General Project Activity Description" />
@@ -298,6 +302,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.mainIntervention.value}
                         onSelect={(value: string) => handleChange("mainIntervention", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests categorizing information on the project, selecting from one choice among several outlined in the Interventions List for Reference tab. In the event that a project fits into multiple categories, please provide each one that is relevant.",
                             example: "Farm-improvement"
@@ -309,6 +314,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.projectDescription.value}
                         onChange={(value: string) => handleChange("projectDescription", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests more specific information on the project's activities itself: description of baseline conditions, project activities (as many projects will involve multiple activities, it is important for the sake of validation that the activities be described in as clear terms as possible). Clearly describing and separating the activities enables the analyst to validate the individual impact made by each activity.",
                             example: "Our project focuses on implementing regenerative agricultural practices on U.S. agricultural land, specifically targeting corn production. The project aims to improve soil health, sequester carbon, and reduce GHG emissions. The main components of the project include: \n\n1. Adopting no-till farming: We encourage farmers to adopt no-till farming techniques, which help prevent soil erosion and improve soil structure, ultimately contributing to carbon sequestration. \n\n2. Cover cropping: We promote the use of cover crops to protect the soil during off-season periods, which can also help sequester carbon and improve soil health. \n\n3. Crop rotation: We encourage farmers to implement crop rotation strategies to enhance soil fertility, reduce pest infestations, and promote biodiversity, which can contribute to overall soil health and carbon sequestration."
@@ -319,6 +325,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.mitigationPlan.value}  // Adjust based on actual data structure if needed
                         onChange={(value) => handleChange("mitigationPlan", value)}  // Adjust based on actual data structure if needed
                         required={true}
+                        disabled={isLocked}
                         size="small"
 
                     />
@@ -328,6 +335,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.averageVolumePurchased.value}
                         onChange={(value: string) => handleChange("averageVolumePurchased", value)}
                         required={true}
+                        disabled={isLocked}
                         size="small"
                         popup={{
                             guidance: "This section provides data on the volume of the project compared to the overall volume of Nestlé's purchases in an ingredient category.",
@@ -343,6 +351,7 @@ function AgricultureProposalForm() {
                                 controlledValue={answersRef.current.averageVolumePurchased.value}
                                 onChange={(value: string) => handleChange("averageVolumePurchased", value)}
                                 required={true}
+                                disabled={isLocked}
                                 size="small"
                             />
                         </div>
@@ -353,6 +362,7 @@ function AgricultureProposalForm() {
                                 controlledValue={answersRef.current.ingredientDetails.value}
                                 onChange={(value: string) => handleChange("ingredientDetails", value)}
                                 required={true}
+                                disabled={isLocked}
                                 size="small"
                             />
                         </div>
@@ -410,6 +420,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.mainCountry.value}
                         onSelect={(value: string) => handleChange("mainCountry", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests the country where the GHG reduction project is occurring. Knowing the project geography is essential for understanding its environmental context and potential impact on GHG emissions.",
                             example: "United States"
@@ -420,6 +431,7 @@ function AgricultureProposalForm() {
                         label="If the project is implemented in more than one country, please list the countries (If applicable)"
                         controlledValue={answersRef.current.otherCountries!.value}
                         onChange={(value: string) => handleChange("otherCountries", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "If the project occurs in more than one country, please list all the countries",
                             example: "Canada"
@@ -430,6 +442,7 @@ function AgricultureProposalForm() {
                         label="What is the sub-national region or regions where the project is located? (If Applicable)"
                         controlledValue={answersRef.current.subNationalRegions!.value}
                         onChange={(value: string) => handleChange("subNationalRegions", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "If applicable, provide details about the sub-national region (e.g., province, state) where the project is located. If the project spans multiple countries or regions, select the primary one – where most activities occur or have the most significant impact on GHG emissions.",
                             example: "Iowa"
@@ -443,6 +456,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.contractingParty.value}
                         onChange={(value: string) => handleChange("contractingParty", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests contact information for the relevant supplier(s) contracting with Nestlé for project implementation, as well as the name and role of the staff member connected to the submitted project.",
                             example: "ABC Company"
@@ -453,6 +467,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.keyContactName.value}
                         onChange={(value: string) => handleChange("keyContactName", value)}
                         required={true}
+                        disabled={isLocked}
                         size="small"
                         popup={{
                             guidance: "Please enter the name of the key contact.",
@@ -469,6 +484,7 @@ function AgricultureProposalForm() {
                                 controlledValue={answersRef.current.keyContactName.value}
                                 onChange={(value: string) => handleChange("keyContactName", value)}
                                 required={true}
+                                disabled={isLocked}
                                 size="small"
 
                                 hideInput={false} // Ensures the input is shown
@@ -481,6 +497,7 @@ function AgricultureProposalForm() {
                                 controlledValue={answersRef.current.keyContactEmail.value}
                                 onChange={(value: string) => handleChange("keyContactEmail", value)}
                                 required={true}
+                                disabled={isLocked}
                                 size="small"
 
                                 hideInput={false} // Ensures the input is shown
@@ -493,6 +510,7 @@ function AgricultureProposalForm() {
                         label="Is another partner(s) involved with the project? If so, please name them and provide a brief description of their roles and responsibilities."
                         controlledValue={answersRef.current.projectPartnerOne!.value}
                         onChange={(value: string) => handleChange("projectPartnerOne", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests contact information for the relevant supplier(s) contracting with Nestlé for project implementation, as well as the name and role of the staff member connected to the submitted project.",
                             example: "X Organization - Technical Assistance: X Organization will provide technical guidance and expertise on implementing regenerative agricultural practices, such as no-till farming, cover cropping, and crop rotation."
@@ -503,6 +521,7 @@ function AgricultureProposalForm() {
                         label="Second partner name, roles and responsibilities"
                         controlledValue={answersRef.current.projectPartnerTwo!.value}
                         onChange={(value: string) => handleChange("projectPartnerTwo", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests contact information for the relevant supplier(s) contracting with Nestlé for project implementation, as well as the name and role of the staff member connected to the submitted project.",
                             example: "Y Organization - Training and Capacity Building: Y Organization will develop and deliver training programs for farmers and other stakeholders to learn about regenerative agricultural practices and their benefits, as well as best practices for implementing these techniques."
@@ -513,6 +532,7 @@ function AgricultureProposalForm() {
                         label="Third partner name, roles and responsibilities"
                         controlledValue={answersRef.current.projectPartnerThree!.value}
                         onChange={(value: string) => handleChange("projectPartnerThree", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests contact information for the relevant supplier(s) contracting with Nestlé for project implementation, as well as the name and role of the staff member connected to the submitted project.",
                             example: "Z Organization - Monitoring and Evaluation: Z Organization will collaborate with us to monitor and evaluate the project's impact on soil health, carbon sequestration, and GHG emissions, ensuring that the project's objectives are met and that the implemented practices are effective in reducing GHG emissions."
@@ -526,6 +546,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.projectStartDate.value}
                         onChange={(value: string) => handleChange("projectStartDate", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests information on the timing of the project. The information provided in this section enables the analyst to understand not only the impact, but within what time frame that impact may occur.",
                             example: "Jan-2023"
@@ -537,6 +558,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.expectedDuration.value}
                         onChange={(value: string) => handleChange("expectedDuration", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests information on the timing of the project. The information provided in this section enables the analyst to understand not only the impact, but within what time frame that impact may occur.",
                             example: "20 years"
@@ -548,6 +570,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.expectedFirstImpact.value}
                         onChange={(value: string) => handleChange("expectedFirstImpact", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "Depending on the category of the intervention and the project activities, this impact may begin immediately, or take place after a period of time has passed.",
                             example: "We expect the first reported impact (actual GHG emissions reduction or removal) to occur in the second year of the project, specifically by December 31, 2024. Impact is not anticipated to vary greatly between years over the lifespan of the project."
@@ -561,6 +584,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.connectionToValueChain.value}
                         onChange={(value: string) => handleChange("connectionToValueChain", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests information on the method being used to establish the product's connection to the Nestlé supply shed. Supply chain and sourcing landscape removals are defined by Nestlé in relation to their connection to Nestlé's value chain with four project zones defined in the Supply Chain & Sourcing Landscapes Removals Framework. Projects are categorized based upon the clarity in the connection between the farm and Nestlé's commodities. These Zones are categorized as:\n\nZone 1 - On-Farm, Commodity-specific\nZone 2 - Supply shed farm, commodity-specific\nZone 3 - Supply Shed Farm, Non commodity-specific\nZone 4 - Sourcing Landscape\n\nPlease note that Zone 3 or 4 will not be considered for scope 3 GHG reduction/removal projects",
                             example: "Based upon the Nestlé Zones, our commodity is designed as Zone 2. We can clearly describe that the farms covered by the management practices are providing ingredients to Nestlé's direct suppliers, but have difficulty connecting the farm and its product directly to Nestlé itself."
@@ -571,6 +595,7 @@ function AgricultureProposalForm() {
                         label="If multiple zones, please describe here"
                         controlledValue={answersRef.current.otherZones!.value}
                         onChange={(value: string) => handleChange("otherZones", value)}
+                        disabled={isLocked}
                     />
 
                     <DropdownQuestion
@@ -578,6 +603,7 @@ function AgricultureProposalForm() {
                         options={["Yes", "No"]}
                         controlledValue={answersRef.current.physicalTraceability!.value}
                         onSelect={(value: string) => handleChange("physicalTraceability", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests information on Nestlé's ability to trace a product to its origin, and thus how clear the connection between the supplier and Nestlé is, for the purpose of calculating emissions reductions.",
                             example: "Yes"
@@ -588,7 +614,7 @@ function AgricultureProposalForm() {
                         label="Please provide additional relevant information here"
                         controlledValue={answersRef.current.ptAdditionalInfo!.value}
                         onChange={(value: string) => handleChange("ptAdditionalInfo", value)}
-
+                        disabled={isLocked}
                     />
 
                     <TextQuestion
@@ -596,6 +622,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.chainOfCustody.value}
                         onChange={(value: string) => handleChange("chainOfCustody", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section requests information on the method being used to establish the product's chain of custody. The chain of custody model describes how the connection between the supplier and Nestlé is established for the purpose of calculating emissions reductions. Models include:(Source: ISEAL) \n\n1. Identity Preserved- Materials originate from a single source and maintain their unique characteristics throughout the entire supply chain. This model ensures complete traceability to the original source. For this method to be appropriate, the product must be able to be clearly traced to its origin.\n2. Segregation - Materials with specified characteristics from certified sources are kept separate from non-certified materials throughout the supply chain, ensuring the end product is 100% certified. For this method to be appropriate, it would be necessary to possess records which clearly separate the product of a participating farm from that of a non-participating farm.\n3. Mass Balance - Control Blending: Associated documentation must refer to the mix of proportions of certified physical product. For this method to be appropriate, it would be necessary to maintain records and practices that demonstrate the proportion of the blended project--for each shipment--that comes from participating project farms and non-project farms.\n4. Mass Balance: Associated documentation must refer to the mix of proportions of certified physical product.​For this method to be appropriate, it would be necessary to maintain records and practices that demonstrate the proportion of the blended project--on average--comes from participating project farms and non-project farms\n5. Book and Claim - The administrative record flow is not necessarily connected to the physical flow of material through the supply chain. For this method to be appropriate, the supplier or Nestlé would need to maintain documentation describing volumes sold or purchased.",
                             example: "Segregation Model"
@@ -606,7 +633,7 @@ function AgricultureProposalForm() {
                         label="Please provide additional relevant information here"
                         controlledValue={answersRef.current.cocAdditionalInfo!.value}
                         onChange={(value: string) => handleChange("cocAdditionalInfo", value)}
-
+                        disabled={isLocked}
                     />
                 </>
             )}
@@ -621,6 +648,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.carbonCredits.value}
                         onSelect={(value: string) => handleChange("carbonCredits", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section aims to identify which recognized and approved carbon standard is being used to validate and certify the carbon credits generated by a project. Some examples include CAR, VCS, Gold standard.",
                             example: "VCS"
@@ -631,6 +659,7 @@ function AgricultureProposalForm() {
                         label="What carbon standard is used to verify the credits generated?"
                         controlledValue={answersRef.current.carbonStandard!.value}
                         onChange={(value: string) => handleChange("carbonStandard", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This section aims to identify which recognized and approved carbon standard is being used to validate and certify the carbon credits generated by a project. Some examples include CAR, VCS, Gold standard.",
                             example: "VCS"
@@ -643,6 +672,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.carbonCreditsVerified.value}
                         onSelect={(value: string) => handleChange("carbonCreditsVerified", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "To ensure that the method used to measure and estimate GHG reductions or removals has been reviewed and validated by independent, reputable organizations. These third-party entities are usually approved and recognized by established crediting programs, such as the Verified Carbon Standard (VCS) or the Gold Standard. Their role is to ensure that the quantification methods used are scientifically sound, accurate, and reliable.",
                             example: "Yes"
@@ -654,6 +684,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.ccvSupplement.value}
                         onChange={(value: string) => handleChange("ccvSupplement", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "To ensure that the method used to measure and estimate GHG reductions or removals has been reviewed and validated by independent, reputable organizations. These third-party entities are usually approved and recognized by established crediting programs, such as the Verified Carbon Standard (VCS) or the Gold Standard. Their role is to ensure that the quantification methods used are scientifically sound, accurate, and reliable.",
                             example: "3rd party verification in place to verify practices implementation and quantification of impact. 3rd party entity name 'XXX'"
@@ -666,6 +697,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.carbonCreditsDoubleCount.value}
                         onSelect={(value: string) => handleChange("carbonCreditsDoubleCount", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This could include mechanisms like an external registry, which is a centralized database that tracks all carbon credits to ensure they are only counted once. Alternatively, it could involve maintaining a ledger that records transactions and ownership of carbon credits, or having contracts in place that specify the ownership and exclusivity of the credits. These measures help ensure the integrity and accuracy of the carbon credit system by avoiding duplication and ensuring that each credit represents a unique reduction in GHG emissions.",
                             example: "Yes"
@@ -677,6 +709,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.ccdcSupplement.value}
                         onChange={(value: string) => handleChange("ccdcSupplement", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "This could include mechanisms like an external registry, which is a centralized database that tracks all carbon credits to ensure they are only counted once. Alternatively, it could involve maintaining a ledger that records transactions and ownership of carbon credits, or having contracts in place that specify the ownership and exclusivity of the credits. These measures help ensure the integrity and accuracy of the carbon credit system by avoiding duplication and ensuring that each credit represents a unique reduction in GHG emissions.",
                             example: "Supplier will register Nestle scope 3 emission claims with Registry 'AAA' for claims tracking and provide additional check for double counting on claim on specific location boundaries"
@@ -688,6 +721,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.dateOfIssuance.value}
                         onChange={(value: string) => handleChange("dateOfIssuance", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "Expected date (month) when the credit will be issued after project implementation",
                             example: "Dec, 2025"
@@ -702,6 +736,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.coFinancingStructure.value}
                         onSelect={(value: string) => handleChange("coFinancingStructure", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "Co-financing refers to a practice where multiple entities collaborate to provide funds for a project or a company.",
                             example: "Cost sharing model to be agreed between the Supplier, Nestle and other parties."
@@ -713,6 +748,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.coFinancingSupplement.value}
                         onChange={(value: string) => handleChange("coFinancingSupplement", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "A text description explaining any potential co-financing (cost-sharing), its amount, and the relevant investors. Co-financing refers to a practice where multiple entities collaborate to provide funds for a project or a company.",
                             example: "Our project involves a co-financing model. Supplier XYZ will provide 75% of the cost, in complement to the 25% of the cost that Nestlé is providing. In addition, further costs throughout the lifespan of the project will also be broken down along this 75/25 ratio."
@@ -724,6 +760,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.benefitSharing.value}
                         onChange={(value: string) => handleChange("benefitSharing", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "A text description explaining any potential sharing of the GHG benefits. Potential benefit sharing refers to the distribution of GHG emission reductions.",
                             example: "As we will be in different stages of the value chain, both Supplier XYZ, and Nestlé will be allotted 100% of the benefits, or 75,000 t CO2e."
@@ -752,6 +789,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.ghgOption.value}
                         onSelect={(value: string) => handleChange("ghgOption", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "Select one of the options and add the answers to the respective questions based on applicability (accounting approach used for project, availability of data, type and stage of project)\n\n1. Compare Before and After Emissions Factor\n2. Project Carbon Intensity/Carbon credit project\n\nPlease note: For early stage projects we recognize that this represents a best initial estimate and is subject to change as the project is further developed. If you encounter any difficulties in completing this section, Winrock will provide guidance on the calculation process and assist in gathering the necessary information during the project validation process.",
                             example: "Compare Before and After Emissions Factor"
@@ -763,6 +801,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.beforeEmissionFactor.value}
                         onChange={(value: string) => handleChange("beforeEmissionFactor", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "If the project accounts for GHG benefits by changing the full LCA Emission Factor (EF) for the final product/ingredient that Nestle sources, or by comparing project carbon intensity to the average ingredient purchased from the supply shed, please provide:\nBefore EF based on chosen approach for baseline calculation:\n1. Supplier EF (farm-level inputs)\n2. Supply shed average EF (modeled based on supply shed agronomic practces on field, or industry average)",
                             example: "1.5 tCO2e/ ton of corn"
@@ -774,6 +813,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.afterEmissionFactor.value}
                         onChange={(value: string) => handleChange("afterEmissionFactor", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "If the project accounts for GHG benefits by changing the full LCA Emission Factor (EF) for the final product/ingredient that Nestle sources, or by comparing project carbon intensity to the average ingredient purchased from the supply shed, please provide project-specific Emissions factor after the project in tCO2e/ton of ingredient.",
                             example: "1.2 tonnes, corn"
@@ -785,6 +825,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.emissionReductionEstimate.value}
                         onChange={(value: string) => handleChange("emissionReductionEstimate", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "Estimate of the expected GHG reductions due to the project activities on a given farm area (tCO2e)",
                             example: "0.3 tCO2e"
@@ -796,6 +837,7 @@ function AgricultureProposalForm() {
                         controlledValue={answersRef.current.emissionRemovalEstimate.value}
                         onChange={(value: string) => handleChange("emissionRemovalEstimate", value)}
                         required={true}
+                        disabled={isLocked}
                         popup={{
                             guidance: "Estimate of the expected GHG removals due to the project activities on a given farm area (tCO2e)",
                             example: "0.004 tCO2e"
@@ -809,6 +851,7 @@ function AgricultureProposalForm() {
                         options={["Yes", "No"]}
                         controlledValue={answersRef.current.ghgSheetAttached.value}
                         onSelect={(value: string) => handleChange("ghgSheetAttached", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "The Calculation sheet should include inputs, outputs, data sources, baseline conditions, methodology used (IPCC tier 1/2/3), third-party models IF ANY, embedded calculations, and references used to derive the GHG impact/benefits from this project to Nestle.\nNote: For Data type,\nPrimary data includes: direct measurement or activity-based data\nSecondary data includes: literature or industry average or crop-specific emissions factor",
                             example: "Yes"
@@ -820,6 +863,7 @@ function AgricultureProposalForm() {
                         options={["Yes", "No", "N/A"]}
                         controlledValue={answersRef.current.ghgBuffer!.value}
                         onSelect={(value: string) => handleChange("ghgBuffer", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "Once emissions are physically captured, removed from the atmosphere, and then sequestered, there can be a 'risk of reversal' where emissions are again released into the atmosphere. To hedge against this risk of reversal, your project needs to establish a buffer of additional emissions removals in addition to the below project proposal numbers. If a project developer is planting trees as their project intervention, they can plant 20% more trees and not sell to buyers this extra amount of emissions removals.",
                             example: "Yes"
@@ -830,6 +874,7 @@ function AgricultureProposalForm() {
                         label="Please elaborate here - why you have/have not established a buffer."
                         controlledValue={answersRef.current.gbElaboration!.value}
                         onChange={(value: string) => handleChange("gbElaboration", value)}
+                        disabled={isLocked}
                         popup={{
                             guidance: "Once emissions are physically captured, removed from the atmosphere, and then sequestered, there can be a 'risk of reversal' where emissions are again released into the atmosphere. To hedge against this risk of reversal, your project needs to establish a buffer of additional emissions removals in addition to the below project proposal numbers. If a project developer is planting trees as their project intervention, they can plant 20% more trees and not sell to buyers this extra amount of emissions removals.",
                             example: "20% buffer included in the calculation sheet to mitigate reversal risks from expected removals "
@@ -889,7 +934,7 @@ function AgricultureProposalForm() {
             )}
                     <NavigationButtons
                         onNext={() => {
-                            if (locked) {
+                            if (isLocked) {
                                 handleLockedAction();
                                 return;
                             }
@@ -901,7 +946,7 @@ function AgricultureProposalForm() {
                             }
                         }}
                         onBack={() => {
-                            if (locked) {
+                            if (isLocked) {
                                 handleLockedAction();
                                 return;
                             }
@@ -912,6 +957,8 @@ function AgricultureProposalForm() {
                         }}
                         canGoBack={currentPage > 1}
                         nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
+                        disableSubmit={isLocked}
+                        isLastPage={currentPage === totalPages}
                     />
 
                     <Error message={error} />

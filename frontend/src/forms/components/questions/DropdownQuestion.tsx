@@ -9,6 +9,7 @@ interface DropdownQuestionProps {
    controlledValue: string;
    onSelect: (selected: string) => void
    required?: boolean
+   disabled?: boolean
    popup?: {
       guidance: string;
       example: string;
@@ -21,6 +22,7 @@ const DropdownQuestion = ({
    controlledValue,
    onSelect,
    required = false,
+   disabled = false,
    popup
 }: DropdownQuestionProps) => {
    const [showDropdown, setShowDropdown] = useState<boolean>(false)
@@ -32,7 +34,9 @@ const DropdownQuestion = ({
    }, [controlledValue]);
 
    const toggleDropdownQuestion = () => {
-      setShowDropdown(true)
+      if (!disabled) {
+         setShowDropdown(true)
+      }
    }
 
    const selectOption = (option: string) => {
@@ -68,13 +72,14 @@ const DropdownQuestion = ({
          <div className={styles.dropdownContainer}>
             <button
                className={`${styles.dropdownButton} ${isValid ? styles.validDropdownButton : styles.invalidDropdownButton
-                  }`}
+                  } ${disabled ? styles.disabledDropdownButton : ''}`}
                onMouseDown={toggleDropdownQuestion}
                onBlur={() => {
                   setShowDropdown(false) // clicking off the dropdown closes it
                   validate()
                }}
                onKeyDown={handleKeyDown}
+               disabled={disabled}
             >
                <p>{selectedOption || 'Select an option'}</p>
                <img

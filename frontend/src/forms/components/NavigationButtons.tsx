@@ -9,6 +9,8 @@ interface NavigationButtonsProps {
    nextLabel?: string;
    backLabel?: string;
    className?: string;
+   disableSubmit?: boolean;
+   isLastPage?: boolean;
 }
 
 const NavigationButtons: React.FC<NavigationButtonsProps> = ({
@@ -19,6 +21,8 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
    nextLabel = 'Next',
    backLabel = 'Back',
    className = '',
+   disableSubmit = false,
+   isLastPage = false,
 }) => {
    const handleNextClick = () => {
       if (onNext) {
@@ -53,12 +57,16 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
 
       // Next Button (Submit Button)
       if (onNext) {
+         // Only disable if it's the last page (submit) and submit is disabled
+         // Always allow navigation on non-last pages
+         const shouldDisable = isLastPage ? (!canGoNext || disableSubmit) : !canGoNext;
+         
          buttons.push(
             <button
                key="next"
                className={`${styles.navigationButton} ${styles.nextButton}`}
                onClick={handleNextClick}
-               disabled={!canGoNext}
+               disabled={shouldDisable}
                aria-label={nextLabel}
             >
                {nextLabel}
