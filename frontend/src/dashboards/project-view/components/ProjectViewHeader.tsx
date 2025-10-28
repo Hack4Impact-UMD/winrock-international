@@ -39,21 +39,27 @@ interface ProjectViewHeaderProps {
 }
 
 const statusOptions: StatusType[] = [
-  'On Track',
-  'At Risk',
-  'Paused',
-  'Completed',
-  'Completed (except for risk)'
+    'On Track',
+    'At Risk',
+    'Paused',
+    'Completed',
+    'Completed (except for risk)'
 ];
 
 const analysisStageOptions: AnalysisStageType[] = [
-  'Risk & Co-benefit Assessment',
-  'GHG Assessment Analysis',
-  'Confirming Final Requirements',
-  'Clarifying Technical Details',  // ← Add this line
-  'Clarifying Initial Project Information',
-  'Complete, and Excluded'
+    'Risk & Co-benefit Assessment',
+    'GHG Assessment Analysis',
+    'Confirming Final Requirements',
+    'Clarifying Technical Details',  // ← Add this line
+    'Clarifying Initial Project Information',
+    'Complete, and Excluded'
 ];
+const formatDate = (date: string | Date | null | undefined): string => {
+    if (!date) return 'N/A';
+    const parsed = new Date(date);
+    if (isNaN(parsed.getTime())) return 'Invalid Date';
+    return parsed.toISOString().split('T')[0];
+};
 
 const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAccessManager }) => {
     const [isEditMode, setIsEditMode] = useState(false);
@@ -177,13 +183,13 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                                 onChange={(e) => handleInputChange(e, 'overallStatus')}
                                 variant="status"
                             />
-                            ) : (
+                        ) : (
                             <ColorText
                                 text={currentData.overallStatus}
                                 category={currentData.overallStatus}
                                 variant="status"
                             />
-                            )}
+                        )}
                     </div>
                 </td>
                 <td className={styles.cell}>
@@ -195,13 +201,13 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                                 onChange={(e) => handleInputChange(e, 'analysisStage')}
                                 variant="analysis"
                             />
-                            ) : (
+                        ) : (
                             <ColorText
                                 text={currentData.analysisStage}
                                 category={currentData.analysisStage}
                                 variant="analysis"
                             />
-                            )}
+                        )}
                     </div>
                 </td>
                 <td className={styles.cell}>
@@ -229,10 +235,10 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                     )}
                 </td>
                 <td className={styles.cell}>
-                    {new Date(currentData.lastUpdated).toISOString().split('T')[0]}
+                    {formatDate(currentData.lastUpdated)}
                 </td>
                 <td className={styles.cell}>
-                    {new Date(currentData.startDate).toISOString().split('T')[0]}
+                    {formatDate(currentData.startDate)}
                 </td>
             </tr>
         </div>

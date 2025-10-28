@@ -122,9 +122,9 @@ function mapDocToProject(d: any): Project {
  */
 const getProjectByName = async (projectName: string): Promise<Result> => {
     try {
-        const q = query(collection(db, "projects"), where("projectName", "==", projectName)); 
-        const querySnapshot = await getDocs(q); 
-        if (querySnapshot.empty) { 
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
             return { success: false, errorCode: "project-not-found" };
         }
 
@@ -253,81 +253,81 @@ const updateProjectField = async (
  * Adds a new project.
  */
 const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string, activityType: ActivityType): Promise<Result> => {
-	try {
-		await createProject(
-			projectName,
-			supplierName,
-			clientName,
-			"-",
-			"-",
-			activityType,
-			OverallStatus.ON_TRACK,
-			AnalysisStage.STAGE_1,
-			undefined,
-			true,
-			false
-		);
+    try {
+        await createProject(
+            projectName,
+            clientName,
+            supplierName,
+            "-",
+            "-",
+            activityType,
+            OverallStatus.ON_TRACK,
+            AnalysisStage.STAGE_1,
+            undefined,
+            true,
+            false
+        );
 
         // token for supplier to join project
-		const tokenResult = await generateNewProjectSupplierToken(supplierEmail, projectName);
-		if (!tokenResult.success) {
-			return { success: false, errorCode: "Failed to generate supplier token" };
-		}
+        const tokenResult = await generateNewProjectSupplierToken(supplierEmail, projectName);
+        if (!tokenResult.success) {
+            return { success: false, errorCode: "Failed to generate supplier token" };
+        }
 
-		const token = tokenResult.data.token;
+        const token = tokenResult.data.token;
 
         // Dont send email for now
         // await emailSupplier(projectName, supplierName, supplierEmail, token);
-		return { success: true };
-	} catch (error) {
-		return handleFirebaseError(error);
-	}
+        return { success: true };
+    } catch (error) {
+        return handleFirebaseError(error);
+    }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const generateNewProjectSupplierToken = async (supplierEmail: string, projectName: string) => {
-	let token = nanoid();
+    let token = nanoid();
 
-	let isUnique = false;
+    let isUnique = false;
 
-	// associate token, supplier email, and project name in database
-	while (!isUnique) {
-		try {
-			// check for duplicate token (very unlikely but possible)
-			const docRef = doc(db, "newProjectSupplierTokens", token);
-			const docSnap = await getDoc(docRef);
+    // associate token, supplier email, and project name in database
+    while (!isUnique) {
+        try {
+            // check for duplicate token (very unlikely but possible)
+            const docRef = doc(db, "newProjectSupplierTokens", token);
+            const docSnap = await getDoc(docRef);
 
-			if (docSnap.exists()) {
-				token = nanoid();
-				continue;
-			}
-			else {
-				isUnique = true;
-			}
+            if (docSnap.exists()) {
+                token = nanoid();
+                continue;
+            }
+            else {
+                isUnique = true;
+            }
 
-			await setDoc(docRef, {
-				projectName: projectName,
-				supplierEmail: supplierEmail,
-				token: token
-			});
+            await setDoc(docRef, {
+                projectName: projectName,
+                supplierEmail: supplierEmail,
+                token: token
+            });
 
-		} catch (error) {
-			return handleFirebaseError(error);
-		}
-	}
-	
-	return {
-		success: true,
-		data: {
-			token: token
-		}
-	};
+        } catch (error) {
+            return handleFirebaseError(error);
+        }
+    }
+
+    return {
+        success: true,
+        data: {
+            token: token
+        }
+    };
 }
 
 /**
  * Find supplier email associated with provided email token
  */
-const getSupplierDataByToken = async (token : string) : Promise<Result> => {
+const getSupplierDataByToken = async (token: string): Promise<Result> => {
     try {
         const docRef = doc(db, "newProjectSupplierTokens", token);
         const docSnap = await getDoc(docRef);
@@ -344,7 +344,7 @@ const getSupplierDataByToken = async (token : string) : Promise<Result> => {
 /**
  * Validate that the token is valid (has an email associated with it)
  */
-const isSupplierTokenValid = async (token : string) : Promise<boolean> => {
+const isSupplierTokenValid = async (token: string): Promise<boolean> => {
     const res = await getSupplierDataByToken(token);
     return res.success;
 }
@@ -352,12 +352,12 @@ const isSupplierTokenValid = async (token : string) : Promise<boolean> => {
 /**
  * Validate that the supplier email matches the one associated with the token
  */
-const validateSupplierEmail = async (token : string, supplierEmail : string) : Promise<boolean> => {
+const validateSupplierEmail = async (token: string, supplierEmail: string): Promise<boolean> => {
     const res = await getSupplierDataByToken(token);
     return res.success && res.data.supplierEmail === supplierEmail;
 }
 
-const getSupplierProjectNameByToken = async (token : string) : Promise<Result> => {
+const getSupplierProjectNameByToken = async (token: string): Promise<Result> => {
     const res = await getSupplierDataByToken(token);
     if (res.success) {
         return { success: true, data: res.data.projectName };
@@ -370,9 +370,9 @@ const getSupplierProjectNameByToken = async (token : string) : Promise<Result> =
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
     try {
-        const q = query(collection(db, "projects"), where("projectName", "==", projectName)); 
-        const querySnapshot = await getDocs(q); 
-        if (querySnapshot.empty) { 
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
             return { success: false, errorCode: "project-not-found" };
         }
 
@@ -388,27 +388,27 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 /**
  * Send an project invitation email to the supplier
  */
-const emailSupplier = async (projectName: string, supplierName : string, supplierEmail : string, token:string) : Promise<Result> => {
+const emailSupplier = async (projectName: string, supplierName: string, supplierEmail: string, token: string): Promise<Result> => {
     try {
         // invite url with token
         const inviteUrl = `${BASE_URL}/dashboard/admin/projects/${projectName}?token=${token}`;
 
         const recipient: string = `${supplierName} <${supplierEmail}>`;
         const subject = `Invitation: Collaborate on ${projectName}`;
-        const message = 
-        [
-            `Hi ${supplierName},`,
-            '',
-            `You have been invited to collaborate on the project "${projectName}" on the Winrock Dashboard.`,
-            '',
-            `Click the link below to access the project:`,
-            inviteUrl,
-            '',
-            'If you don\'t have an account yet, you\'ll be prompted to sign up or log in.',
-            '',
-            'Regards,',
-            'Winrock Team'
-        ].join('\n');
+        const message =
+            [
+                `Hi ${supplierName},`,
+                '',
+                `You have been invited to collaborate on the project "${projectName}" on the Winrock Dashboard.`,
+                '',
+                `Click the link below to access the project:`,
+                inviteUrl,
+                '',
+                'If you don\'t have an account yet, you\'ll be prompted to sign up or log in.',
+                '',
+                'Regards,',
+                'Winrock Team'
+            ].join('\n');
         await sendEmail({
             recipientNames: [recipient],
             recipientEmails: [supplierEmail],
@@ -422,9 +422,9 @@ const emailSupplier = async (projectName: string, supplierName : string, supplie
 };
 
 export {
-	addProject,
+    addProject,
     createProject,
-	generateNewProjectSupplierToken,
+    generateNewProjectSupplierToken,
     isSupplierTokenValid,
     getSupplierProjectNameByToken,
     validateSupplierEmail,
