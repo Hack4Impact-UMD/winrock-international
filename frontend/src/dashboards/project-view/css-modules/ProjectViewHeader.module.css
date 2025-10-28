@@ -118,6 +118,7 @@
     font-weight: inherit;
     letter-spacing: inherit;
     margin-left: -4px;
+    width: 80%;
   }
 
   .editableInput:focus {
@@ -139,4 +140,8 @@
   .editableTitle:focus {
     outline: none;
     border-color: #000;
+  }
+
+  .dropdown {
+    width: 80%;
   }

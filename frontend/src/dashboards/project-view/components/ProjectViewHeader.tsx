@@ -26,6 +26,7 @@ interface ProjectViewHeaderProps {
     data: {
         id: string;
         projectName: string;
+        clientName: string;
         supplierName: string;
         overallStatus: StatusType;
         analysisStage: AnalysisStageType;
@@ -80,6 +81,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                 supplierName: editableData.supplierName,
                 analysisStage: editableData.analysisStage,
                 overallStatus: editableData.overallStatus,
+                clientName: editableData.clientName,
                 // Add other fields as needed
             });
 
@@ -130,6 +132,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
             </div>
             <thead className={styles.tableHeader}>
                 <tr>
+                    <th className={styles.headerCell}>Client</th>
                     <th className={styles.headerCell}>Supplier</th>
                     <th className={styles.headerCell}>Overall Status</th>
                     <th className={styles.headerCell}>Analysis stage</th>
@@ -145,6 +148,18 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                     {isEditMode ? (
                         <input
                             type="text"
+                            value={editableData.clientName}
+                            onChange={(e) => handleInputChange(e, 'clientName')}
+                            className={styles.editableInput}
+                        />
+                    ) : (
+                        currentData.clientName
+                    )}
+                </td>
+                <td className={styles.cell}>
+                    {isEditMode ? (
+                        <input
+                            type="text"
                             value={editableData.supplierName}
                             onChange={(e) => handleInputChange(e, 'supplierName')}
                             className={styles.editableInput}
@@ -154,36 +169,40 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                     )}
                 </td>
                 <td className={styles.cell}>
-                    {isEditMode ? (
-                        <RowCustomSelect
-                            value={editableData.overallStatus}
-                            options={statusOptions}
-                            onChange={(e) => handleInputChange(e, 'overallStatus')}
-                            variant="status"
-                        />
-                        ) : (
-                        <ColorText
-                            text={currentData.overallStatus}
-                            category={currentData.overallStatus}
-                            variant="status"
-                        />
-                        )}
+                    <div className={styles.dropdown}>
+                        {isEditMode ? (
+                            <RowCustomSelect
+                                value={editableData.overallStatus}
+                                options={statusOptions}
+                                onChange={(e) => handleInputChange(e, 'overallStatus')}
+                                variant="status"
+                            />
+                            ) : (
+                            <ColorText
+                                text={currentData.overallStatus}
+                                category={currentData.overallStatus}
+                                variant="status"
+                            />
+                            )}
+                    </div>
                 </td>
                 <td className={styles.cell}>
-                    {isEditMode ? (
-                        <RowCustomSelect
-                            value={editableData.analysisStage}
-                            options={analysisStageOptions}
-                            onChange={(e) => handleInputChange(e, 'analysisStage')}
-                            variant="analysis"
-                        />
-                        ) : (
-                        <ColorText
-                            text={currentData.analysisStage}
-                            category={currentData.analysisStage}
-                            variant="analysis"
-                        />
-                        )}
+                    <div className={styles.dropdown}>
+                        {isEditMode ? (
+                            <RowCustomSelect
+                                value={editableData.analysisStage}
+                                options={analysisStageOptions}
+                                onChange={(e) => handleInputChange(e, 'analysisStage')}
+                                variant="analysis"
+                            />
+                            ) : (
+                            <ColorText
+                                text={currentData.analysisStage}
+                                category={currentData.analysisStage}
+                                variant="analysis"
+                            />
+                            )}
+                    </div>
                 </td>
                 <td className={styles.cell}>
                     {isEditMode ? (
