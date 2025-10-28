@@ -74,8 +74,8 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                     </td>
                     <td className={styles.cell}>{data.spendCategory}</td>
                     <td className={styles.cell}>{data.geography}</td>
-                    <td className={styles.cell}>{data.lastUpdated}</td>
-                    <td className={styles.cell}>{data.startDate}</td>
+                    <td className={styles.cell}>{new Date(data.lastUpdated).toISOString().split('T')[0]}</td>
+                    <td className={styles.cell}>{new Date(data.startDate).toISOString().split('T')[0]}</td>
                 </tr>
               </tbody>
             </table>
