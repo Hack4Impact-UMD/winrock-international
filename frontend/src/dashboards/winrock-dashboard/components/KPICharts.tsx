@@ -3,6 +3,21 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import styles from '../css-modules/KPICharts.module.css';
 import ColorText from './ColorText';
 
+type StatusType =
+  | 'On Track'
+  | 'At Risk'
+  | 'Paused'
+  | 'Completed'
+  | 'Completed (except for risk)';
+
+type AnalysisStageType =
+  | 'Risk & Co-benefit Assessment'
+  | 'GHG Assessment Analysis'
+  | 'Confirming Final Requirements'
+  | 'Clarifying Initial Project Information'
+  | 'Complete, and Excluded'
+  | 'Clarifying Technical Details';
+
 interface KPIChartsProps {
   projects: {
     id: string;
@@ -40,13 +55,13 @@ const ANALYSIS_COLORS: { [key: string]: string } = {
 };
 
 const KPICharts: React.FC<KPIChartsProps> = ({ projects }) => {
-    //need to keep track of each for now (may change later based on how data is stored??)
+  //need to keep track of each for now (may change later based on how data is stored??)
   const countData = (data: KPIChartsProps['projects'], key: keyof KPIChartsProps['projects'][0]): ChartData[] => {
     const counts = data.reduce((acc, item) => {
       acc[item[key]] = (acc[item[key]] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-    
+
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
   };
 
@@ -79,15 +94,18 @@ const KPICharts: React.FC<KPIChartsProps> = ({ projects }) => {
     </ResponsiveContainer>
   );
 
-  
+
 
   const renderLegend = (data: ChartData[], variant: 'status' | 'analysis', colors: { [key: string]: string }) => (
     <div className={styles.legendContainer}>
       {data.map((entry, index) => (
         <div key={index} className={styles.legendItem}>
           <span className={styles.colorBox} style={{ backgroundColor: colors[entry.name] }} />
-          <ColorText text={entry.name} category={entry.name as any} variant={variant} />
-        </div>
+          <ColorText
+            text={entry.name}
+            category={entry.name as StatusType | AnalysisStageType}
+            variant={variant}
+          />        </div>
       ))}
     </div>
   );

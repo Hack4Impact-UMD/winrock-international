@@ -13,7 +13,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ onSelectAll, allSelected = fa
       <tr>
         {/* Checkbox Column */}
         <th className={styles.checkboxCell}>
-        <div className={`${styles.checkboxWrapper} ${!false ? styles.hidden : ''}`}>
+          <div className={`${styles.checkboxWrapper} ${styles.hidden}`}>
             <input
               type="checkbox"
               onChange={(e) => onSelectAll?.(e.target.checked)}

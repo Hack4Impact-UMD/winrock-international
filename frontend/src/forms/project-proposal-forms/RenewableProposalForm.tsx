@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useRef } from "react";
 import * as firestore from "firebase/firestore";
 import { db } from "../../firebaseConfig.js";
@@ -42,7 +43,7 @@ interface RenewableProposalFormData {
 
 const RenewableProposalForm = () => {
     const title = "Renewable Energy Project Proposal Form";
-    
+
     const [currentPage, setCurrentPage] = useState(1); // Start on Page 1
     const totalPages = 2; // Set totalPages to 2 since we have two pages
 
@@ -78,7 +79,7 @@ const RenewableProposalForm = () => {
 
     // Initialize form lock - using projectId from URL params or default
     const projectId = "Project2"; // TODO: Replace with actual projectId from form data or props
-    const { handleLockedAction, LockedPopup, isLocked } = FormLock({ 
+    const { handleLockedAction, LockedPopup, isLocked } = FormLock({
         projectId
     });
 
@@ -88,7 +89,7 @@ const RenewableProposalForm = () => {
             handleLockedAction();
             return;
         }
-        
+
         const isRequired = answersRef.current[field]!.isRequired;
         answersRef.current = {
             ...answersRef.current,

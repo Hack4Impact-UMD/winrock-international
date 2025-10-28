@@ -118,7 +118,7 @@ const WinrockDashboard: React.FC = () => {
       })
       .filter(p => {
         // TODO: There's a bug causing the date to be a day off, we should fix this later
-        let trueStartDate = new Date(p.startDate);
+        const trueStartDate = new Date(p.startDate);
         trueStartDate.setDate(trueStartDate.getDate() + 1);
         if (dateRange.startDate && trueStartDate < dateRange.startDate) return false;
         if (dateRange.endDate && trueStartDate > dateRange.endDate) return false;
@@ -182,7 +182,7 @@ const WinrockDashboard: React.FC = () => {
         ([k]) => k !== 'id'
       )) {
         const field = key as UpdatableProjectFields;
-        let value: any = rawValue;
+        let value: unknown = rawValue;
 
         // Convert Date to Firestore Timestamp
         if (value instanceof Date) {
@@ -219,7 +219,7 @@ const WinrockDashboard: React.FC = () => {
       const projectsData: Project[] = snapshot.docs.map((doc) => {
         const p = doc.data() as Project;
 
-        const parseDate = (date: any) => {
+        const parseDate = (date: unknown) => {
           if (!date) return "";
           if (date.toDate) return date.toDate().toISOString().split("T")[0];
           const parsed = new Date(date);
@@ -471,8 +471,9 @@ const WinrockDashboard: React.FC = () => {
 
                   // Compare fields and collect differences
                   for (const key in edited) {
-                    if (edited[key as keyof Project] !== original[key as keyof Project]) {
-                      (updatedFields as any)[key] = (edited as any)[key];
+                    const k = key as keyof Project;
+                    if (edited[k] !== original[k]) {
+                      (updatedFields as Record<string, unknown>)[key] = edited[k];
                     }
                   }
                   // Save only if there are changes

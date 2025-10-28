@@ -12,7 +12,8 @@ interface Notification {
     message: string;
     read: boolean;
 }
-// @ts-expect-error
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockNotifications: Notification[] = [
     {
         id: 1,
@@ -77,7 +78,7 @@ const EnvelopeIcon = () => (
 );
 
 const NotificationList: React.FC<NotificationListProps> = ({
-    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tab,
     notifications,
     selectedRows,

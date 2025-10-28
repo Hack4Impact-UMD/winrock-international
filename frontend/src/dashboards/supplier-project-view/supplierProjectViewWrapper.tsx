@@ -2,13 +2,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import ProjectView from "./supplierProjectView";
 import { db } from "../../firebaseConfig";
 import { useState, useEffect } from "react";
-import { collection, query, where, getDocs, orderBy } from "firebase/firestore"; // Added orderBy
+import { collection, query, where, getDocs } from "firebase/firestore"; // Added orderBy
+import { Project } from "../../types/Project";
+import { UpdateItem } from "types/UpdateItem";
 
 const SupplierProjectViewWrapper = () => {
   const { projectName } = useParams();
   const navigate = useNavigate();
-  const [updates, setUpdates] = useState<any[]>([]); // Added TypeScript type annotations
-  const [project, setProject] = useState<any | null>(null); // Added TypeScript type annotations
+  const [updates, setUpdates] = useState<UpdateItem[]>([]); // Added TypeScript type annotations
+  const [project, setProject] = useState<Project | null>(null); // Added TypeScript type annotations
   const [loading, setLoading] = useState<boolean>(true); // Added TypeScript type annotations
 
   useEffect(() => {
