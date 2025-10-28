@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import styles from "../css-modules/ProjectViewHeader.module.css";
 import ColorText from "../../winrock-dashboard/components/ColorText";
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +24,6 @@ interface ProjectViewHeaderProps {
 }
 
 const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAccessManager }) => {
-    const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
 
     return (
@@ -39,12 +37,6 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
 
                 <h1 className={styles.projectTitle}>{data.projectName}</h1>
                 <div className={styles.btnContainer}>
-                    <button
-                        className={`${styles.button} ${isEditMode ? styles.active : ''}`}
-                        onClick={() => setIsEditMode(!isEditMode)}
-                    >
-                        {isEditMode ? 'Done' : 'Edit Project'}
-                    </button>
                     <button
                         className={styles.shareButton}
                         onClick={() => { setShowAccessManager(true) }}
@@ -74,8 +66,8 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                     </td>
                     <td className={styles.cell}>{data.spendCategory}</td>
                     <td className={styles.cell}>{data.geography}</td>
-                    <td className={styles.cell}>{data.lastUpdated}</td>
-                    <td className={styles.cell}>{data.startDate}</td>
+                    <td className={styles.cell}>{new Date(data.lastUpdated).toISOString().split('T')[0]}</td>
+                    <td className={styles.cell}>{new Date(data.startDate).toISOString().split('T')[0]}</td>
                 </tr>
               </tbody>
             </table>
