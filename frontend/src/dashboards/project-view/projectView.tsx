@@ -7,6 +7,7 @@ import Sidebar from '../winrock-dashboard/components/Sidebar';
 import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
+import Chat from '../chat/components/Chat';
 
 
 interface ProjectViewProps {
@@ -48,7 +49,8 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
         </div>
 
         <div className={styles.rightPanel}>
-          <ProjectUpdates updates={updates} />
+			<h2 style={{fontSize: "20px", marginTop: "47px"}}>Updates</h2>
+          	<Chat senderRole='winrock' projectId={project.id}></Chat>
         </div>
       </div>
     </div>

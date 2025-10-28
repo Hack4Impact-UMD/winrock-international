@@ -1,0 +1,26 @@
+.newMessageContainer {
+	width: 720px;
+	display: flex;
+	flex-flow: column nowrap;
+	margin: 20px 0;
+	gap: 10px;
+}
+
+.newMessageInput {
+	font-family: inherit;
+	font-size: 12px;
+	padding: 20px 10px;
+}
+
+.sendButton {
+	background-color: white;
+    border: 1.29px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 10px 30px;
+	box-sizing: border-box;
+	width: fit-content;
+    border-radius: .4rem;
+    cursor: pointer;
+	align-self: flex-end;
+	margin-top: 20px;
+}

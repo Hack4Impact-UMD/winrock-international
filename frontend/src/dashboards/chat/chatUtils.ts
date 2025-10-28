@@ -1,4 +1,4 @@
-import { collection, serverTimestamp, addDoc, getDocs, query, where, Timestamp } from "firebase/firestore";
+import { collection, serverTimestamp, addDoc, getDocs, query, where, Timestamp, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Result, { handleFirebaseError } from "../../types/Result"
 
@@ -6,24 +6,26 @@ export type SenderRole = "supplier" | "winrock";
 
 export interface Message {
 	projectId: string;
-	senderId: string;
+	senderEmail: string;
 	senderRole: SenderRole;
 	message: string;
 	timestamp: Timestamp;
 }
 
-export const sendMessage = async (projectId: string, senderId: string, senderRole: SenderRole, message: string): Promise<Result> => {
+export const sendMessage = async (projectId: string, senderEmail: string, senderRole: SenderRole, message: string): Promise<Result> => {
 
 	try {
-		await addDoc(collection(db, "projectMessages"), {
+		const newDocRef = await addDoc(collection(db, "projectMessages"), {
 			projectId: projectId,
-			senderId: senderId,
+			senderEmail: senderEmail,
 			senderRole: senderRole,
 			message: message,
 			timestamp: serverTimestamp()
 		});
 
-		return { success: true };
+		const newDocSnap = await getDoc(newDocRef);
+
+		return { success: true, data: newDocSnap.data() };
 	}
 	catch (e) {
 		return handleFirebaseError(e);
