@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import styles from "../css-modules/ProjectViewHeader.module.css";
 import ColorText from "../../winrock-dashboard/components/ColorText";
 import { useNavigate } from 'react-router-dom';
