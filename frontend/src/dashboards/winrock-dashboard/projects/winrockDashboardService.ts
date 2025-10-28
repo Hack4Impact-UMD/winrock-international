@@ -252,7 +252,7 @@ const updateProjectField = async (
 /**
  * Adds a new project.
  */
-const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string): Promise<Result> => {
+const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string, activityType: ActivityType): Promise<Result> => {
 	try {
 		await createProject(
 			projectName,
@@ -260,7 +260,7 @@ const addProject = async (projectName: string, clientName: string, supplierName:
 			clientName,
 			"-",
 			"-",
-			"Agriculture",
+			activityType,
 			OverallStatus.ON_TRACK,
 			AnalysisStage.STAGE_1,
 			undefined,
