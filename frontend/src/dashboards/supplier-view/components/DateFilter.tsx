@@ -116,7 +116,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
   // Decrement the year by 1
   const goToPrevYear = () => {
     const year = dateRange.endDate.getFullYear();
-    const newStartDate = dateRange.startDate!;
+    const newStartDate = new Date(dateRange.startDate!);
     newStartDate.setFullYear(year - 1);
     setDateRange({ startDate: newStartDate, endDate: dateRange.startDate! });
   }
@@ -129,7 +129,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
     }
 
     // Increment the year by 1
-    const newEndDate = dateRange.endDate;
+    const newEndDate = new Date(dateRange.startDate!);
     newEndDate.setFullYear(dateRange.endDate.getFullYear() + 1);
     setDateRange({ startDate: dateRange.endDate, endDate: newEndDate });
   }

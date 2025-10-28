@@ -163,8 +163,11 @@ function ForestryRisksForm() {
          handleLockedAction();
          return;
       }
-
-      answersRef.current[field]!.value = value;
+      const isRequired = answersRef.current[field]!.isRequired;
+      answersRef.current = {
+         ...answersRef.current,
+         [field]: new FormField(value, isRequired)
+      }
       // Auto-save whenever form changes
       saveChanges();
    }
