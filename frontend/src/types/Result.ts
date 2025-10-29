@@ -1,10 +1,10 @@
 import { FirebaseError } from "firebase/app";
 
 type Result =
-    | { success: true, data?: any }
+    | { success: true, data?: unknown }
     | { success: false; errorCode: string };
 
-function handleFirebaseError(error: any): Result {
+function handleFirebaseError(error: unknown): Result {
     return {
         success: false,
         errorCode: error instanceof FirebaseError ? error.code : "unknown"
@@ -12,7 +12,7 @@ function handleFirebaseError(error: any): Result {
 }
 
 function toReadableError(errorCode: string): string {
-    let readableError = errorCode.replace("auth/", "").replaceAll("-", " ");
+    const readableError = errorCode.replace("auth/", "").replaceAll("-", " ");
     return readableError.charAt(0).toUpperCase() + readableError.slice(1);
 }
 

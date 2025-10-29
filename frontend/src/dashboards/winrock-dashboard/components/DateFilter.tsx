@@ -17,7 +17,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
   const [dateRange, setDateRange] = useState<DateRange>(controlledDateRange);
   const [viewMode, setViewMode] = useState<'year' | 'month' | 'custom'>('year');
   const [currentMonthView, setCurrentMonthView] = useState<Date>(new Date());
-  
+
   // Generate years for selection (from current year to 10 years before)
   const generateYears = () => {
     const currentYear = new Date().getFullYear();
@@ -27,7 +27,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
     }
     return years;
   };
-  
+
   // Generate months for the year view
   const months = [
     { name: 'Jan', value: 0 },
@@ -43,22 +43,22 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
     { name: 'Nov', value: 10 },
     { name: 'Dec', value: 11 }
   ];
-  
+
   // Generate days for the calendar view
   const generateDaysForMonth = (year: number, month: number) => {
     const firstDayOfMonth = new Date(year, month, 1);
     const lastDayOfMonth = new Date(year, month + 1, 0);
     const daysInMonth = lastDayOfMonth.getDate();
-    
+
     // Get the day of the week for the first day (0 = Sunday, 6 = Saturday)
     const firstDayOfWeek = firstDayOfMonth.getDay();
-    
+
     // Create array for days of previous month to fill the first week
     const prevMonthDays = [];
     const prevMonth = month === 0 ? 11 : month - 1;
     const prevMonthYear = month === 0 ? year - 1 : year;
     const daysInPrevMonth = new Date(prevMonthYear, prevMonth + 1, 0).getDate();
-    
+
     for (let i = 0; i < firstDayOfWeek; i++) {
       prevMonthDays.unshift({
         day: daysInPrevMonth - i,
@@ -67,7 +67,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
         isCurrentMonth: false
       });
     }
-    
+
     // Create array for days of current month
     const currentMonthDays = [];
     for (let i = 1; i <= daysInMonth; i++) {
@@ -78,15 +78,15 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
         isCurrentMonth: true
       });
     }
-    
+
     // Create array for days of next month to fill the last week
     const nextMonthDays = [];
     const totalDaysDisplayed = prevMonthDays.length + currentMonthDays.length;
     const daysNeeded = Math.ceil(totalDaysDisplayed / 7) * 7 - totalDaysDisplayed;
-    
+
     const nextMonth = month === 11 ? 0 : month + 1;
     const nextMonthYear = month === 11 ? year + 1 : year;
-    
+
     for (let i = 1; i <= daysNeeded; i++) {
       nextMonthDays.push({
         day: i,
@@ -95,17 +95,17 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
         isCurrentMonth: false
       });
     }
-    
+
     return [...prevMonthDays, ...currentMonthDays, ...nextMonthDays];
   };
-  
+
   // Navigate to previous month in calendar view
   const goToPrevMonth = () => {
     const newDate = new Date(currentMonthView);
     newDate.setMonth(newDate.getMonth() - 1);
     setCurrentMonthView(newDate);
   };
-  
+
   // Navigate to next month in calendar view
   const goToNextMonth = () => {
     const newDate = new Date(currentMonthView);
@@ -116,9 +116,9 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
   // Decrement the year by 1
   const goToPrevYear = () => {
     const year = dateRange.endDate.getFullYear();
-    let newStartDate = dateRange.startDate!;
+    const newStartDate = dateRange.startDate!;
     newStartDate.setFullYear(year - 1);
-    setDateRange({startDate: newStartDate, endDate: dateRange.startDate!});
+    setDateRange({ startDate: newStartDate, endDate: dateRange.startDate! });
   }
 
   const goToNextYear = () => {
@@ -129,11 +129,11 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
     }
 
     // Increment the year by 1
-    let newEndDate = dateRange.endDate;
+    const newEndDate = dateRange.endDate;
     newEndDate.setFullYear(dateRange.endDate.getFullYear() + 1);
-    setDateRange({startDate: dateRange.endDate, endDate: newEndDate});
+    setDateRange({ startDate: dateRange.endDate, endDate: newEndDate });
   }
-  
+
   // Handle year selection
   const handleYearClick = (year: number) => {
     if (viewMode === 'year') {
@@ -147,7 +147,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
       setViewMode('month');
     }
   };
-  
+
   // Handle month selection
   const handleMonthClick = (month: number) => {
     if (viewMode === 'month') {
@@ -162,11 +162,11 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
       setViewMode('custom');
     }
   };
-  
+
   // Handle day selection in the date picker
   const handleDayClick = (day: number, month: number, year: number) => {
     const clickedDate = new Date(year, month, day);
-    
+
     if (dateRange.startDate !== dateRange.endDate) {
       // If both dates are selected, start a new selection
       setDateRange({
@@ -188,7 +188,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
       }
     }
   };
-  
+
   // Handle "Set" button click
   const handleSetClick = () => {
     if (dateRange.startDate) {
@@ -198,11 +198,11 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
       });
     }
   };
-  
+
   // Format the selected range for display
   const formatSelectedRange = () => {
     if (!dateRange.startDate) return 'Select a time period';
-    
+
     if (viewMode === 'year' && dateRange.startDate) {
       return dateRange.startDate.getFullYear().toString();
     } else if (viewMode === 'month' && dateRange.startDate) {
@@ -212,10 +212,10 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
     } else if (dateRange.startDate) {
       return dateRange.startDate.toLocaleString('default', { month: 'short', day: 'numeric', year: 'numeric' });
     }
-    
+
     return 'Select a time period';
   };
-  
+
   // Render the appropriate picker based on view mode
   const renderPicker = () => {
     if (viewMode === 'year') {
@@ -276,7 +276,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
         currentMonthView.getFullYear(),
         currentMonthView.getMonth()
       );
-      
+
       return (
         <div className={styles.calendarPicker}>
           <div className={styles.monthNavigator}>
@@ -290,7 +290,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
               &gt; {/* Right arrow */}
             </button>
           </div>
-          
+
           <div className={styles.weekdayLabels}>
             <div>Sun</div>
             <div>Mon</div>
@@ -300,26 +300,26 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
             <div>Fri</div>
             <div>Sat</div>
           </div>
-          
+
           <div className={styles.calendarGrid}>
             {days.map((day, index) => {
               const date = new Date(day.year, day.month, day.day);
               const isSelected =
-                date >= dateRange.startDate! && 
+                date >= dateRange.startDate! &&
                 date <= dateRange.endDate;
-              
-              const isStart = 
-                dateRange.startDate && 
-                date.getDate() === dateRange.startDate.getDate() && 
-                date.getMonth() === dateRange.startDate.getMonth() && 
+
+              const isStart =
+                dateRange.startDate &&
+                date.getDate() === dateRange.startDate.getDate() &&
+                date.getMonth() === dateRange.startDate.getMonth() &&
                 date.getFullYear() === dateRange.startDate.getFullYear();
-              
-              const isEnd = 
-                dateRange.endDate && 
-                date.getDate() === dateRange.endDate.getDate() && 
-                date.getMonth() === dateRange.endDate.getMonth() && 
+
+              const isEnd =
+                dateRange.endDate &&
+                date.getDate() === dateRange.endDate.getDate() &&
+                date.getMonth() === dateRange.endDate.getMonth() &&
                 date.getFullYear() === dateRange.endDate.getFullYear();
-              
+
               return (
                 <button
                   key={index}
@@ -341,18 +341,18 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
       );
     }
   };
-  
+
   return (
     <div className={styles.dateFilter}>
       <div className={styles.datePickerHeader}>
         <span>Project start date</span>
         <span className={styles.headerIcon}>−</span>
       </div>
-      
+
       <div className={styles.datePickerContent}>
         <div className={styles.dateDisplay}>
           <span>{formatSelectedRange()}</span>
-          <button 
+          <button
             className={styles.setButton}
             disabled={!dateRange.startDate}
             onClick={handleSetClick}
@@ -360,28 +360,28 @@ const DateFilter: React.FC<DateFilterProps> = ({ onDateRangeChange, controlledDa
             Set
           </button>
         </div>
-        
+
         <div className={styles.viewModeSelector}>
-          <button 
+          <button
             className={`${styles.modeButton} ${viewMode === 'year' ? styles.active : ''}`}
             onClick={() => setViewMode('year')}
           >
             Year
           </button>
-          <button 
+          <button
             className={`${styles.modeButton} ${viewMode === 'month' ? styles.active : ''}`}
             onClick={() => setViewMode('month')}
           >
             Month
           </button>
-          <button 
+          <button
             className={`${styles.modeButton} ${viewMode === 'custom' ? styles.active : ''}`}
             onClick={() => setViewMode('custom')}
           >
             Custom
           </button>
         </div>
-        
+
         {renderPicker()}
       </div>
     </div>

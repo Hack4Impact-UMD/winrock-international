@@ -97,7 +97,7 @@ const createProject = async (
         return handleFirebaseError(error);
     }
 };
-function mapDocToProject(d: any): Project {
+function mapDocToProject(d: Project): Project {
     return {
         ...d,
         startDate: d.startDate instanceof Timestamp ? d.startDate.toDate().toISOString() : d.startDate,
@@ -143,7 +143,7 @@ const getProjectsWithFilters = async (
     orderByField: keyof Project,
     desc: boolean,
     filterFields: (keyof Project)[],
-    filterValues: any[],
+    filterValues: string[],
     startDate?: Date,
     endDate?: Date
 ): Promise<Result> => {
@@ -212,7 +212,7 @@ const getProjectsWithFilters = async (
 const updateProjectField = async (
     projectName: string,
     field: Exclude<keyof Project, 'id' | 'projectName'>, // lastUpdated stays auto
-    newValue: any
+    newValue: unknown
 ): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectName);

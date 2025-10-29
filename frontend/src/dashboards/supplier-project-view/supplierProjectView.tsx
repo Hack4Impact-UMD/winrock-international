@@ -6,8 +6,8 @@ import styles from '../project-view/css-modules/ProjectView.module.css';
 import Sidebar from '../winrock-dashboard/components/Sidebar';
 import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
-import sampleUpdates from './updatesSamples'; // Static updates
 import { UpdateItem } from '../../types/UpdateItem';
+import sampleUpdates from '../project-view/updatesSamples';
 
 
 interface ProjectViewProps {

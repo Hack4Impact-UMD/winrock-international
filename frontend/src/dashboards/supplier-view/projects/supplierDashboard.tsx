@@ -20,6 +20,20 @@ import { updateProjectField } from "./supplierDashboardService";
 import { db } from "../../../firebaseConfig";
 import { Project } from '../../../types/Project';
 
+// Type guard for Firestore Timestamp
+interface FirestoreTimestamp {
+  toDate(): Date;
+}
+
+function isFirestoreTimestamp(value: unknown): value is FirestoreTimestamp {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "toDate" in value &&
+    typeof (value as Record<string, unknown>).toDate === "function"
+  );
+}
+
 const SupplierDashboard: React.FC = () => {
 
   const [selectedTab, setSelectedTab] = useState('All Projects');
@@ -109,7 +123,7 @@ const SupplierDashboard: React.FC = () => {
       })
       .filter(p => {
         // TODO: There's a bug causing the date to be a day off, we should fix this later
-        let trueStartDate = new Date(p.startDate);
+        const trueStartDate = new Date(p.startDate);
         trueStartDate.setDate(trueStartDate.getDate() + 1);
         if (dateRange.startDate && trueStartDate < dateRange.startDate) return false;
         if (dateRange.endDate && trueStartDate > dateRange.endDate) return false;
@@ -173,7 +187,7 @@ const SupplierDashboard: React.FC = () => {
         ([k]) => k !== 'id' && k !== 'projectName'
       )) {
         const field = key as UpdatableProjectFields;
-        let value: any = rawValue;
+        let value: unknown = rawValue;
 
         // Convert Date to Firestore Timestamp
         if (value instanceof Date) {
@@ -195,12 +209,13 @@ const SupplierDashboard: React.FC = () => {
       const projectsData: Project[] = snapshot.docs.map((doc) => {
         const p = doc.data() as Project;
 
-        const parseDate = (date: any) => {
+        const parseDate = (date: unknown): string => {
           if (!date) return "";
-          if (date.toDate) return date.toDate().toISOString().split("T")[0];
-          const parsed = new Date(date);
-          if (isNaN(parsed.getTime())) return "";
-          return parsed.toISOString().split("T")[0];
+          if (isFirestoreTimestamp(date)) {
+            return date.toDate().toISOString().split("T")[0];
+          }
+          const parsed = new Date(date as string);
+          return isNaN(parsed.getTime()) ? "" : parsed.toISOString().split("T")[0];
         };
 
         return {
@@ -390,8 +405,8 @@ const SupplierDashboard: React.FC = () => {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Projects</h1>
           <div className={styles.viewModeButtons}>
-            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => {setViewMode('active'); setCurrentPage(1); }}>Active</button>
-            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => {setViewMode('archived'); setCurrentPage(1);}}>Archived</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => { setViewMode('active'); setCurrentPage(1); }}>Active</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => { setViewMode('archived'); setCurrentPage(1); }}>Archived</button>
           </div>
         </div>
 

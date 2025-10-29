@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { runTransaction, FieldValue, setDoc } from "firebase/firestore";
 import {
     collection,
@@ -111,7 +112,7 @@ const createProject = async (
         return handleFirebaseError(error);
     }
 };
-function mapDocToProject(d: any): Project {
+function mapDocToProject(d: Project): Project {
     return {
         ...d,
         startDate: d.startDate instanceof Timestamp ? d.startDate.toDate().toISOString() : d.startDate,
@@ -157,7 +158,7 @@ const getProjectsWithFilters = async (
     orderByField: keyof Project,
     desc: boolean,
     filterFields: (keyof Project)[],
-    filterValues: any[],
+    filterValues: unknown[],
     startDate?: Date,
     endDate?: Date
 ): Promise<Result> => {
@@ -226,7 +227,7 @@ const getProjectsWithFilters = async (
 const updateProjectField = async (
     projectId: string,
     field: Exclude<keyof Project, 'id'>, // lastUpdated stays auto
-    newValue: any
+    newValue: unknown
 ): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectId);
@@ -394,17 +395,17 @@ const checkProjectLock = async (projectName: string): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectName);
         const docSnap = await getDoc(docRef);
-        
+
         if (!docSnap.exists()) {
             return { success: false, errorCode: "project-not-found" };
         }
 
         const projectData = docSnap.data();
         const isLocked = projectData.isLocked || false;
-        
-        return { 
-            success: true, 
-            data: { isLocked } 
+
+        return {
+            success: true,
+            data: { isLocked }
         };
     } catch (error) {
         return handleFirebaseError(error);
@@ -417,7 +418,7 @@ const checkProjectLock = async (projectName: string): Promise<Result> => {
 const lockProject = async (projectName: string): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectName);
-        
+
         await runTransaction(db, async (tx) => {
             const snap = await tx.get(docRef);
             if (!snap.exists()) {
@@ -447,7 +448,7 @@ const lockProject = async (projectName: string): Promise<Result> => {
 const unlockProject = async (projectName: string): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectName);
-        
+
         await runTransaction(db, async (tx) => {
             const snap = await tx.get(docRef);
             if (!snap.exists()) {
@@ -469,6 +470,8 @@ const unlockProject = async (projectName: string): Promise<Result> => {
 /**
  * Send an project invitation email to the supplier
  */
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const emailSupplier = async (projectName: string, supplierName: string, supplierEmail: string, token: string): Promise<Result> => {
     try {
         // invite url with token
