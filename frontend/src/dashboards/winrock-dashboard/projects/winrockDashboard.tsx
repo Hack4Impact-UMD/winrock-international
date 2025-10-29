@@ -56,7 +56,7 @@ const WinrockDashboard: React.FC = () => {
   // These are used to control the date, i.e. save changes to the date filter calendar
   const [dateRange, setDateRange] = useState<DateRange>({
     startDate: null,
-    endDate: new Date('2099-12-31') //changed this to be a date in the future (would not show else)
+    endDate: new Date('2099-12-31') //TEMP CHANGE
   });
 
   const handleActionClick = (id: string | null) => {
