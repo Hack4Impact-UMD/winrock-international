@@ -25,6 +25,12 @@ import { db } from "../../../firebaseConfig.js";
 import { Project } from '../../../types/Project'
 
 
+declare global {
+  interface Window {
+    __autoArchivedOnce?: boolean;
+  }
+}
+
 const WinrockDashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('All Projects');
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,6 +48,8 @@ const WinrockDashboard: React.FC = () => {
   const [selectedSort, setSelectedSort] = useState('newest-first');
   const [allSelected, setAllSelected] = useState(false);
   const [editableProjects, setEditableProjects] = useState<Project[]>([]);
+  const [editedProjectIds, setEditedProjectIds] = useState<Set<string>>(new Set());
+  const [originalProjects, setOriginalProjects] = useState<Project[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -172,16 +180,16 @@ const WinrockDashboard: React.FC = () => {
 
   // Define which fields can be updated (exclude projectName and id)
   type UpdatableProjectFields = Exclude<keyof Project, 'id'>;
-
   const handleSaveProject = async (
     docId: string,
     updatedFields: Partial<Record<UpdatableProjectFields, Project[UpdatableProjectFields]>>
   ) => {
     try {
+      const updateData: Record<string, any> = {};
+
       for (const [key, rawValue] of Object.entries(updatedFields).filter(
         ([k]) => k !== 'id'
       )) {
-        const field = key as UpdatableProjectFields;
         let value: any = rawValue;
 
         // Convert Date to Firestore Timestamp
@@ -189,7 +197,12 @@ const WinrockDashboard: React.FC = () => {
           value = Timestamp.fromDate(value);
         }
 
-        await updateProjectField(docId, field, value);
+        updateData[key] = value;
+      }
+
+      // Make a single write with all fields
+      if (Object.keys(updateData).length > 0) {
+        await updateProjectField(docId, updateData);
       }
     } catch (error) {
       console.error(`Failed to update project ${docId}:`, error);
@@ -258,24 +271,23 @@ const WinrockDashboard: React.FC = () => {
 
   //automatic archiving if the project is completed
   useEffect(() => {
-    // auto archives completed projects
     const autoArchiveCompleted = async () => {
-      const completedProjects = projects.filter(p =>
-        p.overallStatus === "Completed" && p.isActive === true
+      const completedProjects = projects.filter(
+        (p) => p.overallStatus === "Completed" && p.isActive === true
       );
 
       for (const project of completedProjects) {
-        try {
-          await handleSaveProject(project.id, { isActive: false });
-          console.log(`Auto-archived completed project: ${project.projectName}`);
-        } catch (error) {
-          console.error(`Failed to auto-archive project ${project.projectName}:`, error);
-        }
+        await handleSaveProject(project.id, { isActive: false });
+        console.log(`Auto-archived completed project: ${project.projectName}`);
       }
     };
 
     if (projects.length > 0) {
-      autoArchiveCompleted();
+      // Use a flag to avoid re-running multiple times
+      if (!window.__autoArchivedOnce) {
+        window.__autoArchivedOnce = true;
+        autoArchiveCompleted();
+      }
     }
   }, [projects]);
   // per category
@@ -375,19 +387,16 @@ const WinrockDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const params = new URLSearchParams(globalThis.location.search);
-      setSupplierToken(params.get('t'));
-      if (supplierToken === null) {
-        return;
-      }
-      const result = await isSupplierTokenValid(supplierToken);
-      if (result) {
-        setShowLoginPopup(true);
-      }
-    };
-    fetchData();
-  });
+    const params = new URLSearchParams(globalThis.location.search);
+    const token = params.get('t');
+    setSupplierToken(token);
+    if (!token) return;
+
+    (async () => {
+      const result = await isSupplierTokenValid(token);
+      if (result) setShowLoginPopup(true);
+    })();
+  }, []);
 
   return (
     <div className={styles.dashboardContainer}>
@@ -463,29 +472,32 @@ const WinrockDashboard: React.FC = () => {
             className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
             onClick={async () => {
               if (isEditMode) {
-                for (const edited of editableProjects) {
-                  const original = projects.find(p => p.id === edited.id);
-                  if (!original) continue;
+                // Only save projects that were actually edited
+                for (const projectId of editedProjectIds) {
+                  const edited = editableProjects.find(p => p.id === projectId);
+                  const original = originalProjects.find(p => p.id === projectId);
+
+                  if (!edited || !original) continue;
 
                   const updatedFields: Partial<Project> = {};
-
-                  // Compare fields and collect differences
                   for (const key in edited) {
                     if (edited[key as keyof Project] !== original[key as keyof Project]) {
                       (updatedFields as any)[key] = (edited as any)[key];
                     }
                   }
-                  // Save only if there are changes
+
                   if (Object.keys(updatedFields).length > 0) {
                     await handleSaveProject(edited.id, updatedFields);
                   }
-
                 }
 
                 setEditableProjects([]);
+                setEditedProjectIds(new Set()); // Clear tracked edits
               } else {
                 // Going into edit mode
                 setEditableProjects(JSON.parse(JSON.stringify(currentProjects)));
+                setOriginalProjects(JSON.parse(JSON.stringify(currentProjects)));
+                setEditedProjectIds(new Set());
               }
 
               setIsEditMode(!isEditMode);
@@ -548,26 +560,25 @@ const WinrockDashboard: React.FC = () => {
                   isSelected={selectedRows.includes(project.id)}
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
                   isEditMode={isEditMode}
-                  onSave={(updatedFields) => {
+                  onSave={async (updatedFields) => {
                     if (isEditMode) {
-                      if (updatedFields.projectName) {
-                        const duplicateExists = projects.some(p =>
-                          p.projectName.toLowerCase() === updatedFields.projectName!.toLowerCase() &&
-                          p.id !== project.id
-                        );
-
-                        if (duplicateExists) {
-                          alert("A project with this name already exists. Please choose a different name.");
-                          return;
-                        }
-                      }
+                      // Update local state
                       setEditableProjects(prev =>
                         prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
                       );
+
+                      // Also update the original to mark as "saved"
+                      setOriginalProjects(prev =>
+                        prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
+                      );
+
+                      // Save immediately to Firebase
+                      await handleSaveProject(project.id, updatedFields);
                     } else {
                       handleSaveProject(project.id, updatedFields);
                     }
                   }}
+
 
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here

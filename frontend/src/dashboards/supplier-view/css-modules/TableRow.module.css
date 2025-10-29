@@ -21,6 +21,8 @@
   height: 100%;
 }
 
+
+
 .checkboxWrapper.hidden {
   visibility: hidden;
 }
@@ -69,6 +71,16 @@
 
 .checkbox:disabled {
   cursor: not-allowed;
+}
+
+.saveButton {
+  border: none;
+  background: none;
+  color: #113a8d;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 /* Status styles */
