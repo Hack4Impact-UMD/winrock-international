@@ -50,7 +50,9 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
 
         <div className={styles.rightPanel}>
 			<h2 style={{fontSize: "20px", marginTop: "47px"}}>Updates</h2>
-          	<Chat senderRole='winrock' projectId={project.id}></Chat>
+          	<div style={{display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px"}}>
+              <Chat senderRole='winrock' projectId={project.id}></Chat>
+            </div>
         </div>
       </div>
     </div>
