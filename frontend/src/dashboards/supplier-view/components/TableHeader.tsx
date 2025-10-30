@@ -5,16 +5,15 @@ interface TableHeaderProps {
   onSelectAll?: (checked: boolean) => void;
   allSelected?: boolean;
   headers: string[];
-  isEditMode: boolean;
 }
 
-const TableHeader: React.FC<TableHeaderProps> = ({ onSelectAll, allSelected = false, headers, isEditMode }) => {
+const TableHeader: React.FC<TableHeaderProps> = ({ onSelectAll, allSelected = false, headers }) => {
   return (
     <thead className={styles.tableHeader}>
       <tr>
         {/* Checkbox Column */}
         <th className={styles.checkboxCell}>
-        <div className={`${styles.checkboxWrapper} ${!isEditMode ? styles.hidden : ''}`}>
+        <div className={`${styles.checkboxWrapper} ${!false ? styles.hidden : ''}`}>
             <input
               type="checkbox"
               onChange={(e) => onSelectAll?.(e.target.checked)}

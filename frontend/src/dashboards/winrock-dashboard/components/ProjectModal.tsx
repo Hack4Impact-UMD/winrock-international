@@ -24,6 +24,14 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
     const [showSupplierDropdown, setShowSupplierDropdown] = useState<boolean>(false);
     const [showSupplierDropdownArrow, setShowSupplierDropdownArrow] = useState<boolean>(false);
     const [toggleSupplierDropdownArrow, setToggleSupplierDropdownArrow] = useState<boolean>(true);
+    const [activityType, setActivityType] = useState<Project['activityType']>("Agriculture");
+
+    const activityTypes: Project['activityType'][] = [
+        "Renewable Energy and Energy Efficiency",
+        "Agriculture",
+        "Agroforestry",
+        "Animal Agriculture and Manure Management"
+    ];
 
     const clients = Array.from(new Set(projects.map(p => p.clientName))).sort((a,b) => a.localeCompare(b));
     const suppliers = Array.from(new Set(projects.map(p => p.supplierName))).sort((a,b) => a.localeCompare(b));
@@ -151,7 +159,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
                         </ul>
                         )}
                     </div>
-                    <div></div>
                     <div className={styles.fieldContainer}>
                         <span className={styles.fieldLabel}>Supplier name</span>
                         <input 
@@ -204,6 +211,20 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
                         )}
                     </div>
                     <div className={styles.fieldContainer}>
+                        <span className={styles.fieldLabel}>Sector</span>
+                        <select 
+                            className={styles.fieldInput} 
+                            value={activityType} 
+                            onChange={(e) => setActivityType(e.target.value)}
+                        >
+                            {activityTypes.map((type) => (
+                                <option key={type} value={type}>
+                                    {type}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className={styles.fieldContainer}>
                         <span className={styles.fieldLabel}>Supplier email</span>
                         <input 
                             type="email" 
@@ -221,7 +242,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
                         <button 
                             className={styles.createButton} 
                             onClick={() => {
-                                addProject(projectName, clientName, supplierName, supplierEmail);
+                                addProject(projectName, clientName, supplierName, supplierEmail, activityType);
                                 onClose();
                             }} 
                             disabled={anyInvalidInputs()}

@@ -33,11 +33,9 @@ const SupplierDashboard: React.FC = () => {
   });
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [isEditMode, setIsEditMode] = useState(false);
   const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first');
   const [allSelected, setAllSelected] = useState(false);
-  const [editableProjects, setEditableProjects] = useState<Project[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +47,7 @@ const SupplierDashboard: React.FC = () => {
   // These are used to control the date, i.e. save changes to the date filter calendar
   const [dateRange, setDateRange] = useState<DateRange>({
     startDate: null,
-    endDate: new Date()
+    endDate: new Date('2099-12-31') //TEMP CHANGE
   });
 
   const handleActionClick = (id: string | null) => {
@@ -403,43 +401,6 @@ const SupplierDashboard: React.FC = () => {
             selectedTab={selectedTab}
             onTabSelect={handleTabChange}
           />
-          <button
-            className={`${styles.editButton} ${isEditMode ? styles.active : ''}`}
-            onClick={async () => {
-              if (isEditMode) {
-                // ✅ Save changes before exiting edit mode
-                for (const edited of editableProjects) {
-                  const original = projects.find(p => p.id === edited.id);
-                  if (!original) continue;
-
-                  const updatedFields: Partial<Project> = {};
-
-                  // Compare fields and collect differences
-                  for (const key in edited) {
-                    if (edited[key as keyof Project] !== original[key as keyof Project]) {
-                      (updatedFields as any)[key] = (edited as any)[key];
-                    }
-                  }
-
-                  // Save only if there are changes
-                  if (Object.keys(updatedFields).length > 0) {
-                    await handleSaveProject(edited.id, updatedFields);
-                  }
-
-                }
-
-                setEditableProjects([]);
-              } else {
-                // Going into edit mode
-                setEditableProjects(JSON.parse(JSON.stringify(currentProjects)));
-              }
-
-              setIsEditMode(!isEditMode);
-            }}
-          >
-            {isEditMode ? 'Done' : 'Edit Projects'}
-          </button>
-
         </div>
 
         <div className={styles.toolbarContainer}>
@@ -484,24 +445,16 @@ const SupplierDashboard: React.FC = () => {
               onSelectAll={handleSelectAll}
               allSelected={allSelected}
               headers={['Project', 'Overall Status', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Actions']}
-              isEditMode={isEditMode}
             />
             <tbody>
-              {(isEditMode ? editableProjects : currentProjects).map(project => (
+              {currentProjects.map(project => (
                 <TableRow
                   key={project.id}
                   data={project}
                   isSelected={selectedRows.includes(project.id)}
                   onSelect={(checked) => handleRowSelect(project.id, checked)}
-                  isEditMode={isEditMode}
                   onSave={(updatedFields) => {
-                    if (isEditMode) {
-                      setEditableProjects(prev =>
-                        prev.map(p => p.id === project.id ? { ...p, ...updatedFields } : p)
-                      );
-                    } else {
-                      handleSaveProject(project.id, updatedFields);
-                    }
+                    handleSaveProject(project.id, updatedFields);
                   }}
 
                   onActionClick={handleActionClick}

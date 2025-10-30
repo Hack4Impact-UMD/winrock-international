@@ -28,4 +28,5 @@ export interface Project {
     | "Animal Agriculture and Manure Management";
     isActive: boolean;
     isPinned: boolean;
+    isLocked: boolean;
 }
