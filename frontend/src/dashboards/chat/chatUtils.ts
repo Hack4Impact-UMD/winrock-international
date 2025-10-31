@@ -43,7 +43,10 @@ export const getMessages = async (projectId: string): Promise<Result> => {
 			return { success: true, data: [] };
 		}
 		const messages : Message[] = querySnapshot.docs.map(d => d.data() as Message);
-		messages.sort((a,b) => a.timestamp.seconds - b.timestamp.seconds);
+		messages.sort((a,b) => {
+			const secondsDiff = a.timestamp.seconds - b.timestamp.seconds
+			return secondsDiff === 0 ? a.timestamp.nanoseconds - b.timestamp.nanoseconds : secondsDiff;
+		});
 		return { success: true, data : messages };
 	} catch (e) {
 		return handleFirebaseError(e);
