@@ -33,17 +33,18 @@ const Chat = ({ senderRole, projectId }: ChatProps) => {
 		setNewMessageText(event.target.value);
 	}
 
-	const handleSendClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+	const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		const messageToSend = newMessageText.trim();
 		event.preventDefault();
-		if (!newMessageText.trim()) {
+		if (!messageToSend) {
 			return;
 		}
-		const result : Result = await sendMessage(projectId, "leia@umd.edu", senderRole, newMessageText);
+		setNewMessageText("");
+		const result : Result = await sendMessage(projectId, "leia@umd.edu", senderRole, messageToSend);
 		if (result.success) {
 			const newMessage = result.data;
 			setMessages([...messages, newMessage]);
 		}
-		setNewMessageText("");
 	}
 
 	const capitalizeRole = (role : SenderRole) : string => {
@@ -61,11 +62,11 @@ const Chat = ({ senderRole, projectId }: ChatProps) => {
 		</div> 
 
 	const newMessageContainer = 
-		<form className={styles.newMessageContainer}>
+		<form className={styles.newMessageContainer} onSubmit={handleFormSubmit}>
 			<label htmlFor="newMessageText">Request Additional Information</label>
 			<input type="text" id="newMessageText" className={styles.newMessageInput} 
-			placeholder="Enter text here" value={newMessageText} onChange={handleTextChange}></input>
-			<button className={styles.sendButton} onClick={handleSendClick}>Send</button>
+			placeholder="Enter text here" value={newMessageText} onChange={handleTextChange} autoComplete="off"></input>
+			<button className={styles.sendButton} type="submit">Send</button>
 		</form>
 
 	return <div>
