@@ -1,0 +1,65 @@
+.newMessageContainer {
+	display: flex;
+	flex-flow: column nowrap;
+	margin: 20px 0;
+	gap: 10px;
+}
+
+.newMessageInput {
+	font-family: inherit;
+	font-size: 12px;
+	padding: 20px 10px;
+	border-radius: .4rem;
+	border: 1.29px solid var(--color-gray);
+}
+
+.sendButton {
+	background-color: white;
+    border: 1.29px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 10px 30px;
+	box-sizing: border-box;
+	width: fit-content;
+    border-radius: .4rem;
+    cursor: pointer;
+	align-self: flex-end;
+	margin-top: 20px;
+}
+
+.messageBubblesContainer {
+	display: flex;
+	flex-flow: column nowrap;
+	width: 50rem;
+	margin-top: 0.75rem;
+	padding-right: 1rem;
+	max-height: 40vh;
+	overflow-y: auto;
+	scroll-behavior: smooth;
+}
+
+.outgoingMessage > .messageBubble, 
+.incomingMessage > .messageBubble {
+	max-width: 26rem;
+	padding: 0.75rem 1.2rem;
+	border-radius: 10px;
+	margin: 0.5rem 0;
+}
+
+.outgoingMessage {
+	margin-right: 0;
+	margin-left: auto;
+}
+
+.incomingMessage {
+	margin-left: 0;
+	margin-right: auto;
+}
+
+.supplierMessage {
+	background-color: #F2F2F3;
+}
+
+.winrockMessage {
+	background-color: #005293;
+	color: white;
+}
