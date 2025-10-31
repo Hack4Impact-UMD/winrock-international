@@ -56,7 +56,7 @@ const Chat = ({ senderRole, projectId }: ChatProps) => {
 			{messages.map((msg, index) => (
 				<div key={index} className={msg.senderRole === senderRole ? styles.outgoingMessage : styles.incomingMessage}>
 					<span>{capitalizeRole(msg.senderRole)}</span>
-					<div className={styles.messageBubble}>{msg.message}</div>
+					<div className={`${styles.messageBubble} ${msg.senderRole === 'winrock' ? styles.winrockMessage : styles.supplierMessage}`}>{msg.message}</div>
 				</div>
 			))}
 		</div> 

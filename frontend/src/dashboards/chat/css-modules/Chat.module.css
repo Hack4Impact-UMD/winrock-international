@@ -55,11 +55,11 @@
 	margin-right: auto;
 }
 
-.incomingMessage > .messageBubble {
+.supplierMessage {
 	background-color: #F2F2F3;
 }
 
-.outgoingMessage > .messageBubble {
+.winrockMessage {
 	background-color: #005293;
 	color: white;
 }
