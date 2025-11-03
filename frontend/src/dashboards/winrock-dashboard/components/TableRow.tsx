@@ -249,6 +249,7 @@ const TableRow: React.FC<TableRowProps> = ({
             onClick={() => {
               onSave?.({
                 projectName: localProjectName,
+                clientName: localClientName, // Add clientName here
                 supplierName: localSupplierName,
                 overallStatus: localOverallStatus,
                 analysisStage: localAnalysisStage,
