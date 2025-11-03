@@ -10,3 +10,4 @@ const functions = getFunctions();
 connectFunctionsEmulator(functions, "localhost", 5001);
 
 export const sendEmail = httpsCallable(functions, 'sendEmail');
+export const advanceProjectStage = httpsCallable(functions, 'advanceProjectStage');

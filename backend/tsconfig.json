@@ -1,9 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es2017",
         "lib": [
-            "dom",
-            "dom.iterable",
             "esnext"
         ],
         "allowJs": true,
@@ -13,16 +11,11 @@
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
-        "module": "esnext",
-        "moduleResolution": "node",
+        "module": "NodeNext",
+        "moduleResolution": "nodenext",
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "react-jsx",
-        "types": [
-            "node",
-            "react/jsx-runtime"
-        ]
+        "noEmit": true
     },
     "include": [
         "src"

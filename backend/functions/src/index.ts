@@ -1,4 +1,6 @@
 import { onCall } from "firebase-functions/v2/https";
+import admin from "firebase-admin";
+import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { withRetries } from "./utils/retryLogic";
 import {
     EMAIL_API_BATCH_LIMIT,
@@ -43,4 +45,64 @@ exports.sendEmail = onCall(async (request) => {
     } catch (error) {
         throw { reason: "email-send-failed-with-retries" };
     }
+});
+
+// Initialize Admin SDK once
+if (!admin.apps.length) {
+    admin.initializeApp();
+}
+
+/**
+ * Updates the analysisStage of a project in Firestore.
+ * Accepts either a specific stage to set, or advances to the next stage.
+ *
+ * request.data = {
+ *   projectId: string,              // Firestore document id in 'projects'
+ *   mode?: 'set' | 'advance',       // default: 'advance'
+ *   stage?: string                  // required when mode==='set'
+ * }
+ */
+exports.advanceProjectStage = onCall(async (request) => {
+    const projectId: string = request.data.projectId;
+    const mode: 'set' | 'advance' = request.data.mode ?? 'advance';
+    const stage: string | undefined = request.data.stage;
+
+    if (!projectId) {
+        throw { reason: "invalid-args", details: "projectId is required" };
+    }
+    if (mode === 'set' && !stage) {
+        throw { reason: "invalid-args", details: "stage is required when mode is 'set'" };
+    }
+
+    const db = getFirestore();
+    const docRef = db.collection('projects').doc(projectId);
+    const snap = await docRef.get();
+    if (!snap.exists) {
+        throw { reason: "project-not-found" };
+    }
+
+    const orderedStages = [
+        "Clarifying Initial Project Information",
+        "Clarifying Technical Details",
+        "GHG Assessment Analysis",
+        "Confirming Final Requirements",
+        "Risk & Co-benefit Assessment",
+        "Complete, and Excluded",
+    ];
+
+    let nextStage: string;
+    if (mode === 'set' && stage) {
+        nextStage = stage;
+    } else {
+        const currentStage: string = (snap.data() as any).analysisStage;
+        const idx = orderedStages.indexOf(currentStage);
+        nextStage = orderedStages[Math.min(idx + 1, orderedStages.length - 1)] || orderedStages[0];
+    }
+
+    await docRef.update({
+        analysisStage: nextStage,
+        lastUpdated: FieldValue.serverTimestamp(),
+    });
+
+    return { success: true, data: { analysisStage: nextStage } };
 });
