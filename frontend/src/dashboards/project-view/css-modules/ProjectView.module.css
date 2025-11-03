@@ -6,15 +6,22 @@
   .mainContent {
     display: flex;
     flex-direction: row;
-    /* justify-content: space-between; */
+    gap: 1rem;
     padding: 1rem;
   }
   
-  /* .leftPanel {
-    flex: 1;
+  .leftPanel {
+    flex: 0 0 auto;
+    min-width: 0;
   }
   
   .rightPanel {
-    flex: 2;
-  } */
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    background: #F6F7F9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
    
