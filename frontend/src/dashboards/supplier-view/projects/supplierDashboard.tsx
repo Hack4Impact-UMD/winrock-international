@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Timestamp } from "firebase/firestore";
 import styles from "./../css-modules/SupplierDashboard.module.css"
 import winrockLogo from "./../../../assets/winrock-international-logo.png"
 import projectsIcon from './../../../assets/projects-icon.svg';
@@ -32,10 +31,8 @@ const SupplierDashboard: React.FC = () => {
     spend: [],
   });
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first');
-  const [allSelected, setAllSelected] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +61,7 @@ const SupplierDashboard: React.FC = () => {
     };
     return mapping[status] || status;
   };
+
   const handleToggleArchive = async (projectId: string) => {
     const project = projects.find(p => p.id === String(projectId));
 
@@ -72,17 +70,29 @@ const SupplierDashboard: React.FC = () => {
       return;
     }
 
+    // Prevent toggling if the project's overallStatus is "Completed"
+    if (project.overallStatus === "Completed") {
+      console.error(`Cannot toggle archive status for a completed project: ${project.projectName}`);
+      return;
+    }
+
     const newIsActive = !project.isActive;
 
     try {
-      await handleSaveProject(project.id, { isActive: newIsActive });
+      // Save the updated isActive field directly to Firestore
+      await updateProjectField(project.id, 'isActive', newIsActive);
 
+      // Close the action menu
       setActiveActionMenu(null);
 
+      // Update the local state to reflect the change
+      setProjects(prev =>
+        prev.map(p =>
+          p.id === String(projectId) ? { ...p, isActive: newIsActive } : p
+        )
+      );
 
-      setProjects(prev => prev.map(p =>
-        p.id === String(projectId) ? { ...p, isActive: newIsActive } : p
-      ));
+      console.log(`Project ${project.id} updated successfully.`);
     } catch (error) {
       console.error(`Failed to update project:`, error);
     }
@@ -135,7 +145,6 @@ const SupplierDashboard: React.FC = () => {
   const handleTabChange = (tab: string) => {
     setSelectedTab(tab);
     setCurrentPage(1);
-    setSelectedRows([]); // Clear selected rows when changing tabs
   };
 
   const toggleFilterPopup = () => {
@@ -151,41 +160,6 @@ const SupplierDashboard: React.FC = () => {
       return { ...prev, [section]: updated };
     });
     setCurrentPage(1);
-  };
-
-  const handleRowSelect = (id: string, checked: boolean) => {
-    if (checked) {
-      setSelectedRows([...selectedRows, id]);
-    } else {
-      setSelectedRows(selectedRows.filter(rowId => rowId !== id));
-    }
-  };
-
-  // Define which fields can be updated (exclude projectName and id)
-  type UpdatableProjectFields = Exclude<keyof Project, 'projectName' | 'id'>;
-
-  const handleSaveProject = async (
-    docId: string,
-    updatedFields: Partial<Record<UpdatableProjectFields, Project[UpdatableProjectFields]>>
-  ) => {
-    try {
-      for (const [key, rawValue] of Object.entries(updatedFields).filter(
-        ([k]) => k !== 'id' && k !== 'projectName'
-      )) {
-        const field = key as UpdatableProjectFields;
-        let value: any = rawValue;
-
-        // Convert Date to Firestore Timestamp
-        if (value instanceof Date) {
-          value = Timestamp.fromDate(value);
-        }
-
-        await updateProjectField(docId, field, value);
-      }
-      console.log(`Project ${docId} updated successfully.`);
-    } catch (error) {
-      console.error(`Failed to update project ${docId}:`, error);
-    }
   };
 
   // Firestore snapshot mapping
@@ -228,28 +202,6 @@ const SupplierDashboard: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  //automatic archiving if the project is completed
-  useEffect(() => {
-    // auto archives completed projects
-    const autoArchiveCompleted = async () => {
-      const completedProjects = projects.filter(p =>
-        p.overallStatus === "Completed" && p.isActive === true
-      );
-
-      for (const project of completedProjects) {
-        try {
-          await handleSaveProject(project.id, { isActive: false });
-          console.log(`Auto-archived completed project: ${project.projectName}`);
-        } catch (error) {
-          console.error(`Failed to auto-archive project ${project.projectName}:`, error);
-        }
-      }
-    };
-
-    if (projects.length > 0) {
-      autoArchiveCompleted();
-    }
-  }, [projects]);
   // per category
 
   // Handler for sort selection - just updates the state
@@ -331,19 +283,6 @@ const SupplierDashboard: React.FC = () => {
     }
 
     return null;
-  };
-
-
-  const handleSelectAll = (checked: boolean) => {
-    setAllSelected(checked);
-    if (checked) {
-      // Select all visible rows on current page
-      const visibleIds = currentProjects.map(p => p.id);
-      setSelectedRows(visibleIds);
-    } else {
-      // Deselect all
-      setSelectedRows([]);
-    }
   };
 
   return (
@@ -442,8 +381,6 @@ const SupplierDashboard: React.FC = () => {
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <TableHeader
-              onSelectAll={handleSelectAll}
-              allSelected={allSelected}
               headers={['Project', 'Overall Status', 'Spend Category', 'Geography', 'Last Updated', 'Start Date', 'Actions']}
             />
             <tbody>
@@ -451,12 +388,6 @@ const SupplierDashboard: React.FC = () => {
                 <TableRow
                   key={project.id}
                   data={project}
-                  isSelected={selectedRows.includes(project.id)}
-                  onSelect={(checked) => handleRowSelect(project.id, checked)}
-                  onSave={(updatedFields) => {
-                    handleSaveProject(project.id, updatedFields);
-                  }}
-
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                   onRowClick={() => {

@@ -12,77 +12,6 @@
   text-overflow: ellipsis;
 }
 
-
-.checkboxWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
-
-
-.checkboxWrapper.hidden {
-  visibility: hidden;
-}
-
-.checkbox {
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 1px solid #b1b2b2;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
-  border-radius: .25rem;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  position: relative;
-  background-color: white;
-  margin: 0;
-  vertical-align: middle;
-}
-
-.checkbox:checked {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.checkbox:checked::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 45%;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.checkbox:hover {
-  border-color: var(--color-primary);
-}
-
-.checkbox:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-.checkbox:disabled {
-  cursor: not-allowed;
-}
-
-.saveButton {
-  border: none;
-  background: none;
-  color: #113a8d;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  font-size: 1.25rem;
-  line-height: 1;
-}
-
 /* Status styles */
 .status {
   display: inline-block;
@@ -135,23 +64,6 @@
 
 .actionButton:hover {
   color: var(--color-primary);
-}
-
-.editableInput {
-  width: 100%;
-  padding: 0.25rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: inherit;
-  font-family: inherit;
-  font-weight: inherit;
-  letter-spacing: inherit;
-  margin-left: -4px;
-}
-
-.editableInput:focus {
-  outline: none;
-  border-color: #000;
 }
 
 .selectWrapper,

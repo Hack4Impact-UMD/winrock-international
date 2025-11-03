@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../css-modules/TableRow.module.css';
 import ColorText from '../components/ColorText';
-import RowCustomSelect from '../components/RowCustomSelect';
 import PopupMenu from './PopupMenu'; // ⬅️ Import the portal popup component (you need to create it too if you haven't yet)
 import { useNavigate } from 'react-router-dom';
 
@@ -24,48 +23,22 @@ interface TableRowProps {
     startDate: string;
     isActive: boolean;
   };
-  isSelected?: boolean;
-  onSelect?: (checked: boolean) => void;
-  isEditMode?: boolean;
-  onSave?: (updatedFields: Partial<TableRowProps['data']>) => void;
   onActionClick?: (id: string | null, event?: React.MouseEvent) => void; // 👈 updated here
   onArchiveClick?: (id: string) => void;
   activeActionMenuId?: string | null;
   onRowClick?: () => void;
 }
 
-const statusOptions: StatusType[] = [
-  'On Track',
-  'At Risk',
-  'Paused',
-  'Completed',
-  'Completed (except for risk)'
-];
-
 const TableRow: React.FC<TableRowProps> = ({
   data,
-  isSelected = false,
-  onSelect,
-  isEditMode = false,
-  onSave,
   onActionClick,         // ✅ ADD THIS
   onArchiveClick,        // ✅ ADD THIS
   activeActionMenuId,    // ✅ ADD THIS
   onRowClick,
 }) => {
   // --- Local State for Editable Fields ---
-  const [localOverallStatus, setLocalOverallStatus] = useState<StatusType>(data.overallStatus);
-  const [localSpendCategory, setLocalSpendCategory] = useState(data.spendCategory);
-  const [localGeography, setLocalGeography] = useState(data.geography);
   const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const navigate = useNavigate();
-
-  // Refresh local states when `data` changes
-  useEffect(() => {
-    setLocalOverallStatus(data.overallStatus);
-    setLocalSpendCategory(data.spendCategory);
-    setLocalGeography(data.geography);
-  }, [data]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -82,18 +55,7 @@ const TableRow: React.FC<TableRowProps> = ({
 
   return (
     <tr className={styles.tableRow}>
-      <td className={styles.checkboxCell}>
-        <div className={`${styles.checkboxWrapper} ${!isEditMode ? styles.hidden : ''}`}>
-          <input
-            type="checkbox"
-            checked={isSelected}
-            onChange={(e) => onSelect?.(e.target.checked)}
-            className={styles.checkbox}
-            disabled={!isEditMode}
-          />
-        </div>
-      </td>
-      {/* Project Name - Not Editable */}
+      {/* Project Name */}
       <td
         className={`${styles.cell} ${styles.projectLink}`}
         onClick={() => {
@@ -107,104 +69,62 @@ const TableRow: React.FC<TableRowProps> = ({
 
       {/* Overall Status */}
       <td className={styles.cell}>
-        {isEditMode ? (
-          <RowCustomSelect
-            value={localOverallStatus}
-            options={statusOptions}
-            onChange={(value) => setLocalOverallStatus(value as StatusType)}
-            variant="status"
-          />
-        ) : (
-          <ColorText
-            text={data.overallStatus}
-            category={data.overallStatus}
-            variant="status"
-          />
-        )}
+        <ColorText
+          text={data.overallStatus}
+          category={data.overallStatus}
+          variant="status"
+        />
       </td>
 
       {/* Spend Category */}
       <td className={styles.cell}>
-        {isEditMode ? (
-          <input
-            type="text"
-            value={localSpendCategory}
-            onChange={(e) => setLocalSpendCategory(e.target.value)}
-            className={styles.editableInput}
-          />
-        ) : (
-          data.spendCategory
-        )}
+        {data.spendCategory}
       </td>
 
       {/* Geography */}
       <td className={styles.cell}>
-        {isEditMode ? (
-          <input
-            type="text"
-            value={localGeography}
-            onChange={(e) => setLocalGeography(e.target.value)}
-            className={styles.editableInput}
-          />
-        ) : (
-          data.geography
-        )}
+        {data.geography}
       </td>
 
-      {/* Last Updated - Not Editable */}
+      {/* Last Updated */}
       <td className={styles.cell}>{data.lastUpdated}</td>
 
-      {/* Start Date - Not Editable */}
+      {/* Start Date */}
       <td className={styles.cell}>{data.startDate}</td>
 
       {/* Actions */}
       <td className={styles.actionCell}>
-        {isEditMode ? (
+        <div className={styles.actionMenuWrapper}>
           <button
-            className={styles.saveButton}
-            onClick={() => {
-              onSave?.({
-                overallStatus: localOverallStatus,
-                spendCategory: localSpendCategory,
-                geography: localGeography,
-              });
+            className={styles.actionButton}
+            onClick={(e) => {
+              const rect = (e.target as HTMLElement).getBoundingClientRect();
+              setButtonPosition({ x: rect.left - 150, y: rect.bottom - 40});
+              onActionClick?.(data.id, e);
             }}
           >
-            Save
+            •••
           </button>
-        ) : (
-          <div className={styles.actionMenuWrapper}>
-            <button
-              className={styles.actionButton}
-              onClick={(e) => {
-                const rect = (e.target as HTMLElement).getBoundingClientRect();
-                setButtonPosition({ x: rect.left - 150, y: rect.bottom - 40 });
-                onActionClick?.(data.id, e);
-              }}
-            >
-              •••
-            </button>
 
-            {activeActionMenuId === data.id && (
-              <PopupMenu
-                x={buttonPosition.x}
-                y={buttonPosition.y}
-                onClose={() => onActionClick?.(null)}
+          {activeActionMenuId === data.id && (
+            <PopupMenu
+              x={buttonPosition.x}
+              y={buttonPosition.y}
+              onClose={() => onActionClick?.(null)}
+            >
+              <button
+                className={styles.archiveButton}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // handleToggleArchive(activeActionMenu);
+                  onArchiveClick?.(data.id);
+                }}
               >
-                <button
-                  className={styles.archiveButton}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // handleToggleArchive(activeActionMenu);
-                    onArchiveClick?.(data.id);
-                  }}
-                >
-                  {data.isActive ? 'Archive' : 'Unarchive'}
-                </button>
-              </PopupMenu>
-            )}
-          </div>
-        )}
+                {data.isActive ? 'Archive' : 'Unarchive'}
+              </button>
+            </PopupMenu>
+          )}
+        </div>
       </td>
 
     </tr>
