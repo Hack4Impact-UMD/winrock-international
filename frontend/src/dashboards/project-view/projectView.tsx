@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ProjectViewHeader from './components/ProjectViewHeader';
 import ProjectTracker from './components/ProjectTracker';
 import ProjectUpdates from './components/ProjectUpdates';
+import ProjectFiles from './components/ProjectFiles';
 import styles from '../project-view/css-modules/ProjectView.module.css';
 import Sidebar from '../winrock-dashboard/components/Sidebar';
 import ManageAccess from '../access-manager/components/ManageAccess';
@@ -37,7 +38,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
       />
 
       <div className={styles.mainContent}>
-        <div className={styles.leftPanel}>
+        <div className={styles.trackerPanel}>
           <ProjectTracker
             currentStage={project.analysisStage}
             initialInfoStatus="completed"
@@ -48,7 +49,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
           />
         </div>
 
-        <div className={styles.rightPanel}>
+        <div className={styles.updatesPanel}>
           <ProjectUpdates updates={updates} />
           <div style={{
             display: "flex",
@@ -79,6 +80,9 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
           <div style={{display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px"}}>
             <Chat senderRole='winrock' projectId={project.id}></Chat>
           </div>
+        </div>
+        <div className={styles.filesPanel}>
+          <ProjectFiles />
         </div>
       </div>
     </div>

@@ -8,18 +8,31 @@
     flex-direction: row;
     gap: 1rem;
     padding: 1rem;
+    padding-top: 0px;
+    border-top: 1px solid #e0e0e0;
   }
   
-  .leftPanel {
+  .trackerPanel {
     flex: 0 0 auto;
     min-width: 0;
   }
   
-  .rightPanel {
+  .updatesPanel {
     flex: 1;
     min-width: 0;
     overflow: hidden;
     background: #F6F7F9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .filesPanel {
+    flex: 0.4;
+    min-width: 0;
+    overflow: hidden;
+    background: #ffffff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
