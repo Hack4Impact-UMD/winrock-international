@@ -80,6 +80,20 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
           <div style={{display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px"}}>
             <Chat senderRole='winrock' projectId={project.id}></Chat>
           </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+            <button style={{
+              padding: "10px 20px",
+              fontSize: "14px",
+              fontWeight: "500",
+              color: "#ffffff",
+              backgroundColor: "#1a4b8b",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}>
+              Mark Stage as Complete
+            </button>
+          </div>
         </div>
         <div className={styles.filesPanel}>
           <ProjectFiles />
