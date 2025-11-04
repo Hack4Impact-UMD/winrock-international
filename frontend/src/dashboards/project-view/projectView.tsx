@@ -24,6 +24,19 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
   console.log("ProjectView - project:", project);
   console.log("ProjectView - updates:", updates);
 
+  // Map analysis stage to stage number
+  const getStageNumber = (stage: string): number => {
+    const stageMap: Record<string, number> = {
+      "Clarifying Initial Project Information": 1,
+      "Clarifying Technical Details": 2,
+      "GHG Assessment Analysis": 3,
+      "Confirming Final Requirements": 4,
+      "Risk & Co-benefit Assessment": 5,
+      "Complete, and Excluded": 6,
+    };
+    return stageMap[stage] || 0;
+  };
+
   return (
     <div className={styles.projectViewContainer}>
       <ManageAccess
@@ -77,7 +90,26 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
               View and Edit
             </button>
           </div>
-          <div style={{display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px"}}>
+          <div style={{display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px", backgroundColor: "#fff", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", boxShadow: "0 2px 8px rgba(0,0,0,0.05)"}}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "10px" }}>
+              <div style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+                backgroundColor: "#1a4b8b",
+                color: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "18px",
+                fontWeight: "600"
+              }}>
+                {getStageNumber(project.analysisStage)}
+              </div>
+              <h3 style={{ fontSize: "18px", fontWeight: "600", color: "#1a4b8b", margin: 0 }}>
+                {project.analysisStage}
+              </h3>
+            </div>
             <Chat senderRole='winrock' projectId={project.id}></Chat>
           </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
