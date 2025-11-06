@@ -80,26 +80,24 @@ const ProjectTracker = ({ currentStage, initialInfoStatus, technicalStatus, ghgS
 			</div>
 			{ 
 				!showingNotes && 
-				<div>
-					<div className={styles.stagesCont}>
-						<div className={`${styles.stage} ${currentStage === "Clarifying Initial Project Information" ? styles.currentStageCont : ""}`}>
-							Clarifying Initial Project Information
-						</div>
-						<div className={`${styles.stage} ${currentStage === "Clarifying Technical Details" ? styles.currentStageCont : ""}`}>
-							Clarifying Technical Details
-						</div>
-						<div className={`${styles.stage} ${currentStage === "GHG Assessment Analysis" ? styles.currentStageCont : ""}`}>
-							GHG Assessment Analysis
-						</div>
-						<div className={`${styles.stage} ${currentStage === "Confirming Final Requirements" ? styles.currentStageCont : ""}`}>
-							Confirming Final Requirements
-						</div>
-						<div className={`${styles.stage} ${currentStage === "Risk & Co-benefit Assessment" ? styles.currentStageCont : ""}`}>
-							Risks & Co-Benefits Assessment
-						</div>
-						<div className={`${styles.stage} ${currentStage === "Complete, and Excluded" ? styles.currentStageCont : ""}`}>
-							Project Completed
-						</div>
+				<div className={styles.stagesCont}>
+					<div className={`${styles.stage} ${currentStage === "Clarifying Initial Project Information" ? styles.currentStage : ""}`}>
+						Clarifying Initial Project Information
+					</div>
+					<div className={`${styles.stage} ${currentStage === "Clarifying Technical Details" ? styles.currentStage : ""}`}>
+						Clarifying Technical Details
+					</div>
+					<div className={`${styles.stage} ${currentStage === "GHG Assessment Analysis" ? styles.currentStage : ""}`}>
+						GHG Assessment Analysis
+					</div>
+					<div className={`${styles.stage} ${currentStage === "Confirming Final Requirements" ? styles.currentStage : ""}`}>
+						Confirming Final Requirements
+					</div>
+					<div className={`${styles.stage} ${currentStage === "Risk & Co-benefit Assessment" ? styles.currentStage : ""}`}>
+						Risks & Co-Benefits Assessment
+					</div>
+					<div className={`${styles.stage} ${currentStage === "Complete, and Excluded" ? styles.currentStage : ""}`}>
+						Project Completed
 					</div>
 				</div>
 			}
