@@ -8,6 +8,7 @@ import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../chat/components/Chat';
+import rightPanelOpen from "./assets/right-panel-open.svg";
 
 
 interface ProjectViewProps {
@@ -18,6 +19,12 @@ interface ProjectViewProps {
 
 const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) => {
   const [showAccessManager, setShowAccessManager] = useState(false);
+
+  const [showingNotes, setShowingNotes] = useState(false);
+
+  const handleNotesClick = () => {
+	setShowingNotes(true);
+  }
 
   console.log("ProjectView - onBack:", onBack);
   console.log("ProjectView - project:", project);
@@ -80,6 +87,12 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
             <Chat senderRole='winrock' projectId={project.id}></Chat>
           </div>
         </div>
+
+		<button className={styles.showNotesButton} style={{ display: showingNotes ? "none" : "flex" }} onClick={handleNotesClick}>
+			<p className={styles.showNotesButtonText}>Notes</p>
+			<img src={rightPanelOpen}></img>
+		</button>
+
       </div>
     </div>
   );
