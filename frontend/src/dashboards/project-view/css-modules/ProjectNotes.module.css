@@ -1,0 +1,19 @@
+.notesPanel {
+	transition: width ease 0.5s;
+}
+
+.headerCont {
+	padding: 45px 20px 0;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.notesTitle {
+	font-weight: 600;
+	font-size: 16px;
+	color: var(--color-primary);
+	padding: 0;
+	margin: 0;
+}

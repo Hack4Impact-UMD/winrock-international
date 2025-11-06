@@ -9,6 +9,7 @@ import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../chat/components/Chat';
 import rightPanelOpen from "./assets/right-panel-open.svg";
+import ProjectNotes from './components/ProjectNotes';
 
 
 interface ProjectViewProps {
@@ -89,6 +90,8 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
           </div>
         </div>
 
+		<ProjectNotes showingNotes={showingNotes} setShowingNotes={setShowingNotes}></ProjectNotes>
+	
 		<button className={styles.showNotesButton} style={{ display: showingNotes ? "none" : "flex" }} onClick={handleNotesClick}>
 			<p className={styles.showNotesButtonText}>Notes</p>
 			<img src={rightPanelOpen}></img>
