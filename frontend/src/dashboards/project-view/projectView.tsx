@@ -52,6 +52,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
             ghgStatus="in-progress"
             risksStatus="not-started"
             finalStatus="not-started"
+			showingNotes={showingNotes}
           />
         </div>
 

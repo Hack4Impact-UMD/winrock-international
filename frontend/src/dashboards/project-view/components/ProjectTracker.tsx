@@ -11,31 +11,32 @@ interface ProjectTrackerProps {
 	ghgStatus: "not-started" | "in-progress" | "completed";
 	risksStatus: "not-started" | "in-progress" | "completed";
 	finalStatus: "not-started" | "in-progress" | "completed";
+	showingNotes: boolean;
 }
 
-const ProjectTracker = (props: ProjectTrackerProps) => {
+const ProjectTracker = ({ currentStage, initialInfoStatus, technicalStatus, ghgStatus, risksStatus, finalStatus, showingNotes }: ProjectTrackerProps) => {
 
 	const getStatusIcon = (statusNum: number) => {
 
 		let status = "";
 
 		if (statusNum === 0) {
-			status = props.initialInfoStatus;
+			status = initialInfoStatus;
 		}
 		else if (statusNum === 1) {
-			status = props.technicalStatus;
+			status = technicalStatus;
 		}
 		else if (statusNum === 2) {
-			status = props.ghgStatus;
+			status = ghgStatus;
 		}
 		else if (statusNum === 3) {
-			status = props.finalStatus;
+			status = finalStatus;
 		}
 		else if (statusNum === 4) {
-			status = props.risksStatus
+			status = risksStatus
 		}
 		else {
-			if (props.initialInfoStatus === "completed" && props.technicalStatus === "completed" && props.ghgStatus === "completed" && props.finalStatus === "completed") {
+			if (initialInfoStatus === "completed" && technicalStatus === "completed" && ghgStatus === "completed" && finalStatus === "completed") {
 				return <img src={completed}></img>;
 			}
 			else {
@@ -55,7 +56,13 @@ const ProjectTracker = (props: ProjectTrackerProps) => {
 	}
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} style={{ width: showingNotes ? "70px" : "300px" }}>
+			{
+				!showingNotes && 
+				<div className={styles.headerCont}>
+					Project Tracker
+				</div>
+			}
 			<div className={styles.lineCont}>
 				<img src={dottedLine} style={{top: "calc(4rem + 20px)"}}></img>
 				<img src={dottedLine} style={{top: "calc(4rem + 95px)"}}></img>
@@ -63,33 +70,40 @@ const ProjectTracker = (props: ProjectTrackerProps) => {
 				<img src={dottedLine} style={{top: "calc(4rem + 245px)"}}></img>
 				<img src={dottedLine} style={{top: "calc(4rem + 320px)"}}></img>
 			</div>
-			<div className={styles.headerCont}>
-				Project Tracker
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Clarifying Initial Project Information" ? styles.currentStageCont : ""}`}>
+			<div className={styles.iconCont}>
 				{getStatusIcon(0)}
-				Clarifying Initial Project Information
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Clarifying Technical Details" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(1)}
-				Clarifying Technical Details
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "GHG Assessment Analysis" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(2)}
-				GHG Assessment Analysis
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Confirming Final Requirements" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(3)}
-				Confirming Final Requirements
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Risk & Co-benefit Assessment" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(4)}
-				Risks & Co-Benefits Assessment
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Complete, and Excluded" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(5)}
-				Project Completed
 			</div>
+			{ 
+				!showingNotes && 
+				<div>
+					<div className={styles.stagesCont}>
+						<div className={`${styles.stage} ${currentStage === "Clarifying Initial Project Information" ? styles.currentStageCont : ""}`}>
+							Clarifying Initial Project Information
+						</div>
+						<div className={`${styles.stage} ${currentStage === "Clarifying Technical Details" ? styles.currentStageCont : ""}`}>
+							Clarifying Technical Details
+						</div>
+						<div className={`${styles.stage} ${currentStage === "GHG Assessment Analysis" ? styles.currentStageCont : ""}`}>
+							GHG Assessment Analysis
+						</div>
+						<div className={`${styles.stage} ${currentStage === "Confirming Final Requirements" ? styles.currentStageCont : ""}`}>
+							Confirming Final Requirements
+						</div>
+						<div className={`${styles.stage} ${currentStage === "Risk & Co-benefit Assessment" ? styles.currentStageCont : ""}`}>
+							Risks & Co-Benefits Assessment
+						</div>
+						<div className={`${styles.stage} ${currentStage === "Complete, and Excluded" ? styles.currentStageCont : ""}`}>
+							Project Completed
+						</div>
+					</div>
+				</div>
+			}
+			
 		</div>
 	);
 }

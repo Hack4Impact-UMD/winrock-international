@@ -1,27 +1,29 @@
 .container {
+	position: relative;
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
 	justify-content: start;
-	width: 300px;
+	height: 500px;
 	gap: 0;
 	margin-left: 270px;
 	margin-top: 47px;
+	transition: width ease 0.5s;
 }
 
 .lineCont {
 	position: absolute;
 	left: 0px;
 	height: 100%;
+	width: 100%;
 }
 
 .lineCont img {
 	height: 60px;
 	position: absolute;
-	transform: translate(-50%, 0%);
-	left: calc(1rem + 30px);
+	transform: translate(-50%, -55%);
+	left: calc(1rem + 10px);
 	margin-top: 30px;
-	margin-left: 263px;
 }
 
 .headerCont {
@@ -38,22 +40,43 @@ h2 {
 	font-weight: 600;
 }
 
-.stageCont {
+.iconCont {
+	position: absolute;
+	left: 0px;
+	height: 100%;
 	display: flex;
-	flex-flow: row nowrap;
-	align-items: center;
-	justify-content: start;
+	flex-flow: column nowrap;
+	align-items: start;
+	justify-content: space-around;
 	width: 100%;
 	padding: 27.5px 1rem;
 }
 
-.stageCont img {
+.iconCont img {
 	width: 20px;
 	height: 20px;
 	margin-right: 20px;
 	font-weight: 600;
 }
 
-.currentStageCont {
-	background-color: #F6F7F9;
+.stagesCont {
+	position: absolute;
+	top: 0px;
+	left: 30px;
+	height: 100%;
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: start;
+	justify-content: space-between;
+	width: 100%;
+	padding: 30px 1rem 27px;
 }
+
+.stage {
+	width: 100%;
+	padding: 27.5px 1rem;
+}
+
+/* .currentStageCont {
+	background-color: #F6F7F9;
+} */
