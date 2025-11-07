@@ -21,6 +21,7 @@ export interface Project {
     geography: string;
     lastUpdated: string;
     startDate: string;
+    notes: string;
     activityType:
     | "Renewable Energy and Energy Efficiency"
     | "Agriculture"

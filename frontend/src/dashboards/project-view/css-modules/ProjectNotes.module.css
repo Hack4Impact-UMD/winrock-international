@@ -17,3 +17,39 @@
 	padding: 0;
 	margin: 0;
 }
+
+.textboxContainer {
+    margin: 16px;
+}
+
+.notesTextbox {
+    width: 100%;
+    height: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14.5px;
+    resize: none;
+}
+
+.saveButtonContainer {
+    text-align: right;
+    margin: 16px;
+}
+
+.saveButton {
+    color: white;
+    background-color: #1a4b8b;
+    border: 1px solid #1a4b8b;
+    height: 2.25rem;
+    width: 5.625rem;
+    border-radius: .4rem;
+    cursor: pointer;
+    font-size: 0.65rem;
+    margin-left: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.saveButton:hover {
+    background-color: #0056b3;
+}

@@ -251,6 +251,7 @@ const WinrockDashboard: React.FC = () => {
           geography: p.geography,
           lastUpdated: parseDate(p.lastUpdated),
           startDate: parseDate(p.startDate),
+          notes: p.notes || "",
           activityType: p.activityType,
           isActive: p.isActive,
           isPinned: p.isPinned,
