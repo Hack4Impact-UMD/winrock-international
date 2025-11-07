@@ -18,6 +18,7 @@
   .rightPanel {
     flex: 1;
     min-width: 0;
+    padding: 20px;
     overflow: hidden;
     background: #F6F7F9;
     min-height: 100vh;
@@ -26,7 +27,7 @@
   }
 
   .showNotesButton {
-	position: absolute;
+	position: fixed;
 	bottom: 2rem;
 	right: 2rem;
 	flex-flow: row nowrap;

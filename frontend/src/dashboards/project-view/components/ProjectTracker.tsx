@@ -64,11 +64,11 @@ const ProjectTracker = ({ currentStage, initialInfoStatus, technicalStatus, ghgS
 				</div>
 			}
 			<div className={styles.lineCont}>
-				<img src={dottedLine} style={{top: "calc(4rem + 20px)"}}></img>
-				<img src={dottedLine} style={{top: "calc(4rem + 95px)"}}></img>
-				<img src={dottedLine} style={{top: "calc(4rem + 170px)"}}></img>
-				<img src={dottedLine} style={{top: "calc(4rem + 245px)"}}></img>
-				<img src={dottedLine} style={{top: "calc(4rem + 320px)"}}></img>
+				<img src={dottedLine}></img>
+				<img src={dottedLine}></img>
+				<img src={dottedLine}></img>
+				<img src={dottedLine}></img>
+				<img src={dottedLine}></img>
 			</div>
 			<div className={styles.iconCont}>
 				{getStatusIcon(0)}
