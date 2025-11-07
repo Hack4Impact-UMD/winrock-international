@@ -38,3 +38,8 @@
     flex-direction: column;
   }
    
+
+  .markedStageButton:disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed !important;
+  }

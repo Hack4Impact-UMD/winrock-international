@@ -9,7 +9,8 @@ import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../chat/components/Chat';
-
+import MarkStageModal from './components/MarkStageModal';
+import { stageMap, finalStage } from './MarkStage';
 
 interface ProjectViewProps {
   project: Project;
@@ -19,23 +20,16 @@ interface ProjectViewProps {
 
 const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) => {
   const [showAccessManager, setShowAccessManager] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   console.log("ProjectView - onBack:", onBack);
   console.log("ProjectView - project:", project);
   console.log("ProjectView - updates:", updates);
 
   // Map analysis stage to stage number
-  const getStageNumber = (stage: string): number => {
-    const stageMap: Record<string, number> = {
-      "Clarifying Initial Project Information": 1,
-      "Clarifying Technical Details": 2,
-      "GHG Assessment Analysis": 3,
-      "Confirming Final Requirements": 4,
-      "Risk & Co-benefit Assessment": 5,
-      "Complete, and Excluded": 6,
-    };
-    return stageMap[stage] || 0;
-  };
+  const getStageNumber = (stage: string): number => stageMap[stage] || 0;
+
+  console.log(project.analysisStage, finalStage, project.analysisStage === finalStage);
 
   return (
     <div className={styles.projectViewContainer}>
@@ -113,16 +107,21 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
             <Chat senderRole='winrock' projectId={project.id}></Chat>
           </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-            <button style={{
-              padding: "10px 20px",
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#ffffff",
-              backgroundColor: "#1a4b8b",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer"
-            }}>
+            <button 
+              style={{
+                padding: "10px 20px",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#ffffff",
+                backgroundColor: "#1a4b8b",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer"
+              }}
+              onClick={() => setShowModal(true)}
+              disabled={project.analysisStage === finalStage}
+              className={styles.markedStageButton}
+            >
               Mark Stage as Complete
             </button>
           </div>
@@ -131,6 +130,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
           <ProjectFiles />
         </div>
       </div>
+      {showModal && <MarkStageModal onClose={() => setShowModal(false)} projectId={project.id} currentStage={project.analysisStage}></MarkStageModal>}
     </div>
   );
 };

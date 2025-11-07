@@ -1,0 +1,103 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3); 
+    backdrop-filter: blur(6px); 
+    display: flex;
+    align-items: center;    
+    justify-content: center;
+    z-index: 999;
+}
+
+.modalContainer {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    padding: 1rem 3rem;
+    z-index: 99;
+}
+
+.header {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 100%;
+    min-width: 25vw;
+    margin-bottom: 2rem;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 2.65rem;
+    cursor: pointer;
+    color: black;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    margin-bottom: 2.5rem;
+}
+
+.content > * {
+    text-align: center;
+}
+
+.content h2 {
+    font-size: 1.35rem;
+}
+.content span {
+    font-size: 1.2rem;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3.25rem;
+}
+
+.completeButton {
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: white;
+    background-color: #005293;
+    transition: background-color 0.3s ease;
+    height: 3rem;
+    width: 10.85rem;
+}
+
+.cancelButton {
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: #005293;
+    outline: 0.2rem solid #005293;
+    background-color: white;
+    transition: background-color 0.3s ease;
+    height: 3rem;
+    width: 10.85rem;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Stop scrolling on body when modal is open */
+body:has(.overlay) {
+    overflow-y: hidden;
+}
