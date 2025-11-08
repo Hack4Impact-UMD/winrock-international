@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { createPortal } from "react-dom";
 import styles from "../css-modules/MarkStageModal.module.css";
-import { markStageAsComplete } from "../MarkStage";
+import { markStageAsComplete } from "../ProjectViewUtils";
 
 interface ProjectModalProps {
     onClose: () => void;

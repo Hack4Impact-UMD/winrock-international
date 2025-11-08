@@ -10,7 +10,7 @@ import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../chat/components/Chat';
 import MarkStageModal from './components/MarkStageModal';
-import { stageMap, finalStage } from './MarkStage';
+import { stageMap, finalStage } from './ProjectViewUtils';
 
 interface ProjectViewProps {
   project: Project;
@@ -127,7 +127,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
           </div>
         </div>
         <div className={styles.filesPanel}>
-          <ProjectFiles />
+          <ProjectFiles projectId={project.id} />
         </div>
       </div>
       {showModal && <MarkStageModal onClose={() => setShowModal(false)} projectId={project.id} currentStage={project.analysisStage}></MarkStageModal>}
