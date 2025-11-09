@@ -29,7 +29,6 @@
 .messageBubblesContainer {
 	display: flex;
 	flex-flow: column nowrap;
-	width: 50rem;
 	margin-top: 0.75rem;
 	padding-right: 1rem;
 	max-height: 40vh;

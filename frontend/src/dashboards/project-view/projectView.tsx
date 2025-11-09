@@ -8,6 +8,10 @@ import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../chat/components/Chat';
+import rightPanelOpen from "./assets/right-panel-open.svg";
+import ProjectNotes from './components/ProjectNotes';
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from '../../firebaseConfig'
 
 
 interface ProjectViewProps {
@@ -18,6 +22,31 @@ interface ProjectViewProps {
 
 const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) => {
   const [showAccessManager, setShowAccessManager] = useState(false);
+
+  const [showingNotes, setShowingNotes] = useState(false);
+
+  const handleNotesClick = () => {
+	  setShowingNotes(true);
+  }
+
+  const saveNotesToDatabase = async (notes: string) => {
+    try {
+        console.log("Saving notes to the database...");
+
+        // Reference to the Firestore document for the project
+        const projectDocRef = doc(db, "projects", project.id);
+
+        // Update the Firestore document with the new notes
+        await updateDoc(projectDocRef, {
+            notes, // Update the notes field
+        });
+
+        console.log("Notes saved successfully:", notes);
+    } catch (error) {
+        console.error("Error saving notes to the database:", error);
+        throw new Error("Failed to save notes");
+    }
+  };
 
   console.log("ProjectView - onBack:", onBack);
   console.log("ProjectView - project:", project);
@@ -45,6 +74,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
             ghgStatus="in-progress"
             risksStatus="not-started"
             finalStatus="not-started"
+			      showingNotes={showingNotes}
           />
         </div>
 
@@ -80,6 +110,21 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
             <Chat senderRole='winrock' projectId={project.id}></Chat>
           </div>
         </div>
+
+		{showingNotes && (
+      <ProjectNotes
+        showingNotes={showingNotes}
+        setShowingNotes={setShowingNotes}
+        saveNotes={saveNotesToDatabase}
+        projectId={project.id}
+      />
+    )}
+	
+		<button className={styles.showNotesButton} style={{ display: showingNotes ? "none" : "flex" }} onClick={handleNotesClick}>
+			<p className={styles.showNotesButtonText}>Notes</p>
+			<img src={rightPanelOpen}></img>
+		</button>
+
       </div>
     </div>
   );
