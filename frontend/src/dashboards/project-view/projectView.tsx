@@ -10,7 +10,10 @@ import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../chat/components/Chat';
 import MarkStageModal from './components/MarkStageModal';
-import { stageMap, finalStage } from './ProjectViewUtils';
+import StageActionCard from './components/StageActionCard';
+import AdvanceStageButton from './components/AdvanceStageButton';
+import StageHeader from './components/StageHeader';
+import { finalStage } from './ProjectViewUtils';
 
 interface ProjectViewProps {
   project: Project;
@@ -25,9 +28,6 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
   console.log("ProjectView - onBack:", onBack);
   console.log("ProjectView - project:", project);
   console.log("ProjectView - updates:", updates);
-
-  // Map analysis stage to stage number
-  const getStageNumber = (stage: string): number => stageMap[stage] || 0;
 
   console.log(project.analysisStage, finalStage, project.analysisStage === finalStage);
 
@@ -58,73 +58,16 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
 
         <div className={styles.updatesPanel}>
           <ProjectUpdates updates={updates} />
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "20px",
-            marginTop: "20px",
-            marginBottom: "20px",
-            backgroundColor: "#fff",
-            border: "1px solid #e0e0e0",
-            borderRadius: "8px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
-          }}>
-            <span style={{ fontSize: "16px", fontWeight: "500", color: "#1a4b8b" }}>Edit Project Proposal Form</span>
-            <button style={{
-              padding: "8px 16px",
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#1a4b8b",
-              backgroundColor: "transparent",
-              border: "1px solid #1a4b8b",
-              borderRadius: "6px",
-              cursor: "pointer"
-            }}>
-              View and Edit
-            </button>
-          </div>
+          
+          <StageActionCard analysisStage={project.analysisStage} />
           <div style={{display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px", backgroundColor: "#fff", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", boxShadow: "0 2px 8px rgba(0,0,0,0.05)"}}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "10px" }}>
-              <div style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-                backgroundColor: "#1a4b8b",
-                color: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "18px",
-                fontWeight: "600"
-              }}>
-                {getStageNumber(project.analysisStage)}
-              </div>
-              <h3 style={{ fontSize: "18px", fontWeight: "600", color: "#1a4b8b", margin: 0 }}>
-                {project.analysisStage}
-              </h3>
-            </div>
+            <StageHeader analysisStage={project.analysisStage} />
             <Chat senderRole='winrock' projectId={project.id}></Chat>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-            <button 
-              style={{
-                padding: "10px 20px",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#ffffff",
-                backgroundColor: "#1a4b8b",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer"
-              }}
-              onClick={() => setShowModal(true)}
-              disabled={project.analysisStage === finalStage}
-              className={styles.markedStageButton}
-            >
-              Mark Stage as Complete
-            </button>
-          </div>
+          <AdvanceStageButton 
+            currentStage={project.analysisStage}
+            onClick={() => setShowModal(true)}
+          />
         </div>
         <div className={styles.filesPanel}>
           <ProjectFiles projectId={project.id} />
