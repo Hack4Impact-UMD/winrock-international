@@ -1,8 +1,8 @@
-import { collection, serverTimestamp, doc, getDocs, query, setDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Result, { handleFirebaseError } from "../../types/Result"
 import { updateProjectField } from "../winrock-dashboard/projects/winrockDashboardService";
+import { getS3UploadUrl, confirmS3Upload } from "../../api/apiClient";
 
 export const stageMap: Record<string, number> = {
     "Clarifying Initial Project Information": 1,
@@ -59,23 +59,39 @@ export const getAllProjectFiles = async (projectId: string): Promise<Result> => 
 
 export const uploadProjectFile = async (projectId: string, fileName: string, file: Blob | File): Promise<Result> => {
     try {
-        const filesCollection = collection(db, "projectFiles");
-        const docRef = doc(filesCollection);
-        const path = `projectFiles/${projectId}/${docRef.id}_${fileName}`;
-        // upload file to storage
-        const storage = getStorage();
-        const storageRef = ref(storage, path);
-        await uploadBytes(storageRef, file);
-        const downloadURL = await getDownloadURL(storageRef);
-        // add data to firestore
-        await setDoc(docRef, {
-            name: fileName,
-            uploadedAt: serverTimestamp(),
-            downloadURL: downloadURL,
+        // Step 1: Get presigned URL from backend
+        const uploadUrlResponse = await getS3UploadUrl({ projectId, fileName });
+        const responseData = uploadUrlResponse.data as { uploadUrl?: string; s3Key?: string };
+        const { uploadUrl, s3Key } = responseData;
+
+        if (!uploadUrl || !s3Key) {
+            return { success: false, errorCode: "Failed to get upload URL" };
+        }
+
+        // Step 2: Upload file directly to S3 using presigned URL
+        const uploadResponse = await fetch(uploadUrl, {
+            method: "PUT",
+            body: file,
+            headers: {
+                "Content-Type": file.type || "application/octet-stream",
+            },
         });
-        return { success: true, data: { name: fileName, id: docRef.id, downloadURL } };
+
+        if (!uploadResponse.ok) {
+            return { success: false, errorCode: `S3 upload failed: ${uploadResponse.statusText}` };
+        }
+
+        // Step 3: Confirm upload and save metadata to Firestore
+        const confirmResponse = await confirmS3Upload({ projectId, fileName, s3Key });
+        const confirmData = confirmResponse.data as { success?: boolean; data?: { name: string; id: string; downloadURL: string } };
+        
+        if (confirmData.success && confirmData.data) {
+            return { success: true, data: confirmData.data };
+        } else {
+            return { success: false, errorCode: "Failed to confirm upload" };
+        }
     } catch (err) {
-        console.log(err);
+        console.error("Error uploading file to S3:", err);
         return handleFirebaseError(err);
     }
 }
