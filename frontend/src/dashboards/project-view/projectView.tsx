@@ -48,11 +48,6 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
         <div className={styles.trackerPanel}>
           <ProjectTracker
             currentStage={project.analysisStage}
-            initialInfoStatus="completed"
-            technicalStatus="completed"
-            ghgStatus="in-progress"
-            risksStatus="not-started"
-            finalStatus="not-started"
           />
         </div>
 
