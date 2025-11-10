@@ -36,7 +36,8 @@ const ProjectTracker = ({ currentStage, initialInfoStatus, technicalStatus, ghgS
 			status = risksStatus
 		}
 		else {
-			if (initialInfoStatus === "completed" && technicalStatus === "completed" && ghgStatus === "completed" && finalStatus === "completed") {
+			// statusNum === 5 is "Complete, and Excluded" - check if all previous stages are completed
+			if (initialInfoStatus === "completed" && technicalStatus === "completed" && ghgStatus === "completed" && finalStatus === "completed" && risksStatus === "completed") {
 				return <img src={completed}></img>;
 			}
 			else {

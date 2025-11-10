@@ -1,75 +1,109 @@
 import { useParams, useNavigate } from "react-router-dom";
 import ProjectView from "./projectView";
 import { db } from '../../firebaseConfig';
-import { useState, useEffect } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { useState, useEffect, useRef } from "react";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { UpdateItem } from "../../types/UpdateItem";
+import { Project } from "../../types/Project";
 
 const ProjectViewWrapper = () => {
   const { projectName } = useParams();
   const navigate = useNavigate();
-  const [project, setProject] = useState(null);
-  const [updates, setUpdates] = useState([]);
+  const [project, setProject] = useState<Project | null>(null);
+  const [updates, setUpdates] = useState<UpdateItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const unsubscribeUpdatesRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
+    if (!projectName) {
+      setLoading(false);
+      return;
+    }
 
-    const fetchProjectData = async () => {
+    // Helper function to convert Firestore data
+    const convertFirestoreData = (data: any) => {
+      const convertedData = { ...data };
+      Object.keys(convertedData).forEach(key => {
+        if (convertedData[key]?.toDate) {
+          convertedData[key] = convertedData[key].toDate().toISOString();
+        }
+      });
+      return convertedData;
+    };
 
-      try {
-        const projectQuery = query(
-          collection(db, "projects"),
-          where('projectName', '==', projectName)
-        );
+    // Set up real-time listener for project
+    const projectQuery = query(
+      collection(db, "projects"),
+      where('projectName', '==', projectName)
+    );
 
-        const projectSnapshot = await getDocs(projectQuery);
-
-        const projectData = projectSnapshot.docs.map(doc => {
-          const data = doc.data();
-          // Convert Firestore Timestamps to ISO strings
-          const convertedData = { ...data };
-          Object.keys(convertedData).forEach(key => {
-            if (convertedData[key]?.toDate) {
-              convertedData[key] = convertedData[key].toDate().toISOString();
-            }
-          });
-          return { id: doc.id, ...convertedData };
-        })[0];
-        console.log(projectName)
-        if (projectData) {
-          setProject(projectData);
-
-          const updatesQuery = query(
-            collection(db, "projects"),
-            where('projectId', '==', projectData.id)
-          );
-
-          const updatesSnapshot = await getDocs(updatesQuery);
-
-          const updatesData = updatesSnapshot.docs.map(doc => {
+    const unsubscribeProject = onSnapshot(
+      projectQuery,
+      (projectSnapshot) => {
+        if (!projectSnapshot.empty) {
+          const projectData = projectSnapshot.docs.map(doc => {
             const data = doc.data();
-            // Convert Firestore Timestamps to ISO strings
-            const convertedData = { ...data };
-            Object.keys(convertedData).forEach(key => {
-              if (convertedData[key]?.toDate) {
-                convertedData[key] = convertedData[key].toDate().toISOString();
-              }
-            });
+            const convertedData = convertFirestoreData(data);
             return { id: doc.id, ...convertedData };
-          });
+          })[0];
 
-          setUpdates(updatesData);
+          if (projectData) {
+            setProject(projectData);
+            setLoading(false);
+
+            // Clean up previous updates listener if it exists
+            if (unsubscribeUpdatesRef.current) {
+              unsubscribeUpdatesRef.current();
+            }
+
+            // Set up real-time listener for updates when we have a project
+            const updatesQuery = query(
+              collection(db, "projects"),
+              where('projectId', '==', projectData.id)
+            );
+
+            const unsubscribeUpdates = onSnapshot(
+              updatesQuery,
+              (updatesSnapshot) => {
+                const updatesData = updatesSnapshot.docs.map(doc => {
+                  const data = doc.data();
+                  const convertedData = convertFirestoreData(data);
+                  return { id: doc.id, ...convertedData };
+                });
+                setUpdates(updatesData);
+              },
+              (error) => {
+                console.error("Error listening to updates:", error);
+              }
+            );
+
+            // Store the unsubscribe function
+            unsubscribeUpdatesRef.current = unsubscribeUpdates;
+          } else {
+            console.warn("No project found for projectName:", projectName);
+            setProject(null);
+            setLoading(false);
+          }
         } else {
           console.warn("No project found for projectName:", projectName);
           setProject(null);
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching project data:", error);
-      } finally {
+      },
+      (error) => {
+        console.error("Error listening to project:", error);
         setLoading(false);
       }
-    };
+    );
 
-    fetchProjectData();
+    // Cleanup function for both listeners
+    return () => {
+      unsubscribeProject();
+      if (unsubscribeUpdatesRef.current) {
+        unsubscribeUpdatesRef.current();
+        unsubscribeUpdatesRef.current = null;
+      }
+    };
   }, [projectName]);
 
 

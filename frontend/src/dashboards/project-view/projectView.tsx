@@ -29,6 +29,63 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
 	  setShowingNotes(true);
   }
 
+  // Function to calculate tracker statuses based on analysisStage
+  const getTrackerStatuses = (analysisStage: string) => {
+    const stages = [
+      "Clarifying Initial Project Information",
+      "Clarifying Technical Details",
+      "GHG Assessment Analysis",
+      "Confirming Final Requirements",
+      "Risk & Co-benefit Assessment",
+      "Complete, and Excluded"
+    ];
+
+    const currentStageIndex = stages.indexOf(analysisStage);
+
+    // If project is completed, all stages are completed
+    if (analysisStage === "Complete, and Excluded") {
+      return {
+        initialInfoStatus: "completed" as const,
+        technicalStatus: "completed" as const,
+        ghgStatus: "completed" as const,
+        finalStatus: "completed" as const,
+        risksStatus: "completed" as const,
+      };
+    }
+
+    // If stage not found, default to all not-started
+    if (currentStageIndex === -1) {
+      return {
+        initialInfoStatus: "not-started" as const,
+        technicalStatus: "not-started" as const,
+        ghgStatus: "not-started" as const,
+        finalStatus: "not-started" as const,
+        risksStatus: "not-started" as const,
+      };
+    }
+
+    // Calculate status for each stage
+    const getStatus = (stageIndex: number): "not-started" | "in-progress" | "completed" => {
+      if (stageIndex < currentStageIndex) {
+        return "completed";
+      } else if (stageIndex === currentStageIndex) {
+        return "in-progress";
+      } else {
+        return "not-started";
+      }
+    };
+
+    return {
+      initialInfoStatus: getStatus(0),
+      technicalStatus: getStatus(1),
+      ghgStatus: getStatus(2),
+      finalStatus: getStatus(3),
+      risksStatus: getStatus(4),
+    };
+  };
+
+  const trackerStatuses = getTrackerStatuses(project.analysisStage);
+
   const saveNotesToDatabase = async (notes: string) => {
     try {
         console.log("Saving notes to the database...");
@@ -69,11 +126,11 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
         <div className={styles.leftPanel}>
           <ProjectTracker
             currentStage={project.analysisStage}
-            initialInfoStatus="completed"
-            technicalStatus="completed"
-            ghgStatus="in-progress"
-            risksStatus="not-started"
-            finalStatus="not-started"
+            initialInfoStatus={trackerStatuses.initialInfoStatus}
+            technicalStatus={trackerStatuses.technicalStatus}
+            ghgStatus={trackerStatuses.ghgStatus}
+            risksStatus={trackerStatuses.risksStatus}
+            finalStatus={trackerStatuses.finalStatus}
 			      showingNotes={showingNotes}
           />
         </div>
