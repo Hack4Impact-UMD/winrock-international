@@ -14,6 +14,11 @@ import AdvanceStageButton from './components/AdvanceStageButton';
 import StageHeader from './components/StageHeader';
 import MarkStageModal from './components/MarkStageModal';
 import { finalStage } from './ProjectViewUtils';
+import rightPanelOpen from "./assets/right-panel-open.svg";
+import ProjectNotes from './components/ProjectNotes';
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from '../../firebaseConfig'
+
 
 interface ProjectViewProps {
   project: Project;
@@ -25,6 +30,31 @@ interface ProjectViewProps {
 const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onStageAdvanced }) => {
   const [showAccessManager, setShowAccessManager] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  const [showingNotes, setShowingNotes] = useState(false);
+
+  const handleNotesClick = () => {
+	  setShowingNotes(true);
+  }
+
+  const saveNotesToDatabase = async (notes: string) => {
+    try {
+        console.log("Saving notes to the database...");
+
+        // Reference to the Firestore document for the project
+        const projectDocRef = doc(db, "projects", project.id);
+
+        // Update the Firestore document with the new notes
+        await updateDoc(projectDocRef, {
+            notes, // Update the notes field
+        });
+
+        console.log("Notes saved successfully:", notes);
+    } catch (error) {
+        console.error("Error saving notes to the database:", error);
+        throw new Error("Failed to save notes");
+    }
+  };
 
   console.log("ProjectView - onBack:", onBack);
   console.log("ProjectView - project:", project);
@@ -49,6 +79,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
         <div className={styles.trackerPanel}>
           <ProjectTracker
             currentStage={project.analysisStage}
+			      showingNotes={showingNotes}
           />
         </div>
 
@@ -70,6 +101,21 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
         <div className={styles.filesPanel}>
           <ProjectFiles projectId={project.id} />
         </div>
+
+		{showingNotes && (
+      <ProjectNotes
+        showingNotes={showingNotes}
+        setShowingNotes={setShowingNotes}
+        saveNotes={saveNotesToDatabase}
+        projectId={project.id}
+      />
+    )}
+	
+		<button className={styles.showNotesButton} style={{ display: showingNotes ? "none" : "flex" }} onClick={handleNotesClick}>
+			<p className={styles.showNotesButtonText}>Notes</p>
+			<img src={rightPanelOpen}></img>
+		</button>
+
       </div>
       {showModal && (
         <MarkStageModal 

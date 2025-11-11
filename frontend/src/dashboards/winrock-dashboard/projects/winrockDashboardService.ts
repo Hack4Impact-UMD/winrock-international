@@ -65,6 +65,7 @@ const createProject = async (
     supplierName: string,
     spendCategory: string,
     geography: string,
+    notes: string = "",
     activityType: ActivityType,
     overallStatus: OverallStatus = OverallStatus.ON_TRACK,
     analysisStage: AnalysisStage = AnalysisStage.STAGE_1,
@@ -97,6 +98,7 @@ const createProject = async (
                 analysisStage,
                 startDate: startDate ? Timestamp.fromDate(startDate) : serverTimestamp(),
                 lastUpdated: serverTimestamp(),
+                notes,
                 isActive,
                 isPinned,
                 isLocked,
@@ -225,28 +227,20 @@ const getProjectsWithFilters = async (
  */
 const updateProjectField = async (
     projectId: string,
-    field: Exclude<keyof Project, 'id'>, // lastUpdated stays auto
-    newValue: any
+    updates: Record<string, any>
 ): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectId);
 
-        if (newValue instanceof Date) {
-            newValue = Timestamp.fromDate(newValue);
-        }
-
         const updateData: Record<string, FieldValue | string | number | boolean | null> = {
-            [field]: typeof newValue === "string" || typeof newValue === "number" || typeof newValue === "boolean"
-                ? newValue
-                : newValue instanceof Date
-                    ? Timestamp.fromDate(newValue)
-                    : null,
+            ...updates,
             lastUpdated: serverTimestamp(),
         };
 
         await updateDoc(docRef, updateData);
         return { success: true };
     } catch (error) {
+        console.log("error");
         return handleFirebaseError(error);
     }
 };
@@ -262,6 +256,7 @@ const addProject = async (projectName: string, clientName: string, supplierName:
             supplierName,
             "-",
             "-",
+            "",
             activityType,
             OverallStatus.ON_TRACK,
             AnalysisStage.STAGE_1,
@@ -394,17 +389,17 @@ const checkProjectLock = async (projectName: string): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectName);
         const docSnap = await getDoc(docRef);
-        
+
         if (!docSnap.exists()) {
             return { success: false, errorCode: "project-not-found" };
         }
 
         const projectData = docSnap.data();
         const isLocked = projectData.isLocked || false;
-        
-        return { 
-            success: true, 
-            data: { isLocked } 
+
+        return {
+            success: true,
+            data: { isLocked }
         };
     } catch (error) {
         return handleFirebaseError(error);
@@ -417,7 +412,7 @@ const checkProjectLock = async (projectName: string): Promise<Result> => {
 const lockProject = async (projectName: string): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectName);
-        
+
         await runTransaction(db, async (tx) => {
             const snap = await tx.get(docRef);
             if (!snap.exists()) {
@@ -447,7 +442,7 @@ const lockProject = async (projectName: string): Promise<Result> => {
 const unlockProject = async (projectName: string): Promise<Result> => {
     try {
         const docRef = doc(db, "projects", projectName);
-        
+
         await runTransaction(db, async (tx) => {
             const snap = await tx.get(docRef);
             if (!snap.exists()) {
