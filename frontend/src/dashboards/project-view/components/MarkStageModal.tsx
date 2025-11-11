@@ -7,9 +7,10 @@ interface ProjectModalProps {
     onClose: () => void;
     projectId: string;
     currentStage: string;
+    onStageAdvanced?: () => void;
 }
 
-const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, currentStage }) => {
+const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, currentStage, onStageAdvanced }) => {
     const popupRef = useRef<HTMLDivElement>(null);
     return createPortal(
         <div className={styles.overlay}>
@@ -40,8 +41,18 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, current
                         <button 
                             className={styles.completeButton} 
                             onClick={async () => {
-                                await markStageAsComplete(projectId, currentStage);
-                                onClose();
+                                const result = await markStageAsComplete(projectId, currentStage);
+                                if (result.success) {
+                                    // Refresh project data after successfully advancing stage
+                                    if (onStageAdvanced) {
+                                        onStageAdvanced();
+                                    }
+                                    onClose();
+                                } else {
+                                    console.error("Failed to advance stage:", result.errorCode);
+                                    // Optionally show error message to user
+                                    // Keep modal open on error so user can try again
+                                }
                             }} 
                         >
                             Mark Stage as complete

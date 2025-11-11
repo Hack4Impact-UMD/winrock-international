@@ -9,19 +9,20 @@ import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../chat/components/Chat';
-import MarkStageModal from './components/MarkStageModal';
 import StageActionCard from './components/StageActionCard';
 import AdvanceStageButton from './components/AdvanceStageButton';
 import StageHeader from './components/StageHeader';
+import MarkStageModal from './components/MarkStageModal';
 import { finalStage } from './ProjectViewUtils';
 
 interface ProjectViewProps {
   project: Project;
   onBack: () => void;
   updates: UpdateItem[];
+  onStageAdvanced?: () => void;
 }
 
-const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) => {
+const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onStageAdvanced }) => {
   const [showAccessManager, setShowAccessManager] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -59,16 +60,25 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
             <StageHeader analysisStage={project.analysisStage} />
             <Chat senderRole='winrock' projectId={project.id}></Chat>
           </div>
-          <AdvanceStageButton 
-            currentStage={project.analysisStage}
-            onClick={() => setShowModal(true)}
-          />
+          {project.analysisStage !== finalStage && (
+            <AdvanceStageButton 
+              currentStage={project.analysisStage}
+              onClick={() => setShowModal(true)}
+            />
+          )}
         </div>
         <div className={styles.filesPanel}>
           <ProjectFiles projectId={project.id} />
         </div>
       </div>
-      {showModal && <MarkStageModal onClose={() => setShowModal(false)} projectId={project.id} currentStage={project.analysisStage}></MarkStageModal>}
+      {showModal && (
+        <MarkStageModal 
+          onClose={() => setShowModal(false)} 
+          projectId={project.id} 
+          currentStage={project.analysisStage}
+          onStageAdvanced={onStageAdvanced}
+        />
+      )}
     </div>
   );
 };

@@ -3,12 +3,14 @@ import ProjectView from "./projectView";
 import { db } from '../../firebaseConfig';
 import { useState, useEffect } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { Project } from "../../types/Project";
+import { UpdateItem } from "../../types/UpdateItem";
 
 const ProjectViewWrapper = () => {
   const { projectName } = useParams();
   const navigate = useNavigate();
-  const [project, setProject] = useState(null);
-  const [updates, setUpdates] = useState([]);
+  const [project, setProject] = useState<Project | null>(null);
+  const [updates, setUpdates] = useState<UpdateItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ const ProjectViewWrapper = () => {
               convertedData[key] = convertedData[key].toDate().toISOString();
             }
           });
-          return { id: doc.id, ...convertedData };
+          return { id: doc.id, ...convertedData } as Project;
         })[0];
         console.log(projectName)
         if (projectData) {
@@ -54,7 +56,7 @@ const ProjectViewWrapper = () => {
                 convertedData[key] = convertedData[key].toDate().toISOString();
               }
             });
-            return { id: doc.id, ...convertedData };
+            return { id: doc.id, ...convertedData } as UpdateItem;
           });
 
           setUpdates(updatesData);
@@ -81,6 +83,35 @@ const ProjectViewWrapper = () => {
     return <div>Project not found.</div>;
   }
 
+  const refreshProjectData = async () => {
+    try {
+      const projectQuery = query(
+        collection(db, "projects"),
+        where('projectName', '==', projectName)
+      );
+
+      const projectSnapshot = await getDocs(projectQuery);
+
+      const projectData = projectSnapshot.docs.map(doc => {
+        const data = doc.data();
+        // Convert Firestore Timestamps to ISO strings
+        const convertedData = { ...data };
+        Object.keys(convertedData).forEach(key => {
+          if (convertedData[key]?.toDate) {
+            convertedData[key] = convertedData[key].toDate().toISOString();
+          }
+        });
+        return { id: doc.id, ...convertedData } as Project;
+      })[0];
+
+      if (projectData) {
+        setProject(projectData);
+      }
+    } catch (error) {
+      console.error("Error refreshing project data:", error);
+    }
+  };
+
   return (
     <ProjectView
       project={project}
@@ -89,6 +120,7 @@ const ProjectViewWrapper = () => {
         console.log("Navigating back");
         navigate(-1);
       }}
+      onStageAdvanced={refreshProjectData}
     />
   );
 };
