@@ -14,6 +14,7 @@ import FormField from "../FormField.tsx";
 import GuidanceDropdown from "../components/GuidanceDropdown.tsx";
 import FormLock from "../components/FormLock.js";
 import tableImage from '../../assets/table.png';
+import { useParams } from "react-router-dom";
 
 interface RenewableProposalFormData {
     parentVendorName: FormField;
@@ -42,7 +43,7 @@ interface RenewableProposalFormData {
 
 const RenewableProposalForm = () => {
     const title = "Renewable Energy Project Proposal Form";
-    
+
     const [currentPage, setCurrentPage] = useState(1); // Start on Page 1
     const totalPages = 2; // Set totalPages to 2 since we have two pages
 
@@ -77,9 +78,9 @@ const RenewableProposalForm = () => {
     const [error, setError] = useState('');
 
     // Initialize form lock - using projectId from URL params or default
-    const projectId = "Project2"; // TODO: Replace with actual projectId from form data or props
-    const { handleLockedAction, LockedPopup, isLocked } = FormLock({ 
-        projectId
+    const { projectName } = useParams(); // TODO: Replace with actual projectId from form data or props
+    const { handleLockedAction, LockedPopup, isLocked } = FormLock({
+        projectName: projectName!,
     });
 
     // Helper functions
@@ -88,7 +89,7 @@ const RenewableProposalForm = () => {
             handleLockedAction();
             return;
         }
-        
+
         const isRequired = answersRef.current[field]!.isRequired;
         answersRef.current = {
             ...answersRef.current,

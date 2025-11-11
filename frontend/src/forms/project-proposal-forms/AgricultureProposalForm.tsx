@@ -16,6 +16,7 @@ import Error from "../components/Error.js";
 import FormLock from "../components/FormLock.js";
 import tableImage from '../../assets/connectiontovaluetable.png';
 import tableImage2 from '../../assets/table2.png';
+import { useParams } from "react-router-dom";
 
 
 
@@ -90,7 +91,7 @@ interface AgricultureProposalFormData {
 
 function AgricultureProposalForm() {
     const title = "Greenhouse Gas Emissions Project Proposal Form for Project Validation"
-    
+
 
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 4;
@@ -151,7 +152,7 @@ function AgricultureProposalForm() {
             handleLockedAction();
             return;
         }
-        
+
         const isRequired = answersRef.current[field]!.isRequired;
         answersRef.current = {
             ...answersRef.current,
@@ -165,9 +166,9 @@ function AgricultureProposalForm() {
     const [error, setError] = useState('');
 
     // Initialize form lock
-    const projectId = "Project2"; // TODO: Replace with actual projectId from form data or props
-    const { handleLockedAction, LockedPopup, isLocked } = FormLock({ 
-        projectId
+    const { projectName } = useParams();; // TODO: Replace with actual projectId from form data or props
+    const { handleLockedAction, LockedPopup, isLocked } = FormLock({
+        projectName: projectName!,
     });
 
     /**
@@ -922,52 +923,52 @@ function AgricultureProposalForm() {
                         margin: '0 60px',
                     }}>
                         The project proposal form is used to record information critical to the completion of the validation process for your project. It requests information both technical and administrative in nature. These questions are split within ten key categories, each of which requests one or more pieces of key information to kick off the project validation process. In Columns F ("Guidance") of this tab defines key terms and describes information sought in the fields in Column D/E ("Supplier answers"). It also includes key guidance including relevant examples and links to helpful sources. Please complete all required fields. Required questions must be answered before a project validation may commence. Optional questions are welcomed and may lead to a faster validation process.
-                       </p>
-                        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                            <img
-                                src={tableImage2}
-                                alt="Evidentiary Documentation Table"
-                                style={{ width: '100%', maxWidth: '1200px' }}
-                            />
-                        </div>
-                    </>
-            )}
-                    <NavigationButtons
-                        onNext={() => {
-                            if (isLocked) {
-                                handleLockedAction();
-                                return;
-                            }
-                            if (currentPage < totalPages) {
-                                setCurrentPage(currentPage + 1);
-                                window.scroll(0, 0);
-                            } else {
-                                handleSubmit();
-                            }
-                        }}
-                        onBack={() => {
-                            if (isLocked) {
-                                handleLockedAction();
-                                return;
-                            }
-                            if (currentPage > 1) {
-                                setCurrentPage(currentPage - 1)
-                                window.scroll(0, 0);
-                            }
-                        }}
-                        canGoBack={currentPage > 1}
-                        nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
-                        disableSubmit={isLocked}
-                        isLastPage={currentPage === totalPages}
-                    />
-
-                    <Error message={error} />
-
-                    {/* Locked Form Popup */}
-                    {LockedPopup}
-
+                    </p>
+                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                        <img
+                            src={tableImage2}
+                            alt="Evidentiary Documentation Table"
+                            style={{ width: '100%', maxWidth: '1200px' }}
+                        />
+                    </div>
                 </>
-            );
+            )}
+            <NavigationButtons
+                onNext={() => {
+                    if (isLocked) {
+                        handleLockedAction();
+                        return;
+                    }
+                    if (currentPage < totalPages) {
+                        setCurrentPage(currentPage + 1);
+                        window.scroll(0, 0);
+                    } else {
+                        handleSubmit();
+                    }
+                }}
+                onBack={() => {
+                    if (isLocked) {
+                        handleLockedAction();
+                        return;
+                    }
+                    if (currentPage > 1) {
+                        setCurrentPage(currentPage - 1)
+                        window.scroll(0, 0);
+                    }
+                }}
+                canGoBack={currentPage > 1}
+                nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
+                disableSubmit={isLocked}
+                isLastPage={currentPage === totalPages}
+            />
+
+            <Error message={error} />
+
+            {/* Locked Form Popup */}
+            {LockedPopup}
+
+        </>
+    );
 }
 
-            export default AgricultureProposalForm;
+export default AgricultureProposalForm;
