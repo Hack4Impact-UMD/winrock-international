@@ -6,43 +6,43 @@ import dottedLine from "../assets/dotted-line.svg"
 
 interface ProjectTrackerProps {
 	currentStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded' | 'Clarifying Technical Details';
-	initialInfoStatus: "not-started" | "in-progress" | "completed";
-	technicalStatus: "not-started" | "in-progress" | "completed";
-	ghgStatus: "not-started" | "in-progress" | "completed";
-	risksStatus: "not-started" | "in-progress" | "completed";
-	finalStatus: "not-started" | "in-progress" | "completed";
 	showingNotes: boolean;
 }
 
-const ProjectTracker = ({ currentStage, initialInfoStatus, technicalStatus, ghgStatus, risksStatus, finalStatus, showingNotes }: ProjectTrackerProps) => {
+const ProjectTracker = ({ currentStage, showingNotes }: ProjectTrackerProps) => {
+
+	// Define the stages in order
+	const stages = [
+		"Clarifying Initial Project Information",
+		"Clarifying Technical Details",
+		"GHG Assessment Analysis",
+		"Confirming Final Requirements",
+		"Risk & Co-benefit Assessment",
+		"Complete, and Excluded"
+	];
+
+	const getStageStatus = (stageIndex: number): "not-started" | "in-progress" | "completed" => {
+		const currentStageIndex = stages.indexOf(currentStage);
+
+		// If project is completed, all stages are completed
+		if (currentStage === "Complete, and Excluded") {
+			return "completed";
+		}
+
+		// If stage is before current stage, it's completed
+		if (stageIndex < currentStageIndex) {
+			return "completed";
+		}
+		// If stage is the current stage, it's in-progress
+		if (stageIndex === currentStageIndex) {
+			return "in-progress";
+		}
+		// If stage is after current stage, it's not-started
+		return "not-started";
+	};
 
 	const getStatusIcon = (statusNum: number) => {
-
-		let status = "";
-
-		if (statusNum === 0) {
-			status = initialInfoStatus;
-		}
-		else if (statusNum === 1) {
-			status = technicalStatus;
-		}
-		else if (statusNum === 2) {
-			status = ghgStatus;
-		}
-		else if (statusNum === 3) {
-			status = finalStatus;
-		}
-		else if (statusNum === 4) {
-			status = risksStatus
-		}
-		else {
-			if (initialInfoStatus === "completed" && technicalStatus === "completed" && ghgStatus === "completed" && finalStatus === "completed") {
-				return <img src={completed}></img>;
-			}
-			else {
-				return <img src={notStarted}></img>;
-			}
-		}
+		const status = getStageStatus(statusNum);
 
 		if (status === "not-started") {
 			return <img src={notStarted}></img>;

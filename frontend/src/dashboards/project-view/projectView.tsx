@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import ProjectViewHeader from './components/ProjectViewHeader';
 import ProjectTracker from './components/ProjectTracker';
 import ProjectUpdates from './components/ProjectUpdates';
+import ProjectFiles from './components/ProjectFiles';
 import styles from '../project-view/css-modules/ProjectView.module.css';
 import Sidebar from '../winrock-dashboard/components/Sidebar';
 import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../chat/components/Chat';
+import StageActionCard from './components/StageActionCard';
+import AdvanceStageButton from './components/AdvanceStageButton';
+import StageHeader from './components/StageHeader';
+import MarkStageModal from './components/MarkStageModal';
+import { finalStage } from './ProjectViewUtils';
 import rightPanelOpen from "./assets/right-panel-open.svg";
 import ProjectNotes from './components/ProjectNotes';
 import { doc, updateDoc } from "firebase/firestore";
@@ -18,10 +24,12 @@ interface ProjectViewProps {
   project: Project;
   onBack: () => void;
   updates: UpdateItem[];
+  onStageAdvanced?: () => void;
 }
 
-const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) => {
+const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onStageAdvanced }) => {
   const [showAccessManager, setShowAccessManager] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const [showingNotes, setShowingNotes] = useState(false);
 
@@ -52,6 +60,8 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
   console.log("ProjectView - project:", project);
   console.log("ProjectView - updates:", updates);
 
+  console.log(project.analysisStage, finalStage, project.analysisStage === finalStage);
+
   return (
     <div className={styles.projectViewContainer}>
       <ManageAccess
@@ -66,49 +76,30 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
       />
 
       <div className={styles.mainContent}>
-        <div className={styles.leftPanel}>
+        <div className={styles.trackerPanel}>
           <ProjectTracker
             currentStage={project.analysisStage}
-            initialInfoStatus="completed"
-            technicalStatus="completed"
-            ghgStatus="in-progress"
-            risksStatus="not-started"
-            finalStatus="not-started"
 			      showingNotes={showingNotes}
           />
         </div>
 
-        <div className={styles.rightPanel}>
+        <div className={styles.updatesPanel}>
           <ProjectUpdates updates={updates} />
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "20px",
-            marginTop: "20px",
-            marginBottom: "20px",
-            backgroundColor: "#fff",
-            border: "1px solid #e0e0e0",
-            borderRadius: "8px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
-          }}>
-            <span style={{ fontSize: "16px", fontWeight: "500", color: "#1a4b8b" }}>Edit Project Proposal Form</span>
-            <button style={{
-              padding: "8px 16px",
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#1a4b8b",
-              backgroundColor: "transparent",
-              border: "1px solid #1a4b8b",
-              borderRadius: "6px",
-              cursor: "pointer"
-            }}>
-              View and Edit
-            </button>
-          </div>
-          <div style={{display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px"}}>
+          
+          <StageActionCard analysisStage={project.analysisStage} />
+          <div style={{display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px", backgroundColor: "#fff", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", boxShadow: "0 2px 8px rgba(0,0,0,0.05)"}}>
+            <StageHeader analysisStage={project.analysisStage} />
             <Chat senderRole='winrock' projectId={project.id}></Chat>
           </div>
+          {project.analysisStage !== finalStage && (
+            <AdvanceStageButton 
+              currentStage={project.analysisStage}
+              onClick={() => setShowModal(true)}
+            />
+          )}
+        </div>
+        <div className={styles.filesPanel}>
+          <ProjectFiles projectId={project.id} />
         </div>
 
 		{showingNotes && (
@@ -126,6 +117,14 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates }) =
 		</button>
 
       </div>
+      {showModal && (
+        <MarkStageModal 
+          onClose={() => setShowModal(false)} 
+          projectId={project.id} 
+          currentStage={project.analysisStage}
+          onStageAdvanced={onStageAdvanced}
+        />
+      )}
     </div>
   );
 };

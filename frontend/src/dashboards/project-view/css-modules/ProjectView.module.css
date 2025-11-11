@@ -7,14 +7,16 @@
     display: flex;
     flex-direction: row;
     padding: 1rem;
+    padding-top: 0px;
+    border-top: 1px solid #e0e0e0;
   }
   
-  .leftPanel {
+  .trackerPanel {
     flex: 0 0 auto;
     min-width: 0;
   }
   
-  .rightPanel {
+  .updatesPanel {
     flex: 1;
     min-width: 0;
     padding: 20px;
@@ -23,8 +25,24 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding: 1rem;
   }
 
+  .filesPanel {
+    flex: 0.4;
+    min-width: 0;
+    overflow: hidden;
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+   
+
+  .markedStageButton:disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed !important;
+  }
   .showNotesButton {
 	position: fixed;
 	bottom: 2rem;
