@@ -387,19 +387,21 @@ const deleteProject = async (projectName: string): Promise<Result> => {
  */
 const checkProjectLock = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
-        const docSnap = await getDoc(docRef);
+        const projectsRef = collection(db, "projects");
+        const q = query(projectsRef, where("projectName", "==", projectName));
+        const querySnapshot = await getDocs(q);
 
-        if (!docSnap.exists()) {
+        if (querySnapshot.empty) {
             return { success: false, errorCode: "project-not-found" };
         }
 
-        const projectData = docSnap.data();
-        const isLocked = projectData.isLocked || false;
+        // Assuming projectName is unique, take the first match
+        const projectData = querySnapshot.docs[0].data();
+        const isLocked = projectData.isLocked ?? false;
 
         return {
             success: true,
-            data: { isLocked }
+            data: { isLocked },
         };
     } catch (error) {
         return handleFirebaseError(error);
@@ -411,16 +413,20 @@ const checkProjectLock = async (projectName: string): Promise<Result> => {
  */
 const lockProject = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
+        // first get the doc ID by projectName
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            return { success: false, errorCode: "project-not-found" };
+        }
+
+        const docRef = querySnapshot.docs[0].ref; // use actual doc ref
 
         await runTransaction(db, async (tx) => {
             const snap = await tx.get(docRef);
-            if (!snap.exists()) {
-                throw new Error("project-not-found");
-            }
-
             const projectData = snap.data();
-            if (projectData.isLocked) {
+
+            if (projectData?.isLocked) {
                 throw new Error("project-already-locked");
             }
 
@@ -441,14 +447,15 @@ const lockProject = async (projectName: string): Promise<Result> => {
  */
 const unlockProject = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            return { success: false, errorCode: "project-not-found" };
+        }
+
+        const docRef = querySnapshot.docs[0].ref;
 
         await runTransaction(db, async (tx) => {
-            const snap = await tx.get(docRef);
-            if (!snap.exists()) {
-                throw new Error("project-not-found");
-            }
-
             tx.update(docRef, {
                 isLocked: false,
                 lastUpdated: serverTimestamp()
