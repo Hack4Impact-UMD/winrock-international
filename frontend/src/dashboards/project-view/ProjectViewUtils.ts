@@ -31,7 +31,7 @@ export const markStageAsComplete = async (projectId: string, currentStage: strin
         if (!nextStage) {
             return { success : false, errorCode: "Already at final stage" };
         }
-        await updateProjectField(projectId, "analysisStage", nextStage);
+        await updateProjectField(projectId, { analysisStage: nextStage });
         return { success: true };
     } catch (err) {
         return handleFirebaseError(err);
