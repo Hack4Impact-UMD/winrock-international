@@ -33,7 +33,7 @@
   font-weight: 600;
   color: #000;
   margin: 0;
-  font-family: "'Neue Haas Grotesk Display Pro', sans-serif";
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
 }
 
 .closeButton {
@@ -50,6 +50,7 @@
   align-items: center;
   justify-content: center;
   transition: color 0.2s;
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
 }
 
 .closeButton:hover {
@@ -72,7 +73,7 @@
   font-size: 14px;
   font-weight: 500;
   color: #000;
-  font-family: "'Neue Haas Grotesk Display Pro', sans-serif";
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
 }
 
 .input {
@@ -81,7 +82,7 @@
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   font-size: 14px;
-  font-family: "'Neue Haas Grotesk Display Pro', sans-serif";
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
   background-color: #f9fafb;
   color: #000;
   box-sizing: border-box;
@@ -102,6 +103,7 @@
 .errorMessage {
   color: #dc2626;
   font-size: 14px;
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
   margin-top: -8px;
 }
 
@@ -115,7 +117,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
-  font-family: "'Neue Haas Grotesk Display Pro', sans-serif";
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
   margin-top: 8px;
 }
 
