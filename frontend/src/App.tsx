@@ -33,10 +33,10 @@ function App() {
         <Route path="/auth/create-new-password" element={<CreateNewPasswordPage />} />
         <Route path="/auth/password-changed" element={<PasswordChangedPage />} />
 
-        <Route path="/forms/agriculture-proposal-form" element={<AgricultureProposalForm />} />
-        <Route path="/forms/renewable-proposal-form" element={<RenewableProposalForm />} />
-        <Route path="/forms/forestry-risks-form" element={<ForestryRisksForm />} />
-        <Route path="/forms/tech-energy-risks-form" element={<TechEnergyRisksForm />} />
+        <Route path="/forms/agriculture-proposal-form/:projectName" element={<AgricultureProposalForm />} />
+        <Route path="/forms/renewable-proposal-form/:projectName" element={<RenewableProposalForm />} />
+        <Route path="/forms/forestry-risks-form/:projectName" element={<ForestryRisksForm />} />
+        <Route path="/forms/tech-energy-risks-form/:projectName" element={<TechEnergyRisksForm />} />
 
         <Route path="/dashboard/admin/projects" element={<WinrockDashboard />} />
         <Route path="/dashboard/admin/projects/:projectName" element={<ProjectViewWrapper />} />

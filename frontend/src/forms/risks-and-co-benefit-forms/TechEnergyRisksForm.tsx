@@ -13,6 +13,7 @@ import CoBenefitsDropdownQuestion from '../components/questions/CoBenefitsDropdo
 import ConfirmationPage from '../ConfirmationPage.js';
 import Error from '../components/Error.js';
 import FormLock from '../components/FormLock.js';
+import { useParams } from 'react-router-dom';
 
 interface TechEnergyRisksFormData {
   // Risk Assessment
@@ -82,10 +83,9 @@ interface TechEnergyRisksFormData {
 
 function TechEnergyRisksForm() {
   const title = "Tech & Energy Risks and Co-Benefit Form";
-  
+
   // TODO: Lock flag - set to true to prevent form editing
-  const locked = true;
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3;
 
@@ -134,15 +134,15 @@ function TechEnergyRisksForm() {
 
   // Used to change the answersRef's fields dynamically
   function handleChange(field: keyof TechEnergyRisksFormData, value: string) {
-    if (locked) {
+    if (isLocked) {
       handleLockedAction();
       return;
     }
-    
+
     const isRequired = answersRef.current[field]!.isRequired;
     answersRef.current = {
-       ...answersRef.current,
-       [field]: new FormField(value, isRequired)
+      ...answersRef.current,
+      [field]: new FormField(value, isRequired)
     }
     // Auto-save whenever form changes
     saveChanges();
@@ -152,8 +152,9 @@ function TechEnergyRisksForm() {
   const [error, setError] = useState('');
 
   // Initialize form lock
-  const { handleLockedAction, LockedPopup } = FormLock({ 
-      projectId: "Project2" // TODO: Replace with actual projectId from form data or props
+  const { projectName } = useParams();
+  const { handleLockedAction, LockedPopup, isLocked } = FormLock({
+    projectName: projectName!
   });
 
   /**
@@ -163,11 +164,11 @@ function TechEnergyRisksForm() {
   async function handleSubmit() {
     for (const [_, v] of Object.entries(answersRef.current)) {
       if (v.isRequired && v.value === '') {
-          setError("Cannot submit: You have not completed one or more sections in the form");
-          return;
+        setError("Cannot submit: You have not completed one or more sections in the form");
+        return;
       }
     }
-    
+
     // Convert the answersRef into a submission object
     const submissionObj: Record<string, string> = {}
     Object.keys(answersRef.current).forEach((field) => {
@@ -228,17 +229,17 @@ function TechEnergyRisksForm() {
 
       <NavigationButtons
         onNext={() => {
-            if (currentPage < totalPages) {
-              setCurrentPage(currentPage + 1);
-              window.scroll(0, 0);
-            } else {
-              // Only check for lock when trying to submit
-              if (locked) {
-                handleLockedAction();
-                return;
-              }
-              handleSubmit();
+          if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+            window.scroll(0, 0);
+          } else {
+            // Only check for lock when trying to submit
+            if (locked) {
+              handleLockedAction();
+              return;
             }
+            handleSubmit();
+          }
         }}
         onBack={() => {
           if (currentPage > 1) {
@@ -274,29 +275,29 @@ const PageOne = ({ answersRef, handleChange, locked }: PageProps) => {
       <RisksDropdownQuestion
         label="Has the project completed a risk assessment following an approved standard?"
         controlledValues={[answersRef.current.riskAssessment.value,
-                           answersRef.current.riskAssessmentDetails.value]}
+        answersRef.current.riskAssessmentDetails.value]}
         onSelect={(value: string) => handleChange('riskAssessment', value)}
         onChange={(value: string) => handleChange('riskAssessmentDetails', value)}
         disabled={locked}
       />
-      
+
       <SectionHeader label="Climate Change Adaptation" />
 
       <RisksDropdownQuestion
         label="Has the project been designed to minimize or avoid possible losses or impacts on business continuity for all stakeholders involved?"
         controlledValues={[answersRef.current.climateChange.value,
-                           answersRef.current.climateChangeDetails.value]}
+        answersRef.current.climateChangeDetails.value]}
         onSelect={(value: string) => handleChange('climateChange', value)}
         onChange={(value: string) => handleChange('climateChangeDetails', value)}
         disabled={locked}
       />
-      
+
       <SectionHeader label="Technology Risks" />
 
       <RisksDropdownQuestion
         label="Has the project been designed or the technology type selected to minimize technology risk (operational, failure avoidance, system lifetime, technology maturity)?"
         controlledValues={[answersRef.current.technologyRisk.value,
-                           answersRef.current.technologyRiskDetails.value]}
+        answersRef.current.technologyRiskDetails.value]}
         onSelect={(value: string) => handleChange('technologyRisk', value)}
         onChange={(value: string) => handleChange('technologyRiskDetails', value)}
         disabled={locked}
@@ -305,29 +306,29 @@ const PageOne = ({ answersRef, handleChange, locked }: PageProps) => {
       <RisksDropdownQuestion
         label="Has the project been designed with a solution or technology that can be scalable and replicable?"
         controlledValues={[answersRef.current.scalableTechnology.value,
-                           answersRef.current.scalableTechnologyDetails.value]}
+        answersRef.current.scalableTechnologyDetails.value]}
         onSelect={(value: string) => handleChange('scalableTechnology', value)}
         onChange={(value: string) => handleChange('scalableTechnologyDetails', value)}
         disabled={locked}
       />
-      
+
       <SectionHeader label="Sustainable Use and Protection of Water Resources" />
 
       <RisksDropdownQuestion
         label="Has the project been designed with a solution or technology that can be scalable and replicable?"
         controlledValues={[answersRef.current.waterManagement.value,
-                           answersRef.current.waterManagementDetails.value]}
+        answersRef.current.waterManagementDetails.value]}
         onSelect={(value: string) => handleChange('waterManagement', value)}
         onChange={(value: string) => handleChange('waterManagementDetails', value)}
         disabled={locked}
       />
-      
+
       <SectionHeader label="Pollution & Waste Control" />
 
       <RisksDropdownQuestion
         label="Has the project been designed to avoid pollution release into the environment, such as wastewater and air pollution?"
         controlledValues={[answersRef.current.pollutionPrevention.value,
-                           answersRef.current.pollutionPreventionDetails.value]}
+        answersRef.current.pollutionPreventionDetails.value]}
         onSelect={(value: string) => handleChange('pollutionPrevention', value)}
         onChange={(value: string) => handleChange('pollutionPreventionDetails', value)}
         disabled={locked}
@@ -336,7 +337,7 @@ const PageOne = ({ answersRef, handleChange, locked }: PageProps) => {
       <RisksDropdownQuestion
         label="Is there active monitoring or regulatory inspections regarding waste streams generated by the project operations or systems?"
         controlledValues={[answersRef.current.wasteMonitoring.value,
-                           answersRef.current.wasteMonitoringDetails.value]}
+        answersRef.current.wasteMonitoringDetails.value]}
         onSelect={(value: string) => handleChange('wasteMonitoring', value)}
         onChange={(value: string) => handleChange('wasteMonitoringDetails', value)}
         disabled={locked}
@@ -353,18 +354,18 @@ const PageTwo = ({ answersRef, handleChange, locked }: PageProps) => {
       <RisksDropdownQuestion
         label="Has the project been designed to not negatively impact the transition to a circular economy? Is there utilization of by-products or recycled elements before, during or after the intervention?"
         controlledValues={[answersRef.current.circularEconomy.value,
-                           answersRef.current.circularEconomyDetails.value]}
+        answersRef.current.circularEconomyDetails.value]}
         onSelect={(value: string) => handleChange('circularEconomy', value)}
         onChange={(value: string) => handleChange('circularEconomyDetails', value)}
         disabled={locked}
       />
-      
+
       <SectionHeader label="Protection and Restoration of Biodiversity and Ecosystems" />
 
       <RisksDropdownQuestion
         label="Has the project been designed to not negatively impact biodiversity and habitats?"
         controlledValues={[answersRef.current.biodiversityImpact.value,
-                           answersRef.current.biodiversityImpactDetails.value]}
+        answersRef.current.biodiversityImpactDetails.value]}
         onSelect={(value: string) => handleChange('biodiversityImpact', value)}
         onChange={(value: string) => handleChange('biodiversityImpactDetails', value)}
         disabled={locked}
@@ -373,18 +374,18 @@ const PageTwo = ({ answersRef, handleChange, locked }: PageProps) => {
       <RisksDropdownQuestion
         label="Has the project been designed to avoid any displacement or disturbance of natural land features?"
         controlledValues={[answersRef.current.landFeatures.value,
-                           answersRef.current.landFeaturesDetails.value]}
+        answersRef.current.landFeaturesDetails.value]}
         onSelect={(value: string) => handleChange('landFeatures', value)}
         onChange={(value: string) => handleChange('landFeaturesDetails', value)}
         disabled={locked}
       />
-      
+
       <SectionHeader label="Human and Labor Rights" />
 
       <RisksDropdownQuestion
         label="Does this project align with Nestlé's 'Responsible Sourcing Core Requirements' framework for the protection of Human Rights? (Link to Document)"
         controlledValues={[answersRef.current.responsibleSourcing.value,
-                           answersRef.current.responsibleSourcingDetails.value]}
+        answersRef.current.responsibleSourcingDetails.value]}
         onSelect={(value: string) => handleChange('responsibleSourcing', value)}
         onChange={(value: string) => handleChange('responsibleSourcingDetails', value)}
         disabled={locked}
@@ -393,7 +394,7 @@ const PageTwo = ({ answersRef, handleChange, locked }: PageProps) => {
       <RisksDropdownQuestion
         label="Are there formal declarations, accountability frameworks and/or third party inspections that ensure that no forced or child labor is involved in the proposed interventions?"
         controlledValues={[answersRef.current.laborFrameworks.value,
-                           answersRef.current.laborFrameworksDetails.value]}
+        answersRef.current.laborFrameworksDetails.value]}
         onSelect={(value: string) => handleChange('laborFrameworks', value)}
         onChange={(value: string) => handleChange('laborFrameworksDetails', value)}
         disabled={locked}
@@ -402,18 +403,18 @@ const PageTwo = ({ answersRef, handleChange, locked }: PageProps) => {
       <RisksDropdownQuestion
         label="Are there assurances for farmer health and safety in place?"
         controlledValues={[answersRef.current.farmerHealth.value,
-                           answersRef.current.farmerHealthDetails.value]}
+        answersRef.current.farmerHealthDetails.value]}
         onSelect={(value: string) => handleChange('farmerHealth', value)}
         onChange={(value: string) => handleChange('farmerHealthDetails', value)}
         disabled={locked}
       />
-      
+
       <SectionHeader label="Community Impacts" />
 
       <RisksDropdownQuestion
         label="Is there effort to maintain ongoing engagements and participation of the community with regards to this project, including mechanisms to consider grievances?"
         controlledValues={[answersRef.current.communityEngagement.value,
-                           answersRef.current.communityEngagementDetails.value]}
+        answersRef.current.communityEngagementDetails.value]}
         onSelect={(value: string) => handleChange('communityEngagement', value)}
         onChange={(value: string) => handleChange('communityEngagementDetails', value)}
         disabled={locked}
@@ -422,7 +423,7 @@ const PageTwo = ({ answersRef, handleChange, locked }: PageProps) => {
       <RisksDropdownQuestion
         label="Has this project been designed to minimize other potentially negative community impacts?"
         controlledValues={[answersRef.current.negativeImpacts.value,
-                           answersRef.current.negativeImpactsDetails.value]}
+        answersRef.current.negativeImpactsDetails.value]}
         onSelect={(value: string) => handleChange('negativeImpacts', value)}
         onChange={(value: string) => handleChange('negativeImpactsDetails', value)}
         disabled={locked}
@@ -433,7 +434,7 @@ const PageTwo = ({ answersRef, handleChange, locked }: PageProps) => {
       <RisksDropdownQuestion
         label="Have effective safeguards been incorporated in the to design phase?"
         controlledValues={[answersRef.current.effectiveSafeguards.value,
-                           answersRef.current.effectiveSafeguardsDetails.value]}
+        answersRef.current.effectiveSafeguardsDetails.value]}
         onSelect={(value: string) => handleChange('effectiveSafeguards', value)}
         onChange={(value: string) => handleChange('effectiveSafeguardsDetails', value)}
         disabled={locked}
@@ -449,11 +450,11 @@ const PageThree = ({ answersRef, handleChange, locked }: PageProps) => {
         label="Project Water Co-Benefits"
         description="Enter information in this section that sheds light onto the project's potential co-benefits related to water quality or quantity."
       />
-      
+
       <CoBenefitsDropdownQuestion
         label="Is it expected that the project activities will improve?"
         controlledValues={[answersRef.current.waterBenefits.value,
-                           answersRef.current.waterBenefitsDetails.value]}
+        answersRef.current.waterBenefitsDetails.value]}
         benefitItems={[
           "resilience to potential water scarcity?",
           "water quality?",
@@ -464,7 +465,7 @@ const PageThree = ({ answersRef, handleChange, locked }: PageProps) => {
         onChange={(value: string) => handleChange('waterBenefitsDetails', value)}
         disabled={locked}
       />
-      
+
       <SectionHeader
         label="Project Biodiversity and Environmental Co-Benefits"
         description="Enter information in this section that sheds light onto the project's potential co-benefits related to nature."
@@ -473,7 +474,7 @@ const PageThree = ({ answersRef, handleChange, locked }: PageProps) => {
       <CoBenefitsDropdownQuestion
         label="Is it expected that the project activities will improve?"
         controlledValues={[answersRef.current.biodiversityBenefits.value,
-                           answersRef.current.biodiversityBenefitsDetails.value]}
+        answersRef.current.biodiversityBenefitsDetails.value]}
         benefitItems={[
           "overall species richness and diversity?",
           "threatened species?",
@@ -491,7 +492,7 @@ const PageThree = ({ answersRef, handleChange, locked }: PageProps) => {
       <CoBenefitsDropdownQuestion
         label="Is it expected that the project activities will improve?"
         controlledValues={[answersRef.current.communityBenefits.value,
-                           answersRef.current.communityBenefitsDetails.value]}
+        answersRef.current.communityBenefitsDetails.value]}
         benefitItems={[
           "farmer livelihoods or income generated?",
           "farmer adaptation to climate change?",
