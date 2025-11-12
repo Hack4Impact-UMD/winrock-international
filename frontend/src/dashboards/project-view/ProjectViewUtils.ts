@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
+import { collection, getDocs, query, where, addDoc, updateDoc, doc, serverTimestamp, Timestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Result, { handleFirebaseError } from "../../types/Result"
 import { updateProjectField } from "../winrock-dashboard/projects/winrockDashboardService";
@@ -87,16 +87,35 @@ export const getAllProjectFiles = async (projectId: string): Promise<Result> => 
 
 /**
  * Add a file link to the projectFiles collection
+ * If a file with the same name already exists, updates the link instead of creating a duplicate
  * NEW FILE UPLOAD FUNCTION FOR SHAREPOINT LINKS
  */
 export const addFileLink = async (projectId: string, fileName: string, filePath: string): Promise<Result> => {
     try {
-        await addDoc(collection(db, "projectFiles"), {
-            projectId,
-            fileName,
-            filePath,
-            uploadedAt: serverTimestamp()
-        });
+        // Check if a file with the same name already exists for this project
+        const q = query(
+            collection(db, "projectFiles"),
+            where("projectId", "==", projectId),
+            where("fileName", "==", fileName)
+        );
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+            // File with same name exists, update the existing document
+            const existingDoc = querySnapshot.docs[0];
+            await updateDoc(doc(db, "projectFiles", existingDoc.id), {
+                filePath,
+                uploadedAt: serverTimestamp() // Update timestamp to reflect the change
+            });
+        } else {
+            // No file with this name exists, create a new document
+            await addDoc(collection(db, "projectFiles"), {
+                projectId,
+                fileName,
+                filePath,
+                uploadedAt: serverTimestamp()
+            });
+        }
         return { success: true };
     } catch (err) {
         return handleFirebaseError(err);
