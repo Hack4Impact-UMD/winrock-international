@@ -594,7 +594,7 @@ const WinrockDashboard: React.FC = () => {
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                   onRowClick={() => {
-                    navigate(`/dashboard/admin/projects/${project.projectName}`, { state: { project } });
+                    navigate(`/dashboard/admin/projects/${project.projectName.toLowerCase()}`, { state: { project } });
                   }}
                 />
               ))}
