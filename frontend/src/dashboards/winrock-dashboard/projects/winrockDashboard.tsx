@@ -23,6 +23,8 @@ import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
 import { Project } from '../../../types/Project'
+import { useLocation } from "react-router-dom";
+
 
 
 declare global {
@@ -60,12 +62,20 @@ const WinrockDashboard: React.FC = () => {
   const [showLoginPopup, setShowLoginPopup] = useState<boolean>(false);
   const [supplierToken, setSupplierToken] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   // These are used to control the date, i.e. save changes to the date filter calendar
   const [dateRange, setDateRange] = useState<DateRange>({
     startDate: null,
     endDate: new Date('2099-12-31') //TEMP CHANGE
   });
+
+  useEffect(() => {
+    if (location.state?.viewMode) {
+      setViewMode(location.state.viewMode);
+    }
+  }, [location.state]);
 
   const handleActionClick = (id: string | null) => {
     setActiveActionMenu(id);
@@ -584,7 +594,7 @@ const WinrockDashboard: React.FC = () => {
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                   onRowClick={() => {
-                    navigate(`/dashboard/admin/projects/${project.projectName}`, { state: { project } });
+                    navigate(`/dashboard/admin/projects/${project.projectName.toLowerCase()}`, { state: { project } });
                   }}
                 />
               ))}

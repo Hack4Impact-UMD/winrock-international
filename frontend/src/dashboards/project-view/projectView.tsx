@@ -88,7 +88,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
           <StageActionCard analysisStage={project.analysisStage} projectName={project.projectName} activityType={project.activityType} />
           <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "40px", backgroundColor: "#fff", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
             <StageHeader analysisStage={project.analysisStage} />
-            <Chat senderRole='winrock' projectId={project.id}></Chat>
+            <Chat senderRole='winrock' projectId={project.id} active={project.isActive}></Chat>
           </div>
           {project.analysisStage !== finalStage && (
             <AdvanceStageButton
@@ -97,9 +97,9 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
             />
           )}
         </div>
-        <div className={styles.filesPanel}>
+        {!showingNotes && (<div className={styles.filesPanel}>
           <ProjectFiles projectId={project.id} />
-        </div>
+        </div>)}
 
         {showingNotes && (
           <ProjectNotes
