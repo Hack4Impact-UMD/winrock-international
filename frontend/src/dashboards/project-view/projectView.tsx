@@ -97,9 +97,9 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
             />
           )}
         </div>
-        <div className={styles.filesPanel}>
+        {!showingNotes && (<div className={styles.filesPanel}>
           <ProjectFiles projectId={project.id} />
-        </div>
+        </div>)}
 
         {showingNotes && (
           <ProjectNotes
