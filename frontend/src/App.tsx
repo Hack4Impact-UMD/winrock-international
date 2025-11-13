@@ -20,6 +20,7 @@ import ProjectViewWrapper from './dashboards/project-view/projectViewWrapper';
 import SupplierDashboard from './dashboards/supplier-view/projects/supplierDashboard';
 import SupplierProjectViewWrapper from './dashboards/supplier-project-view/supplierProjectViewWrapper.tsx';
 import SupplierNotificationCenter from './dashboards/supplier-view/notification-center/NotificationCenter';
+import RegenAgRisksForm from './forms/risks-and-co-benefit-forms/RegenAgRisksForm';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
         <Route path="/forms/renewable-proposal-form/:projectName" element={<RenewableProposalForm />} />
         <Route path="/forms/forestry-risks-form/:projectName" element={<ForestryRisksForm />} />
         <Route path="/forms/tech-energy-risks-form/:projectName" element={<TechEnergyRisksForm />} />
+        <Route path='/forms/regenerative-agriculture-risks-form/:projectName' element={<RegenAgRisksForm />} />
 
         <Route path="/dashboard/admin/projects" element={<WinrockDashboard />} />
         <Route path="/dashboard/admin/projects/:projectName" element={<ProjectViewWrapper />} />
