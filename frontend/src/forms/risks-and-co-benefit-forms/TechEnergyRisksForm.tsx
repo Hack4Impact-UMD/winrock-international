@@ -212,19 +212,19 @@ function TechEnergyRisksForm() {
         <PageOne
           handleChange={handleChange}
           answersRef={answersRef}
-          locked={locked}
+          locked={isLocked}
         />}
       {currentPage === 2 &&
         <PageTwo
           handleChange={handleChange}
           answersRef={answersRef}
-          locked={locked}
+          locked={isLocked}
         />}
       {currentPage === 3 &&
         <PageThree
           handleChange={handleChange}
           answersRef={answersRef}
-          locked={locked}
+          locked={isLocked}
         />}
 
       <NavigationButtons
@@ -234,7 +234,7 @@ function TechEnergyRisksForm() {
             window.scroll(0, 0);
           } else {
             // Only check for lock when trying to submit
-            if (locked) {
+            if (isLocked) {
               handleLockedAction();
               return;
             }
@@ -249,7 +249,7 @@ function TechEnergyRisksForm() {
         }}
         canGoBack={currentPage > 1}
         nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
-        disableSubmit={locked}
+        disableSubmit={isLocked}
         isLastPage={currentPage === totalPages}
       />
 

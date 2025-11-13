@@ -22,7 +22,6 @@ const StageActionCard: React.FC<StageActionCardProps> = ({ analysisStage, activi
       return;
     } else if (analysisStage === "Risk & Co-benefit Assessment") {
       if (
-        activityType === "Agriculture" ||
         activityType === "Agroforestry" ||
         activityType === "Animal Agriculture and Manure Management"
       ) {
@@ -30,6 +29,8 @@ const StageActionCard: React.FC<StageActionCardProps> = ({ analysisStage, activi
       } else if (activityType === "Renewable Energy and Energy Efficiency") {
         window.open(`/winrock-international/forms/tech-energy-risks-form/${projectName}`, "_blank");
 
+      } else if (activityType === "Agriculture") {
+        window.open(`/winrock-international/forms/regenerative-agriculture-risks-form/${projectName}`, "_blank");
       }
       return;
     } else if (analysisStage === "GHG Assessment Analysis") {
