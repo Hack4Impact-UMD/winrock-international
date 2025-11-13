@@ -117,8 +117,6 @@ const ProjectViewWrapper = () => {
       project={project}
       updates={updates}
       onBack={() => {
-        console.log('Navigating with state:', { viewMode: 'active' });
-        navigate('/dashboard/admin/projects', { state: { viewMode: 'active' } });
         navigate("/dashboard/admin/projects", { state: { viewMode: project.isActive === true ? "active" : "archived" } });
       }}
       onStageAdvanced={refreshProjectData}
