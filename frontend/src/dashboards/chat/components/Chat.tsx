@@ -6,9 +6,10 @@ import Result from "../../../types/Result"
 interface ChatProps {
 	senderRole: SenderRole;
 	projectId: string;
+	active: boolean;
 }
 
-const Chat = ({ senderRole, projectId }: ChatProps) => {
+const Chat = ({ senderRole, projectId, active }: ChatProps) => {
 	const messageContainerRef = useRef<HTMLDivElement | null>(null);
 	const [loadingMessages, setLoadingMessages] = useState<boolean>(true);
 	const [messages, setMessages] = useState<Message[]>([]);
@@ -16,7 +17,7 @@ const Chat = ({ senderRole, projectId }: ChatProps) => {
 
 	useEffect(() => {
 		const fetchMessages = async () => {
-			const result : Result = await getMessages(projectId);
+			const result: Result = await getMessages(projectId);
 			setMessages(result.success ? result.data : []);
 			setLoadingMessages(false);
 		}
@@ -40,14 +41,14 @@ const Chat = ({ senderRole, projectId }: ChatProps) => {
 			return;
 		}
 		setNewMessageText("");
-		const result : Result = await sendMessage(projectId, "leia@umd.edu", senderRole, messageToSend);
+		const result: Result = await sendMessage(projectId, "leia@umd.edu", senderRole, messageToSend);
 		if (result.success) {
 			const newMessage = result.data;
 			setMessages([...messages, newMessage]);
 		}
 	}
 
-	const capitalizeRole = (role : SenderRole) : string => {
+	const capitalizeRole = (role: SenderRole): string => {
 		return role.charAt(0).toUpperCase() + role.slice(1);
 	}
 
@@ -59,19 +60,19 @@ const Chat = ({ senderRole, projectId }: ChatProps) => {
 					<div className={`${styles.messageBubble} ${msg.senderRole === 'winrock' ? styles.winrockMessage : styles.supplierMessage}`}>{msg.message}</div>
 				</div>
 			))}
-		</div> 
+		</div>
 
-	const newMessageContainer = 
+	const newMessageContainer =
 		<form className={styles.newMessageContainer} onSubmit={handleFormSubmit}>
 			<label htmlFor="newMessageText">Request Additional Information</label>
-			<input type="text" id="newMessageText" className={styles.newMessageInput} 
-			placeholder="Enter text here" value={newMessageText} onChange={handleTextChange} autoComplete="off"></input>
+			<input type="text" id="newMessageText" className={styles.newMessageInput}
+				placeholder="Enter text here" value={newMessageText} onChange={handleTextChange} autoComplete="off"></input>
 			<button className={styles.sendButton} type="submit">Send</button>
 		</form>
 
 	return <div>
 		{loadingMessages ? <div>Loading messages...</div> : messageBubblesContainer}
-		{newMessageContainer}
+		{active ? newMessageContainer : <div className={styles.archivedNotice}>This project is archived. Messaging is disabled.</div>}
 	</div>
 }
 
