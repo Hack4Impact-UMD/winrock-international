@@ -34,6 +34,7 @@ interface ProjectViewHeaderProps {
         geography: string;
         lastUpdated: string;
         startDate: string;
+        isActive: boolean;
     };
     setShowAccessManager: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -106,7 +107,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
     return (
         <div className={styles.viewContainer}>
             <div className={styles.backButtonContainer}>
-                <button onClick={() => navigate('/dashboard/admin/projects')} className={styles.backButton}>
+                <button onClick={() => navigate("/dashboard/admin/projects", { state: { viewMode: data.isActive === true ? "active" : "archived" } })} className={styles.backButton}>
                     <img src={backArrow} alt="Back" className={styles.backArrow} />
                 </button>
             </div>
