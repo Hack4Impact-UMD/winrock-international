@@ -46,14 +46,6 @@ const statusOptions: StatusType[] = [
     'Completed (except for risk)'
 ];
 
-const analysisStageOptions: AnalysisStageType[] = [
-    'Risk & Co-benefit Assessment',
-    'GHG Assessment Analysis',
-    'Confirming Final Requirements',
-    'Clarifying Technical Details',  // ← Add this line
-    'Clarifying Initial Project Information',
-    'Complete, and Excluded'
-];
 const formatDate = (date: string | Date | null | undefined): string => {
     if (!date) return 'N/A';
     const parsed = new Date(date);
@@ -85,7 +77,6 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                 geography: editableData.geography,
                 projectName: editableData.projectName,
                 supplierName: editableData.supplierName,
-                analysisStage: editableData.analysisStage,
                 overallStatus: editableData.overallStatus,
                 clientName: editableData.clientName,
                 // Add other fields as needed
@@ -194,20 +185,11 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                 </td>
                 <td className={styles.cell}>
                     <div className={styles.dropdown}>
-                        {isEditMode ? (
-                            <RowCustomSelect
-                                value={editableData.analysisStage}
-                                options={analysisStageOptions}
-                                onChange={(e) => handleInputChange(e, 'analysisStage')}
-                                variant="analysis"
-                            />
-                        ) : (
-                            <ColorText
-                                text={currentData.analysisStage}
-                                category={currentData.analysisStage}
-                                variant="analysis"
-                            />
-                        )}
+                        <ColorText
+                            text={currentData.analysisStage}
+                            category={currentData.analysisStage}
+                            variant="analysis"
+                        />
                     </div>
                 </td>
                 <td className={styles.cell}>
