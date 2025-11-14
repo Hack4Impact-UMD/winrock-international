@@ -64,9 +64,12 @@ const Chat = ({ senderRole, projectId, active }: ChatProps) => {
 
 	const newMessageContainer =
 		<form className={styles.newMessageContainer} onSubmit={handleFormSubmit}>
-			<label htmlFor="newMessageText">Request Additional Information</label>
+			{
+				senderRole === "supplier" &&
+				<label htmlFor="newMessageText">Request Additional Information</label>
+			}
 			<input type="text" id="newMessageText" className={styles.newMessageInput}
-				placeholder="Enter text here" value={newMessageText} onChange={handleTextChange} autoComplete="off"></input>
+				placeholder="Enter text here" aria-label="Enter message text" value={newMessageText} onChange={handleTextChange} autoComplete="off"></input>
 			<button className={styles.sendButton} type="submit">Send</button>
 		</form>
 
