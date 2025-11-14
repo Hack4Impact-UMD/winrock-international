@@ -41,7 +41,7 @@ const Chat = ({ senderRole, projectId, active }: ChatProps) => {
 			return;
 		}
 		setNewMessageText("");
-		const result: Result = await sendMessage(projectId, "leia@umd.edu", senderRole, messageToSend);
+		const result: Result = await sendMessage(projectId, "", senderRole, messageToSend);
 		if (result.success) {
 			const newMessage = result.data;
 			setMessages([...messages, newMessage]);
