@@ -39,8 +39,6 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
 
   const saveNotesToDatabase = async (notes: string) => {
     try {
-      console.log("Saving notes to the database...");
-
       // Reference to the Firestore document for the project
       const projectDocRef = doc(db, "projects", project.id);
 
@@ -49,7 +47,6 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
         notes, // Update the notes field
       });
 
-      console.log("Notes saved successfully:", notes);
     } catch (error) {
       console.error("Error saving notes to the database:", error);
       throw new Error("Failed to save notes");
@@ -57,10 +54,6 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
   };
 
   console.log("ProjectView - onBack:", onBack);
-  console.log("ProjectView - project:", project);
-  console.log("ProjectView - updates:", updates);
-
-  console.log(project.analysisStage, finalStage, project.analysisStage === finalStage);
 
   return (
     <div className={styles.projectViewContainer}>

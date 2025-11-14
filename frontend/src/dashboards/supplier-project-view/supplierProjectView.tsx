@@ -6,9 +6,8 @@ import styles from '../project-view/css-modules/ProjectView.module.css';
 import Sidebar from '../winrock-dashboard/components/Sidebar';
 import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
-import sampleUpdates from './updatesSamples'; // Static updates
 import { UpdateItem } from '../../types/UpdateItem';
-
+import Chat from '../../dashboards/chat/components/Chat';
 
 interface ProjectViewProps {
   project: Project;
@@ -33,20 +32,20 @@ const SupplierProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) =>
       />
 
       <div className={styles.mainContent}>
-        <div className={styles.leftPanel}>
+        <div className={styles.trackerPanel}>
           <ProjectTracker
             currentStage={project.analysisStage}
-            initialInfoStatus="completed"
-            technicalStatus="completed"
-            ghgStatus="in-progress"
-            risksStatus="not-started"
-            finalStatus="not-started"
+            showingNotes={false}
           />
         </div>
 
-        <div className={styles.rightPanel}>
-          <ProjectUpdates updates={sampleUpdates.filter(update => update.projectId === project.id)} />
+        <div className={styles.updatesPanel}>
+          <ProjectUpdates updates={[]} />
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "40px", backgroundColor: "#fff", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+            <Chat senderRole='supplier' projectId={project.id} active={project.isActive}></Chat>
+          </div>
         </div>
+
       </div>
     </div>
   );

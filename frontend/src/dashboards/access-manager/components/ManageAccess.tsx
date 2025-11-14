@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../css-modules/ManageAccess.module.css";
 import CloseIcon from "@mui/icons-material/CloseRounded";
 import CheckIcon from "@mui/icons-material/CheckBoxRounded";
@@ -21,8 +21,8 @@ interface EmailCapsuleData {
 }
 
 interface UserData {
-    firstName: string;
-    lastName: string;
+	firstName: string;
+	lastName: string;
     email: string;
     role: string;
     name?: string;
@@ -37,6 +37,7 @@ const ManageAccess = (props: ManageAccessProps) => {
     // state variables
     const [emails, setEmails] = useState<EmailCapsuleData[]>([]);
     const [notifyPeople, setNotifyPeople] = useState(true);
+	const [message, setMessage] = useState("");
     const [showingManageAccess, setShowingManageAccess] = useState(false);
 
     // used in manage access view
@@ -53,6 +54,47 @@ const ManageAccess = (props: ManageAccessProps) => {
 
     const [emailIsFocused, setEmailIsFocused] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+
+	// load users with access
+	useEffect(() => {
+		const loadUsers = async () => {
+			const paQ = query(
+				collection(db, "projectAccess"),
+				where("projectId", "==", props.projectId)
+			);
+
+			const paSnap = await getDocs(paQ);
+
+			if (paSnap.size > 0) {
+
+				const userEmails = paSnap.docs.map(doc => doc.data().userEmail);
+
+				const userQ = query(
+					collection(db, "users"),
+					where("email", "in", userEmails)
+				);
+
+				const userSnap = await getDocs(userQ);
+
+				const result: UserData[] = [];
+
+				userSnap.forEach(doc => {
+					const userData = doc.data();
+					result.push({
+						name: userData.firstName + " " + userData.lastName,
+						email: userData.email,
+						role: userData.role
+					} as UserData);
+				});
+
+				setUsersWithAccess(result);
+			}
+
+		};
+
+		loadUsers();
+
+	}, [props.projectId]);
 
     const handleEmailAutocomplete = async (partialEmail: string) => {
         if (!partialEmail || partialEmail.length < 2) {
@@ -203,6 +245,7 @@ const ManageAccess = (props: ManageAccessProps) => {
             }
 
             setEmails([]);
+			setMessage("");
 
         } catch (error) {
             console.error("Error updating access:", error);
@@ -283,6 +326,7 @@ const ManageAccess = (props: ManageAccessProps) => {
             }
 
             emailInput.value = "";
+			setUserSuggestions([]);
         }
     };
 
@@ -291,23 +335,23 @@ const ManageAccess = (props: ManageAccessProps) => {
         if (data.length === 0) {
             return <p>No other users have access.</p>;
         } else if (data.length === 1) {
-            return <p>{data[0].firstName + " " + data[0].lastName}</p>;
+            return <p>{data[0].name}</p>;
         } else if (data.length === 2) {
             return (
                 <p>
-                    {data[0].firstName + " " + data[0].lastName} and {data[1].firstName + " " + data[1].lastName}
+                    {data[0].name} and {data[1].name}
                 </p>
             );
         } else if (data.length === 3) {
             return (
                 <p>
-                    {data[0].firstName + " " + data[0].lastName}, {data[1].firstName + " " + data[1].lastName}, and 1 other
+                    {data[0].name}, {data[1].name}, and 1 other
                 </p>
             );
         } else {
             return (
                 <p>
-                    {data[0].firstName + " " + data[0].lastName}, {data[1].firstName + " " + data[1].lastName}, and {data.length - 2} others
+                    {data[0].name}, {data[1].name}, and {data.length - 2} others
                 </p>
             );
         }
@@ -389,7 +433,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                         <div className={styles.confirmDialog}>
                             <h3>
                                 Are you sure you want to remove{" "}
-                                {userToRemove.firstName + " " + userToRemove.lastName} from this project?
+                                {userToRemove.name} from this project?
                             </h3>
                             <div className={styles.confirmButtonsCont}>
                                 <button
@@ -510,10 +554,10 @@ const ManageAccess = (props: ManageAccessProps) => {
                                                     emailInput as HTMLInputElement
                                                 ).value = "";
                                             }
+											setUserSuggestions([]);
                                         }}
                                     >
-                                        <p>{user.firstName}</p>
-                                        <p>{user.lastName}</p>
+                                        <p>{user.name}</p>
                                         <p>{user.email}</p>
                                         <p>{user.role}</p>
                                     </button>
@@ -541,6 +585,10 @@ const ManageAccess = (props: ManageAccessProps) => {
                         <textarea
                             className={styles.messageBox}
                             placeholder="Enter optional message"
+							value={message}
+							onChange={(event) => {
+								setMessage(event.target.value)
+							}}
                         ></textarea>
                         <div className={styles.buttonCont}>
                             <button
@@ -591,7 +639,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                                 <div key={user.email} className={styles.userDataCont}>
                                     <div className={styles.userNameEmail}>
                                         <p className={styles.userName}>
-                                            {user.firstName + " " + user.lastName}
+                                            {user.name}
                                         </p>
                                         <p className={styles.userEmail}>
                                             {user.email}

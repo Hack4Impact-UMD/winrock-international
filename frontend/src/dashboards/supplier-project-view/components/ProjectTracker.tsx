@@ -6,90 +6,102 @@ import dottedLine from "../assets/dotted-line.svg"
 
 interface ProjectTrackerProps {
 	currentStage: 'Risk & Co-benefit Assessment' | 'GHG Assessment Analysis' | 'Confirming Final Requirements' | 'Clarifying Initial Project Information' | 'Complete, and Excluded' | 'Clarifying Technical Details';
-	initialInfoStatus: "not-started" | "in-progress" | "completed";
-	technicalStatus: "not-started" | "in-progress" | "completed";
-	ghgStatus: "not-started" | "in-progress" | "completed";
-	risksStatus: "not-started" | "in-progress" | "completed";
-	finalStatus: "not-started" | "in-progress" | "completed";
+	showingNotes: boolean;
 }
 
-const ProjectTracker = (props: ProjectTrackerProps) => {
+const ProjectTracker = ({ currentStage, showingNotes }: ProjectTrackerProps) => {
+
+	// Define the stages in order
+	const stages = [
+		"Clarifying Initial Project Information",
+		"Clarifying Technical Details",
+		"GHG Assessment Analysis",
+		"Confirming Final Requirements",
+		"Risk & Co-benefit Assessment",
+		"Complete, and Excluded"
+	];
+
+	const getStageStatus = (stageIndex: number): "not-started" | "in-progress" | "completed" => {
+		const currentStageIndex = stages.indexOf(currentStage);
+
+		// If project is completed, all stages are completed
+		if (currentStage === "Complete, and Excluded") {
+			return "completed";
+		}
+
+		// If stage is before current stage, it's completed
+		if (stageIndex < currentStageIndex) {
+			return "completed";
+		}
+		// If stage is the current stage, it's in-progress
+		if (stageIndex === currentStageIndex) {
+			return "in-progress";
+		}
+		// If stage is after current stage, it's not-started
+		return "not-started";
+	};
 
 	const getStatusIcon = (statusNum: number) => {
-
-		let status = "";
-
-		if (statusNum === 0) {
-			status = props.initialInfoStatus;
-		}
-		else if (statusNum === 1) {
-			status = props.technicalStatus;
-		}
-		else if (statusNum === 2) {
-			status = props.ghgStatus;
-		}
-		else if (statusNum === 3) {
-			status = props.finalStatus;
-		}
-		else if (statusNum === 4) {
-			status = props.risksStatus
-		}
-		else {
-			if (props.initialInfoStatus === "completed" && props.technicalStatus === "completed" && props.ghgStatus === "completed" && props.finalStatus === "completed") {
-				return <img src={completed} alt="Completed status icon" />;
-			}
-			else {
-				return <img src={notStarted} alt="Not started status icon" />;
-			}
-		}
+		const status = getStageStatus(statusNum);
 
 		if (status === "not-started") {
-			return <img src={notStarted} alt="Not started status icon" />;
+			return <img src={notStarted}></img>;
 		}
 		else if (status === "in-progress") {
-			return <img src={inProgress} alt="In progress status icon" />;
+			return <img src={inProgress}></img>;
 		}
 		else {
-			return <img src={completed} alt="Completed status icon" />;
+			return <img src={completed}></img>;
 		}
 	}
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} style={{ width: showingNotes ? "70px" : "300px" }}>
+			{
+				!showingNotes && 
+				<div className={styles.headerCont}>
+					Project Tracker
+				</div>
+			}
 			<div className={styles.lineCont}>
-				<img src={dottedLine} style={{top: "calc(4rem + 20px)"}} alt="" />
-				<img src={dottedLine} style={{top: "calc(4rem + 95px)"}} alt="" />
-				<img src={dottedLine} style={{top: "calc(4rem + 170px)"}} alt="" />
-				<img src={dottedLine} style={{top: "calc(4rem + 245px)"}} alt="" />
-				<img src={dottedLine} style={{top: "calc(4rem + 320px)"}} alt="" />
+				<img src={dottedLine}></img>
+				<img src={dottedLine}></img>
+				<img src={dottedLine}></img>
+				<img src={dottedLine}></img>
+				<img src={dottedLine}></img>
 			</div>
-			<div className={styles.headerCont}>
-				Project Tracker
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Clarifying Initial Project Information" ? styles.currentStageCont : ""}`}>
+			<div className={styles.iconCont}>
 				{getStatusIcon(0)}
-				Clarifying Initial Project Information
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Clarifying Technical Details" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(1)}
-				Clarifying Technical Details
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "GHG Assessment Analysis" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(2)}
-				GHG Assessment Analysis
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Confirming Final Requirements" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(3)}
-				Confirming Final Requirements
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Risk & Co-benefit Assessment" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(4)}
-				Risks & Co-Benefits Assessment
-			</div>
-			<div className={`${styles.stageCont} ${props.currentStage === "Complete, and Excluded" ? styles.currentStageCont : ""}`}>
 				{getStatusIcon(5)}
-				Project Completed
 			</div>
+			{ 
+				!showingNotes && 
+				<div className={styles.stagesCont}>
+					<div className={`${styles.stage} ${currentStage === "Clarifying Initial Project Information" ? styles.currentStage : ""}`}>
+						Clarifying Initial Project Information
+					</div>
+					<div className={`${styles.stage} ${currentStage === "Clarifying Technical Details" ? styles.currentStage : ""}`}>
+						Clarifying Technical Details
+					</div>
+					<div className={`${styles.stage} ${currentStage === "GHG Assessment Analysis" ? styles.currentStage : ""}`}>
+						GHG Assessment Analysis
+					</div>
+					<div className={`${styles.stage} ${currentStage === "Confirming Final Requirements" ? styles.currentStage : ""}`}>
+						Confirming Final Requirements
+					</div>
+					<div className={`${styles.stage} ${currentStage === "Risk & Co-benefit Assessment" ? styles.currentStage : ""}`}>
+						Risks & Co-Benefits Assessment
+					</div>
+					<div className={`${styles.stage} ${currentStage === "Complete, and Excluded" ? styles.currentStage : ""}`}>
+						Project Completed
+					</div>
+				</div>
+			}
+			
 		</div>
 	);
 }
