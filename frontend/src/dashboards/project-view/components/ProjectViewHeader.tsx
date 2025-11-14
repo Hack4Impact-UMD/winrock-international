@@ -188,8 +188,8 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
 						<td className={styles.cell}>
 							<div className={styles.dropdown}>
 								<ColorText
-									text={currentData.analysisStage}
-									category={currentData.analysisStage}
+									text={data.analysisStage}
+									category={data.analysisStage}
 									variant="analysis"
 								/>
 							</div>
