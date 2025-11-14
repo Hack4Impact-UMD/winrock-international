@@ -37,6 +37,7 @@ const ManageAccess = (props: ManageAccessProps) => {
     // state variables
     const [emails, setEmails] = useState<EmailCapsuleData[]>([]);
     const [notifyPeople, setNotifyPeople] = useState(true);
+	const [message, setMessage] = useState("");
     const [showingManageAccess, setShowingManageAccess] = useState(false);
 
     // used in manage access view
@@ -203,6 +204,7 @@ const ManageAccess = (props: ManageAccessProps) => {
             }
 
             setEmails([]);
+			setMessage("");
 
         } catch (error) {
             console.error("Error updating access:", error);
@@ -542,6 +544,10 @@ const ManageAccess = (props: ManageAccessProps) => {
                         <textarea
                             className={styles.messageBox}
                             placeholder="Enter optional message"
+							value={message}
+							onChange={(event) => {
+								setMessage(event.target.value)
+							}}
                         ></textarea>
                         <div className={styles.buttonCont}>
                             <button
