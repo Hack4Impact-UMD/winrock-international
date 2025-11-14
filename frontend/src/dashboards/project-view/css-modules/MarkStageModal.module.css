@@ -82,7 +82,7 @@
     font-size: 0.9rem;
     cursor: pointer;
     color: #005293;
-    outline: 0.2rem solid #005293;
+    outline: 1.35px solid #005293;
     background-color: white;
     transition: background-color 0.3s ease;
     height: 3rem;

@@ -29,9 +29,12 @@ export const markStageAsComplete = async (projectId: string, currentStage: strin
         const nextStage = Object.keys(stageMap).find(key => stageMap[key] === nextStageNumber);
         // if there is no next stage, we are at the final stage
         if (!nextStage) {
-            return { success : false, errorCode: "Already at final stage" };
+            return { success: false, errorCode: "Already at final stage" };
         }
         await updateProjectField(projectId, { analysisStage: nextStage });
+        if (nextStageNumber === stageMap[finalStage]) {
+            await updateProjectField(projectId, { isActive: false });
+        }
         return { success: true };
     } catch (err) {
         return handleFirebaseError(err);
@@ -150,7 +153,7 @@ export const uploadProjectFile = async (projectId: string, fileName: string, fil
         // Step 3: Confirm upload and save metadata to Firestore
         const confirmResponse = await confirmS3Upload({ projectId, fileName, s3Key });
         const confirmData = confirmResponse.data as { success?: boolean; data?: { name: string; id: string; downloadURL: string } };
-        
+
         if (confirmData.success && confirmData.data) {
             return { success: true, data: confirmData.data };
         } else {
