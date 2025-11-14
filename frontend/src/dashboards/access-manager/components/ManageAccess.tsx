@@ -21,8 +21,8 @@ interface EmailCapsuleData {
 }
 
 interface UserData {
-    firstName: string;
-    lastName: string;
+	firstName: string;
+	lastName: string;
     email: string;
     role: string;
     name?: string;
@@ -283,6 +283,7 @@ const ManageAccess = (props: ManageAccessProps) => {
             }
 
             emailInput.value = "";
+			setUserSuggestions([]);
         }
     };
 
@@ -291,23 +292,23 @@ const ManageAccess = (props: ManageAccessProps) => {
         if (data.length === 0) {
             return <p>No other users have access.</p>;
         } else if (data.length === 1) {
-            return <p>{data[0].firstName + " " + data[0].lastName}</p>;
+            return <p>{data[0].name}</p>;
         } else if (data.length === 2) {
             return (
                 <p>
-                    {data[0].firstName + " " + data[0].lastName} and {data[1].firstName + " " + data[1].lastName}
+                    {data[0].name} and {data[1].name}
                 </p>
             );
         } else if (data.length === 3) {
             return (
                 <p>
-                    {data[0].firstName + " " + data[0].lastName}, {data[1].firstName + " " + data[1].lastName}, and 1 other
+                    {data[0].name}, {data[1].name}, and 1 other
                 </p>
             );
         } else {
             return (
                 <p>
-                    {data[0].firstName + " " + data[0].lastName}, {data[1].firstName + " " + data[1].lastName}, and {data.length - 2} others
+                    {data[0].name}, {data[1].name}, and {data.length - 2} others
                 </p>
             );
         }
@@ -389,7 +390,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                         <div className={styles.confirmDialog}>
                             <h3>
                                 Are you sure you want to remove{" "}
-                                {userToRemove.firstName + " " + userToRemove.lastName} from this project?
+                                {userToRemove.name} from this project?
                             </h3>
                             <div className={styles.confirmButtonsCont}>
                                 <button
@@ -510,10 +511,10 @@ const ManageAccess = (props: ManageAccessProps) => {
                                                     emailInput as HTMLInputElement
                                                 ).value = "";
                                             }
+											setUserSuggestions([]);
                                         }}
                                     >
-                                        <p>{user.firstName}</p>
-                                        <p>{user.lastName}</p>
+                                        <p>{user.name}</p>
                                         <p>{user.email}</p>
                                         <p>{user.role}</p>
                                     </button>
@@ -591,7 +592,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                                 <div key={user.email} className={styles.userDataCont}>
                                     <div className={styles.userNameEmail}>
                                         <p className={styles.userName}>
-                                            {user.firstName + " " + user.lastName}
+                                            {user.name}
                                         </p>
                                         <p className={styles.userEmail}>
                                             {user.email}
