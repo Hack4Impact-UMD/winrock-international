@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../css-modules/ManageAccess.module.css";
 import CloseIcon from "@mui/icons-material/CloseRounded";
 import CheckIcon from "@mui/icons-material/CheckBoxRounded";
@@ -54,6 +54,47 @@ const ManageAccess = (props: ManageAccessProps) => {
 
     const [emailIsFocused, setEmailIsFocused] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+
+	// load users with access
+	useEffect(() => {
+		const loadUsers = async () => {
+			const paQ = query(
+				collection(db, "projectAccess"),
+				where("projectId", "==", props.projectId)
+			);
+
+			const paSnap = await getDocs(paQ);
+
+			if (paSnap.size > 0) {
+
+				const userEmails = paSnap.docs.map(doc => doc.data().userEmail);
+
+				const userQ = query(
+					collection(db, "users"),
+					where("email", "in", userEmails)
+				);
+
+				const userSnap = await getDocs(userQ);
+
+				const result: UserData[] = [];
+
+				userSnap.forEach(doc => {
+					const userData = doc.data();
+					result.push({
+						name: userData.firstName + " " + userData.lastName,
+						email: userData.email,
+						role: userData.role
+					} as UserData);
+				});
+
+				setUsersWithAccess(result);
+			}
+
+		};
+
+		loadUsers();
+
+	}, [props.projectId]);
 
     const handleEmailAutocomplete = async (partialEmail: string) => {
         if (!partialEmail || partialEmail.length < 2) {
