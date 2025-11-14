@@ -128,102 +128,105 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                     </button>
                 </div>
             </div>
-            <thead className={styles.tableHeader}>
-                <tr>
-                    <th className={styles.headerCell}>Client</th>
-                    <th className={styles.headerCell}>Supplier</th>
-                    <th className={styles.headerCell}>Overall Status</th>
-                    <th className={styles.headerCell}>Analysis stage</th>
-                    <th className={styles.headerCell}>Spend Category</th>
-                    <th className={styles.headerCell}>Geography</th>
-                    <th className={styles.headerCell}>Last Updated</th>
-                    <th className={styles.headerCell}>Start Date</th>
-                </tr>
-            </thead>
-
-            <tr className={styles.tableRow}>
-                <td className={styles.cell}>
-                    {isEditMode ? (
-                        <input
-                            type="text"
-                            value={editableData.clientName}
-                            onChange={(e) => handleInputChange(e, 'clientName')}
-                            className={styles.editableInput}
-                        />
-                    ) : (
-                        currentData.clientName
-                    )}
-                </td>
-                <td className={styles.cell}>
-                    {isEditMode ? (
-                        <input
-                            type="text"
-                            value={editableData.supplierName}
-                            onChange={(e) => handleInputChange(e, 'supplierName')}
-                            className={styles.editableInput}
-                        />
-                    ) : (
-                        currentData.supplierName
-                    )}
-                </td>
-                <td className={styles.cell}>
-                    <div className={styles.dropdown}>
-                        {isEditMode ? (
-                            <RowCustomSelect
-                                value={editableData.overallStatus}
-                                options={statusOptions}
-                                onChange={(e) => handleInputChange(e, 'overallStatus')}
-                                variant="status"
-                            />
-                        ) : (
-                            <ColorText
-                                text={currentData.overallStatus}
-                                category={currentData.overallStatus}
-                                variant="status"
-                            />
-                        )}
-                    </div>
-                </td>
-                <td className={styles.cell}>
-                    <div className={styles.dropdown}>
-                        <ColorText
-                            text={currentData.analysisStage}
-                            category={currentData.analysisStage}
-                            variant="analysis"
-                        />
-                    </div>
-                </td>
-                <td className={styles.cell}>
-                    {isEditMode ? (
-                        <input
-                            type="text"
-                            value={editableData.spendCategory}
-                            onChange={(e) => handleInputChange(e, 'spendCategory')}
-                            className={styles.editableInput}
-                        />
-                    ) : (
-                        currentData.spendCategory
-                    )}
-                </td>
-                <td className={styles.cell}>
-                    {isEditMode ? (
-                        <input
-                            type="text"
-                            value={editableData.geography}
-                            onChange={(e) => handleInputChange(e, 'geography')}
-                            className={styles.editableInput}
-                        />
-                    ) : (
-                        currentData.geography
-                    )}
-                </td>
-                <td className={styles.cell}>
-                    {formatDate(currentData.lastUpdated)}
-                </td>
-                <td className={styles.cell}>
-                    {formatDate(currentData.startDate)}
-                </td>
-            </tr>
+			<table>
+				<thead className={styles.tableHeader}>
+					<tr>
+						<th className={styles.headerCell}>Client</th>
+						<th className={styles.headerCell}>Supplier</th>
+						<th className={styles.headerCell}>Overall Status</th>
+						<th className={styles.headerCell}>Analysis stage</th>
+						<th className={styles.headerCell}>Spend Category</th>
+						<th className={styles.headerCell}>Geography</th>
+						<th className={styles.headerCell}>Last Updated</th>
+						<th className={styles.headerCell}>Start Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr className={styles.tableRow}>
+						<td className={styles.cell}>
+							{isEditMode ? (
+								<input
+									type="text"
+									value={editableData.clientName}
+									onChange={(e) => handleInputChange(e, 'clientName')}
+									className={styles.editableInput}
+								/>
+							) : (
+								currentData.clientName
+							)}
+						</td>
+						<td className={styles.cell}>
+							{isEditMode ? (
+								<input
+									type="text"
+									value={editableData.supplierName}
+									onChange={(e) => handleInputChange(e, 'supplierName')}
+									className={styles.editableInput}
+								/>
+							) : (
+								currentData.supplierName
+							)}
+						</td>
+						<td className={styles.cell}>
+							<div className={styles.dropdown}>
+								{isEditMode ? (
+									<RowCustomSelect
+										value={editableData.overallStatus}
+										options={statusOptions}
+										onChange={(e) => handleInputChange(e, 'overallStatus')}
+										variant="status"
+									/>
+								) : (
+									<ColorText
+										text={currentData.overallStatus}
+										category={currentData.overallStatus}
+										variant="status"
+									/>
+								)}
+							</div>
+						</td>
+						<td className={styles.cell}>
+							<div className={styles.dropdown}>
+								<ColorText
+									text={currentData.analysisStage}
+									category={currentData.analysisStage}
+									variant="analysis"
+								/>
+							</div>
+						</td>
+						<td className={styles.cell}>
+							{isEditMode ? (
+								<input
+									type="text"
+									value={editableData.spendCategory}
+									onChange={(e) => handleInputChange(e, 'spendCategory')}
+									className={styles.editableInput}
+								/>
+							) : (
+								currentData.spendCategory
+							)}
+						</td>
+						<td className={styles.cell}>
+							{isEditMode ? (
+								<input
+									type="text"
+									value={editableData.geography}
+									onChange={(e) => handleInputChange(e, 'geography')}
+									className={styles.editableInput}
+								/>
+							) : (
+								currentData.geography
+							)}
+						</td>
+						<td className={styles.cell}>
+							{formatDate(currentData.lastUpdated)}
+						</td>
+						<td className={styles.cell}>
+							{formatDate(currentData.startDate)}
+						</td>
+					</tr>
+				</tbody>
+			</table>
         </div>
     );
 };
