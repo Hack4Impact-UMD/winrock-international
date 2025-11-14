@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getAllProjectFiles } from '../ProjectViewUtils';
-import  FileUploadModal from './FileUploadModal';
+import AddFileLinkModal from './AddFileLinkModal';
 
 const DownloadIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -20,8 +20,9 @@ interface ProjectFilesProps {
 }
 
 interface ProjectFile {
-  name: string;
-  downloadURL: string;
+  fileName: string;
+  filePath: string;
+  projectId: string;
   id: string;
 }
 
@@ -29,19 +30,19 @@ const ProjectFiles: React.FC<ProjectFilesProps> = ({ projectId }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [files, setFiles] = useState<ProjectFile[]>([]);
 
-  useEffect(() => {
-    (async () => {
-      await getAllProjectFiles(projectId).then((data) => {
-        if (data.success) {
-          setFiles(data.data as ProjectFile[]);
-        }
-      });
-    })();
-  });
+  const loadFiles = useCallback(async () => {
+    const result = await getAllProjectFiles(projectId);
+    if (result.success) {
+      setFiles(result.data as ProjectFile[]);
+    }
+  }, [projectId]);
 
-  const handleFileClick = (fileName: string, downloadURL: string) => {
-    console.log(`Clicked on ${fileName}`);
-    window.open(downloadURL, '_blank');
+  useEffect(() => {
+    loadFiles();
+  }, [loadFiles]);
+
+  const handleFileAdded = () => {
+    loadFiles();
   };
 
   const containerStyle: React.CSSProperties = {
@@ -139,31 +140,47 @@ const ProjectFiles: React.FC<ProjectFilesProps> = ({ projectId }) => {
       </button>
       <p style={subtitleStyle}>Download Current Version</p>
       <div style={fileListStyle}>
-        {files.map((file: ProjectFile, index) => (
-          <button
-            key={index}
-            style={fileButtonStyle}
-            onClick={() => handleFileClick(file.name, file.downloadURL)}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#f9fafb';
-              e.currentTarget.style.borderColor = '#d1d5db';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#ffffff';
-              e.currentTarget.style.borderColor = '#e0e0e0';
-            }}
-          >
-            <span style={fileNameStyle}>{file.name}</span>
-            <span style={downloadIconStyle}>
-              <DownloadIcon />
-            </span>
-          </button>
-        ))}
+        {files.length === 0 ? (
+          <p style={{ ...subtitleStyle, marginTop: '1rem' }}>No files yet. Click Upload to add a file link.</p>
+        ) : (
+          files.map((file: ProjectFile) => (
+            <a
+              key={file.id}
+              href={file.filePath}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                ...fileButtonStyle,
+                textDecoration: 'none',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f9fafb';
+                e.currentTarget.style.borderColor = '#d1d5db';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ffffff';
+                e.currentTarget.style.borderColor = '#e0e0e0';
+              }}
+            >
+              <span style={fileNameStyle}>{file.fileName}</span>
+              <span style={downloadIconStyle}>
+                <DownloadIcon />
+              </span>
+            </a>
+          ))
+        )}
       </div>
-      {showModal && <FileUploadModal onClose={() => setShowModal(false)} projectId={projectId}></FileUploadModal>}
+      {showModal && (
+        <AddFileLinkModal
+          onClose={() => setShowModal(false)}
+          projectId={projectId}
+          onFileAdded={handleFileAdded}
+        />
+      )}
     </div>
   );
 };
 
 export default ProjectFiles;
+
 
