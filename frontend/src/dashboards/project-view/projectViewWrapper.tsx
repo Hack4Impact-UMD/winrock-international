@@ -36,7 +36,6 @@ const ProjectViewWrapper = () => {
           });
           return { id: doc.id, ...convertedData } as Project;
         })[0];
-        console.log(projectName)
         if (projectData) {
           setProject(projectData);
 

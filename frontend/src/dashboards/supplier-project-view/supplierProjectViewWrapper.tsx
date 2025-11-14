@@ -2,12 +2,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import ProjectView from "./supplierProjectView";
 import { db } from "../../firebaseConfig";
 import { useState, useEffect } from "react";
-import { collection, query, where, getDocs, orderBy } from "firebase/firestore"; // Added orderBy
+import { collection, query, where, getDocs } from "firebase/firestore"; // Added orderBy
 
 const SupplierProjectViewWrapper = () => {
   const { projectName } = useParams();
   const navigate = useNavigate();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [updates, setUpdates] = useState<any[]>([]); // Added TypeScript type annotations
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [project, setProject] = useState<any | null>(null); // Added TypeScript type annotations
   const [loading, setLoading] = useState<boolean>(true); // Added TypeScript type annotations
 
@@ -35,7 +37,6 @@ const SupplierProjectViewWrapper = () => {
 
         if (projectData) {
           setProject(projectData);
-          console.log(projectData)
           const updatesQuery = query(
             collection(db, "projects"),
             where("projectId", "==", projectData.id)
