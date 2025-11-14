@@ -395,7 +395,7 @@ html {
 }
 
 .table {
-  width: calc(100% + 6rem);
+  width: calc(100%);
   border-collapse: collapse;
   table-layout: auto;
 }
@@ -423,13 +423,13 @@ html {
 
 .table th:nth-child(2),
 .table td:nth-child(2) {
-  width: 11%;
+  width: 10%;
   /* Project name */
 }
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-  width: 11%;
+  width: 10%;
   /* Supplier */
 }
 
@@ -441,7 +441,7 @@ html {
 
 .table th:nth-child(5),
 .table td:nth-child(5) {
-  width: 17%;
+  width: 10%;
   /* Analysis Stage */
 }
 
@@ -471,7 +471,7 @@ html {
 
 .table th:nth-child(10),
 .table td:nth-child(10) {
-  width: 8%;
+  width: 10%;
   /* Actions column */
 }
 

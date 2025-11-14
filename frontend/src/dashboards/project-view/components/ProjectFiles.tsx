@@ -119,7 +119,7 @@ const ProjectFiles: React.FC<ProjectFilesProps> = ({ projectId }) => {
     justifyContent: 'center',
     padding: '12px 16px',
     background: '#ffffff',
-    border: '0.2rem solid #005293',
+    border: '1.35px solid #005293',
     color: '#005293',
     borderRadius: '8px',
     cursor: 'pointer',

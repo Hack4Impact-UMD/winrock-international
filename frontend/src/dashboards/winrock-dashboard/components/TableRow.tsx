@@ -53,15 +53,6 @@ const statusOptions: StatusType[] = [
   'Completed (except for risk)'
 ];
 
-const analysisStageOptions: AnalysisStageType[] = [
-  'Risk & Co-benefit Assessment',
-  'GHG Assessment Analysis',
-  'Confirming Final Requirements',
-  'Clarifying Technical Details',  // ← Add this line
-  'Clarifying Initial Project Information',
-  'Complete, and Excluded'
-];
-
 const TableRow: React.FC<TableRowProps> = ({
   data,
   isSelected = false,
@@ -78,7 +69,6 @@ const TableRow: React.FC<TableRowProps> = ({
   const [localProjectName, setLocalProjectName] = useState(data.projectName);
   const [localSupplierName, setLocalSupplierName] = useState(data.supplierName);
   const [localOverallStatus, setLocalOverallStatus] = useState<StatusType>(data.overallStatus);
-  const [localAnalysisStage, setLocalAnalysisStage] = useState<AnalysisStageType>(data.analysisStage);
   const [localSpendCategory, setLocalSpendCategory] = useState(data.spendCategory);
   const [localGeography, setLocalGeography] = useState(data.geography);
   const [buttonPosition, setButtonPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
@@ -90,7 +80,6 @@ const TableRow: React.FC<TableRowProps> = ({
     setLocalProjectName(data.projectName);
     setLocalSupplierName(data.supplierName);
     setLocalOverallStatus(data.overallStatus);
-    setLocalAnalysisStage(data.analysisStage);
     setLocalSpendCategory(data.spendCategory);
     setLocalGeography(data.geography);
   }, [data]);
@@ -191,20 +180,11 @@ const TableRow: React.FC<TableRowProps> = ({
 
       {/* Analysis Stage */}
       <td className={styles.cell}>
-        {isEditMode ? (
-          <RowCustomSelect
-            value={localAnalysisStage}
-            options={analysisStageOptions}
-            onChange={(value) => setLocalAnalysisStage(value as AnalysisStageType)}
-            variant="analysis"
-          />
-        ) : (
-          <ColorText
+        <ColorText
             text={data.analysisStage}
             category={data.analysisStage}
             variant="analysis"
           />
-        )}
       </td>
 
       {/* Spend Category */}
@@ -252,7 +232,6 @@ const TableRow: React.FC<TableRowProps> = ({
                 clientName: localClientName, // Add clientName here
                 supplierName: localSupplierName,
                 overallStatus: localOverallStatus,
-                analysisStage: localAnalysisStage,
                 spendCategory: localSpendCategory,
                 geography: localGeography,
               });
