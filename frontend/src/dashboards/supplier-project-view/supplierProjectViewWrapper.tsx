@@ -18,7 +18,7 @@ const SupplierProjectViewWrapper = () => {
       try {
         const projectQuery = query(
           collection(db, "projects"),
-          where("projectName", "==", projectName)
+          where("projectName", "==", projectName?.toLowerCase())
         );
 
         const projectSnapshot = await getDocs(projectQuery);
