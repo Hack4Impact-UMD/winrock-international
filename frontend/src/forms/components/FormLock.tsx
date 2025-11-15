@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { checkProjectLock, lockProject, unlockProject } from '../../dashboards/winrock-dashboard/projects/winrockDashboardService';
+import { lockProject } from '../../dashboards/winrock-dashboard/projects/winrockDashboardService';
+import { nanoid } from 'nanoid';
+import { unlockProject } from '../../dashboards/winrock-dashboard/projects/winrockDashboardService';
 
 interface FormLockProps {
   projectName: string;
@@ -8,11 +10,18 @@ interface FormLockProps {
   onUnlock?: () => void;
 }
 
+// TODO need to modify to make this production ready
+const UNLOCK_ENDPOINT = 'http://127.0.0.1:5001/winrock-international/us-central1/unlockFormOnClose';
+
 const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
   const [showLockedPopup, setShowLockedPopup] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  // track whether we acquired the lock
+  const acquiredLockRef = useRef(false);
+  // lock owner unique id
+  const lockOwnerIdRef = useRef<string>(nanoid());
   // Check project lock status and attempt to lock if not locked
   useEffect(() => {
     const checkAndLockProject = async () => {
@@ -21,45 +30,28 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
         return;
       }
 
+      // (attempt to) stop duplicate lock attempts
+      if (acquiredLockRef.current) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
-
-        // First check if project is already locked
-        const lockCheckResult = await checkProjectLock(projectName);
-
-        if (!lockCheckResult.success) {
-          console.error('Failed to check project lock status:', lockCheckResult.errorCode);
-          setIsLoading(false);
-          return;
-        }
-
-        const { isLocked: projectIsLocked } = lockCheckResult.data as { isLocked: boolean };
-
-        if (projectIsLocked) {
-          // Project is already locked, show popup
+        const lockResult = await lockProject(projectName, lockOwnerIdRef.current);
+        console.log('Lock result:', lockResult);
+        if (lockResult.success) {
+          // we acquired the lock
+          acquiredLockRef.current = true;
+          setIsLocked(false);
+          setShowLockedPopup(false);
+        } else if (lockResult.errorCode === 'project-already-locked') {
+          // another user has locked the form
+          acquiredLockRef.current = false;
           setIsLocked(true);
           setShowLockedPopup(true);
-          setIsLoading(false);
-          return;
-        }
-
-        // Project is not locked, try to lock it
-        const lockResult = await lockProject(projectName);
-
-        if (!lockResult.success) {
-          if (lockResult.errorCode === 'project-already-locked') {
-            // Another user locked it between our check and lock attempt
-            setIsLocked(true);
-            setShowLockedPopup(true);
-          } else {
-            console.error('Failed to lock project:', lockResult.errorCode);
-          }
         } else {
-          // Successfully locked the project
-          setIsLocked(false);
-          if (onUnlock) {
-            onUnlock();
-          }
+          console.error('Failed to lock project:', lockResult.errorCode);
         }
       } catch (error) {
         console.error('Error in project locking logic:', error);
@@ -70,14 +62,38 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
 
     checkAndLockProject();
 
-    // Cleanup function to unlock project when component unmounts
-    return () => {
-      if (projectName && !isLocked) {
-        unlockProject(projectName).catch(error => {
-          console.error('Failed to unlock project on cleanup:', error);
-        });
+    // unlock on page/tab close
+    const handleBeforeUnload = () => {
+      if (projectName && acquiredLockRef.current) {
+        try {
+          const payload = JSON.stringify({
+            projectName,
+            lockOwner: lockOwnerIdRef.current,
+          });
+          const blob = new Blob([payload], { type: 'application/json' });
+          navigator.sendBeacon(UNLOCK_ENDPOINT, blob);
+        } catch {
+          globalThis.alert('err');
+        }
       }
     };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('pagehide', handleBeforeUnload);
+
+    // Cleanup function to unlock project when component unmounts (only if we acquired the lock)
+    return () => {
+      if (projectName && acquiredLockRef.current) {
+        (async () => {
+          try {
+            const res = await unlockProject(projectName, lockOwnerIdRef.current);
+            if (res.success && onUnlock) onUnlock();
+            acquiredLockRef.current = false;
+          } catch {
+            // ignore
+          }
+        })();
+      }
+    }
   }, [projectName, onUnlock]);
 
   // Handle locked actions (field changes, navigation, etc.)

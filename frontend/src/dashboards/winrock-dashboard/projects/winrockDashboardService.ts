@@ -411,7 +411,7 @@ const checkProjectLock = async (projectName: string): Promise<Result> => {
 /**
  * Lock a project for editing (set isLocked to true)
  */
-const lockProject = async (projectName: string): Promise<Result> => {
+const lockProject = async (projectName: string, lockOwner: string): Promise<Result> => {
     try {
         // first get the doc ID by projectName
         const q = query(collection(db, "projects"), where("projectName", "==", projectName));
@@ -425,19 +425,29 @@ const lockProject = async (projectName: string): Promise<Result> => {
         await runTransaction(db, async (tx) => {
             const snap = await tx.get(docRef);
             const projectData = snap.data();
-
+            // treat as success if lock is already held by the same requester
             if (projectData?.isLocked) {
+                if (projectData.lockOwner && lockOwner && projectData.lockOwner === lockOwner) {
+                    tx.update(docRef, {
+                        lastUpdated: serverTimestamp()
+                    });
+                    return;
+                }
                 throw new Error("project-already-locked");
             }
 
             tx.update(docRef, {
                 isLocked: true,
+                lockOwner: lockOwner ?? null,
                 lastUpdated: serverTimestamp()
             });
         });
 
         return { success: true };
     } catch (error) {
+        if ((error as Error).message === "project-already-locked") {
+            return { success: false, errorCode: "project-already-locked" };
+        }
         return handleFirebaseError(error);
     }
 };
@@ -445,7 +455,7 @@ const lockProject = async (projectName: string): Promise<Result> => {
 /**
  * Unlock a project (set isLocked to false)
  */
-const unlockProject = async (projectName: string): Promise<Result> => {
+const unlockProject = async (projectName: string, lockOwner: string): Promise<Result> => {
     try {
         const q = query(collection(db, "projects"), where("projectName", "==", projectName));
         const querySnapshot = await getDocs(q);
@@ -456,14 +466,28 @@ const unlockProject = async (projectName: string): Promise<Result> => {
         const docRef = querySnapshot.docs[0].ref;
 
         await runTransaction(db, async (tx) => {
+            const snap = await tx.get(docRef);
+            const projectData = snap.data();
+
+            // nothing to do
+            if (!projectData?.isLocked) {
+                return;
+            }
+
+            if (projectData.lockOwner && lockOwner && projectData.lockOwner !== lockOwner) {
+                throw new Error("not-lock-owner");
+            }
             tx.update(docRef, {
                 isLocked: false,
+                lockOwner: null,
                 lastUpdated: serverTimestamp()
             });
         });
-
         return { success: true };
     } catch (error) {
+        if ((error as Error).message === "not-lock-owner") {
+            return { success: false, errorCode: "not-lock-owner" };
+        }
         return handleFirebaseError(error);
     }
 };
