@@ -113,32 +113,26 @@ Meet our wonderful team comprised of Product Managers, Designers, Tech Leads, En
     </td>
   </tr>
   <tr>
-    <td colspan="4" align="center">
-        <table align="center">
-          <tr>
-            <td align="center" width="150">
-                <a href="https://www.linkedin.com/in/nadia-meyerovich-4a30a9215/">
-                <img src="frontend/src/assets/winrock-profile-pictures/nadia-meyerovich-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
-                <b style="font-size: 0.3em;">Nadia Meyerovich</b>
-                <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
-                </a>
-            </td>
-            <td align="center" width="150">
-                <a href="https://www.linkedin.com/in/rishi-agarwal13/">
-                <img src="frontend/src/assets/winrock-profile-pictures/rishi_agarwal_headshot.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
-                <b>Rishi Agarwal</b><br/><br/>
-                <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
-                </a>
-            </td>
-            <td align="center" width="150">
-                <a href="https://www.linkedin.com/in/srinidhi-gubba">
-                <img src="frontend/src/assets/winrock-profile-pictures/srinidhi-gubba-headshot.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
-                <b>Srinidhi Gubba</b><br/><br/>
-                <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
-                </a>
-            </td>
-          </tr>
-        </table>
+    <td align="center" width="150">
+        <a href="https://www.linkedin.com/in/nadia-meyerovich-4a30a9215/">
+        <img src="frontend/src/assets/winrock-profile-pictures/nadia-meyerovich-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b style="font-size: 0.3em;">Nadia Meyerovich</b>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+        </a>
+    </td>
+    <td align="center" width="150">
+        <a href="https://www.linkedin.com/in/rishi-agarwal13/">
+        <img src="frontend/src/assets/winrock-profile-pictures/rishi_agarwal_headshot.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Rishi Agarwal</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+        </a>
+    </td>
+    <td align="center" width="150">
+        <a href="https://www.linkedin.com/in/srinidhi-gubba">
+        <img src="frontend/src/assets/winrock-profile-pictures/srinidhi-gubba-headshot.jpg" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
+        <b>Srinidhi Gubba</b><br/><br/>
+        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
+        </a>
     </td>
   </tr>
 </table>
