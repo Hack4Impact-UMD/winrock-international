@@ -19,9 +19,8 @@ interface ProjectViewProps {
   onStageAdvanced?: () => void;
 }
 
-const SupplierProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onStageAdvanced }) => {
+const SupplierProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
   const [showAccessManager, setShowAccessManager] = useState(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
   const [showGHGUploadModal, setShowGHGUploadModal] = useState(false);
   console.log(onBack) // to avoid unused variable warning
   return (
