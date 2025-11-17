@@ -3,7 +3,6 @@ import styles from "./../css-modules/SupplierDashboard.module.css"
 import winrockLogo from "./../../../assets/winrock-international-logo.png"
 import projectsIcon from './../../../assets/projects-icon.svg';
 import notificationIcon from './../../../assets/notification-icon.svg';
-import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
 import searchIcon from "../../../assets/search-icon.svg"
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
@@ -329,8 +328,8 @@ const SupplierDashboard: React.FC = () => {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Projects</h1>
           <div className={styles.viewModeButtons}>
-            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => {setViewMode('active'); setCurrentPage(1); }}>Active</button>
-            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => {setViewMode('archived'); setCurrentPage(1);}}>Archived</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => { setViewMode('active'); setCurrentPage(1); }}>Active</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => { setViewMode('archived'); setCurrentPage(1); }}>Archived</button>
           </div>
         </div>
 

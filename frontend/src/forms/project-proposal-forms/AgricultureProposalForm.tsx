@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import * as firestore from "firebase/firestore";
 import { db } from "../../firebaseConfig.js";
 import FormField from "../FormField.js";
-import { collection, addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
+import { addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
 import { useEffect } from "react";
 
 import LogoHeader from "../components/headers/LogoHeader.js";
@@ -176,7 +176,7 @@ function AgricultureProposalForm() {
     });
 
     const [saveMessage, setSaveMessage] = useState('');
-    const [isSaving, setIsSaving] = useState(false);
+    const [, setIsSaving] = useState(false);
     const [documentId, setDocumentId] = useState<string | null>(null);
     const [draft, setDraft] = useState(false);
 
@@ -190,11 +190,11 @@ function AgricultureProposalForm() {
                         where("projectName", "==", projectName)
                     );
                     const querySnapshot = await getDocs(q);
-                    
+
                     if (!querySnapshot.empty) {
                         // Found existing document with this project name
                         setDocumentId(querySnapshot.docs[0].id);
-                        
+
                         // Optional: Load existing data into the form
                         const existingData = querySnapshot.docs[0].data();
                         Object.keys(answersRef.current).forEach((field) => {
@@ -209,17 +209,17 @@ function AgricultureProposalForm() {
                 }
             }
         };
-        
+
         findExistingDocument();
     }, [projectName]);
 
     const saveChanges = async () => {
         setIsSaving(true);
         setSaveMessage('');
-        
+
         try {
             const submissionObj: Record<string, string> = {
-                projectName: projectName || '' 
+                projectName: projectName || ''
             };
             Object.keys(answersRef.current).forEach((field) => {
                 submissionObj[field] = answersRef.current[field as keyof AgricultureProposalFormData]!.value;
@@ -240,7 +240,7 @@ function AgricultureProposalForm() {
             setTimeout(() => {
                 setSaveMessage('');
             }, 3000);
-            
+
         } catch (error) {
             console.error("Error saving progress:", error);
             setSaveMessage('Error saving progress. Please try again.');
@@ -260,7 +260,7 @@ function AgricultureProposalForm() {
             setDraft(false);
         }, 5000); // 1 second
 
-        return () => clearTimeout(timer); 
+        return () => clearTimeout(timer);
     }, [draft]);
 
     useEffect(() => {
@@ -308,7 +308,7 @@ function AgricultureProposalForm() {
         }
     }
 
-    
+
 
 
     if (isSubmitted) {
@@ -1043,9 +1043,9 @@ function AgricultureProposalForm() {
             )}
 
             {saveMessage && (
-                <div style={{ 
+                <div style={{
                     color: saveMessage.includes('Error') ? 'red' : 'green',
-                    textAlign: 'center', 
+                    textAlign: 'center',
                     padding: '10px',
                     margin: '10px 0',
                     fontWeight: 'bold'

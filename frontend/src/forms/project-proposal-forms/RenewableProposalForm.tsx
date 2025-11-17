@@ -15,7 +15,7 @@ import GuidanceDropdown from "../components/GuidanceDropdown.tsx";
 import FormLock from "../components/FormLock.js";
 import tableImage from '../../assets/table.png';
 import { useParams } from "react-router-dom";
-import { collection, addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
+import { addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
 import { useEffect } from "react";
 
 interface RenewableProposalFormData {
@@ -105,7 +105,7 @@ const RenewableProposalForm = () => {
     };
 
     const [saveMessage, setSaveMessage] = useState('');
-    const [isSaving, setIsSaving] = useState(false);
+    const [, setIsSaving] = useState(false);
     const [documentId, setDocumentId] = useState<string | null>(null);
 
     // finding the existing document
@@ -118,11 +118,11 @@ const RenewableProposalForm = () => {
                         where("projectName", "==", projectName)
                     );
                     const querySnapshot = await getDocs(q);
-                    
+
                     if (!querySnapshot.empty) {
                         // Found existing document with this project name
                         setDocumentId(querySnapshot.docs[0].id);
-                        
+
                         // Optional: Load existing data into the form
                         const existingData = querySnapshot.docs[0].data();
                         Object.keys(answersRef.current).forEach((field) => {
@@ -137,17 +137,17 @@ const RenewableProposalForm = () => {
                 }
             }
         };
-        
+
         findExistingDocument();
     }, [projectName]);
 
     const saveChanges = async () => {
         setIsSaving(true);
         setSaveMessage('');
-        
+
         try {
             const submissionObj: Record<string, string> = {
-                projectName: projectName || '' 
+                projectName: projectName || ''
             };
             Object.keys(answersRef.current).forEach((field) => {
                 submissionObj[field] = answersRef.current[field as keyof RenewableProposalFormData]!.value;
@@ -168,7 +168,7 @@ const RenewableProposalForm = () => {
             setTimeout(() => {
                 setSaveMessage('');
             }, 3000);
-            
+
         } catch (error) {
             console.error("Error saving progress:", error);
             setSaveMessage('Error saving progress. Please try again.');
@@ -188,7 +188,7 @@ const RenewableProposalForm = () => {
             setDraft(false);
         }, 5000); // 1 second
 
-        return () => clearTimeout(timer); 
+        return () => clearTimeout(timer);
     }, [draft]);
 
     useEffect(() => {
@@ -205,7 +205,7 @@ const RenewableProposalForm = () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
     }, [draft]);
-    
+
 
     // Handling form submission
     const handleSubmit = async () => {
@@ -360,9 +360,9 @@ const RenewableProposalForm = () => {
             )}
 
             {saveMessage && (
-                <div style={{ 
+                <div style={{
                     color: saveMessage.includes('Error') ? 'red' : 'green',
-                    textAlign: 'center', 
+                    textAlign: 'center',
                     padding: '10px',
                     margin: '10px 0',
                     fontWeight: 'bold'
