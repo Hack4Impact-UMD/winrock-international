@@ -9,15 +9,20 @@ import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../../dashboards/chat/components/Chat';
 import ProjectFiles from '../../dashboards/project-view/components/ProjectFiles';
+import StageActionCard from '../../dashboards/project-view/components/StageActionCard';
+import AddFileLinkModal from '../../dashboards/project-view/components/AddFileLinkModal';
 
 interface ProjectViewProps {
   project: Project;
   onBack: () => void;
   updates?: UpdateItem[];
+  onStageAdvanced?: () => void;
 }
 
-const SupplierProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) => {
+const SupplierProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onStageAdvanced }) => {
   const [showAccessManager, setShowAccessManager] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showGHGUploadModal, setShowGHGUploadModal] = useState(false);
   console.log(onBack) // to avoid unused variable warning
   return (
     <div className={styles.projectViewContainer}>
@@ -42,6 +47,13 @@ const SupplierProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) =>
 
         <div className={styles.updatesPanel}>
           <ProjectUpdates updates={[]} />
+          <StageActionCard analysisStage={project.analysisStage} projectName={project.projectName} activityType={project.activityType} onUploadClick={() => setShowGHGUploadModal(true)} />
+            {showGHGUploadModal && (
+              <AddFileLinkModal
+                projectId={project.id}
+                onClose={() => { setShowGHGUploadModal(false); window.location.reload();}}
+              />
+            )}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "40px", backgroundColor: "#fff", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
             <Chat senderRole='supplier' projectId={project.id} active={project.isActive}></Chat>
           </div>
