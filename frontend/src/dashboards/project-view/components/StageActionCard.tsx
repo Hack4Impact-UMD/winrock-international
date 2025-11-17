@@ -4,9 +4,10 @@ interface StageActionCardProps {
   analysisStage: string;
   projectName: string;
   activityType: string;
+  onUploadClick?: () => void;
 }
 
-const StageActionCard: React.FC<StageActionCardProps> = ({ analysisStage, activityType, projectName }) => {
+const StageActionCard: React.FC<StageActionCardProps> = ({ analysisStage, activityType, projectName, onUploadClick }) => {
   const onClick = () => {
     if (analysisStage === "Clarifying Initial Project Information") {
       if (
@@ -35,6 +36,8 @@ const StageActionCard: React.FC<StageActionCardProps> = ({ analysisStage, activi
       return;
     } else if (analysisStage === "GHG Assessment Analysis") {
       // No action defined for this stage yet
+      //return;
+      if (onUploadClick) onUploadClick();
       return;
     }
   };

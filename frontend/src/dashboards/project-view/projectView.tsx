@@ -3,6 +3,7 @@ import ProjectViewHeader from './components/ProjectViewHeader';
 import ProjectTracker from './components/ProjectTracker';
 import ProjectUpdates from './components/ProjectUpdates';
 import ProjectFiles from './components/ProjectFiles';
+import AddFileLinkModal from './components/AddFileLinkModal';
 import styles from '../project-view/css-modules/ProjectView.module.css';
 import Sidebar from '../winrock-dashboard/components/Sidebar';
 import ManageAccess from '../access-manager/components/ManageAccess';
@@ -54,6 +55,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
   };
 
   console.log("ProjectView - onBack:", onBack);
+  const [showGHGUploadModal, setShowGHGUploadModal] = useState(false);
 
   return (
     <div className={styles.projectViewContainer}>
@@ -78,7 +80,13 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
 
         <div className={styles.updatesPanel}>
           <ProjectUpdates updates={updates} />
-          <StageActionCard analysisStage={project.analysisStage} projectName={project.projectName} activityType={project.activityType} />
+          <StageActionCard analysisStage={project.analysisStage} projectName={project.projectName} activityType={project.activityType} onUploadClick={() => setShowGHGUploadModal(true)} />
+            {showGHGUploadModal && (
+              <AddFileLinkModal
+                projectId={project.id}
+                onClose={() => { setShowGHGUploadModal(false); window.location.reload();}}
+              />
+            )}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "40px", backgroundColor: "#fff", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
             <StageHeader analysisStage={project.analysisStage} />
             <Chat senderRole='winrock' projectId={project.id} active={project.isActive}></Chat>
