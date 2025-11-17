@@ -20,3 +20,7 @@
 p {
    padding-bottom: 0;
 }
+
+.description {
+   padding: 1rem 4.9rem 0;
+}
