@@ -39,7 +39,7 @@ interface AgricultureProposalFormData {
 
     // Project Contracting Party and Project Partners
     contractingParty: FormField;
-    contractingNameAndEmail: FormField;
+    // contractingNameAndEmail: FormField;
     keyContactName: FormField;
     keyContactEmail: FormField;
     projectPartnerOne?: FormField;
@@ -108,7 +108,7 @@ function AgricultureProposalForm() {
         otherCountries: new FormField('', false),
         subNationalRegions: new FormField('', false),
         contractingParty: new FormField('', true),
-        contractingNameAndEmail: new FormField('', true),
+        // contractingNameAndEmail: new FormField('', true),
         keyContactName: new FormField('', true),
         keyContactEmail: new FormField('', true),
         projectPartnerOne: new FormField('', false),
@@ -141,7 +141,7 @@ function AgricultureProposalForm() {
         ghgSheetAttached: new FormField('', false),
         ghgBuffer: new FormField('', false),
         gbElaboration: new FormField('', false),
-        mitigationPlan: new FormField('', false),
+        mitigationPlan: new FormField('', true), //changed to true since mitigation is required
         ingredientDetails: new FormField('', true) // Add this line
 
     });
