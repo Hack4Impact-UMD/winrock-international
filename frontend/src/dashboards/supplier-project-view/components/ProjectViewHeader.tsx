@@ -36,14 +36,6 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
             <div className={styles.titleContainer}>
 
                 <h1 className={styles.projectTitle}>{data.projectName}</h1>
-                <div className={styles.btnContainer}>
-                    <button
-                        className={styles.shareButton}
-                        onClick={() => { setShowAccessManager(true) }}
-                    >
-                        Share
-                    </button>
-                </div>
             </div>
             <table className={styles.table}>
               <thead className={styles.tableHeader}>
