@@ -25,7 +25,7 @@ interface ProjectViewHeaderProps {
 
 const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAccessManager }) => {
     const navigate = useNavigate();
-
+    console.log(setShowAccessManager);
     return (
         <div className={styles.viewContainer}>
             <div className={styles.backButtonContainer}>
@@ -38,30 +38,30 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                 <h1 className={styles.projectTitle}>{data.projectName}</h1>
             </div>
             <table className={styles.table}>
-              <thead className={styles.tableHeader}>
-                <tr>
-                    <th className={styles.headerCell}>Overall Status</th>
-                    <th className={styles.headerCell}>Spend Category</th>
-                    <th className={styles.headerCell}>Geography</th>
-                    <th className={styles.headerCell}>Last Updated</th>
-                    <th className={styles.headerCell}>Start Date</th>
-                </tr>
-            </thead>
-              <tbody>
-                <tr className={styles.tableRow}>
-                    <td className={styles.cell}>
-                        <ColorText
-                            text={data.overallStatus}
-                            category={data.overallStatus}
-                            variant="status"
-                        />
-                    </td>
-                    <td className={styles.cell}>{data.spendCategory}</td>
-                    <td className={styles.cell}>{data.geography}</td>
-                    <td className={styles.cell}>{new Date(data.lastUpdated).toISOString().split('T')[0]}</td>
-                    <td className={styles.cell}>{new Date(data.startDate).toISOString().split('T')[0]}</td>
-                </tr>
-              </tbody>
+                <thead className={styles.tableHeader}>
+                    <tr>
+                        <th className={styles.headerCell}>Overall Status</th>
+                        <th className={styles.headerCell}>Spend Category</th>
+                        <th className={styles.headerCell}>Geography</th>
+                        <th className={styles.headerCell}>Last Updated</th>
+                        <th className={styles.headerCell}>Start Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr className={styles.tableRow}>
+                        <td className={styles.cell}>
+                            <ColorText
+                                text={data.overallStatus}
+                                category={data.overallStatus}
+                                variant="status"
+                            />
+                        </td>
+                        <td className={styles.cell}>{data.spendCategory}</td>
+                        <td className={styles.cell}>{data.geography}</td>
+                        <td className={styles.cell}>{new Date(data.lastUpdated).toISOString().split('T')[0]}</td>
+                        <td className={styles.cell}>{new Date(data.startDate).toISOString().split('T')[0]}</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     );

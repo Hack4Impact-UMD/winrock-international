@@ -87,6 +87,9 @@ const createProject = async (
                 isPinned,
                 id: docRef.id,
                 activityType,
+                isLocked: false, // or appropriate default value
+                clientName: "", // or appropriate default value
+                notes: "", // or appropriate default value
             };
 
             tx.set(docRef, newProject);

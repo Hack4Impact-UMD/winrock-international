@@ -15,11 +15,10 @@ import {
 import { db } from "../../../firebaseConfig.js";
 import Result, { handleFirebaseError } from "../../../types/Result.js";
 import { Project } from "types/Project.ts";
-import { sendEmail } from "../../../api/apiClient.js";
 import { nanoid } from "nanoid";
 
 // base url
-const BASE_URL = "http://localhost:5173/winrock-international";
+//const BASE_URL = "http://localhost:5173/winrock-international";
 
 
 /**
@@ -271,7 +270,7 @@ const addProject = async (projectName: string, clientName: string, supplierName:
             return { success: false, errorCode: "Failed to generate supplier token" };
         }
 
-        const token = tokenResult.data.token;
+        // const token = tokenResult.data.token;
 
         // Dont send email for now
         // await emailSupplier(projectName, supplierName, supplierEmail, token);
@@ -471,38 +470,38 @@ const unlockProject = async (projectName: string): Promise<Result> => {
 /**
  * Send an project invitation email to the supplier
  */
-const emailSupplier = async (projectName: string, supplierName: string, supplierEmail: string, token: string): Promise<Result> => {
-    try {
-        // invite url with token
-        const inviteUrl = `${BASE_URL}/dashboard/admin/projects/${projectName}?token=${token}`;
+// const emailSupplier = async (projectName: string, supplierName: string, supplierEmail: string, token: string): Promise<Result> => {
+//     try {
+//         // invite url with token
+//         const inviteUrl = `${BASE_URL}/dashboard/admin/projects/${projectName}?token=${token}`;
 
-        const recipient: string = `${supplierName} <${supplierEmail}>`;
-        const subject = `Invitation: Collaborate on ${projectName}`;
-        const message =
-            [
-                `Hi ${supplierName},`,
-                '',
-                `You have been invited to collaborate on the project "${projectName}" on the Winrock Dashboard.`,
-                '',
-                `Click the link below to access the project:`,
-                inviteUrl,
-                '',
-                'If you don\'t have an account yet, you\'ll be prompted to sign up or log in.',
-                '',
-                'Regards,',
-                'Winrock Team'
-            ].join('\n');
-        await sendEmail({
-            recipientNames: [recipient],
-            recipientEmails: [supplierEmail],
-            subject,
-            message
-        });
-        return { success: true };
-    } catch (error) {
-        return { success: false, errorCode: (error as Error).message || 'Failed to send email' };
-    }
-};
+//         const recipient: string = `${supplierName} <${supplierEmail}>`;
+//         const subject = `Invitation: Collaborate on ${projectName}`;
+//         const message =
+//             [
+//                 `Hi ${supplierName},`,
+//                 '',
+//                 `You have been invited to collaborate on the project "${projectName}" on the Winrock Dashboard.`,
+//                 '',
+//                 `Click the link below to access the project:`,
+//                 inviteUrl,
+//                 '',
+//                 'If you don\'t have an account yet, you\'ll be prompted to sign up or log in.',
+//                 '',
+//                 'Regards,',
+//                 'Winrock Team'
+//             ].join('\n');
+//         await sendEmail({
+//             recipientNames: [recipient],
+//             recipientEmails: [supplierEmail],
+//             subject,
+//             message
+//         });
+//         return { success: true };
+//     } catch (error) {
+//         return { success: false, errorCode: (error as Error).message || 'Failed to send email' };
+//     }
+// };
 
 export {
     addProject,

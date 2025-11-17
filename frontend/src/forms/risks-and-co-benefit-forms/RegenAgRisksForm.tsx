@@ -13,7 +13,7 @@ import ConfirmationPage from '../ConfirmationPage.js';
 import Error from '../components/Error.js';
 import FormLock from '../components/FormLock.js';
 import { useParams } from 'react-router-dom';
-import { collection, addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
+import { addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
 import { useEffect } from "react";
 
 interface TechEnergyRisksFormData {
@@ -160,7 +160,7 @@ function RegenAgRisksForm() {
     });
 
     const [saveMessage, setSaveMessage] = useState('');
-    const [isSaving, setIsSaving] = useState(false);
+    const [, setIsSaving] = useState(false);
     const [documentId, setDocumentId] = useState<string | null>(null);
 
 
@@ -174,11 +174,11 @@ function RegenAgRisksForm() {
                         where("projectName", "==", projectName)
                     );
                     const querySnapshot = await getDocs(q);
-                    
+
                     if (!querySnapshot.empty) {
                         // Found existing document with this project name
                         setDocumentId(querySnapshot.docs[0].id);
-                        
+
                         // Optional: Load existing data into the form
                         const existingData = querySnapshot.docs[0].data();
                         Object.keys(answersRef.current).forEach((field) => {
@@ -193,17 +193,17 @@ function RegenAgRisksForm() {
                 }
             }
         };
-        
+
         findExistingDocument();
     }, [projectName]);
 
     const saveChanges = async () => {
         setIsSaving(true);
         setSaveMessage('');
-        
+
         try {
             const submissionObj: Record<string, string> = {
-                projectName: projectName || '' 
+                projectName: projectName || ''
             };
             Object.keys(answersRef.current).forEach((field) => {
                 submissionObj[field] = answersRef.current[field as keyof TechEnergyRisksFormData]!.value;
@@ -224,7 +224,7 @@ function RegenAgRisksForm() {
             setTimeout(() => {
                 setSaveMessage('');
             }, 3000);
-            
+
         } catch (error) {
             console.error("Error saving progress:", error);
             setSaveMessage('Error saving progress. Please try again.');
@@ -244,7 +244,7 @@ function RegenAgRisksForm() {
             setDraft(false);
         }, 5000); // 1 second
 
-        return () => clearTimeout(timer); 
+        return () => clearTimeout(timer);
     }, [draft]);
 
     useEffect(() => {
@@ -322,9 +322,9 @@ function RegenAgRisksForm() {
                     locked={isLocked}
                 />}
             {saveMessage && (
-                <div style={{ 
+                <div style={{
                     color: saveMessage.includes('Error') ? 'red' : 'green',
-                    textAlign: 'center', 
+                    textAlign: 'center',
                     padding: '10px',
                     margin: '10px 0',
                     fontWeight: 'bold'

@@ -4,7 +4,6 @@ import styles from "./../css-modules/WinrockDashboard.module.css"
 import winrockLogo from "./../../../assets/winrock-international-logo.png"
 import projectsIcon from './../../../assets/projects-icon.svg';
 import notificationIcon from './../../../assets/notification-icon.svg';
-import accountSettingsIcon from '../../../assets/account-settings-icon.svg';
 import searchIcon from "../../../assets/search-icon.svg"
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';

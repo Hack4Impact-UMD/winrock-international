@@ -14,7 +14,7 @@ import ConfirmationPage from '../ConfirmationPage.js'
 import Error from '../components/Error.js'
 import FormLock from '../components/FormLock.js'
 import { useParams } from 'react-router-dom'
-import { collection, addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
+import { addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
 import { useEffect } from "react";
 
 interface ForestryRisksFormData {
@@ -174,7 +174,7 @@ function ForestryRisksForm() {
       setDraft(true);
    }
    const [saveMessage, setSaveMessage] = useState('');
-   const [isSaving, setIsSaving] = useState(false);
+   const [, setIsSaving] = useState(false);
    const [documentId, setDocumentId] = useState<string | null>(null);
    const { projectName } = useParams(); // TODO: Replace with actual projectId from form data or props
 
@@ -183,68 +183,68 @@ function ForestryRisksForm() {
    useEffect(() => {
       const findExistingDocument = async () => {
          if (projectName) {
-               try {
-                  const q = query(
-                     collectionRef,
-                     where("projectName", "==", projectName)
-                  );
-                  const querySnapshot = await getDocs(q);
-                  
-                  if (!querySnapshot.empty) {
-                     // Found existing document with this project name
-                     setDocumentId(querySnapshot.docs[0].id);
-                     
-                     // Optional: Load existing data into the form
-                     const existingData = querySnapshot.docs[0].data();
-                     Object.keys(answersRef.current).forEach((field) => {
-                           if (existingData[field]) {
-                              answersRef.current[field as keyof ForestryRisksFormData]!.value = existingData[field];
-                           }
-                     });
-                     forceRender(x => x + 1);
-                  }
-               } catch (error) {
-                  console.error("Error finding existing document:", error);
+            try {
+               const q = query(
+                  collectionRef,
+                  where("projectName", "==", projectName)
+               );
+               const querySnapshot = await getDocs(q);
+
+               if (!querySnapshot.empty) {
+                  // Found existing document with this project name
+                  setDocumentId(querySnapshot.docs[0].id);
+
+                  // Optional: Load existing data into the form
+                  const existingData = querySnapshot.docs[0].data();
+                  Object.keys(answersRef.current).forEach((field) => {
+                     if (existingData[field]) {
+                        answersRef.current[field as keyof ForestryRisksFormData]!.value = existingData[field];
+                     }
+                  });
+                  forceRender(x => x + 1);
                }
+            } catch (error) {
+               console.error("Error finding existing document:", error);
+            }
          }
       };
-      
+
       findExistingDocument();
    }, [projectName]);
 
    const saveChanges = async () => {
       setIsSaving(true);
       setSaveMessage('');
-      
+
       try {
          const submissionObj: Record<string, string> = {
-               projectName: projectName || '' 
+            projectName: projectName || ''
          };
          Object.keys(answersRef.current).forEach((field) => {
-               submissionObj[field] = answersRef.current[field as keyof ForestryRisksFormData]!.value;
+            submissionObj[field] = answersRef.current[field as keyof ForestryRisksFormData]!.value;
          });
 
          if (documentId) {
-               // Update existing document
-               const docRef = doc(db, collectionID, documentId);
-               await updateDoc(docRef, submissionObj);
-               setSaveMessage('Progress updated successfully! Feel free to exit page.');
+            // Update existing document
+            const docRef = doc(db, collectionID, documentId);
+            await updateDoc(docRef, submissionObj);
+            setSaveMessage('Progress updated successfully! Feel free to exit page.');
          } else {
-               // Create new document and store its ID
-               const docRef = await addDoc(collectionRef, submissionObj);
-               setDocumentId(docRef.id);
-               setSaveMessage('Progress saved successfully! Feel free to exit page.');
+            // Create new document and store its ID
+            const docRef = await addDoc(collectionRef, submissionObj);
+            setDocumentId(docRef.id);
+            setSaveMessage('Progress saved successfully! Feel free to exit page.');
          }
 
          setTimeout(() => {
-               setSaveMessage('');
+            setSaveMessage('');
          }, 3000);
-         
+
       } catch (error) {
          console.error("Error saving progress:", error);
          setSaveMessage('Error saving progress. Please try again.');
          setTimeout(() => {
-               setSaveMessage('');
+            setSaveMessage('');
          }, 3000);
       } finally {
          setIsSaving(false);
@@ -252,30 +252,30 @@ function ForestryRisksForm() {
    }
 
    useEffect(() => {
-        if (!draft) return;
+      if (!draft) return;
 
-        const timer = setTimeout(() => {
-            saveChanges();
-            setDraft(false);
-        }, 5000); // 1 second
+      const timer = setTimeout(() => {
+         saveChanges();
+         setDraft(false);
+      }, 5000); // 1 second
 
-        return () => clearTimeout(timer); 
-    }, [draft]);
+      return () => clearTimeout(timer);
+   }, [draft]);
 
-    useEffect(() => {
-        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            if (!draft) return;
+   useEffect(() => {
+      const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+         if (!draft) return;
 
-            event.preventDefault();
-            return "";
-        };
+         event.preventDefault();
+         return "";
+      };
 
-        window.addEventListener("beforeunload", handleBeforeUnload);
+      window.addEventListener("beforeunload", handleBeforeUnload);
 
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, [draft]);
+      return () => {
+         window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+   }, [draft]);
 
    const [isSubmitted, setIsSubmitted] = useState(false)
    const [error, setError] = useState('')
@@ -353,15 +353,15 @@ function ForestryRisksForm() {
             />
          }
          {saveMessage && (
-               <div style={{ 
-                  color: saveMessage.includes('Error') ? 'red' : 'green',
-                  textAlign: 'center', 
-                  padding: '10px',
-                  margin: '10px 0',
-                  fontWeight: 'bold'
-               }}>
-                  {saveMessage}
-               </div>
+            <div style={{
+               color: saveMessage.includes('Error') ? 'red' : 'green',
+               textAlign: 'center',
+               padding: '10px',
+               margin: '10px 0',
+               fontWeight: 'bold'
+            }}>
+               {saveMessage}
+            </div>
          )}
          <NavigationButtons
             onNext={() => {

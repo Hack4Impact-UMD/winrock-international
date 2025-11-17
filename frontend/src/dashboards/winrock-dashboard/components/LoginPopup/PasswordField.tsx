@@ -14,21 +14,21 @@ interface PasswordFieldProps {
     link?: string;
     controlledValue?: string;
     onChange: (value: string) => void;
-    onLinkClick?: (e?: React.MouseEvent<HTMLAnchorElement>) => void;
+    onLinkClick?: (e?: React.MouseEvent<HTMLElement>) => void;
 }
 
 const PasswordField: React.FC<PasswordFieldProps> = ({
     label = "",
     placeholder = "",
     autoComplete,
-    toggleHidden=false,
+    toggleHidden = false,
     linkLabel,
     controlledValue,
     onChange,
     onLinkClick
 }) => {
     const [value, setValue] = useState(controlledValue);
-        
+
     useEffect(() => {
         setValue(controlledValue);
     }, [controlledValue]);
@@ -37,7 +37,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
         setValue(e.target.value);
         onChange(e.target.value);
     }
-    
+
     const [isHidden, setIsHidden] = useState(true);
 
     return (
@@ -63,13 +63,14 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
                     />}
             </form>
             {linkLabel &&
-                <span 
-                    className={styles.link} 
-                    style={{cursor: "pointer"}}
+                <span
+                    className={styles.link}
+                    style={{ cursor: "pointer" }}
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        onLinkClick(e);
+                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                        onLinkClick && onLinkClick(e);
                     }}
                 >
                     {linkLabel}
