@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 18
 
-      - run: npm ci
+      - run: npm install
       - run: npm run predeploy
 
   deploy:
@@ -31,5 +31,5 @@ jobs:
         with:
           node-version: 18
 
-      - run: npm ci
+      - run: npm install
       - run: npm run deploy
