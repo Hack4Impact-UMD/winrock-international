@@ -14,6 +14,8 @@ import ConfirmationPage from '../ConfirmationPage.js';
 import Error from '../components/Error.js';
 import FormLock from '../components/FormLock.js';
 import { useParams } from 'react-router-dom';
+import { collection, addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
+import { useEffect } from "react";
 
 interface TechEnergyRisksFormData {
   // Risk Assessment
@@ -88,6 +90,7 @@ function TechEnergyRisksForm() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 3;
+  const [, forceRender] = useState(0);
 
   const collectionID = "tech-and-energy-form";
   const collectionRef = firestore.collection(db, collectionID);
@@ -157,6 +160,83 @@ function TechEnergyRisksForm() {
     projectName: projectName!
   });
 
+  const [saveMessage, setSaveMessage] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [documentId, setDocumentId] = useState<string | null>(null);
+
+
+    // finding the existing document
+    useEffect(() => {
+        const findExistingDocument = async () => {
+            if (projectName) {
+                try {
+                    const q = query(
+                        collectionRef,
+                        where("projectName", "==", projectName)
+                    );
+                    const querySnapshot = await getDocs(q);
+                    
+                    if (!querySnapshot.empty) {
+                        // Found existing document with this project name
+                        setDocumentId(querySnapshot.docs[0].id);
+                        
+                        // Optional: Load existing data into the form
+                        const existingData = querySnapshot.docs[0].data();
+                        Object.keys(answersRef.current).forEach((field) => {
+                            if (existingData[field]) {
+                                answersRef.current[field as keyof TechEnergyRisksFormData]!.value = existingData[field];
+                            }
+                        });
+                        forceRender(x => x + 1);
+                    }
+                } catch (error) {
+                    console.error("Error finding existing document:", error);
+                }
+            }
+        };
+        
+        findExistingDocument();
+    }, [projectName]);
+
+    const saveChanges = async () => {
+        setIsSaving(true);
+        setSaveMessage('');
+        
+        try {
+            const submissionObj: Record<string, string> = {
+                projectName: projectName || '' 
+            };
+            Object.keys(answersRef.current).forEach((field) => {
+                submissionObj[field] = answersRef.current[field as keyof TechEnergyRisksFormData]!.value;
+            });
+
+            if (documentId) {
+                // Update existing document
+                const docRef = doc(db, collectionID, documentId);
+                await updateDoc(docRef, submissionObj);
+                setSaveMessage('Progress updated successfully! Feel free to exit page.');
+            } else {
+                // Create new document and store its ID
+                const docRef = await addDoc(collectionRef, submissionObj);
+                setDocumentId(docRef.id);
+                setSaveMessage('Progress saved successfully! Feel free to exit page.');
+            }
+
+            setTimeout(() => {
+                setSaveMessage('');
+            }, 3000);
+            
+        } catch (error) {
+            console.error("Error saving progress:", error);
+            setSaveMessage('Error saving progress. Please try again.');
+            setTimeout(() => {
+                setSaveMessage('');
+            }, 3000);
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
   /**
   * Insert a new TechEnergyRisksForm submission with the user-inputted
   * fields into the TechEnergyRisksForm collection.
@@ -182,11 +262,6 @@ function TechEnergyRisksForm() {
       console.error("Error submitting TechEnergyRisksForm", error);
       setError("Server error. Please try again later.");
     }
-  }
-
-  const saveChanges = () => {
-    // TODO: Implement save functionality
-    console.log('Changes saved');
   }
 
 
@@ -246,6 +321,9 @@ function TechEnergyRisksForm() {
             setCurrentPage(currentPage - 1)
             window.scroll(0, 0);
           }
+        }}
+        onSave={() => {
+          saveChanges();
         }}
         canGoBack={currentPage > 1}
         nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
