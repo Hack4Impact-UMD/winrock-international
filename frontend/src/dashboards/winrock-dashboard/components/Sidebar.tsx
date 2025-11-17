@@ -30,13 +30,13 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTab }) => {
             <img src={notificationIcon} alt="Notification Center" />
             Notification Center
           </button>
-          <button 
+          {/* <button 
             className={`${styles.headerNavButton} ${currentTab === 'account-settings' ? styles.active : ''}`}
             onClick={() => navigate("/dashboard/admin/account-settings")}
           >
             <img src={accountSettingsIcon} alt="Account Settings" />
             Account Settings
-          </button>
+          </button> */}
         </div>
       </header>
     );
