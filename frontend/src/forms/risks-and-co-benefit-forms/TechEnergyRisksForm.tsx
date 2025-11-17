@@ -148,7 +148,8 @@ function TechEnergyRisksForm() {
       [field]: new FormField(value, isRequired)
     }
     // Auto-save whenever form changes
-    saveChanges();
+    //saveChanges();
+    setDraft(true);
   }
 
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -161,81 +162,108 @@ function TechEnergyRisksForm() {
   });
 
   const [saveMessage, setSaveMessage] = useState('');
-    const [isSaving, setIsSaving] = useState(false);
-    const [documentId, setDocumentId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [documentId, setDocumentId] = useState<string | null>(null);
+  const [draft, setDraft] = useState(false);
 
 
-    // finding the existing document
-    useEffect(() => {
-        const findExistingDocument = async () => {
-            if (projectName) {
-                try {
-                    const q = query(
-                        collectionRef,
-                        where("projectName", "==", projectName)
-                    );
-                    const querySnapshot = await getDocs(q);
-                    
-                    if (!querySnapshot.empty) {
-                        // Found existing document with this project name
-                        setDocumentId(querySnapshot.docs[0].id);
-                        
-                        // Optional: Load existing data into the form
-                        const existingData = querySnapshot.docs[0].data();
-                        Object.keys(answersRef.current).forEach((field) => {
-                            if (existingData[field]) {
-                                answersRef.current[field as keyof TechEnergyRisksFormData]!.value = existingData[field];
-                            }
-                        });
-                        forceRender(x => x + 1);
-                    }
-                } catch (error) {
-                    console.error("Error finding existing document:", error);
-                }
-            }
-        };
-        
-        findExistingDocument();
-    }, [projectName]);
+  // finding the existing document
+  useEffect(() => {
+      const findExistingDocument = async () => {
+          if (projectName) {
+              try {
+                  const q = query(
+                      collectionRef,
+                      where("projectName", "==", projectName)
+                  );
+                  const querySnapshot = await getDocs(q);
+                  
+                  if (!querySnapshot.empty) {
+                      // Found existing document with this project name
+                      setDocumentId(querySnapshot.docs[0].id);
+                      
+                      // Optional: Load existing data into the form
+                      const existingData = querySnapshot.docs[0].data();
+                      Object.keys(answersRef.current).forEach((field) => {
+                          if (existingData[field]) {
+                              answersRef.current[field as keyof TechEnergyRisksFormData]!.value = existingData[field];
+                          }
+                      });
+                      forceRender(x => x + 1);
+                  }
+              } catch (error) {
+                  console.error("Error finding existing document:", error);
+              }
+          }
+      };
+      
+      findExistingDocument();
+  }, [projectName]);
 
-    const saveChanges = async () => {
-        setIsSaving(true);
-        setSaveMessage('');
-        
-        try {
-            const submissionObj: Record<string, string> = {
-                projectName: projectName || '' 
-            };
-            Object.keys(answersRef.current).forEach((field) => {
-                submissionObj[field] = answersRef.current[field as keyof TechEnergyRisksFormData]!.value;
-            });
+  const saveChanges = async () => {
+      setIsSaving(true);
+      setSaveMessage('');
+      
+      try {
+          const submissionObj: Record<string, string> = {
+              projectName: projectName || '' 
+          };
+          Object.keys(answersRef.current).forEach((field) => {
+              submissionObj[field] = answersRef.current[field as keyof TechEnergyRisksFormData]!.value;
+          });
 
-            if (documentId) {
-                // Update existing document
-                const docRef = doc(db, collectionID, documentId);
-                await updateDoc(docRef, submissionObj);
-                setSaveMessage('Progress updated successfully! Feel free to exit page.');
-            } else {
-                // Create new document and store its ID
-                const docRef = await addDoc(collectionRef, submissionObj);
-                setDocumentId(docRef.id);
-                setSaveMessage('Progress saved successfully! Feel free to exit page.');
-            }
+          if (documentId) {
+              // Update existing document
+              const docRef = doc(db, collectionID, documentId);
+              await updateDoc(docRef, submissionObj);
+              setSaveMessage('Progress updated successfully! Feel free to exit page.');
+          } else {
+              // Create new document and store its ID
+              const docRef = await addDoc(collectionRef, submissionObj);
+              setDocumentId(docRef.id);
+              setSaveMessage('Progress saved successfully! Feel free to exit page.');
+          }
 
-            setTimeout(() => {
-                setSaveMessage('');
-            }, 3000);
-            
-        } catch (error) {
-            console.error("Error saving progress:", error);
-            setSaveMessage('Error saving progress. Please try again.');
-            setTimeout(() => {
-                setSaveMessage('');
-            }, 3000);
-        } finally {
-            setIsSaving(false);
-        }
-    }
+          setTimeout(() => {
+              setSaveMessage('');
+          }, 3000);
+          
+      } catch (error) {
+          console.error("Error saving progress:", error);
+          setSaveMessage('Error saving progress. Please try again.');
+          setTimeout(() => {
+              setSaveMessage('');
+          }, 3000);
+      } finally {
+          setIsSaving(false);
+      }
+  }
+
+  useEffect(() => {
+      if (!draft) return;
+
+      const timer = setTimeout(() => {
+          saveChanges();
+          setDraft(false);
+      }, 5000); // 1 second
+
+      return () => clearTimeout(timer); 
+  }, [draft]);
+
+  useEffect(() => {
+      const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+          if (!draft) return;
+
+          event.preventDefault();
+          return "";
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      return () => {
+          window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+  }, [draft]);
 
   /**
   * Insert a new TechEnergyRisksForm submission with the user-inputted
@@ -322,9 +350,9 @@ function TechEnergyRisksForm() {
             window.scroll(0, 0);
           }
         }}
-        onSave={() => {
-          saveChanges();
-        }}
+        // onSave={() => {
+        //   saveChanges();
+        // }}
         canGoBack={currentPage > 1}
         nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
         disableSubmit={isLocked}

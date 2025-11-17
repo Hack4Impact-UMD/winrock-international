@@ -86,6 +86,7 @@ function RegenAgRisksForm() {
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 2;
     const [, forceRender] = useState(0);
+    const [draft, setDraft] = useState(false);
 
     const collectionID = "regenerative-agriculture-risks";
     const collectionRef = firestore.collection(db, collectionID);
@@ -146,6 +147,7 @@ function RegenAgRisksForm() {
         }
         // Auto-save whenever form changes
         //saveChanges();
+        setDraft(true);
     }
 
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -233,6 +235,33 @@ function RegenAgRisksForm() {
             setIsSaving(false);
         }
     }
+
+    useEffect(() => {
+        if (!draft) return;
+
+        const timer = setTimeout(() => {
+            saveChanges();
+            setDraft(false);
+        }, 5000); // 1 second
+
+        return () => clearTimeout(timer); 
+    }, [draft]);
+
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (!draft) return;
+
+            event.preventDefault();
+            return "";
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [draft]);
+
 
     /**
     * Insert a new TechEnergyRisksForm submission with the user-inputted
@@ -323,9 +352,9 @@ function RegenAgRisksForm() {
                         window.scroll(0, 0);
                     }
                 }}
-                onSave={() => {
-                    saveChanges();
-                }}
+                // onSave={() => {
+                //     saveChanges();
+                // }}
                 canGoBack={currentPage > 1}
                 nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
                 disableSubmit={isLocked}

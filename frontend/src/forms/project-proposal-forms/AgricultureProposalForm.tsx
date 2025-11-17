@@ -162,7 +162,8 @@ function AgricultureProposalForm() {
             [field]: new FormField(value, isRequired)
         }
         // Auto-save whenever form changes
-        // saveChanges();
+        //saveChanges();
+        setDraft(true);
     }
 
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -177,6 +178,7 @@ function AgricultureProposalForm() {
     const [saveMessage, setSaveMessage] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [documentId, setDocumentId] = useState<string | null>(null);
+    const [draft, setDraft] = useState(false);
 
     // finding the existing document
     useEffect(() => {
@@ -249,6 +251,34 @@ function AgricultureProposalForm() {
             setIsSaving(false);
         }
     }
+
+    useEffect(() => {
+        if (!draft) return;
+
+        const timer = setTimeout(() => {
+            saveChanges();
+            setDraft(false);
+        }, 5000); // 1 second
+
+        return () => clearTimeout(timer); 
+    }, [draft]);
+
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (!draft) return;
+
+            event.preventDefault();
+            return "";
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [draft]);
+
+
 
 
 
@@ -1046,13 +1076,9 @@ function AgricultureProposalForm() {
                         window.scroll(0, 0);
                     }
                 }}
-                onSave={() => {  // New save handler
-                    // if (isLocked) {
-                    //     handleLockedAction();
-                    //     return;
-                    // }
-                    saveChanges();
-                }}
+                // onSave={() => {
+                //     saveChanges();
+                // }}
                 canGoBack={currentPage > 1}
                 nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
                 disableSubmit={isLocked}

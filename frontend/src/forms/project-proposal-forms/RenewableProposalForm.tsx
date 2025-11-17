@@ -85,6 +85,7 @@ const RenewableProposalForm = () => {
     const { handleLockedAction, LockedPopup, isLocked } = FormLock({
         projectName: projectName!,
     });
+    const [draft, setDraft] = useState(false);
 
     // Helper functions
     const handleChange = (field: keyof RenewableProposalFormData, value: string) => {
@@ -100,6 +101,7 @@ const RenewableProposalForm = () => {
         };
         // Auto-save whenever form changes
         //saveChanges();
+        setDraft(true);
     };
 
     const [saveMessage, setSaveMessage] = useState('');
@@ -177,6 +179,32 @@ const RenewableProposalForm = () => {
             setIsSaving(false);
         }
     }
+
+    useEffect(() => {
+        if (!draft) return;
+
+        const timer = setTimeout(() => {
+            saveChanges();
+            setDraft(false);
+        }, 5000); // 1 second
+
+        return () => clearTimeout(timer); 
+    }, [draft]);
+
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (!draft) return;
+
+            event.preventDefault();
+            return "";
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [draft]);
     
 
     // Handling form submission
@@ -365,9 +393,9 @@ const RenewableProposalForm = () => {
                         setCurrentPage(currentPage - 1); // Update page when Back is clicked
                     }
                 }}
-                onSave={() => {
-                    saveChanges();
-                }}
+                // onSave={() => {
+                //     saveChanges();
+                // }}
                 canGoBack={currentPage > 1}
                 nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
                 disableSubmit={isLocked}

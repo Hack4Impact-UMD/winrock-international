@@ -159,6 +159,8 @@ function ForestryRisksForm() {
       communityFarmerCoBenefitsDetails: new FormField('', false)
    })
 
+   const [draft, setDraft] = useState(false);
+
    // Used to change the answersRef's dynamically
    function handleChange(field: keyof ForestryRisksFormData, value: string) {
       if (isLocked) {
@@ -169,6 +171,7 @@ function ForestryRisksForm() {
       answersRef.current[field]!.value = value;
       // Auto-save whenever form changes
       //saveChanges();
+      setDraft(true);
    }
    const [saveMessage, setSaveMessage] = useState('');
    const [isSaving, setIsSaving] = useState(false);
@@ -247,6 +250,32 @@ function ForestryRisksForm() {
          setIsSaving(false);
       }
    }
+
+   useEffect(() => {
+        if (!draft) return;
+
+        const timer = setTimeout(() => {
+            saveChanges();
+            setDraft(false);
+        }, 5000); // 1 second
+
+        return () => clearTimeout(timer); 
+    }, [draft]);
+
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (!draft) return;
+
+            event.preventDefault();
+            return "";
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [draft]);
 
    const [isSubmitted, setIsSubmitted] = useState(false)
    const [error, setError] = useState('')
@@ -354,9 +383,9 @@ function ForestryRisksForm() {
                   window.scroll(0, 0)
                }
             }}
-            onSave={() => {
-               saveChanges();
-            }}
+            // onSave={() => {
+            //    saveChanges();
+            // }}
             canGoBack={currentPage > 1}
             nextLabel={currentPage === totalPages ? 'Submit' : 'Next'}
             disableSubmit={isLocked}
