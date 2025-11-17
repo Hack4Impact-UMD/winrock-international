@@ -98,13 +98,6 @@ Meet our wonderful team comprised of Product Managers, Designers, Tech Leads, En
       </a>
     </td>
     <td align="center" width="150">
-      <a href="https://www.linkedin.com/in/indra-pabba">
-        <img src="frontend/src/assets/winrock-profile-pictures/indra-pabba-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
-        <b>Indra Pabba</b><br/><br/>
-        <img src="https://img.shields.io/badge/💻_engineer-27AE60?style=flat-square"/>
-      </a>
-    </td>
-    <td align="center" width="150">
       <a href="https://jaipatel.netlify.app/">
         <img src="frontend/src/assets/winrock-profile-pictures/jai-patel-headshot.png" height="100" width="100" style="border-radius:50%;object-fit:cover;"/><br/>
         <b>Jai Patel</b><br/><br/>
