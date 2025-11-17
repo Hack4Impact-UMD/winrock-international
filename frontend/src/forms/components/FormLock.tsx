@@ -9,6 +9,18 @@ interface FormLockProps {
 }
 
 const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
+  const DISABLE_LOCK = true;
+
+  if (DISABLE_LOCK) {
+    return {
+      showLockedPopup: false,
+      handleLockedAction: () => {},
+      closePopup: () => {},
+      isLocked: false,
+      isLoading: false,
+      LockedPopup: null
+    };
+  }
   const [showLockedPopup, setShowLockedPopup] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

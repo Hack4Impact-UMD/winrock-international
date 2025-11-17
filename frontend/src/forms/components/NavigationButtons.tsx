@@ -4,10 +4,12 @@ import styles from '../css-modules/NavigationButtons.module.css';
 interface NavigationButtonsProps {
    onNext?: () => void;
    onBack?: () => void;
+   onSave?: () => void;  // New prop for save functionality
    canGoNext?: boolean;
    canGoBack?: boolean;
    nextLabel?: string;
    backLabel?: string;
+   saveLabel?: string;  // New prop for save button label
    className?: string;
    disableSubmit?: boolean;
    isLastPage?: boolean;
@@ -16,10 +18,12 @@ interface NavigationButtonsProps {
 const NavigationButtons: React.FC<NavigationButtonsProps> = ({
    onNext,
    onBack,
+   onSave,  // New prop
    canGoNext = true,
    canGoBack = true,
    nextLabel = 'Next',
    backLabel = 'Back',
+   saveLabel = 'Save Progress',  // New prop with default
    className = '',
    disableSubmit = false,
    isLastPage = false,
@@ -33,6 +37,12 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
    const handleBackClick = () => {
       if (onBack) {
          onBack();
+      }
+   };
+
+   const handleSaveClick = () => {
+      if (onSave) {
+         onSave();
       }
    };
 
@@ -54,6 +64,19 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
          );
       }
 
+      // Save Progress Button (new)
+      if (onSave) {
+         buttons.push(
+            <button
+               key="save"
+               className={`${styles.navigationButton} ${styles.saveButton}`}
+               onClick={handleSaveClick}
+               aria-label={saveLabel}
+            >
+               {saveLabel}
+            </button>
+         );
+      }
 
       // Next Button (Submit Button)
       if (onNext) {
