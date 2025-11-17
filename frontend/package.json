@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "predeploy": "npm run build && cp dist/index.html dist/404.html",
-    "deploy": "gh-pages -d dist",
+    "deploy": "gh-pages -d dist --repo https://x-access-token:$GITHUB_TOKEN@github.com/Hack4Impact-UMD/winrock-international.git",
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "react-scripts start",
