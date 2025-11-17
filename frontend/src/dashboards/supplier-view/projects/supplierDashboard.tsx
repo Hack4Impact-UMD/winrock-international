@@ -312,7 +312,7 @@ const SupplierDashboard: React.FC = () => {
             Notification Center
           </button>
 
-          <button
+          {/* <button
             className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
             onClick={() => {
               setActiveNavButton('Account Settings');
@@ -321,7 +321,7 @@ const SupplierDashboard: React.FC = () => {
           >
             <img src={accountSettingsIcon} alt="Account Settings" />
             Account Settings
-          </button>
+          </button> */}
         </div>
       </header>
 

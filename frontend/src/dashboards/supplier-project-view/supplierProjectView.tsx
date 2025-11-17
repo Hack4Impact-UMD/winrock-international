@@ -8,6 +8,7 @@ import ManageAccess from '../access-manager/components/ManageAccess';
 import { Project } from "../../types/Project";
 import { UpdateItem } from '../../types/UpdateItem';
 import Chat from '../../dashboards/chat/components/Chat';
+import ProjectFiles from '../../dashboards/project-view/components/ProjectFiles';
 
 interface ProjectViewProps {
   project: Project;
@@ -45,7 +46,9 @@ const SupplierProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) =>
             <Chat senderRole='supplier' projectId={project.id} active={project.isActive}></Chat>
           </div>
         </div>
-
+        <div className={styles.filesPanel}>
+          <ProjectFiles projectId={project.id} />
+        </div>
       </div>
     </div>
   );
