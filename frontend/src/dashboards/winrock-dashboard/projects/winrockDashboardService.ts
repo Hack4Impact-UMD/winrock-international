@@ -270,8 +270,7 @@ const addProject = async (projectName: string, clientName: string, supplierName:
         if (!tokenResult.success) {
             return { success: false, errorCode: "Failed to generate supplier token" };
         }
-
-        const token = tokenResult.data.token;
+        //const token = tokenResult.data.token;
 
         // Dont send email for now
         // await emailSupplier(projectName, supplierName, supplierEmail, token);
@@ -471,6 +470,9 @@ const unlockProject = async (projectName: string): Promise<Result> => {
 /**
  * Send an project invitation email to the supplier
  */
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// May be used later
 const emailSupplier = async (projectName: string, supplierName: string, supplierEmail: string, token: string): Promise<Result> => {
     try {
         // invite url with token

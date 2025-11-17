@@ -136,7 +136,7 @@ const WinrockDashboard: React.FC = () => {
       })
       .filter(p => {
         // TODO: There's a bug causing the date to be a day off, we should fix this later
-        let trueStartDate = new Date(p.startDate);
+        const trueStartDate = new Date(p.startDate);
         trueStartDate.setDate(trueStartDate.getDate() + 1);
         if (dateRange.startDate && trueStartDate < dateRange.startDate) return false;
         if (dateRange.endDate && trueStartDate > dateRange.endDate) return false;

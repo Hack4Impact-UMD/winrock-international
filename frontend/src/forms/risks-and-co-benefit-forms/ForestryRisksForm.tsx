@@ -40,11 +40,11 @@ interface ForestryRisksFormData {
    wasteMonitoring: FormField;
    wasteMonitoringDetails: FormField;
 
-   // Transition to a Circular Economy​​
+   // Transition to a Circular Economy
    circularEconomy: FormField;
    circularEconomyDetails: FormField;
 
-   // Protection and Restoration of Biodiversity and Ecosystems​
+   // Protection and Restoration of Biodiversity and Ecosystems
    biodiversityImpact: FormField;
    biodiversityImpactDetails: FormField;
    landDisturbance: FormField;
@@ -80,7 +80,7 @@ interface ForestryRisksFormData {
    effectiveSafeguards: FormField;
    effectiveSafeguardsDetails: FormField;
 
-   // Project Water Co-Benefits​
+   // Project Water Co-Benefits
    waterCoBenefits: FormField;
    waterCoBenefitsDetails: FormField;
 
@@ -182,6 +182,8 @@ function ForestryRisksForm() {
     * fields into the ForestryRisksForm collection.
    */
    async function handleSubmit() {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // May be used later
       for (const [_, v] of Object.entries(answersRef.current)) {
          if (v.isRequired && v.value === '') {
             setError("Cannot submit: You have not completed one or more sections in the form")

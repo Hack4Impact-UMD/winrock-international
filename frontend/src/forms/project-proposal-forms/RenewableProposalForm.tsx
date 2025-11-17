@@ -116,6 +116,8 @@ const RenewableProposalForm = () => {
         try {
             await firestore.addDoc(collectionRef, submissionObj);
             setIsSubmitted(true);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // May be used later
         } catch (error) {
             setError("Server error. Please try again later.");
         }

@@ -119,7 +119,7 @@ const SupplierDashboard: React.FC = () => {
       })
       .filter(p => {
         // TODO: There's a bug causing the date to be a day off, we should fix this later
-        let trueStartDate = new Date(p.startDate);
+        const trueStartDate = new Date(p.startDate);
         trueStartDate.setDate(trueStartDate.getDate() + 1);
         if (dateRange.startDate && trueStartDate < dateRange.startDate) return false;
         if (dateRange.endDate && trueStartDate > dateRange.endDate) return false;
@@ -329,8 +329,8 @@ const SupplierDashboard: React.FC = () => {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Projects</h1>
           <div className={styles.viewModeButtons}>
-            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => {setViewMode('active'); setCurrentPage(1); }}>Active</button>
-            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => {setViewMode('archived'); setCurrentPage(1);}}>Archived</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'active' ? styles.active : ''}`} onClick={() => { setViewMode('active'); setCurrentPage(1); }}>Active</button>
+            <button className={`${styles.viewModeButton} ${viewMode === 'archived' ? styles.active : ''}`} onClick={() => { setViewMode('archived'); setCurrentPage(1); }}>Archived</button>
           </div>
         </div>
 

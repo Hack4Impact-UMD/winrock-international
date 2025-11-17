@@ -176,6 +176,8 @@ function AgricultureProposalForm() {
      * fields into the AgricultureProjectProposalForm collection.
     */
     async function handleSubmit() {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // May be used later
         for (const [_, v] of Object.entries(answersRef.current)) {
             if (v.isRequired && v.value === '') {
                 setError("Cannot submit: You have not completed one or more sections in the form");
