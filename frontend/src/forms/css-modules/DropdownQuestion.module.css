@@ -38,7 +38,7 @@
     color: black;
     text-align: left;
     height: 2.75rem;
-    width: 290px;
+    width: 50%;
     /* Set the same width as the dropdown menu */
     border-radius: 0.6rem;
     border: 1px solid #ccc;
@@ -79,7 +79,7 @@
     position: absolute;
     top: 2.5rem;
     text-align: left;
-    width: 290px;
+    width: 50%;
     /* Same width as the dropdown button */
     margin-top: 0.5rem;
     border-radius: 0.5rem;
