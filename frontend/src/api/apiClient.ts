@@ -12,3 +12,4 @@ connectFunctionsEmulator(functions, "localhost", 5001);
 export const sendEmail = httpsCallable(functions, 'sendEmail');
 export const getS3UploadUrl = httpsCallable(functions, 'getS3UploadUrl');
 export const confirmS3Upload = httpsCallable(functions, 'confirmS3Upload');
+export const unlockForm = httpsCallable(functions, 'unlockForm');

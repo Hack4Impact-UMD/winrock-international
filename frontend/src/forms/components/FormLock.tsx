@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { lockProject } from '../../dashboards/winrock-dashboard/projects/winrockDashboardService';
+import { lockProject, unlockProject } from '../../dashboards/winrock-dashboard/projects/winrockDashboardService';
 import { nanoid } from 'nanoid';
-import { unlockProject } from '../../dashboards/winrock-dashboard/projects/winrockDashboardService';
+import { unlockForm } from "../../api/apiClient"
 
 interface FormLockProps {
   projectName: string;
@@ -11,7 +11,7 @@ interface FormLockProps {
 }
 
 // TODO need to modify to make this production ready
-const UNLOCK_ENDPOINT = 'http://127.0.0.1:5001/winrock-international/us-central1/unlockFormOnClose';
+const UNLOCK_ENDPOINT = 'http://localhost:5173/winrock-international/us-central1/unlockFormOnClose';
 
 const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
   const [showLockedPopup, setShowLockedPopup] = useState(false);
@@ -71,14 +71,16 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
             lockOwner: lockOwnerIdRef.current,
           });
           const blob = new Blob([payload], { type: 'application/json' });
+          // TODO need to change UNLOCK_ENDPOINT so that this works
           navigator.sendBeacon(UNLOCK_ENDPOINT, blob);
-        } catch {
-          globalThis.alert('err');
+        } catch (err) {
+          console.log(err);
         }
       }
     };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('pagehide', handleBeforeUnload);
+    // window.addEventListener('beforeunload', handleBeforeUnload);
+    // window.addEventListener('pagehide', handleBeforeUnload);
+    globalThis.addEventListener('visibilitychange', handleBeforeUnload);
 
     // Cleanup function to unlock project when component unmounts (only if we acquired the lock)
     return () => {
