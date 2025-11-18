@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProjectViewHeader from './components/ProjectViewHeader';
 import ProjectTracker from './components/ProjectTracker';
 import ProjectUpdates from './components/ProjectUpdates';
@@ -33,6 +33,16 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const [showingNotes, setShowingNotes] = useState(false);
+  const [viewedStage, setViewedStage] = useState<string>(project.analysisStage);
+
+  // Update viewedStage when project.analysisStage changes (e.g., after marking stage as complete)
+  useEffect(() => {
+    setViewedStage(project.analysisStage);
+  }, [project.analysisStage]);
+
+  const handleStageClick = (stage: string) => {
+    setViewedStage(stage);
+  };
 
   const handleNotesClick = () => {
     setShowingNotes(true);
@@ -74,13 +84,15 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
         <div className={styles.trackerPanel}>
           <ProjectTracker
             currentStage={project.analysisStage}
+            viewedStage={viewedStage}
             showingNotes={showingNotes}
+            onStageClick={handleStageClick}
           />
         </div>
 
         <div className={styles.updatesPanel}>
           <ProjectUpdates updates={updates} />
-          <StageActionCard analysisStage={project.analysisStage} projectName={project.projectName} activityType={project.activityType} onUploadClick={() => setShowGHGUploadModal(true)} />
+          <StageActionCard analysisStage={viewedStage} projectName={project.projectName} activityType={project.activityType} onUploadClick={() => setShowGHGUploadModal(true)} />
             {showGHGUploadModal && (
               <AddFileLinkModal
                 projectId={project.id}
@@ -88,7 +100,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
               />
             )}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "40px", backgroundColor: "#fff", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-            <StageHeader analysisStage={project.analysisStage} />
+            <StageHeader analysisStage={viewedStage} />
             <Chat senderRole='winrock' projectId={project.id} active={project.isActive}></Chat>
           </div>
           {project.analysisStage !== finalStage && (
