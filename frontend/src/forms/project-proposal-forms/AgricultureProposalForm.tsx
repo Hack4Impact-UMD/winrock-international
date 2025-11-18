@@ -26,6 +26,7 @@ interface AgricultureProposalFormData {
     // Ingredient/Crop Supplied
     ingredientPrimary: FormField;
     ingredientSub: FormField;
+	ingredientSubAdditional: FormField;
 
     // General Project Activity Description
     mainIntervention: FormField;
@@ -104,6 +105,7 @@ function AgricultureProposalForm() {
     const answersRef = useRef<AgricultureProposalFormData>({
         ingredientPrimary: new FormField('', true),
         ingredientSub: new FormField('', true),
+		ingredientSubAdditional: new FormField('', true),
         mainIntervention: new FormField('', true),
         projectDescription: new FormField('', true),
         averageVolumePurchased: new FormField('', true),
@@ -391,8 +393,8 @@ function AgricultureProposalForm() {
 
                     <TextQuestion
                         label="List additional ones here manually (if applicable)"
-                        controlledValue={answersRef.current.ingredientSub.value}  // Adjust based on actual data structure if needed
-                        onChange={(value) => handleChange("ingredientSub", value)}  // Adjust based on actual data structure if needed
+                        controlledValue={answersRef.current.ingredientSubAdditional.value}  // Adjust based on actual data structure if needed
+                        onChange={(value) => handleChange("ingredientSubAdditional", value)}  // Adjust based on actual data structure if needed
                         size="small"
                         disabled={isLocked}
                     />
