@@ -62,6 +62,7 @@ const createProject = async (
     projectName: string,
     clientName: string,
     supplierName: string,
+    supplierEmail: string,
     spendCategory: string,
     geography: string,
     notes: string = "",
@@ -74,38 +75,41 @@ const createProject = async (
     isLocked: boolean = false
 ): Promise<Result> => {
     try {
-        //const docRef = doc(db, "projects", projectName);
         const docRef = doc(collection(db, "projects"));
 
         await runTransaction(db, async (tx) => {
-            //need to check if the project name already exists
+            // Check if the project name already exists
             const projectsRef = collection(db, "projects");
             const nameQuery = query(projectsRef, where("projectName", "==", projectName));
             const existingProjects = await getDocs(nameQuery);
 
             if (!existingProjects.empty) {
-                throw new Error("project-name-already-exists");
+                throw new Error("A project with this name already exists.");
             }
 
-            const newProject: ProjectFirestoreWrite = {
+            // Add the project to Firestore
+            const projectData = {
                 projectName,
                 clientName,
                 supplierName,
+                supplierEmail, // Include supplierEmail in the project data
                 spendCategory,
                 geography,
+                notes,
+                activityType,
                 overallStatus,
                 analysisStage,
-                startDate: startDate ? Timestamp.fromDate(startDate) : serverTimestamp(),
-                lastUpdated: serverTimestamp(),
-                notes,
+                startDate: startDate || new Date(),
                 isActive,
                 isPinned,
                 isLocked,
-                id: docRef.id,
-                activityType,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             };
-            tx.set(docRef, newProject);
+
+            tx.set(docRef, projectData);
         });
+
         return { success: true };
     } catch (error) {
         console.error("Error creating project:", error);
@@ -253,6 +257,7 @@ const addProject = async (projectName: string, clientName: string, supplierName:
             projectName.toLowerCase(),
             clientName,
             supplierName,
+            supplierEmail,
             "-",
             "-",
             "",
