@@ -105,7 +105,10 @@ const handleSignup = async ({ email, password, firstName, lastName, role, compan
 const handleLogin = async ({ email, password }: LoginInfo): Promise<Result> => {
     try {
         await signInWithEmailAndPassword(auth, email, password);
-        return { success: true };
+        const usersCollectionRef = collection(db, "users");
+        const q = query(usersCollectionRef, where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+        return { success: true, data: querySnapshot.docs[0].data() };
     } catch (error) {
         return handleFirebaseError(error);
     }
@@ -114,7 +117,7 @@ const handleLogin = async ({ email, password }: LoginInfo): Promise<Result> => {
 /**
  * Log out the current user.
  */
-const handleLogout = async (): Promise<Result> =>  {
+const handleLogout = async (): Promise<Result> => {
     try {
         await signOut(auth);
         return { success: true };
@@ -147,7 +150,7 @@ const sendPasswordResetLink = async (email: string): Promise<Result> => {
  */
 const fetchCompanySuggestions = async (input: string): Promise<Result> => {
     if (!input) {
-      return { success: false, errorCode: "missing-input" };
+        return { success: false, errorCode: "missing-input" };
     }
 
     const suggestions: string[] = [];
@@ -164,7 +167,7 @@ const fetchCompanySuggestions = async (input: string): Promise<Result> => {
         snapshot.forEach((doc) => {
             suggestions.push(doc.data().name);
         });
-        
+
         return {
             success: true,
             data: suggestions
