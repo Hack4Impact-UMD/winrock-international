@@ -20,13 +20,12 @@
   .updatesPanel {
     flex: 1;
     min-width: 0;
-    padding: 20px;
     overflow: hidden;
     background: #F6F7F9;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 0 1rem;
   }
 
   .filesPanel {
