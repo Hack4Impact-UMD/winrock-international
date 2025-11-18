@@ -2,12 +2,8 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    width: 105%;
     background: #F6F7F9;
-    padding: 20px;
-    padding-bottom: 40px;
-    margin-left: -30px;
-    margin-top: -10px;
+	margin-top: 35px;
   }
   
   .updateCard {
@@ -40,9 +36,6 @@
     font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
     font-weight: 600;
     color: #000000;
-    padding: 15px;
-    margin-top: 20px;
-    margin-left: 20px;
   }
   
   .updateTitle {
