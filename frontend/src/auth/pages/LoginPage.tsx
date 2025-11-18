@@ -28,7 +28,12 @@ const LoginPage: React.FC = () => {
 
     const result: Result = await handleLogin({ email, password });
     if (result.success) {
-      navigate("/dashboard/admin/projects");
+      if (result.data.role === "admin") {
+        navigate("/dashboard/admin/projects");
+      }
+      else {
+        navigate("/dashboard/supplier/projects");
+      }
     } else {
       console.error("Error logging in: ", result.errorCode);
       setErrorMessage(toReadableError(result.errorCode));
@@ -47,56 +52,56 @@ const LoginPage: React.FC = () => {
       <LogoHeader />
 
       <div className="page-container">
-      <div className="login-form-container">
-        {errorMessage &&
-          <ToastMessage
-            message={errorMessage}
-            isError={true}
-          />}
+        <div className="login-form-container">
+          {errorMessage &&
+            <ToastMessage
+              message={errorMessage}
+              isError={true}
+            />}
 
-        <OutlookButton
-          label="Continue with Outlook"
-          onClick={() => {return;}}
-        />
+          <OutlookButton
+            label="Continue with Outlook"
+            onClick={() => { return; }}
+          />
 
-        <Divider label="OR" />
+          <Divider label="OR" />
 
-        <div className="sign-in-with-email">
-          Sign in with email
+          <div className="sign-in-with-email">
+            Sign in with email
+          </div>
+
+          <TextField
+            label="Email"
+            onChange={(value) => {
+              setErrorMessage("");
+              setEmail(value);
+            }}
+            onKeyDown={handleKeyDown}
+          />
+
+          <PasswordField
+            label="Password"
+            toggleHidden={true}
+            linkLabel="Forgot password?"
+            link="/auth/forgot-password"
+            onChange={(value) => {
+              setErrorMessage("");
+              setPassword(value)
+            }}
+            onKeyDown={handleKeyDown}
+          />
+
+          <NextButton
+            label="Login"
+            onClick={handleLoginClick}
+          />
+
+          <BottomLink
+            beforeText="Don't have an account yet?"
+            actionLabel="Sign up"
+            onClick={() => navigate("/auth/signup")}
+          />
         </div>
-
-        <TextField
-          label="Email"
-          onChange={(value) => {
-            setErrorMessage("");
-            setEmail(value);
-          }}
-          onKeyDown={handleKeyDown}
-        />
-
-        <PasswordField
-          label="Password"
-          toggleHidden={true}
-          linkLabel="Forgot password?"
-          link="/auth/forgot-password"
-          onChange={(value) => {
-            setErrorMessage("");
-            setPassword(value)
-          }}
-          onKeyDown={handleKeyDown}
-        />
-
-        <NextButton
-          label="Login"
-          onClick={handleLoginClick}
-        />
-
-        <BottomLink
-          beforeText="Don't have an account yet?"
-          actionLabel="Sign up"
-          onClick={() => navigate("/auth/signup")}
-        />
-      </div>
       </div>
     </>
   )

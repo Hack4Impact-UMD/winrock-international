@@ -23,6 +23,7 @@
 	gap: 1.8rem;
 	box-sizing: border-box;
 	padding: 6.2rem 2rem;
+	top: 2rem;
 }
 
 .lineCont img {
@@ -50,6 +51,7 @@
 	width: 100%;
 	padding: 27.5px 1rem;
 	pointer-events: none;
+	top: 2rem;
 }
 
 .iconCont img {
@@ -73,6 +75,7 @@
 	z-index: 1;
 	font-size: 16px;
 	font-weight: 400;
+	top: 2rem;
 }
 
 .stageClickable {
