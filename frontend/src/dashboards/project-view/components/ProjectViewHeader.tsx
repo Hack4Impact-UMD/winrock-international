@@ -22,6 +22,12 @@ type AnalysisStageType =
     | 'Complete, and Excluded'
     | 'Clarifying Technical Details';
 
+type ActivityType = 
+    |    "Renewable Energy and Energy Efficiency"
+    |    "Agriculture"
+    |    "Agroforestry"
+    |    "Animal Agriculture and Manure Management";
+
 interface ProjectViewHeaderProps {
     data: {
         id: string;
@@ -35,6 +41,7 @@ interface ProjectViewHeaderProps {
         lastUpdated: string;
         startDate: string;
         isActive: boolean;
+        activityType: ActivityType;
     };
     setShowAccessManager: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -101,6 +108,9 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                 <button onClick={() => navigate("/dashboard/admin/projects", { state: { viewMode: data.isActive === true ? "active" : "archived" } })} className={styles.backButton}>
                     <img src={backArrow} alt="Back" className={styles.backArrow} />
                 </button>
+            </div>
+            <div className={styles.activityContainer}>
+                <h2 className={styles.activity}>{currentData.activityType}</h2>
             </div>
             <div className={styles.titleContainer}>
                 {isEditMode ? (
