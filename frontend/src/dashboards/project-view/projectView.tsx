@@ -103,7 +103,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
             <StageHeader analysisStage={viewedStage} />
             <Chat senderRole='winrock' projectId={project.id} active={project.isActive}></Chat>
           </div>
-          {project.analysisStage !== finalStage && (
+          {project.analysisStage !== finalStage && viewedStage === project.analysisStage && (
             <AdvanceStageButton
               currentStage={project.analysisStage}
               onClick={() => setShowModal(true)}
