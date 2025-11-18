@@ -43,10 +43,6 @@ export enum AnalysisStage {
     STAGE_5 = "Risk & Co-benefit Assessment",
     STAGE_6 = "Complete, and Excluded",
 }
-type ProjectFirestoreWrite = Omit<Project, 'startDate' | 'lastUpdated'> & {
-    startDate: Timestamp | FieldValue;
-    lastUpdated: FieldValue;
-};
 
 type ActivityType =
     | "Renewable Energy and Energy Efficiency"
