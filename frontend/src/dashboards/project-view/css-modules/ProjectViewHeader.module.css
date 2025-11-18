@@ -109,6 +109,19 @@
     margin-top: -50px;
   }
 
+  .activityContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    margin-left: 55px;
+  }
+
+  .activity {
+    font-size: 14px;
+    font-weight: 500;
+    color: #76797C;
+  }
+
   .editableInput {
     padding: 0.25rem;
     border: 1px solid #ccc;
