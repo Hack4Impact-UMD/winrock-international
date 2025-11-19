@@ -7,7 +7,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 5rem;
-    margin-top: 40px;
+    margin-top: 10px;
     margin-left: 55px;
 }
 
@@ -107,6 +107,19 @@
   .backArrowIcon {
     margin-left: -10px;
     margin-top: -50px;
+  }
+
+  .activityContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    margin-left: 55px;
+  }
+
+  .activity {
+    font-size: 14px;
+    font-weight: 500;
+    color: #76797C;
   }
 
   .editableInput {

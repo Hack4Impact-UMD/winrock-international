@@ -10,6 +10,12 @@ type StatusType =
     | 'Completed'
     | 'Completed (except for risk)';
 
+type ActivityType = 
+    |    "Renewable Energy and Energy Efficiency"
+    |    "Agriculture"
+    |    "Agroforestry"
+    |    "Animal Agriculture and Manure Management";
+
 interface ProjectViewHeaderProps {
     data: {
         id: string;
@@ -19,6 +25,7 @@ interface ProjectViewHeaderProps {
         geography: string;
         lastUpdated: string;
         startDate: string;
+        activityType: ActivityType;
     }
     setShowAccessManager: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -32,6 +39,9 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                 <button onClick={() => navigate('/dashboard/supplier/projects')} className={styles.backButton}>
                     <img src={backArrow} alt="Back" className={styles.backArrowIcon} />
                 </button>
+            </div>
+            <div className={styles.activityContainer}>
+                <h2 className={styles.activity}>{data.activityType}</h2>
             </div>
             <div className={styles.titleContainer}>
 
