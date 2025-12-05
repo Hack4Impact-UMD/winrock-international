@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
+import { ReactNode } from "react";
 
-export default function RequireAuth({ children }) {
+export default function RequireAuth({ children }: { children: ReactNode }) {
     const loggedIn = sessionStorage.getItem("loggedIn");
 
     if (loggedIn !== "true") {
