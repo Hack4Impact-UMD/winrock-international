@@ -120,6 +120,7 @@ const handleLogin = async ({ email, password }: LoginInfo): Promise<Result> => {
 const handleLogout = async (): Promise<Result> => {
     try {
         await signOut(auth);
+        sessionStorage.removeItem("loggedIn");
         return { success: true };
     } catch (error) {
         return handleFirebaseError(error);

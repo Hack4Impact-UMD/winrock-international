@@ -29,9 +29,11 @@ const LoginPage: React.FC = () => {
     const result: Result = await handleLogin({ email, password });
     if (result.success) {
       if (result.data.role === "admin") {
+        sessionStorage.setItem("loggedIn", "true");
         navigate("/dashboard/admin/projects");
       }
       else {
+        sessionStorage.setItem("loggedIn", "true");
         navigate("/dashboard/supplier/projects");
       }
     } else {
