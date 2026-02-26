@@ -10,7 +10,7 @@ interface ProjectModalProps {
     onStageAdvanced?: () => void;
     projectName: string;
 }
-const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, currentStage, onStageAdvanced, projectName }) => {
+const MarkStageModal: React.FC<ProjectModalProps> = ({ onClose, projectId, currentStage, onStageAdvanced, projectName }) => {
     console.log(projectId)
     console.log(projectName)
     const popupRef = useRef<HTMLDivElement>(null);
@@ -67,4 +67,4 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, current
     );
 };
 
-export default ProjectModal;
+export default MarkStageModal;

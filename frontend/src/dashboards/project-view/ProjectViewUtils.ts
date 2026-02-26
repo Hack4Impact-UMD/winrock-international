@@ -49,8 +49,7 @@ export const markStageAsComplete = async (projectId: string, currentStage: strin
                     // Assuming we take the first matching document
                     const doc = querySnapshot.docs[0];
                     const data = doc.data();
-                    console.log("Ingredient Primary:", data.ingredientPrimary);
-                    await updateProjectField(projectId, { spendCategory: data.ingredientPrimary });
+                    await updateProjectField(projectId, { spendCategory: data.ingredientPrimary, geography: data.mainCountry });
                 } else {
                     console.log("No document found with projectName:", projectName);
                 }
