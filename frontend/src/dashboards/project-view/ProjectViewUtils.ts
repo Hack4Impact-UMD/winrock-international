@@ -32,8 +32,13 @@ export const markStageAsComplete = async (projectId: string, currentStage: strin
             return { success: false, errorCode: "Already at final stage" };
         }
         await updateProjectField(projectId, { analysisStage: nextStage });
+        if (nextStageNumber === stageMap["Risk & Co-benefit Assessment"]) {
+            await updateProjectField(projectId, { overallStatus: 'Completed (except for risk)' });
+        }
         if (nextStageNumber === stageMap[finalStage]) {
             await updateProjectField(projectId, { isActive: false });
+            await updateProjectField(projectId, { overallStatus: 'Completed' });
+
         }
         return { success: true };
     } catch (err) {
@@ -63,25 +68,25 @@ export const getAllProjectFiles = async (projectId: string): Promise<Result> => 
                 uploadedAt: data.uploadedAt
             } as Record<string, unknown> & { id: string };
         });
-        
+
         // Sort by uploadedAt in ascending order (oldest first)
         files.sort((a, b) => {
             const aUploadedAt = a.uploadedAt;
             const bUploadedAt = b.uploadedAt;
-            
-            const aTime = aUploadedAt instanceof Timestamp 
-                ? aUploadedAt.toMillis() 
-                : (aUploadedAt as { seconds?: number })?.seconds 
-                    ? (aUploadedAt as { seconds: number }).seconds * 1000 
+
+            const aTime = aUploadedAt instanceof Timestamp
+                ? aUploadedAt.toMillis()
+                : (aUploadedAt as { seconds?: number })?.seconds
+                    ? (aUploadedAt as { seconds: number }).seconds * 1000
                     : 0;
-            const bTime = bUploadedAt instanceof Timestamp 
-                ? bUploadedAt.toMillis() 
-                : (bUploadedAt as { seconds?: number })?.seconds 
-                    ? (bUploadedAt as { seconds: number }).seconds * 1000 
+            const bTime = bUploadedAt instanceof Timestamp
+                ? bUploadedAt.toMillis()
+                : (bUploadedAt as { seconds?: number })?.seconds
+                    ? (bUploadedAt as { seconds: number }).seconds * 1000
                     : 0;
             return aTime - bTime;
         });
-        
+
         return { success: true, data: files };
     } catch (err) {
         return handleFirebaseError(err);
@@ -102,7 +107,7 @@ export const addFileLink = async (projectId: string, fileName: string, filePath:
             where("fileName", "==", fileName)
         );
         const querySnapshot = await getDocs(q);
-        
+
         if (!querySnapshot.empty) {
             // File with same name exists, update the existing document
             const existingDoc = querySnapshot.docs[0];

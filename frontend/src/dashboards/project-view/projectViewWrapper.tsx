@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ProjectView from "./projectView";
 import { db } from '../../firebaseConfig';
 import { useState, useEffect } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
 import { Project } from "../../types/Project";
 import { UpdateItem } from "../../types/UpdateItem";
 

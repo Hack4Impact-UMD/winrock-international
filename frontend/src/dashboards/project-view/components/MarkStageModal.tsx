@@ -30,16 +30,16 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, current
                 </div>
                 <div className={styles.footer}>
                     <div className={styles.buttonContainer}>
-                        <button 
-                            className={styles.cancelButton} 
+                        <button
+                            className={styles.cancelButton}
                             onClick={() => {
                                 onClose();
-                            }} 
+                            }}
                         >
                             Cancel
                         </button>
-                        <button 
-                            className={styles.completeButton} 
+                        <button
+                            className={styles.completeButton}
                             onClick={async () => {
                                 const result = await markStageAsComplete(projectId, currentStage);
                                 if (result.success) {
@@ -53,7 +53,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, current
                                     // Optionally show error message to user
                                     // Keep modal open on error so user can try again
                                 }
-                            }} 
+                            }}
                         >
                             Mark Stage as complete
                         </button>
