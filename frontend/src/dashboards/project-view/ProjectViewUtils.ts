@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, addDoc, updateDoc, doc, serverTimestamp, Timestamp, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, addDoc, updateDoc, doc, serverTimestamp, Timestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Result, { handleFirebaseError } from "../../types/Result"
 import { updateProjectField } from "../winrock-dashboard/projects/winrockDashboardService";
