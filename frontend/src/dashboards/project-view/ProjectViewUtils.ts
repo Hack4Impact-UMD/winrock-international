@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, addDoc, updateDoc, doc, serverTimestamp, Timestamp } from "firebase/firestore";
+import { collection, getDocs, query, where, addDoc, updateDoc, doc, serverTimestamp, Timestamp, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Result, { handleFirebaseError } from "../../types/Result"
 import { updateProjectField } from "../winrock-dashboard/projects/winrockDashboardService";
@@ -14,12 +14,13 @@ export const stageMap: Record<string, number> = {
 };
 
 export const finalStage = "Complete, and Excluded";
+export const technicalStage = "Clarifying Technical Details"
 
 /**
  * Update the project's analysis stage to the next stage
  * Does nothing if the current stage is invalid or if we are already at the last stage
  */
-export const markStageAsComplete = async (projectId: string, currentStage: string): Promise<Result> => {
+export const markStageAsComplete = async (projectId: string, currentStage: string, projectName: string): Promise<Result> => {
     try {
         const currentStageNumber = stageMap[currentStage];
         if (!currentStageNumber) {
@@ -34,6 +35,28 @@ export const markStageAsComplete = async (projectId: string, currentStage: strin
         await updateProjectField(projectId, { analysisStage: nextStage });
         if (nextStageNumber === stageMap[finalStage]) {
             await updateProjectField(projectId, { isActive: false });
+        }
+        if (nextStageNumber === stageMap[technicalStage]) {
+            try {
+                // Query the collection for a document where projectName matches
+                const q = query(
+                    collection(db, "agriculture-proposal-form"),
+                    where("projectName", "==", projectName)
+                );
+                const querySnapshot = await getDocs(q);
+                console.log("Query snapshot for projectName", projectName, ":", querySnapshot);
+                if (!querySnapshot.empty) {
+                    // Assuming we take the first matching document
+                    const doc = querySnapshot.docs[0];
+                    const data = doc.data();
+                    console.log("Ingredient Primary:", data.ingredientPrimary);
+                    await updateProjectField(projectId, { spendCategory: data.ingredientPrimary });
+                } else {
+                    console.log("No document found with projectName:", projectName);
+                }
+            } catch (error) {
+                console.error("Error fetching project data:", error);
+            }
         }
         return { success: true };
     } catch (err) {
@@ -63,25 +86,25 @@ export const getAllProjectFiles = async (projectId: string): Promise<Result> => 
                 uploadedAt: data.uploadedAt
             } as Record<string, unknown> & { id: string };
         });
-        
+
         // Sort by uploadedAt in ascending order (oldest first)
         files.sort((a, b) => {
             const aUploadedAt = a.uploadedAt;
             const bUploadedAt = b.uploadedAt;
-            
-            const aTime = aUploadedAt instanceof Timestamp 
-                ? aUploadedAt.toMillis() 
-                : (aUploadedAt as { seconds?: number })?.seconds 
-                    ? (aUploadedAt as { seconds: number }).seconds * 1000 
+
+            const aTime = aUploadedAt instanceof Timestamp
+                ? aUploadedAt.toMillis()
+                : (aUploadedAt as { seconds?: number })?.seconds
+                    ? (aUploadedAt as { seconds: number }).seconds * 1000
                     : 0;
-            const bTime = bUploadedAt instanceof Timestamp 
-                ? bUploadedAt.toMillis() 
-                : (bUploadedAt as { seconds?: number })?.seconds 
-                    ? (bUploadedAt as { seconds: number }).seconds * 1000 
+            const bTime = bUploadedAt instanceof Timestamp
+                ? bUploadedAt.toMillis()
+                : (bUploadedAt as { seconds?: number })?.seconds
+                    ? (bUploadedAt as { seconds: number }).seconds * 1000
                     : 0;
             return aTime - bTime;
         });
-        
+
         return { success: true, data: files };
     } catch (err) {
         return handleFirebaseError(err);
@@ -102,7 +125,7 @@ export const addFileLink = async (projectId: string, fileName: string, filePath:
             where("fileName", "==", fileName)
         );
         const querySnapshot = await getDocs(q);
-        
+
         if (!querySnapshot.empty) {
             // File with same name exists, update the existing document
             const existingDoc = querySnapshot.docs[0];
