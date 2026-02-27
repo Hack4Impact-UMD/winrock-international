@@ -35,8 +35,14 @@ const DropdownQuestion = ({
 
    const toggleDropdownQuestion = () => {
       if (!disabled) {
-         setShowDropdown(true)
+         if (showDropdown) {
+            setShowDropdown(false)
+         }
+         else {
+            setShowDropdown(true)
+         }
       }
+
    }
 
    const selectOption = (option: string) => {
