@@ -2,19 +2,55 @@
   box-sizing: border-box;
 }
 
+
+
 .dashboardContainer {
   display: flex;
   min-height: 100vh;
 }
 
 .header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* Push content to top and bottom */
+  align-items: center;
   padding: 2rem 2.5rem;
+
   border-right: 1px solid #CCCCCC;
   width: 18.75rem;
   position: fixed;
   top: 0;
   bottom: 0;
   background-color: white;
+}
+
+.headerNavContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  align-items: stretch;
+  /* Align items to the left */
+  margin-top: auto;
+  /* Push this section to the top */
+}
+
+.logo {
+  margin-bottom: 2rem;
+  /* Add spacing below the logo */
+}
+
+.logoutButton {
+  background-color: white;
+  border: 1.29px solid var(--color-primary);
+  color: var(--color-primary);
+  height: 2.25rem;
+  width: 6.625rem;
+  border-radius: .4rem;
+  cursor: pointer;
+  margin-top: auto;
+  /* Keep the button at the bottom */
 }
 
 html {
