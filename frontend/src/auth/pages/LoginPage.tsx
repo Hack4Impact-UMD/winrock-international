@@ -30,10 +30,12 @@ const LoginPage: React.FC = () => {
     if (result.success) {
       if (result.data.role === "admin") {
         sessionStorage.setItem("loggedIn", "true");
+        sessionStorage.setItem("userEmail", email);
         navigate("/dashboard/admin/projects");
       }
       else {
         sessionStorage.setItem("loggedIn", "true");
+        sessionStorage.setItem("userEmail", email);
         navigate("/dashboard/supplier/projects");
       }
     } else {

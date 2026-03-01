@@ -5,7 +5,7 @@ import projectsIcon from './../../../assets/projects-icon.svg';
 import notificationIcon from './../../../assets/notification-icon.svg';
 import searchIcon from "../../../assets/search-icon.svg"
 import { useNavigate } from 'react-router-dom';
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, where } from "firebase/firestore";
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
@@ -162,8 +162,14 @@ const SupplierDashboard: React.FC = () => {
   };
 
   // Firestore snapshot mapping
+
   useEffect(() => {
-    const q = query(collection(db, "projects"), orderBy("projectName"));
+    const supplierEmail = sessionStorage.getItem("userEmail") || "";
+    const q = query(
+      collection(db, "projects"),
+      where("supplierEmail", "==", supplierEmail),
+      orderBy("projectName")
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const projectsData: Project[] = snapshot.docs.map((doc) => {
         const p = doc.data() as Project;
