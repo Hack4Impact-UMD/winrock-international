@@ -31,7 +31,17 @@ export const markStageAsComplete = async (projectId: string, currentStage: strin
         if (!nextStage) {
             return { success: false, errorCode: "Already at final stage" };
         }
-        await updateProjectField(projectId, { analysisStage: nextStage });
+
+        const updatePayload: Record<string, unknown> = { analysisStage: nextStage };
+        if (nextStageNumber === stageMap["Risk & Co-benefit Assessment"]) {
+            updatePayload.overallStatus = "Completed (except for risk)";
+        }
+        if (nextStageNumber === stageMap[finalStage]) {
+            updatePayload.isActive = false;
+            updatePayload.overallStatus = "Completed";
+        }
+
+        await updateProjectField(projectId, updatePayload);
         if (nextStageNumber === stageMap["Risk & Co-benefit Assessment"]) {
             await updateProjectField(projectId, { overallStatus: 'Completed (except for risk)' });
         }
