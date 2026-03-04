@@ -99,7 +99,6 @@ const createProject = async (
                 isActive,
                 isPinned,
                 isLocked,
-                createdAt: new Date(),
                 lastUpdated: new Date(),
             };
 
