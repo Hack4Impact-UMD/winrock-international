@@ -102,6 +102,7 @@ const createProject = async (
 };
 function mapDocToProject(d: any): Project {
     return {
+        id: d.id,
         ...d,
         startDate: d.startDate instanceof Timestamp ? d.startDate.toDate().toISOString() : d.startDate,
         lastUpdated: d.lastUpdated instanceof Timestamp ? d.lastUpdated.toDate().toISOString() : d.lastUpdated,
