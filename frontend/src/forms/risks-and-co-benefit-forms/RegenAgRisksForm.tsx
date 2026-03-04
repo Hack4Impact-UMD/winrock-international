@@ -78,6 +78,16 @@ interface TechEnergyRisksFormData {
     effectiveSafeguardsDetails: FormField;
 }
 
+/**
+ * Render the "Regenerative Agriculture Risks & Co-Benefits" multi-page form UI and manage its lifecycle.
+ *
+ * The component displays a two-page form, loads an existing submission when a matching `projectName` URL
+ * parameter exists (matched using `projectName.toLowerCase()`), and integrates a form lock to prevent edits.
+ * It auto-saves draft changes after a short delay, prevents navigation when there are unsaved changes,
+ * validates required fields on final submission, and either creates or updates the Firestore document for the project.
+ *
+ * @returns The React element for the Regenerative Agriculture Risks & Co-Benefits form.
+ */
 function RegenAgRisksForm() {
     const title = "Regenerative Agriculture Risks & Co-Benefits Form";
 
@@ -171,7 +181,7 @@ function RegenAgRisksForm() {
                 try {
                     const q = query(
                         collectionRef,
-                        where("projectName", "==", projectName)
+                        where("projectName", "==", projectName.toLowerCase())
                     );
                     const querySnapshot = await getDocs(q);
 

@@ -83,6 +83,16 @@ interface TechEnergyRisksFormData {
   communityBenefitsDetails: FormField;
 }
 
+/**
+ * Renders the "Tech & Energy Risks and Co-Benefit Form" multi-page React component.
+ *
+ * The component presents a three-page form for collecting risk assessments and co-benefits,
+ * auto-saves draft changes to Firestore, loads existing project data when available,
+ * enforces a form-lock to prevent edits, validates required fields on submit, and shows
+ * a confirmation page after successful submission.
+ *
+ * @returns The component's rendered JSX element.
+ */
 function TechEnergyRisksForm() {
   const title = "Tech & Energy Risks and Co-Benefit Form";
 
@@ -174,7 +184,7 @@ function TechEnergyRisksForm() {
         try {
           const q = query(
             collectionRef,
-            where("projectName", "==", projectName)
+            where("projectName", "==", projectName.toLowerCase())
           );
           const querySnapshot = await getDocs(q);
 

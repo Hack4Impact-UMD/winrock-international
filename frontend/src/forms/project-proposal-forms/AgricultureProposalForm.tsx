@@ -26,7 +26,7 @@ interface AgricultureProposalFormData {
     // Ingredient/Crop Supplied
     ingredientPrimary: FormField;
     ingredientSub: FormField;
-	ingredientSubAdditional: FormField;
+    ingredientSubAdditional: FormField;
 
     // General Project Activity Description
     mainIntervention: FormField;
@@ -92,6 +92,13 @@ interface AgricultureProposalFormData {
 
 }
 
+/**
+ * Renders the multi-page "Greenhouse Gas Emissions Project Proposal" form and manages its state, persistence, and navigation.
+ *
+ * This component presents a four-page form to collect agriculture project proposal data, loads an existing submission when a matching `projectName` exists, auto-saves draft changes to Firestore, enforces required-field validation on final submit, and integrates a form lock to prevent concurrent edits.
+ *
+ * @returns The component's rendered JSX for the proposal form, including UI for input fields, progress, navigation, save status, error messages, and confirmation on successful submission.
+ */
 function AgricultureProposalForm() {
     const title = "Greenhouse Gas Emissions Project Proposal Form for Project Validation"
 
@@ -105,7 +112,7 @@ function AgricultureProposalForm() {
     const answersRef = useRef<AgricultureProposalFormData>({
         ingredientPrimary: new FormField('', true),
         ingredientSub: new FormField('', true),
-		ingredientSubAdditional: new FormField('', true),
+        ingredientSubAdditional: new FormField('', true),
         mainIntervention: new FormField('', true),
         projectDescription: new FormField('', true),
         averageVolumePurchased: new FormField('', true),
@@ -189,7 +196,7 @@ function AgricultureProposalForm() {
                 try {
                     const q = query(
                         collectionRef,
-                        where("projectName", "==", projectName)
+                        where("projectName", "==", projectName.toLowerCase())
                     );
                     const querySnapshot = await getDocs(q);
 
