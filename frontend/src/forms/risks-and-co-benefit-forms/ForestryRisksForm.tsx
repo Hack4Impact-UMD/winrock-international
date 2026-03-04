@@ -95,6 +95,13 @@ interface ForestryRisksFormData {
    communityFarmerCoBenefitsDetails: FormField;
 }
 
+/**
+ * Render the Forestry Risks and Co-Benefit multi-page form and manage its lifecycle.
+ *
+ * Loads an existing submission for the current project (matched against a lowercased projectName), tracks in-memory answers, debounces and auto-saves draft changes to Firestore, prevents navigation when there are unsaved changes, validates required fields on final submit, and integrates a form lock to prevent concurrent edits.
+ *
+ * @returns A React element that renders the multi-page form UI including progress, page content, save status, navigation controls, error messages, and a submission confirmation.
+ */
 function ForestryRisksForm() {
    const title = "Forestry Risks and Co-Benefit Form"
 
@@ -186,7 +193,7 @@ function ForestryRisksForm() {
             try {
                const q = query(
                   collectionRef,
-                  where("projectName", "==", projectName)
+                  where("projectName", "==", projectName.toLowerCase())
                );
                const querySnapshot = await getDocs(q);
 
