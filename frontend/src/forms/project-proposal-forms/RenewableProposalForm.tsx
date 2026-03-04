@@ -115,7 +115,7 @@ const RenewableProposalForm = () => {
                 try {
                     const q = query(
                         collectionRef,
-                        where("projectName", "==", projectName)
+                        where("projectName", "==", projectName.toLowerCase())
                     );
                     const querySnapshot = await getDocs(q);
 

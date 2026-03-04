@@ -92,7 +92,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
 
         <div className={styles.updatesPanel}>
           <ProjectUpdates updates={updates} />
-          <StageActionCard analysisStage={viewedStage} projectName={project.projectName} activityType={project.activityType} onUploadClick={() => setShowGHGUploadModal(true)} />
+          <StageActionCard analysisStage={viewedStage} projectName={project.projectName.toLowerCase()} activityType={project.activityType} onUploadClick={() => setShowGHGUploadModal(true)} />
           {showGHGUploadModal && (
             <AddFileLinkModal
               projectId={project.id}

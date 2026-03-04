@@ -10,11 +10,11 @@ type StatusType =
     | 'Completed'
     | 'Completed (except for risk)';
 
-type ActivityType = 
-    |    "Renewable Energy and Energy Efficiency"
-    |    "Agriculture"
-    |    "Agroforestry"
-    |    "Animal Agriculture and Manure Management";
+type ActivityType =
+    | "Renewable Energy and Energy Efficiency"
+    | "Agriculture"
+    | "Agroforestry"
+    | "Animal Agriculture and Manure Management";
 
 interface ProjectViewHeaderProps {
     data: {
@@ -45,7 +45,7 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
             </div>
             <div className={styles.titleContainer}>
 
-                <h1 className={styles.projectTitle}>{data.projectName}</h1>
+                <h1 className={styles.projectTitle}>{data.projectName.toLowerCase()}</h1>
             </div>
             <table className={styles.table}>
                 <thead className={styles.tableHeader}>

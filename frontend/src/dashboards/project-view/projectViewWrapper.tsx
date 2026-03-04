@@ -7,7 +7,8 @@ import { Project } from "../../types/Project";
 import { UpdateItem } from "../../types/UpdateItem";
 
 const ProjectViewWrapper = () => {
-  const { projectName } = useParams();
+  let { projectName } = useParams();
+  projectName = projectName || ""; // Handle case where projectName is undefined
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
   const [updates, setUpdates] = useState<UpdateItem[]>([]);
@@ -20,7 +21,7 @@ const ProjectViewWrapper = () => {
       try {
         const projectQuery = query(
           collection(db, "projects"),
-          where('projectName', '==', projectName)
+          where('projectName', '==', projectName.toLowerCase())
         );
 
         const projectSnapshot = await getDocs(projectQuery);
