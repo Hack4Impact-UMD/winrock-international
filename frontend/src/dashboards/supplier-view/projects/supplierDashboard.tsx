@@ -247,8 +247,9 @@ const SupplierDashboard: React.FC = () => {
 
       // 4️⃣ Merge owned + shared projects, remove duplicates
       const allProjectsMap = new Map<string, Project>();
-      [...ownedProjects, ...sharedProjects].forEach(p => allProjectsMap.set(p.id, p));
-
+      [...ownedProjects, ...sharedProjects].forEach(p => {
+        allProjectsMap.set(p.id, p);
+      });
       setProjects(Array.from(allProjectsMap.values()));
       setLoading(false);
     }, (error) => {
