@@ -206,7 +206,7 @@ function TechEnergyRisksForm() {
 
     try {
       const submissionObj: Record<string, string> = {
-        projectName: projectName || ''
+        projectName: projectName?.toLowerCase() || ''
       };
       Object.keys(answersRef.current).forEach((field) => {
         submissionObj[field] = answersRef.current[field as keyof TechEnergyRisksFormData]!.value;

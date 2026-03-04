@@ -180,7 +180,7 @@ const SupplierDashboard: React.FC = () => {
 
         return {
           id: doc.id, // local frontend ID for table rendering
-          projectName: p.projectName.toLowerCase(),
+          projectName: p.projectName,
           overallStatus: p.overallStatus,
           spendCategory: p.spendCategory,
           geography: p.geography,
