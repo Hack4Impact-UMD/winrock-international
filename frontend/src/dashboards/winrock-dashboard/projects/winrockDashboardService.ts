@@ -112,13 +112,20 @@ const createProject = async (
         return handleFirebaseError(error);
     }
 };
-function mapDocToProject(d: any): Project {
+function mapDocToProject(docSnap: any): Project {
+    const d = docSnap.data();
+
     return {
-        id: d.id,
+        id: docSnap.id,
         ...d,
-        startDate: d.startDate instanceof Timestamp ? d.startDate.toDate().toISOString() : d.startDate,
-        lastUpdated: d.lastUpdated instanceof Timestamp ? d.lastUpdated.toDate().toISOString() : d.lastUpdated,
+        startDate: d.startDate instanceof Timestamp
+            ? d.startDate.toDate().toISOString()
+            : d.startDate,
+        lastUpdated: d.lastUpdated instanceof Timestamp
+            ? d.lastUpdated.toDate().toISOString()
+            : d.lastUpdated,
     };
+}
 }
 
 /**
@@ -208,7 +215,7 @@ const getProjectsWithFilters = async (
 
         const querySnapshot = await getDocs(filterQuery);
         querySnapshot.forEach((docSnap) => {
-            const project = mapDocToProject(docSnap.data());
+            const project = mapDocToProject(docSnap);
             projects.push(project);
             projectNames.push(project.projectName);
         });
