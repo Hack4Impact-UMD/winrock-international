@@ -5,7 +5,7 @@ import projectsIcon from './../../../assets/projects-icon.svg';
 import notificationIcon from './../../../assets/notification-icon.svg';
 import searchIcon from "../../../assets/search-icon.svg"
 import { useNavigate } from 'react-router-dom';
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, where, getDocs, doc, getDoc } from "firebase/firestore";
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
 import TableHeader from '../components/TableHeader';
@@ -164,10 +164,31 @@ const SupplierDashboard: React.FC = () => {
   };
 
   // Firestore snapshot mapping
+
   useEffect(() => {
-    const q = query(collection(db, "projects"), orderBy("projectName"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const projectsData: Project[] = snapshot.docs.map((doc) => {
+    const supplierEmail = sessionStorage.getItem("userEmail")?.toLowerCase() || "";
+
+    if (!supplierEmail) {
+      setError("Please log in to view projects");
+      setLoading(false);
+      return;
+    }
+
+    // 1️⃣ Query projects owned by the supplier
+    const ownedQuery = query(
+      collection(db, "projects"),
+      where("supplierEmail", "==", supplierEmail),
+      orderBy("projectName")
+    );
+
+    // 2️⃣ Query projectAccess for shared projects
+    const accessQuery = query(
+      collection(db, "projectAccess"),
+      where("userEmail", "==", supplierEmail)
+    );
+
+    const unsubscribeOwned = onSnapshot(ownedQuery, async (ownedSnapshot) => {
+      const ownedProjects: Project[] = ownedSnapshot.docs.map(doc => {
         const p = doc.data() as Project;
 
         const parseDate = (date: any) => {
@@ -186,13 +207,50 @@ const SupplierDashboard: React.FC = () => {
           geography: p.geography,
           lastUpdated: parseDate(p.lastUpdated),
           startDate: parseDate(p.startDate),
-          activityType: p.activityType, // ← ADD THIS LINE
+          activityType: p.activityType,
           isActive: p.isActive,
           isPinned: p.isPinned,
         } as Project;
       });
 
-      setProjects(projectsData);
+      // 3️⃣ Fetch shared projects from projectAccess
+      const accessSnapshot = await getDocs(accessQuery);
+      const sharedProjectIds = accessSnapshot.docs.map(doc => doc.data().projectId);
+
+      const sharedProjects: Project[] = [];
+      for (const projectId of sharedProjectIds) {
+        const projectDoc = await getDoc(doc(db, "projects", projectId));
+        if (projectDoc.exists()) {
+          const p = projectDoc.data() as Project;
+          const parseDate = (date: any) => {
+            if (!date) return "";
+            if (date.toDate) return date.toDate().toISOString().split("T")[0];
+            const parsed = new Date(date);
+            if (isNaN(parsed.getTime())) return "";
+            return parsed.toISOString().split("T")[0];
+          };
+
+          sharedProjects.push({
+            id: projectDoc.id,
+            projectName: p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1),
+            overallStatus: p.overallStatus,
+            spendCategory: p.spendCategory,
+            geography: p.geography,
+            lastUpdated: parseDate(p.lastUpdated),
+            startDate: parseDate(p.startDate),
+            activityType: p.activityType,
+            isActive: p.isActive,
+            isPinned: p.isPinned,
+          } as Project);
+        }
+      }
+
+      // 4️⃣ Merge owned + shared projects, remove duplicates
+      const allProjectsMap = new Map<string, Project>();
+      [...ownedProjects, ...sharedProjects].forEach(p => {
+        allProjectsMap.set(p.id, p);
+      });
+      setProjects(Array.from(allProjectsMap.values()));
       setLoading(false);
     }, (error) => {
       console.error("Error listening to projects:", error);
@@ -200,7 +258,7 @@ const SupplierDashboard: React.FC = () => {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => unsubscribeOwned();
   }, []);
 
   // per category

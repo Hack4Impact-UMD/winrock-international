@@ -21,8 +21,8 @@ interface EmailCapsuleData {
 }
 
 interface UserData {
-	firstName: string;
-	lastName: string;
+    firstName: string;
+    lastName: string;
     email: string;
     role: string;
     name?: string;
@@ -37,7 +37,7 @@ const ManageAccess = (props: ManageAccessProps) => {
     // state variables
     const [emails, setEmails] = useState<EmailCapsuleData[]>([]);
     const [notifyPeople, setNotifyPeople] = useState(true);
-	const [message, setMessage] = useState("");
+    const [message, setMessage] = useState("");
     const [showingManageAccess, setShowingManageAccess] = useState(false);
 
     // used in manage access view
@@ -55,46 +55,46 @@ const ManageAccess = (props: ManageAccessProps) => {
     const [emailIsFocused, setEmailIsFocused] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
 
-	// load users with access
-	useEffect(() => {
-		const loadUsers = async () => {
-			const paQ = query(
-				collection(db, "projectAccess"),
-				where("projectId", "==", props.projectId)
-			);
+    // load users with access
+    useEffect(() => {
+        const loadUsers = async () => {
+            const paQ = query(
+                collection(db, "projectAccess"),
+                where("projectId", "==", props.projectId)
+            );
 
-			const paSnap = await getDocs(paQ);
+            const paSnap = await getDocs(paQ);
 
-			if (paSnap.size > 0) {
+            if (paSnap.size > 0) {
 
-				const userEmails = paSnap.docs.map(doc => doc.data().userEmail);
+                const userEmails = paSnap.docs.map(doc => doc.data().userEmail);
 
-				const userQ = query(
-					collection(db, "users"),
-					where("email", "in", userEmails)
-				);
+                const userQ = query(
+                    collection(db, "users"),
+                    where("email", "in", userEmails)
+                );
 
-				const userSnap = await getDocs(userQ);
+                const userSnap = await getDocs(userQ);
 
-				const result: UserData[] = [];
+                const result: UserData[] = [];
 
-				userSnap.forEach(doc => {
-					const userData = doc.data();
-					result.push({
-						name: userData.firstName + " " + userData.lastName,
-						email: userData.email,
-						role: userData.role
-					} as UserData);
-				});
+                userSnap.forEach(doc => {
+                    const userData = doc.data();
+                    result.push({
+                        name: userData.firstName + " " + userData.lastName,
+                        email: userData.email,
+                        role: userData.role
+                    } as UserData);
+                });
 
-				setUsersWithAccess(result);
-			}
+                setUsersWithAccess(result);
+            }
 
-		};
+        };
 
-		loadUsers();
+        loadUsers();
 
-	}, [props.projectId]);
+    }, [props.projectId]);
 
     const handleEmailAutocomplete = async (partialEmail: string) => {
         if (!partialEmail || partialEmail.length < 2) {
@@ -232,7 +232,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                 for (const user of newUsers) {
                     await addDoc(collection(db, "projectAccess"), {
                         projectId: props.projectId,
-                        userEmail: user.email,
+                        userEmail: user.email.toLowerCase(),
                         role: user.role,
                         addedBy: "current-user-email",
                         addedAt: new Date(),
@@ -245,7 +245,7 @@ const ManageAccess = (props: ManageAccessProps) => {
             }
 
             setEmails([]);
-			setMessage("");
+            setMessage("");
 
         } catch (error) {
             console.error("Error updating access:", error);
@@ -326,7 +326,7 @@ const ManageAccess = (props: ManageAccessProps) => {
             }
 
             emailInput.value = "";
-			setUserSuggestions([]);
+            setUserSuggestions([]);
         }
     };
 
@@ -554,7 +554,7 @@ const ManageAccess = (props: ManageAccessProps) => {
                                                     emailInput as HTMLInputElement
                                                 ).value = "";
                                             }
-											setUserSuggestions([]);
+                                            setUserSuggestions([]);
                                         }}
                                     >
                                         <p>{user.name}</p>
@@ -585,10 +585,10 @@ const ManageAccess = (props: ManageAccessProps) => {
                         <textarea
                             className={styles.messageBox}
                             placeholder="Enter optional message"
-							value={message}
-							onChange={(event) => {
-								setMessage(event.target.value)
-							}}
+                            value={message}
+                            onChange={(event) => {
+                                setMessage(event.target.value)
+                            }}
                         ></textarea>
                         <div className={styles.buttonCont}>
                             <button
