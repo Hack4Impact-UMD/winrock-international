@@ -14,12 +14,13 @@ export const stageMap: Record<string, number> = {
 };
 
 export const finalStage = "Complete, and Excluded";
+export const technicalStage = "Clarifying Technical Details"
 
 /**
  * Update the project's analysis stage to the next stage
  * Does nothing if the current stage is invalid or if we are already at the last stage
  */
-export const markStageAsComplete = async (projectId: string, currentStage: string): Promise<Result> => {
+export const markStageAsComplete = async (projectId: string, currentStage: string, projectName: string): Promise<Result> => {
     try {
         const currentStageNumber = stageMap[currentStage];
         if (!currentStageNumber) {
@@ -49,6 +50,27 @@ export const markStageAsComplete = async (projectId: string, currentStage: strin
             await updateProjectField(projectId, { isActive: false });
             await updateProjectField(projectId, { overallStatus: 'Completed' });
 
+        }
+        if (nextStageNumber === stageMap[technicalStage]) {
+            try {
+                // Query the collection for a document where projectName matches
+                const q = query(
+                    collection(db, "agriculture-proposal-form"),
+                    where("projectName", "==", projectName)
+                );
+                const querySnapshot = await getDocs(q);
+                console.log("Query snapshot for projectName", projectName, ":", querySnapshot);
+                if (!querySnapshot.empty) {
+                    // Assuming we take the first matching document
+                    const doc = querySnapshot.docs[0];
+                    const data = doc.data();
+                    await updateProjectField(projectId, { spendCategory: data.ingredientPrimary, geography: data.mainCountry });
+                } else {
+                    console.log("No document found with projectName:", projectName);
+                }
+            } catch (error) {
+                console.error("Error fetching project data:", error);
+            }
         }
         return { success: true };
     } catch (err) {
