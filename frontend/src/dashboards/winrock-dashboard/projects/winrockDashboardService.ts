@@ -100,7 +100,7 @@ const createProject = async (
                 isPinned,
                 isLocked,
                 createdAt: new Date(),
-                updatedAt: new Date(),
+                lastUpdated: new Date(),
             };
 
             tx.set(docRef, projectData);
