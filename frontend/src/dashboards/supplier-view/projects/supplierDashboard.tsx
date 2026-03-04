@@ -166,7 +166,11 @@ const SupplierDashboard: React.FC = () => {
   useEffect(() => {
     const supplierEmail = sessionStorage.getItem("userEmail")?.toLowerCase() || "";
 
-    if (!supplierEmail) return;
+    if (!supplierEmail) {
+      setError("Please log in to view projects");
+      setLoading(false);
+      return;
+    }
 
     // 1️⃣ Query projects owned by the supplier
     const ownedQuery = query(
@@ -195,7 +199,7 @@ const SupplierDashboard: React.FC = () => {
 
         return {
           id: doc.id,
-          projectName: p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1),
+          projectName: p.projectName,
           overallStatus: p.overallStatus,
           spendCategory: p.spendCategory,
           geography: p.geography,
