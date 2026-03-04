@@ -81,7 +81,7 @@ const handleSignup = async ({ email, password, firstName, lastName, role, compan
 
         const docRef = doc(db, "users", newUser.uid); // Use the user's random UID as the document ID
         const newUserObj = {
-            email,
+            email: email.toLowerCase(),
             firstName,
             lastName,
             role,
@@ -104,9 +104,9 @@ const handleSignup = async ({ email, password, firstName, lastName, role, compan
  */
 const handleLogin = async ({ email, password }: LoginInfo): Promise<Result> => {
     try {
-        await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, email.toLowerCase(), password);
         const usersCollectionRef = collection(db, "users");
-        const q = query(usersCollectionRef, where("email", "==", email));
+        const q = query(usersCollectionRef, where("email", "==", email.toLowerCase()));
         const querySnapshot = await getDocs(q);
         return { success: true, data: querySnapshot.docs[0].data() };
     } catch (error) {
@@ -135,7 +135,7 @@ const handleLogout = async (): Promise<Result> => {
  */
 const sendPasswordResetLink = async (email: string): Promise<Result> => {
     try {
-        await sendPasswordResetEmail(auth, email);
+        await sendPasswordResetEmail(auth, email.toLowerCase());
         return { success: true };
     } catch (error) {
         return handleFirebaseError(error);
