@@ -26,7 +26,7 @@ interface AgricultureProposalFormData {
     // Ingredient/Crop Supplied
     ingredientPrimary: FormField;
     ingredientSub: FormField;
-	ingredientSubAdditional: FormField;
+    ingredientSubAdditional: FormField;
 
     // General Project Activity Description
     mainIntervention: FormField;
@@ -105,7 +105,7 @@ function AgricultureProposalForm() {
     const answersRef = useRef<AgricultureProposalFormData>({
         ingredientPrimary: new FormField('', true),
         ingredientSub: new FormField('', true),
-		ingredientSubAdditional: new FormField('', true),
+        ingredientSubAdditional: new FormField('', true),
         mainIntervention: new FormField('', true),
         projectDescription: new FormField('', true),
         averageVolumePurchased: new FormField('', true),
@@ -189,7 +189,7 @@ function AgricultureProposalForm() {
                 try {
                     const q = query(
                         collectionRef,
-                        where("projectName", "==", projectName)
+                        where("projectName", "==", projectName.toLowerCase())
                     );
                     const querySnapshot = await getDocs(q);
 
@@ -221,7 +221,7 @@ function AgricultureProposalForm() {
 
         try {
             const submissionObj: Record<string, string> = {
-                projectName: projectName || ''
+                projectName: projectName?.toLowerCase() || ''
             };
             Object.keys(answersRef.current).forEach((field) => {
                 submissionObj[field] = answersRef.current[field as keyof AgricultureProposalFormData]!.value;

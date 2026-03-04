@@ -66,7 +66,7 @@ const TableRow: React.FC<TableRowProps> = ({
 }) => {
   // --- Local State for Editable Fields ---
   const [localClientName, setLocalClientName] = useState(data.clientName);
-  const [localProjectName, setLocalProjectName] = useState(data.projectName);
+  const [localProjectName, setLocalProjectName] = useState(data.projectName.toLowerCase());
   const [localSupplierName, setLocalSupplierName] = useState(data.supplierName);
   const [localOverallStatus, setLocalOverallStatus] = useState<StatusType>(data.overallStatus);
   const [localSpendCategory, setLocalSpendCategory] = useState(data.spendCategory);
@@ -77,7 +77,7 @@ const TableRow: React.FC<TableRowProps> = ({
   // Refresh local states when `data` changes
   useEffect(() => {
     setLocalClientName(data.clientName);
-    setLocalProjectName(data.projectName);
+    setLocalProjectName(data.projectName.toLowerCase());
     setLocalSupplierName(data.supplierName);
     setLocalOverallStatus(data.overallStatus);
     setLocalSpendCategory(data.spendCategory);
@@ -114,7 +114,7 @@ const TableRow: React.FC<TableRowProps> = ({
       <td className={`${styles.cell} ${!isEditMode ? styles.projectLink : ''}`}
         onClick={() => {
           if (!isEditMode) {
-            navigate(`/projects/${data.projectName}`);
+            navigate(`/projects/${data.projectName.toLowerCase()}`);
             onRowClick?.();
           }
         }}
@@ -128,7 +128,7 @@ const TableRow: React.FC<TableRowProps> = ({
             className={styles.editableInput}
           />
         ) : (
-          data.projectName
+          data.projectName.toLowerCase()
         )}
       </td>
 
@@ -181,10 +181,10 @@ const TableRow: React.FC<TableRowProps> = ({
       {/* Analysis Stage */}
       <td className={styles.cell}>
         <ColorText
-            text={data.analysisStage}
-            category={data.analysisStage}
-            variant="analysis"
-          />
+          text={data.analysisStage}
+          category={data.analysisStage}
+          variant="analysis"
+        />
       </td>
 
       {/* Spend Category */}
@@ -228,7 +228,7 @@ const TableRow: React.FC<TableRowProps> = ({
             className={styles.saveButton}
             onClick={() => {
               onSave?.({
-                projectName: localProjectName,
+                projectName: localProjectName.toLowerCase(),
                 clientName: localClientName, // Add clientName here
                 supplierName: localSupplierName,
                 overallStatus: localOverallStatus,
@@ -245,7 +245,7 @@ const TableRow: React.FC<TableRowProps> = ({
               className={styles.actionButton}
               onClick={(e) => {
                 const rect = (e.target as HTMLElement).getBoundingClientRect();
-                setButtonPosition({ x: rect.left - 150, y: rect.bottom - 40});
+                setButtonPosition({ x: rect.left - 150, y: rect.bottom - 40 });
                 onActionClick?.(data.id, e);
               }}
             >

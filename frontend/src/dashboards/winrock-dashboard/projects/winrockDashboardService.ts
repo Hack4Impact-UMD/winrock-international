@@ -76,7 +76,7 @@ const createProject = async (
         await runTransaction(db, async (tx) => {
             // Check if the project name already exists
             const projectsRef = collection(db, "projects");
-            const nameQuery = query(projectsRef, where("projectName", "==", projectName));
+            const nameQuery = query(projectsRef, where("projectName", "==", projectName.toLowerCase()));
             const existingProjects = await getDocs(nameQuery);
 
             if (!existingProjects.empty) {
@@ -112,11 +112,18 @@ const createProject = async (
         return handleFirebaseError(error);
     }
 };
-function mapDocToProject(d: any): Project {
+function mapDocToProject(docSnap: any): Project {
+    const d = docSnap.data();
+
     return {
+        id: docSnap.id,
         ...d,
-        startDate: d.startDate instanceof Timestamp ? d.startDate.toDate().toISOString() : d.startDate,
-        lastUpdated: d.lastUpdated instanceof Timestamp ? d.lastUpdated.toDate().toISOString() : d.lastUpdated,
+        startDate: d.startDate instanceof Timestamp
+            ? d.startDate.toDate().toISOString()
+            : d.startDate,
+        lastUpdated: d.lastUpdated instanceof Timestamp
+            ? d.lastUpdated.toDate().toISOString()
+            : d.lastUpdated,
     };
 }
 
@@ -125,7 +132,7 @@ function mapDocToProject(d: any): Project {
  */
 const getProjectByName = async (projectName: string): Promise<Result> => {
     try {
-        const q = query(collection(db, "projects"), where("projectName", "==", projectName));
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName.toLowerCase()));
         const querySnapshot = await getDocs(q);
         if (querySnapshot.empty) {
             return { success: false, errorCode: "project-not-found" };
@@ -207,9 +214,9 @@ const getProjectsWithFilters = async (
 
         const querySnapshot = await getDocs(filterQuery);
         querySnapshot.forEach((docSnap) => {
-            const project = mapDocToProject(docSnap.data());
+            const project = mapDocToProject(docSnap);
             projects.push(project);
-            projectNames.push(project.projectName);
+            projectNames.push(project.projectName.toLowerCase());
         });
 
         return {
@@ -303,7 +310,7 @@ const generateNewProjectSupplierToken = async (supplierEmail: string, projectNam
             }
 
             await setDoc(docRef, {
-                projectName: projectName,
+                projectName: projectName.toLowerCase(),
                 supplierEmail: supplierEmail,
                 token: token
             });
@@ -332,7 +339,7 @@ const getSupplierDataByToken = async (token: string): Promise<Result> => {
             return { success: false, errorCode: "token-not-found" };
         }
         const data = docSnap.data();
-        return { success: true, data: { supplierEmail: data.supplierEmail, projectName: data.projectName } };
+        return { success: true, data: { supplierEmail: data.supplierEmail, projectName: data.projectName.toLowerCase() } };
     } catch (error) {
         return handleFirebaseError(error);
     }
@@ -357,7 +364,7 @@ const validateSupplierEmail = async (token: string, supplierEmail: string): Prom
 const getSupplierProjectNameByToken = async (token: string): Promise<Result> => {
     const res = await getSupplierDataByToken(token);
     if (res.success) {
-        return { success: true, data: res.data.projectName };
+        return { success: true, data: res.data.projectName.toLowerCase() };
     }
     return { success: false, errorCode: "project-name-not-found" };
 }
@@ -367,7 +374,7 @@ const getSupplierProjectNameByToken = async (token: string): Promise<Result> => 
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
     try {
-        const q = query(collection(db, "projects"), where("projectName", "==", projectName));
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName.toLowerCase()));
         const querySnapshot = await getDocs(q);
         if (querySnapshot.empty) {
             return { success: false, errorCode: "project-not-found" };
@@ -388,7 +395,7 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 const checkProjectLock = async (projectName: string): Promise<Result> => {
     try {
         const projectsRef = collection(db, "projects");
-        const q = query(projectsRef, where("projectName", "==", projectName));
+        const q = query(projectsRef, where("projectName", "==", projectName.toLowerCase()));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
@@ -414,7 +421,7 @@ const checkProjectLock = async (projectName: string): Promise<Result> => {
 const lockProject = async (projectName: string): Promise<Result> => {
     try {
         // first get the doc ID by projectName
-        const q = query(collection(db, "projects"), where("projectName", "==", projectName));
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName.toLowerCase()));
         const querySnapshot = await getDocs(q);
         if (querySnapshot.empty) {
             return { success: false, errorCode: "project-not-found" };
@@ -447,7 +454,7 @@ const lockProject = async (projectName: string): Promise<Result> => {
  */
 const unlockProject = async (projectName: string): Promise<Result> => {
     try {
-        const q = query(collection(db, "projects"), where("projectName", "==", projectName));
+        const q = query(collection(db, "projects"), where("projectName", "==", projectName.toLowerCase()));
         const querySnapshot = await getDocs(q);
         if (querySnapshot.empty) {
             return { success: false, errorCode: "project-not-found" };
