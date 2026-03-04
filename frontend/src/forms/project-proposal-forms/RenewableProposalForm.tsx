@@ -217,13 +217,20 @@ const RenewableProposalForm = () => {
             }
         }
 
-        const submissionObj: Record<string, string> = {};
+        const submissionObj: Record<string, string> = {
+            projectName: normalizedProjectName
+        };
         Object.keys(answersRef.current).forEach((field) => {
             submissionObj[field] = answersRef.current[field as keyof RenewableProposalFormData]!.value;
         });
 
         try {
             await firestore.addDoc(collectionRef, submissionObj);
+            if (documentId) {
+                await updateDoc(doc(db, collectionID, documentId), submissionObj);
+            } else {
+                await firestore.addDoc(collectionRef, submissionObj);
+            }
             setIsSubmitted(true);
         } catch (error) {
             setError("Server error. Please try again later.");
