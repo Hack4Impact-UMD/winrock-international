@@ -64,7 +64,7 @@ const TableRow: React.FC<TableRowProps> = ({
         }}
         style={{ cursor: 'pointer', textDecoration: 'underline' }}
       >
-        {data.projectName}
+        {data.projectName.toLowerCase()}
       </td>
 
       {/* Overall Status */}
@@ -99,7 +99,7 @@ const TableRow: React.FC<TableRowProps> = ({
             className={styles.actionButton}
             onClick={(e) => {
               const rect = (e.target as HTMLElement).getBoundingClientRect();
-              setButtonPosition({ x: rect.left - 150, y: rect.bottom - 40});
+              setButtonPosition({ x: rect.left - 150, y: rect.bottom - 40 });
               onActionClick?.(data.id, e);
             }}
           >

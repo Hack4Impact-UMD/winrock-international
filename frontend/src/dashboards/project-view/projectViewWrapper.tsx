@@ -7,7 +7,9 @@ import { Project } from "../../types/Project";
 import { UpdateItem } from "../../types/UpdateItem";
 
 const ProjectViewWrapper = () => {
-  const { projectName } = useParams();
+  let { projectName } = useParams();
+  projectName = projectName || ""; // Handle case where projectName is undefined
+  const normalizedProjectName = projectName.toLowerCase();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
   const [updates, setUpdates] = useState<UpdateItem[]>([]);
@@ -20,7 +22,7 @@ const ProjectViewWrapper = () => {
       try {
         const projectQuery = query(
           collection(db, "projects"),
-          where('projectName', '==', projectName)
+          where('projectName', '==', normalizedProjectName)
         );
 
         const projectSnapshot = await getDocs(projectQuery);
@@ -60,7 +62,7 @@ const ProjectViewWrapper = () => {
 
           setUpdates(updatesData);
         } else {
-          console.warn("No project found for projectName:", projectName);
+          console.warn("No project found for projectName:", normalizedProjectName);
           setProject(null);
         }
       } catch (error) {
@@ -86,7 +88,7 @@ const ProjectViewWrapper = () => {
     try {
       const projectQuery = query(
         collection(db, "projects"),
-        where('projectName', '==', projectName)
+        where('projectName', '==', normalizedProjectName)
       );
 
       const projectSnapshot = await getDocs(projectQuery);

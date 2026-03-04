@@ -73,7 +73,7 @@ const SupplierDashboard: React.FC = () => {
 
     // Prevent toggling if the project's overallStatus is "Completed"
     if (project.overallStatus === "Completed") {
-      console.error(`Cannot toggle archive status for a completed project: ${project.projectName}`);
+      console.error(`Cannot toggle archive status for a completed project: ${project.projectName.toLowerCase()}`);
       return;
     }
 
@@ -180,7 +180,7 @@ const SupplierDashboard: React.FC = () => {
 
         return {
           id: doc.id, // local frontend ID for table rendering
-          projectName: p.projectName.charAt(0).toUpperCase() + p.projectName.slice(1),
+          projectName: p.projectName,
           overallStatus: p.overallStatus,
           spendCategory: p.spendCategory,
           geography: p.geography,
@@ -407,7 +407,7 @@ const SupplierDashboard: React.FC = () => {
                   onActionClick={handleActionClick}
                   onArchiveClick={handleToggleArchive} activeActionMenuId={activeActionMenu}  // 👈 here
                   onRowClick={() => {
-                    navigate(`/dashboard/supplier/projects/${project.projectName}`, { state: { project } });
+                    navigate(`/dashboard/supplier/projects/${project.projectName.toLowerCase()}`, { state: { project } });
                   }}
                 />
               ))}

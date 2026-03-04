@@ -157,6 +157,7 @@ function TechEnergyRisksForm() {
 
   // Initialize form lock
   const { projectName } = useParams();
+  const normalizedProjectName = (projectName ?? '').toLowerCase();
   const { handleLockedAction, LockedPopup, isLocked } = FormLock({
     projectName: projectName!
   });
@@ -174,7 +175,7 @@ function TechEnergyRisksForm() {
         try {
           const q = query(
             collectionRef,
-            where("projectName", "==", projectName)
+            where("projectName", "==", projectName.toLowerCase())
           );
           const querySnapshot = await getDocs(q);
 
@@ -206,7 +207,7 @@ function TechEnergyRisksForm() {
 
     try {
       const submissionObj: Record<string, string> = {
-        projectName: projectName || ''
+        projectName: normalizedProjectName
       };
       Object.keys(answersRef.current).forEach((field) => {
         submissionObj[field] = answersRef.current[field as keyof TechEnergyRisksFormData]!.value;
@@ -278,13 +279,20 @@ function TechEnergyRisksForm() {
     }
 
     // Convert the answersRef into a submission object
-    const submissionObj: Record<string, string> = {}
+
+    const submissionObj: Record<string, string> = {
+      projectName: normalizedProjectName
+    }
     Object.keys(answersRef.current).forEach((field) => {
       submissionObj[field] = answersRef.current[field as keyof TechEnergyRisksFormData]!.value;
     });
 
     try {
-      await firestore.addDoc(collectionRef, submissionObj); // addDoc() auto-generates an ID for the submission
+      if (documentId) {
+        await updateDoc(doc(db, collectionID, documentId), submissionObj);
+      } else {
+        await firestore.addDoc(collectionRef, submissionObj);
+      }
       setIsSubmitted(true);
     } catch (error) {
       console.error("Error submitting TechEnergyRisksForm", error);
