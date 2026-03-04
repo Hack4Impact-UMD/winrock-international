@@ -164,7 +164,7 @@ const SupplierDashboard: React.FC = () => {
   // Firestore snapshot mapping
 
   useEffect(() => {
-    const supplierEmail = sessionStorage.getItem("userEmail") || "";
+    const supplierEmail = sessionStorage.getItem("userEmail")?.toLowerCase() || "";
 
     if (!supplierEmail) return;
 

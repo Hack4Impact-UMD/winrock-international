@@ -76,7 +76,7 @@ const handleSignup = async ({ email, password, firstName, lastName, role, compan
             return { success: false, errorCode: "invalid-role" };
         }
 
-        const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const newUserCredential = await createUserWithEmailAndPassword(auth, email.toLowerCase(), password);
         const newUser: User = newUserCredential.user;
 
         const docRef = doc(db, "users", newUser.uid); // Use the user's random UID as the document ID
