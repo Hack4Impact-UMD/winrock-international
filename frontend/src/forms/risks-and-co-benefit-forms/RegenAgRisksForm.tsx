@@ -171,7 +171,7 @@ function RegenAgRisksForm() {
                 try {
                     const q = query(
                         collectionRef,
-                        where("projectName", "==", projectName)
+                        where("projectName", "==", projectName.toLowerCase())
                     );
                     const querySnapshot = await getDocs(q);
 
@@ -203,7 +203,7 @@ function RegenAgRisksForm() {
 
         try {
             const submissionObj: Record<string, string> = {
-                projectName: projectName || ''
+                projectName: projectName?.toLowerCase() || ''
             };
             Object.keys(answersRef.current).forEach((field) => {
                 submissionObj[field] = answersRef.current[field as keyof TechEnergyRisksFormData]!.value;

@@ -12,7 +12,7 @@ const AdvanceStageButton: React.FC<AdvanceStageButtonProps> = ({ currentStage, o
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-      <button 
+      <button
         style={{
           padding: "10px 20px",
           fontSize: "14px",

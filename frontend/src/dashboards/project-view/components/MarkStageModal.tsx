@@ -8,9 +8,11 @@ interface ProjectModalProps {
     projectId: string;
     currentStage: string;
     onStageAdvanced?: () => void;
+    projectName: string;
 }
-
-const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, currentStage, onStageAdvanced }) => {
+const MarkStageModal: React.FC<ProjectModalProps> = ({ onClose, projectId, currentStage, onStageAdvanced, projectName }) => {
+    console.log(projectId)
+    console.log(projectName)
     const popupRef = useRef<HTMLDivElement>(null);
     return createPortal(
         <div className={styles.overlay}>
@@ -30,18 +32,18 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, current
                 </div>
                 <div className={styles.footer}>
                     <div className={styles.buttonContainer}>
-                        <button 
-                            className={styles.cancelButton} 
+                        <button
+                            className={styles.cancelButton}
                             onClick={() => {
                                 onClose();
-                            }} 
+                            }}
                         >
                             Cancel
                         </button>
-                        <button 
-                            className={styles.completeButton} 
+                        <button
+                            className={styles.completeButton}
                             onClick={async () => {
-                                const result = await markStageAsComplete(projectId, currentStage);
+                                const result = await markStageAsComplete(projectId, currentStage, projectName);
                                 if (result.success) {
                                     // Refresh project data after successfully advancing stage
                                     if (onStageAdvanced) {
@@ -53,7 +55,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, current
                                     // Optionally show error message to user
                                     // Keep modal open on error so user can try again
                                 }
-                            }} 
+                            }}
                         >
                             Mark Stage as complete
                         </button>
@@ -65,4 +67,4 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projectId, current
     );
 };
 
-export default ProjectModal;
+export default MarkStageModal;

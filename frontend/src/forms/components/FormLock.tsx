@@ -14,8 +14,8 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
   if (DISABLE_LOCK) {
     return {
       showLockedPopup: false,
-      handleLockedAction: () => {},
-      closePopup: () => {},
+      handleLockedAction: () => { },
+      closePopup: () => { },
       isLocked: false,
       isLoading: false,
       LockedPopup: null
@@ -37,7 +37,7 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
         setIsLoading(true);
 
         // First check if project is already locked
-        const lockCheckResult = await checkProjectLock(projectName);
+        const lockCheckResult = await checkProjectLock(projectName.toLowerCase());
 
         if (!lockCheckResult.success) {
           console.error('Failed to check project lock status:', lockCheckResult.errorCode);
@@ -56,7 +56,7 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
         }
 
         // Project is not locked, try to lock it
-        const lockResult = await lockProject(projectName);
+        const lockResult = await lockProject(projectName.toLowerCase());
 
         if (!lockResult.success) {
           if (lockResult.errorCode === 'project-already-locked') {
@@ -85,7 +85,7 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
     // Cleanup function to unlock project when component unmounts
     return () => {
       if (projectName && !isLocked) {
-        unlockProject(projectName).catch(error => {
+        unlockProject(projectName.toLowerCase()).catch(error => {
           console.error('Failed to unlock project on cleanup:', error);
         });
       }

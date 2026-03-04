@@ -66,7 +66,7 @@ const createProject = async (
     isPinned: boolean = false
 ): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
+        const docRef = doc(db, "projects", projectName.toLowerCase());
 
         await runTransaction(db, async (tx) => {
             const snap = await tx.get(docRef);
@@ -102,6 +102,7 @@ const createProject = async (
 };
 function mapDocToProject(d: any): Project {
     return {
+        id: d.id,
         ...d,
         startDate: d.startDate instanceof Timestamp ? d.startDate.toDate().toISOString() : d.startDate,
         lastUpdated: d.lastUpdated instanceof Timestamp ? d.lastUpdated.toDate().toISOString() : d.lastUpdated,
@@ -113,7 +114,7 @@ function mapDocToProject(d: any): Project {
  */
 const getProjectByName = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
+        const docRef = doc(db, "projects", projectName.toLowerCase());
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
             return { success: false, errorCode: "project-not-found" };
@@ -197,7 +198,7 @@ const getProjectsWithFilters = async (
         querySnapshot.forEach((docSnap) => {
             const project = mapDocToProject(docSnap.data());
             projects.push(project);
-            projectNames.push(project.projectName);
+            projectNames.push(project.projectName.toLowerCase());
         });
 
         return {
@@ -218,7 +219,7 @@ const updateProjectField = async (
     newValue: any
 ): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
+        const docRef = doc(db, "projects", projectName.toLowerCase());
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
             return { success: false, errorCode: "project-not-found" };
@@ -249,7 +250,7 @@ const updateProjectField = async (
  */
 const deleteProject = async (projectName: string): Promise<Result> => {
     try {
-        const docRef = doc(db, "projects", projectName);
+        const docRef = doc(db, "projects", projectName.toLowerCase());
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
             return { success: false, errorCode: "project-not-found" };
