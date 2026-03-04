@@ -82,6 +82,7 @@ const RenewableProposalForm = () => {
 
     // Initialize form lock - using projectId from URL params or default
     const { projectName } = useParams(); // TODO: Replace with actual projectId from form data or props
+    const normalizedProjectName = (projectName ?? '').toLowerCase();
     const { handleLockedAction, LockedPopup, isLocked } = FormLock({
         projectName: projectName!,
     });
@@ -111,11 +112,11 @@ const RenewableProposalForm = () => {
     // finding the existing document
     useEffect(() => {
         const findExistingDocument = async () => {
-            if (projectName) {
+            if (normalizedProjectName) {
                 try {
                     const q = query(
                         collectionRef,
-                        where("projectName", "==", projectName.toLowerCase())
+                        where("projectName", "==", normalizedProjectName.toLowerCase())
                     );
                     const querySnapshot = await getDocs(q);
 
@@ -147,7 +148,7 @@ const RenewableProposalForm = () => {
 
         try {
             const submissionObj: Record<string, string> = {
-                projectName: projectName?.toLowerCase() || ''
+                projectName: normalizedProjectName || ''
             };
             Object.keys(answersRef.current).forEach((field) => {
                 submissionObj[field] = answersRef.current[field as keyof RenewableProposalFormData]!.value;

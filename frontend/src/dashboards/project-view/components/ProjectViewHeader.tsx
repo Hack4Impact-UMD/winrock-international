@@ -116,8 +116,8 @@ const ProjectViewHeader: React.FC<ProjectViewHeaderProps> = ({ data, setShowAcce
                 {isEditMode ? (
                     <input
                         type="text"
-                        value={editableData.projectName.toLowerCase()}
-                        onChange={(e) => handleInputChange(e, 'projectName')}
+                        value={editableData.projectName}
+                        onChange={(e) => handleInputChange(e.target.value.toLowerCase(), 'projectName')}
                         className={styles.editableTitle}
                     />
                 ) : (
