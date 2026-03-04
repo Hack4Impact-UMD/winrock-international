@@ -126,7 +126,6 @@ function mapDocToProject(docSnap: any): Project {
             : d.lastUpdated,
     };
 }
-}
 
 /**
  * Retrieves a project by name.
