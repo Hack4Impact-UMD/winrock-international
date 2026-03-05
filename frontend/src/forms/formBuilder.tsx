@@ -79,8 +79,7 @@ const FormBuilder = () => {
                         />
                     </div>
 
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    {elements.map((el, index) => (
+                    {elements.map((el) => (
                         <div key={el.id} className={el.type === 'section' ? styles.sectionWrapper : styles.dropdownQuestion}>
                             <button onClick={() => deleteElement(el.id)} className={styles.deleteBtn}>✕ Delete</button>
 

@@ -23,7 +23,7 @@ import SupplierNotificationCenter from './dashboards/supplier-view/notification-
 import RegenAgRisksForm from './forms/risks-and-co-benefit-forms/RegenAgRisksForm';
 import RequireAuth from './auth/requireAuth.tsx';
 import FormDashboard from './forms/FormDashboard.tsx';
-import FormBuilder from 'forms/formBuilder.tsx';
+import FormBuilder from './forms/formBuilder.tsx';
 
 function App() {
   return (
