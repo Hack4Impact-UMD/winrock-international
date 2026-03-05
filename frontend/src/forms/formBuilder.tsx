@@ -46,11 +46,12 @@ const FormBuilder = () => {
         try {
             await FormBuilderService.publishForm(title, elements, formType);
             alert("Form Published Successfully!");
+            navigate("/forms/dashboard");
+
         } catch (err) {
             alert("Error publishing form.");
         } finally {
             setIsPublishing(false);
-            navigate("/forms/dashboard");
         }
     };
 
