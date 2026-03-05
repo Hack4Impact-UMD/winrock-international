@@ -23,6 +23,7 @@ import SupplierNotificationCenter from './dashboards/supplier-view/notification-
 import RegenAgRisksForm from './forms/risks-and-co-benefit-forms/RegenAgRisksForm';
 import RequireAuth from './auth/requireAuth.tsx';
 import FormBuilder from './forms/formBuilder.tsx';
+import FormDashboard from './forms/FormDashboard.tsx';
 
 function App() {
   return (
@@ -109,6 +110,14 @@ function App() {
           element={
             <RequireAuth>
               <WinrockDashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/forms/dashboard"
+          element={
+            <RequireAuth>
+              <FormDashboard />
             </RequireAuth>
           }
         />
