@@ -95,11 +95,11 @@ const createProject = async (
                 activityType,
                 overallStatus,
                 analysisStage,
-                startDate: startDate || new Date(),
+                startDate: startDate ? Timestamp.fromDate(startDate) : serverTimestamp(),
                 isActive,
                 isPinned,
                 isLocked,
-                lastUpdated: new Date(),
+                lastUpdated: serverTimestamp(),
             };
 
             tx.set(docRef, projectData);
