@@ -31,6 +31,13 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTab }) => {
           Notification Center
         </button>
         <button
+          className={`${styles.headerNavButton} ${currentTab === 'forms-dashboard' ? styles.active : ''}`}
+          onClick={() => navigate("/forms/dashboard")}
+        >
+          <img src={notificationIcon} alt="Notification Center" />
+          Forms
+        </button>
+        <button
           className={`${styles.logoutButton}`}
           onClick={async () => {
             const auth = getAuth(); // Get the Firebase Auth instance
