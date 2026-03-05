@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Sidebar from '../dashboards/winrock-dashboard/components/Sidebar.js';
 import styles from './css-modules/FormBuilder.module.css';
 import { FormBuilderService, QuestionDefinition } from './FormBuilderService.js';
 import { useNavigate } from 'react-router-dom';
 
 // Define the updated type to include 'section'
-interface FormElement extends QuestionDefinition {
+interface FormElement extends Omit<QuestionDefinition, 'type'> {
     type: 'text' | 'dropdown' | 'section';
 }
 
@@ -79,6 +79,7 @@ const FormBuilder = () => {
                         />
                     </div>
 
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     {elements.map((el, index) => (
                         <div key={el.id} className={el.type === 'section' ? styles.sectionWrapper : styles.dropdownQuestion}>
                             <button onClick={() => deleteElement(el.id)} className={styles.deleteBtn}>✕ Delete</button>

@@ -22,8 +22,8 @@ import SupplierProjectViewWrapper from './dashboards/supplier-project-view/suppl
 import SupplierNotificationCenter from './dashboards/supplier-view/notification-center/NotificationCenter';
 import RegenAgRisksForm from './forms/risks-and-co-benefit-forms/RegenAgRisksForm';
 import RequireAuth from './auth/requireAuth.tsx';
-import FormBuilder from './forms/FormBuilder.tsx';
 import FormDashboard from './forms/FormDashboard.tsx';
+import FormBuilder from 'forms/formBuilder.tsx';
 
 function App() {
   return (

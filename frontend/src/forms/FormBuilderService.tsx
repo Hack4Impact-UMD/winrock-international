@@ -3,7 +3,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export interface QuestionDefinition {
     id: string;
-    type: 'text' | 'dropdown';
+    type: 'text' | 'dropdown' | 'section'; // Add 'section' here
     label: string;
     options?: string[];
 }
