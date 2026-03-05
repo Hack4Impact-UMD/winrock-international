@@ -6,6 +6,8 @@
   top: 0;
   bottom: 0;
   background-color: white;
+  display: flex;
+  flex-direction: column;
 }
 
 .logo {
@@ -16,8 +18,10 @@
   display: flex;
   flex-direction: column;
   margin-top: 7rem;
-  margin-left: -2.5rem;  /* Counter the header's left padding */
-  margin-right: -2.5rem; /* Counter the header's right padding */
+  margin-left: -2.5rem;
+  /* Counter the header's left padding */
+  margin-right: -2.5rem;
+  /* Counter the header's right padding */
   gap: 1rem;
 }
 
@@ -31,7 +35,7 @@
   height: 3.125rem;
   background: none;
   border: none;
-  cursor: pointer;  
+  cursor: pointer;
   padding-left: 2.5rem;
 }
 
@@ -40,9 +44,9 @@
 }
 
 .headerNavButton img {
-  width: 1.25rem;  
-  min-width: 1.25rem;  
-  height: 1.25rem; 
+  width: 1.25rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,4 +54,42 @@
 
 .headerNavButton:hover {
   background-color: #F6F7F9;
+}
+
+.logoutButton {
+  /* 1. Positioning: Push to the absolute bottom of the sidebar */
+  margin-top: auto;
+  margin-bottom: 2rem;
+  /* Add some breathing room from the bottom edge */
+  align-self: center;
+  /* Center the button horizontally within the sidebar */
+
+  /* 2. Styling: Blue text and rounded look */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  width: 80%;
+  /* Give it a consistent width */
+  padding: 0.75rem 1rem;
+  background-color: transparent;
+  color: #007bff;
+  /* Winrock/Standard Blue */
+  border: 1px solid #007bff;
+  border-radius: 50px;
+  /* Fully rounded pill shape */
+
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: #007bff;
+  color: white;
+  /* Invert colors on hover */
+  opacity: 1;
+  /* Remove previous opacity setting if you had one */
 }
