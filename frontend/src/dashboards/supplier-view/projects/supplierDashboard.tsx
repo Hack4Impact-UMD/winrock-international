@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from "./../css-modules/SupplierDashboard.module.css"
 import winrockLogo from "./../../../assets/winrock-international-logo.png"
-import projectsIcon from './../../../assets/projects-icon.svg';
-import notificationIcon from './../../../assets/notification-icon.svg';
 import searchIcon from "../../../assets/search-icon.svg"
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy, where, getDocs, doc, getDoc } from "firebase/firestore";
@@ -17,7 +15,7 @@ import TableRow from '../components/TableRow';
 import { updateProjectField } from "./supplierDashboardService";
 import { db } from "../../../firebaseConfig";
 import { Project } from '../../../types/Project';
-import { getAuth, signOut } from "firebase/auth"; // Import Firebase auth functions
+import Sidebar from '../components/Sidebar';
 
 
 const SupplierDashboard: React.FC = () => {
@@ -32,7 +30,6 @@ const SupplierDashboard: React.FC = () => {
     spend: [],
   });
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
-  const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first');
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -348,55 +345,8 @@ const SupplierDashboard: React.FC = () => {
     <div className={styles.dashboardContainer}>
       <header className={styles.header}>
         <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
-        {/* Top Section */}
-        <div className={styles.headerNavContainer}>
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
-            onClick={() => {
-              setActiveNavButton('Projects');
-              navigate('/dashboard/admin/projects');
-            }}
-          >
-            <img src={projectsIcon} alt="Projects" />
-            Projects
-          </button>
 
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
-            onClick={() => {
-              setActiveNavButton('Notification Center');
-              navigate('/dashboard/admin/notification-center');
-            }}
-          >
-            <img src={notificationIcon} alt="Notification Center" />
-            Notification Center
-          </button>
-        </div>
-        <button
-          className={`${styles.logoutButton}`}
-          onClick={async () => {
-            const auth = getAuth(); // Get the Firebase Auth instance
-            try {
-              await signOut(auth); // Sign out the user
-              navigate('/login'); // Redirect to the login page after logout
-            } catch (error) {
-              console.error("Error logging out:", error); // Handle errors
-            }
-          }}
-        >
-          Logout
-        </button>
-
-        {/* <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
-            onClick={() => {
-              setActiveNavButton('Account Settings');
-              navigate('/dashboard/admin/account-settings');
-            }}
-          >
-            <img src={accountSettingsIcon} alt="Account Settings" />
-            Account Settings
-          </button> */}
+        <Sidebar currentTab='projects'></Sidebar>
       </header>
 
       <main className={styles.mainContent}>
