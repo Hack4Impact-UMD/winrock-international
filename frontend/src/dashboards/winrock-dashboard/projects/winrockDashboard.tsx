@@ -2,8 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Timestamp } from "firebase/firestore";
 import styles from "./../css-modules/WinrockDashboard.module.css"
 import winrockLogo from "./../../../assets/winrock-international-logo.png"
-import projectsIcon from './../../../assets/projects-icon.svg';
-import notificationIcon from './../../../assets/notification-icon.svg';
 import searchIcon from "../../../assets/search-icon.svg"
 import FilterTabs from '../components/FilterTabs';
 import Pagination from '../components/Pagination';
@@ -23,7 +21,6 @@ import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig.js";
 import { Project } from '../../../types/Project'
 import { useLocation } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth"; // Import Firebase auth functions
 import Sidebar from '../components/Sidebar.js';
 
 
@@ -48,7 +45,6 @@ const WinrockDashboard: React.FC = () => {
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [activeNavButton, setActiveNavButton] = useState('Projects');
   const [selectedSort, setSelectedSort] = useState('newest-first');
   const [allSelected, setAllSelected] = useState(false);
   const [editableProjects, setEditableProjects] = useState<Project[]>([]);
