@@ -88,12 +88,14 @@ const FormDashboard = () => {
 
                 <div className={styles.formList}>
                     {forms.map((form) => (
-                        <div key={form.id} className={styles.formItem}>
-                            <span className={styles.formTitle}>{form.title}</span>
-                            <div className={styles.actionGroup}>
-                                <button className={styles.viewBtn}>View</button>
-                                <button className={styles.editBtn}>Edit</button>
-                            </div>
+                        <div className={styles.actionGroup}>
+                            <button
+                                className={styles.viewBtn}
+                                onClick={() => navigate(`/view-form/${activeTab}/${form.id}`)}
+                            >
+                                View
+                            </button>
+                            <button className={styles.editBtn}>Edit</button>
                         </div>
                     ))}
                 </div>

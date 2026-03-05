@@ -23,7 +23,8 @@ import SupplierNotificationCenter from './dashboards/supplier-view/notification-
 import RegenAgRisksForm from './forms/risks-and-co-benefit-forms/RegenAgRisksForm';
 import RequireAuth from './auth/requireAuth.tsx';
 import FormDashboard from './forms/FormDashboard.tsx';
-import FormBuilder from './forms/formBuilder.tsx';
+import FormBuilder from './forms/FormBuilder.tsx';
+import FormViewer from './forms/FormViewer.tsx';
 
 function App() {
   return (
@@ -37,7 +38,7 @@ function App() {
         <Route path="/auth/create-new-password" element={<CreateNewPasswordPage />} />
         <Route path="/auth/password-changed" element={<PasswordChangedPage />} />
         <Route path="/form-builder" element={<FormBuilder />} />
-
+        <Route path="/view-form/:formType/:id" element={<FormViewer />} />
         {/* Protected forms */}
         <Route
           path="/forms/agriculture-proposal-form/:projectName"
