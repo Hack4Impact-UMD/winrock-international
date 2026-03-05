@@ -22,6 +22,7 @@ import SupplierProjectViewWrapper from './dashboards/supplier-project-view/suppl
 import SupplierNotificationCenter from './dashboards/supplier-view/notification-center/NotificationCenter';
 import RegenAgRisksForm from './forms/risks-and-co-benefit-forms/RegenAgRisksForm';
 import RequireAuth from './auth/requireAuth.tsx';
+import FormBuilder from './forms/formBuilder.tsx';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/create-new-password" element={<CreateNewPasswordPage />} />
         <Route path="/auth/password-changed" element={<PasswordChangedPage />} />
+        <Route path="/form-builder" element={<FormBuilder />} />
 
         {/* Protected forms */}
         <Route
