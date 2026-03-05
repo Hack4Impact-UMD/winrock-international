@@ -19,14 +19,14 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTab }) => {
       <div className={styles.headerNavContainer}>
         <button
           className={`${styles.headerNavButton} ${currentTab === 'projects' ? styles.active : ''}`}
-          onClick={() => navigate("/dashboard/admin/projects")}
+          onClick={() => navigate("/dashboard/supplier/projects")}
         >
           <img src={projectsIcon} alt="Projects" />
           Projects
         </button>
         <button
           className={`${styles.headerNavButton} ${currentTab === 'notification-center' ? styles.active : ''}`}
-          onClick={() => navigate("/dashboard/admin/notification-center")}
+          onClick={() => navigate("/dashboard/supplier/notification-center")}
         >
           <img src={notificationIcon} alt="Notification Center" />
           Notification Center
@@ -37,7 +37,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTab }) => {
             const auth = getAuth(); // Get the Firebase Auth instance
             try {
               await signOut(auth); // Sign out the user
-              navigate('/login'); // Redirect to the login page after logout
+              sessionStorage.removeItem("loggedIn");
+              sessionStorage.removeItem("userEmail");
+              navigate('/auth/login', { replace: true }); // Redirect to login page after logout
             } catch (error) {
               console.error("Error logging out:", error); // Handle errors
             }

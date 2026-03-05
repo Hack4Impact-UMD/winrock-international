@@ -36,7 +36,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTab }) => {
             const auth = getAuth(); // Get the Firebase Auth instance
             try {
               await signOut(auth); // Sign out the user
-              navigate('/login'); // Redirect to the login page after logout
+              sessionStorage.removeItem("loggedIn");
+              sessionStorage.removeItem("userEmail");
+              navigate('/auth/login', { replace: true }); // Redirect to login page after logout
             } catch (error) {
               console.error("Error logging out:", error); // Handle errors
             }
