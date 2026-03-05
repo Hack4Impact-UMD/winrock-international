@@ -68,7 +68,6 @@ html {
   background-color: #F6F7F9;
 }
 
-.logoutButton,
 .addProjectButton,
 .editButton {
   background-color: white;
@@ -80,10 +79,6 @@ html {
   font-size: 0.65rem;
 }
 
-.logoutButton {
-  width: 6.625rem;
-  margin-top: auto;
-}
 
 .addProjectButton {
   width: 6.625rem;

@@ -24,6 +24,7 @@ import { db } from "../../../firebaseConfig.js";
 import { Project } from '../../../types/Project'
 import { useLocation } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth"; // Import Firebase auth functions
+import Sidebar from '../components/Sidebar.js';
 
 
 
@@ -414,55 +415,8 @@ const WinrockDashboard: React.FC = () => {
     <div className={styles.dashboardContainer}>
       <header className={styles.header}>
         <img src={winrockLogo} alt="Winrock International" className={styles.logo} />
-        {/* Top Section */}
-        <div className={styles.headerNavContainer}>
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Projects' ? styles.active : ''}`}
-            onClick={() => {
-              setActiveNavButton('Projects');
-              navigate('/dashboard/admin/projects');
-            }}
-          >
-            <img src={projectsIcon} alt="Projects" />
-            Projects
-          </button>
 
-          <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Notification Center' ? styles.active : ''}`}
-            onClick={() => {
-              setActiveNavButton('Notification Center');
-              navigate('/dashboard/admin/notification-center');
-            }}
-          >
-            <img src={notificationIcon} alt="Notification Center" />
-            Notification Center
-          </button>
-        </div>
-        <button
-          className={`${styles.logoutButton}`}
-          onClick={async () => {
-            const auth = getAuth(); // Get the Firebase Auth instance
-            try {
-              await signOut(auth); // Sign out the user
-              navigate('/login'); // Redirect to the login page after logout
-            } catch (error) {
-              console.error("Error logging out:", error); // Handle errors
-            }
-          }}
-        >
-          Logout
-        </button>
-
-        {/* <button
-            className={`${styles.headerNavButton} ${activeNavButton === 'Account Settings' ? styles.active : ''}`}
-            onClick={() => {
-              setActiveNavButton('Account Settings');
-              navigate('/dashboard/admin/account-settings');
-            }}
-          >
-            <img src={accountSettingsIcon} alt="Account Settings" />
-            Account Settings
-          </button> */}
+        <Sidebar currentTab='projects'></Sidebar>
       </header>
 
       <main className={styles.mainContent}>

@@ -3,6 +3,7 @@ import winrockLogo from '../../../assets/winrock-international-logo.png';
 import projectsIcon from '../../../assets/projects-icon.svg';
 import notificationIcon from '../../../assets/notification-icon.svg';
 import styles from '../css-modules/Sidebar.module.css';
+import { getAuth, signOut } from "firebase/auth";
 
 interface SidebarProps {
   currentTab: string;
@@ -29,13 +30,20 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTab }) => {
           <img src={notificationIcon} alt="Notification Center" />
           Notification Center
         </button>
-        {/* <button 
-            className={`${styles.headerNavButton} ${currentTab === 'account-settings' ? styles.active : ''}`}
-            onClick={() => navigate("/dashboard/admin/account-settings")}
-          >
-            <img src={accountSettingsIcon} alt="Account Settings" />
-            Account Settings
-          </button> */}
+        <button
+          className={`${styles.logoutButton}`}
+          onClick={async () => {
+            const auth = getAuth(); // Get the Firebase Auth instance
+            try {
+              await signOut(auth); // Sign out the user
+              navigate('/login'); // Redirect to the login page after logout
+            } catch (error) {
+              console.error("Error logging out:", error); // Handle errors
+            }
+          }}
+        >
+          Logout
+        </button>
       </div>
     </header>
   );
