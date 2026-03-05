@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebaseConfig';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
@@ -8,33 +8,52 @@ import styles from './css-modules/FormDashboard.module.css';
 interface FormSummary {
     id: string;
     title: string;
-    // You can add more metadata here like category or date
 }
 
 const FormDashboard = () => {
     const [forms, setForms] = useState<FormSummary[]>([]);
     const [activeTab, setActiveTab] = useState<'proposal' | 'risk'>('proposal');
+
+    const proposalFormsRef = useRef<FormSummary[]>([]);
+    const riskFormsRef = useRef<FormSummary[]>([]);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchForms = async () => {
-            let current_collection
-            if (activeTab === 'proposal') {
-                current_collection = "custom-project-proposal-forms"
-            } else {
-                current_collection = 'custom-risk-cobenefits-forms'
-            }
-            const q = query(collection(db, current_collection), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
-            const formsData = querySnapshot.docs.map(doc => ({
+            const proposalCollection = "custom-project-proposal-forms";
+            const riskCollection = "custom-risk-cobenefits-forms";
+
+            const q1 = query(collection(db, proposalCollection), orderBy("createdAt", "desc"));
+            const q2 = query(collection(db, riskCollection), orderBy("createdAt", "desc"));
+
+            const querySnapshot1 = await getDocs(q1);
+            proposalFormsRef.current = querySnapshot1.docs.map(doc => ({
                 id: doc.id,
                 title: doc.data().title,
             }));
-            setForms(formsData);
+
+            const querySnapshot2 = await getDocs(q2);
+            riskFormsRef.current = querySnapshot2.docs.map(doc => ({
+                id: doc.id,
+                title: doc.data().title,
+            }));
+
+            setForms(proposalFormsRef.current);
         };
 
         fetchForms();
     }, []);
+
+    const switchTab = (tab: 'proposal' | 'risk') => {
+        setActiveTab(tab);
+
+        if (tab === 'proposal') {
+            setForms(proposalFormsRef.current);
+        } else {
+            setForms(riskFormsRef.current);
+        }
+    };
 
     return (
         <div className={styles.pageWrapper}>
@@ -54,13 +73,14 @@ const FormDashboard = () => {
                 <div className={styles.tabContainer}>
                     <button
                         className={`${styles.tab} ${activeTab === 'proposal' ? styles.activeTab : ''}`}
-                        onClick={() => setActiveTab('proposal')}
+                        onClick={() => switchTab('proposal')}
                     >
                         Project Proposal
                     </button>
+
                     <button
                         className={`${styles.tab} ${activeTab === 'risk' ? styles.activeTab : ''}`}
-                        onClick={() => setActiveTab('risk')}
+                        onClick={() => switchTab('risk')}
                     >
                         Risk and Co-benefit
                     </button>

@@ -1,11 +1,11 @@
+/* Layout Positioning */
 .pageWrapper {
     display: flex;
     min-height: 100vh;
 }
 
 .sidebarContainer {
-    width: 260px;
-    /* Match your Sidebar.js width */
+    width: 18.75rem;
     position: fixed;
     height: 100vh;
     left: 0;
@@ -14,69 +14,129 @@
 
 .mainContent {
     flex: 1;
-    margin-left: 260px;
-    /* Offset the fixed sidebar */
+    margin-left: 18.75rem;
     padding: 40px;
     background-color: #f9fafb;
 }
 
 .formContainer {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     background: white;
     padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.questionCard {
-    margin-bottom: 30px;
-    padding: 25px;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
+/* Your Provided Styling */
+.dropdownQuestion {
+    width: 100%;
+    margin-bottom: 2rem;
+    margin-top: 3rem;
     position: relative;
-    background: #fff;
 }
 
-.deleteBtn {
-    position: absolute;
-    right: 15px;
-    top: 15px;
-    border: none;
-    background: none;
-    color: #ff4d4f;
-    cursor: pointer;
-    font-weight: bold;
+.labelRow {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
 }
 
-.publishBtn {
-    padding: 12px 30px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
+.label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: #333;
+    margin-right: 0.5rem;
+}
+
+.sectionHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 2.5rem;
+    margin: 2.5rem 0;
+    background: #005293;
+    /* Winrock Blue */
+    height: 4.125rem;
     border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
 }
 
-.publishBtn:disabled {
-    background-color: #ccc;
+.sectionHeader .label {
+    color: white;
+    margin: 0;
 }
 
-/* FAB Styles */
+.dropdownContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.dropdownButton {
+    background-color: white;
+    color: black;
+    text-align: left;
+    height: 2.75rem;
+    width: 50%;
+    border-radius: 0.6rem;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+}
+
+.description {
+    padding: 0.5rem;
+    margin-top: 10px;
+    width: 50%;
+    border: 1px solid #eee;
+    font-size: 0.85rem;
+}
+
+/* UI Elements */
 .fab {
     width: 60px;
     height: 60px;
     border-radius: 30px;
-    background-color: #007bff;
+    background: #005293;
     color: white;
-    font-size: 24px;
     border: none;
+    font-size: 2rem;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
-.fabActive {
-    transform: rotate(45deg);
-    background-color: #666;
+.typeSelector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.typeSelector button {
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #005293;
+    background: white;
+    cursor: pointer;
+}
+
+.deleteBtn {
+    position: absolute;
+    right: 0;
+    top: -20px;
+    color: red;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.publishBtn {
+    margin-top: 50px;
+    padding: 15px 30px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
 }

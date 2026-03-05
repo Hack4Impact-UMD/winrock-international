@@ -15,20 +15,22 @@ export interface FormSchema {
 }
 
 export const FormBuilderService = {
-    /**
-     * Publishes the constructed form schema to the 'forms' collection
-     */
-    publishForm: async (title: string, questions: QuestionDefinition[]) => {
+    publishForm: async (title: string, questions: QuestionDefinition[], formType: string) => {
         try {
-            const formsCollection = collection(db, "forms");
+            // Determine the collection name based on user selection
+            const collectionName = formType === 'risk'
+                ? "custom-risk-cobenefits-forms"
+                : "custom-project-proposal-forms";
 
-            const formPayload: FormSchema = {
+            const formsCollection = collection(db, collectionName);
+
+            const formPayload = {
                 title,
                 questions: questions.map(q => ({
                     type: q.type,
                     label: q.label,
                     options: q.type === 'dropdown' ? q.options : []
-                })) as QuestionDefinition[], // Clean up IDs if you don't want the UI-only IDs in DB
+                })),
                 createdAt: serverTimestamp()
             };
 
