@@ -24,6 +24,7 @@ import RegenAgRisksForm from './forms/risks-and-co-benefit-forms/RegenAgRisksFor
 import RequireAuth from './auth/requireAuth.tsx';
 import FormDashboard from './forms/FormDashboard.tsx';
 import FormBuilder from './forms/formBuilder.tsx';
+import FormViewer from './forms/FormViewer.tsx';
 
 function App() {
   return (
@@ -36,8 +37,12 @@ function App() {
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/create-new-password" element={<CreateNewPasswordPage />} />
         <Route path="/auth/password-changed" element={<PasswordChangedPage />} />
-        <Route path="/form-builder" element={<FormBuilder />} />
-
+        {/* <Route path="/form-builder" element={<FormBuilder />} /> */}
+        <Route path="/view-form/:formType/:id" element={<RequireAuth><FormViewer /></RequireAuth>} />
+        <Route
+          path="/form-builder/:formType?/:id?"
+          element={<RequireAuth><FormBuilder /></RequireAuth>}
+        />
         {/* Protected forms */}
         <Route
           path="/forms/agriculture-proposal-form/:projectName"

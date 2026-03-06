@@ -1,0 +1,73 @@
+.pageWrapper {
+    display: block;
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+/* Sidebar is handled by its own component, 
+   but this ensures the main area fills the rest */
+.mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    margin-left: 10rem;
+}
+
+.headerBanner {
+    background-color: #f8f9fa;
+    /* Light greyish background */
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #ececec;
+    width: 100%;
+}
+
+.formContainer {
+    width: 100%;
+    max-width: 900px;
+    /* Standard readable width for forms */
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Space between questions */
+}
+
+/* Loading and Error states */
+.centeredState {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.footerActions {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+.backBtn {
+    background-color: #004a99;
+    /* Matches the Winrock blue in your screenshot */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+.backBtn:hover {
+    background-color: #003366;
+}

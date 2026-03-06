@@ -1,5 +1,5 @@
 import { db } from "../firebaseConfig"; // Adjust path to your firebase config
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, doc, setDoc } from "firebase/firestore";
 
 export interface QuestionDefinition {
     id: string;
@@ -15,14 +15,11 @@ export interface FormSchema {
 }
 
 export const FormBuilderService = {
-    publishForm: async (title: string, questions: QuestionDefinition[], formType: string) => {
+    publishForm: async (title: string, questions: any[], formType: string, id?: string) => {
         try {
-            // Determine the collection name based on user selection
             const collectionName = formType === 'risk'
                 ? "custom-risk-cobenefits-forms"
                 : "custom-project-proposal-forms";
-
-            const formsCollection = collection(db, collectionName);
 
             const formPayload = {
                 title,
@@ -31,11 +28,22 @@ export const FormBuilderService = {
                     label: q.label,
                     options: q.type === 'dropdown' ? q.options : []
                 })),
-                createdAt: serverTimestamp()
+                updatedAt: serverTimestamp(),
+                // Only set createdAt if it's a new document
+                ...(id ? {} : { createdAt: serverTimestamp() })
             };
 
-            const docRef = await addDoc(formsCollection, formPayload);
-            return docRef.id;
+            if (id) {
+                // UPDATE: Use setDoc with merge to preserve fields like the original 'id' string if needed
+                const docRef = doc(db, collectionName, id);
+                await setDoc(docRef, formPayload, { merge: true });
+                return id;
+            } else {
+                // CREATE: Use addDoc for a brand new entry
+                const formsCollection = collection(db, collectionName);
+                const docRef = await addDoc(formsCollection, formPayload);
+                return docRef.id;
+            }
         } catch (error) {
             console.error("Error publishing form:", error);
             throw error;
