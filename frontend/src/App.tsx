@@ -37,7 +37,7 @@ function App() {
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/create-new-password" element={<CreateNewPasswordPage />} />
         <Route path="/auth/password-changed" element={<PasswordChangedPage />} />
-        <Route path="/form-builder" element={<FormBuilder />} />
+        {/* <Route path="/form-builder" element={<FormBuilder />} /> */}
         <Route path="/view-form/:formType/:id" element={<RequireAuth><FormViewer /></RequireAuth>} />
         <Route
           path="/form-builder/:formType?/:id?"

@@ -36,7 +36,12 @@ const FormBuilder = () => {
                         const data = docSnap.data();
                         setTitle(data.title);
                         setFormType(urlFormType); // Sync the dropdown state with the actual form type
-                        setElements(data.questions || []); // Use 'elements' to match your state name
+                        // Generate IDs for loaded questions since they aren't stored in Firestore
+                        const loadedElements = (data.questions || []).map((q: any) => ({
+                            ...q,
+                            id: crypto.randomUUID(),
+                        }));
+                        setElements(loadedElements);
                     }
                 } catch (err) {
                     console.error("Error loading form:", err);
