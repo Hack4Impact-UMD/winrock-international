@@ -1,11 +1,10 @@
 import SectionHeader from "./components/headers/SectionHeader";
 import TitleHeader from "../forms/components/headers/TitleHeader";
-import LogoHeader from "../forms/components/headers/LogoHeader";
 import CoBenefitsDropdownQuestion from "./components/questions/CoBenefitsDropdownQuestion";
 import RisksDropdownQuestion from "./components/questions/RisksDropdownQuestion";
 import TextQuestion from "./components/questions/TextQuestion";
 import { db } from "../firebaseConfig";
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../dashboards/winrock-dashboard/components/Sidebar";
