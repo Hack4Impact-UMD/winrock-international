@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from '../dashboards/winrock-dashboard/components/Sidebar.js';
 import styles from './css-modules/FormBuilder.module.css';
 import { FormBuilderService, QuestionDefinition } from './FormBuilderService.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebaseConfig.js';
 
 // Define the updated type to include 'section'
 interface FormElement extends Omit<QuestionDefinition, 'type'> {
@@ -16,6 +18,33 @@ const FormBuilder = () => {
     const [elements, setElements] = useState<FormElement[]>([]);
     const [showOptions, setShowOptions] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
+    const { formType: urlFormType, id } = useParams<{ formType: string; id: string }>();
+
+    useEffect(() => {
+        const loadExistingForm = async () => {
+            // Use the formType from the URL params to ensure we check the right collection
+            if (id && urlFormType) {
+                const collectionName = urlFormType === 'proposal'
+                    ? "custom-project-proposal-forms"
+                    : "custom-risk-cobenefits-forms";
+
+                try {
+                    const docRef = doc(db, collectionName, id);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        setTitle(data.title);
+                        setFormType(urlFormType); // Sync the dropdown state with the actual form type
+                        setElements(data.questions || []); // Use 'elements' to match your state name
+                    }
+                } catch (err) {
+                    console.error("Error loading form:", err);
+                }
+            }
+        };
+        loadExistingForm();
+    }, [id, urlFormType]);
 
     const addElement = (type: 'text' | 'dropdown' | 'section') => {
         const newElement: FormElement = {
@@ -44,12 +73,12 @@ const FormBuilder = () => {
     const handlePublish = async () => {
         setIsPublishing(true);
         try {
-            await FormBuilderService.publishForm(title, elements, formType);
-            alert("Form Published Successfully!");
+            // Pass the 'id' to the service. If ID exists, it updates; otherwise, it creates.
+            await FormBuilderService.publishForm(title, elements, formType, id);
+            alert(id ? "Form Updated Successfully!" : "Form Published Successfully!");
             navigate("/forms/dashboard");
-
         } catch (err) {
-            alert("Error publishing form.");
+            alert("Error saving form.");
         } finally {
             setIsPublishing(false);
         }
@@ -58,7 +87,7 @@ const FormBuilder = () => {
     return (
         <div className={styles.pageWrapper}>
             <div className={styles.sidebarContainer}>
-                <Sidebar currentTab="projects" />
+                <Sidebar currentTab="forms" />
             </div>
 
             <main className={styles.mainContent}>

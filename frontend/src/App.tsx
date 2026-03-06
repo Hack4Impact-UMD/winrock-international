@@ -38,7 +38,11 @@ function App() {
         <Route path="/auth/create-new-password" element={<CreateNewPasswordPage />} />
         <Route path="/auth/password-changed" element={<PasswordChangedPage />} />
         <Route path="/form-builder" element={<FormBuilder />} />
-        <Route path="/view-form/:formType/:id" element={<FormViewer />} />
+        <Route path="/view-form/:formType/:id" element={<RequireAuth><FormViewer /></RequireAuth>} />
+        <Route
+          path="/form-builder/:formType?/:id?"
+          element={<RequireAuth><FormBuilder /></RequireAuth>}
+        />
         {/* Protected forms */}
         <Route
           path="/forms/agriculture-proposal-form/:projectName"

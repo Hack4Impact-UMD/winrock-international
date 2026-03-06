@@ -95,7 +95,7 @@ const FormDashboard = () => {
                             >
                                 View
                             </button>
-                            <button className={styles.editBtn}>Edit</button>
+                            <button className={styles.editBtn} onClick={() => navigate(`/form-builder/${activeTab}/${form.id}`)}>Edit</button>
                         </div>
                     ))}
                 </div>
