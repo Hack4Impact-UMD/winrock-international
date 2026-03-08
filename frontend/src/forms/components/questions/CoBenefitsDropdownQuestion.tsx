@@ -26,6 +26,9 @@ function CoBenefitsDropdownQuestion({ label, options = ["Yes", "No", "Not Applic
 
             <div className={styles.benefitItemsContainer}>
                 <p>If Yes, please describe how and how impactful</p>
+                {benefitItems.map((item: string) =>
+                    <p key={item}>{item}</p>
+                )}
             </div>
             <TextQuestion
                 label=""
