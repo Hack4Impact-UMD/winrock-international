@@ -320,9 +320,21 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
                     <div className={styles.createContainer}>
                         <button
                             className={styles.createButton}
-                            onClick={() => {
-                                addProject(projectName.toLowerCase(), clientName, supplierName, supplierEmail, activityType, selectedProposalForm, selectedRiskForm);
-                                onClose();
+                            onClick={async () => {
+                                const result = await addProject(
+                                    projectName.toLowerCase(),
+                                    clientName,
+                                    supplierName,
+                                    supplierEmail,
+                                    activityType,
+                                    selectedProposalForm,
+                                    selectedRiskForm
+                                );
+
+                                if (result.success) {
+                                    onClose();
+                                }
+                                // surface an error state here when creation fails
                             }}
                             disabled={anyInvalidInputs()}
                         >
