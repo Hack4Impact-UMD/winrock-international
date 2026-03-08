@@ -2,6 +2,7 @@ import SectionHeader from "./components/headers/SectionHeader";
 import TitleHeader from "../forms/components/headers/TitleHeader";
 import CoBenefitsDropdownQuestion from "./components/questions/CoBenefitsDropdownQuestion";
 import RisksDropdownQuestion from "./components/questions/RisksDropdownQuestion";
+import DropdownQuestion from "./components/questions/DropdownQuestion";
 import TextQuestion from "./components/questions/TextQuestion";
 import { db } from "../firebaseConfig";
 import { doc, getDoc } from 'firebase/firestore';
@@ -92,20 +93,35 @@ const FormViewer = () => {
                                 );
 
                             case "dropdown":
-                                return (
-                                    <DropDownComponent
-                                        key={index}
-                                        label={question.label}
-                                        disabled={readOnly}
-                                        controlledValues={["", ""]}
-                                        onSelect={noop}
-                                        onChange={noop}
-                                        {...(formType === 'proposal'
-                                            ? { benefitItems: question.options || [] }
-                                            : { options: question.options || [] }
-                                        )}
-                                    />
-                                );
+                                if (question.label.toLowerCase() === 'geography') {
+                                    console.log(question.label)
+                                    return (
+                                        <DropdownQuestion
+                                            key={index}
+                                            label={question.label}
+                                            disabled={readOnly}
+                                            controlledValue=""
+                                            onSelect={noop}
+                                            options={question.options || []}
+                                        />
+                                    );
+                                }
+                                else {
+                                    return (
+                                        <DropDownComponent
+                                            key={index}
+                                            label={question.label}
+                                            disabled={readOnly}
+                                            controlledValues={["", ""]}
+                                            onSelect={noop}
+                                            onChange={noop}
+                                            {...(formType === 'proposal'
+                                                ? { benefitItems: question.options || [] }
+                                                : { options: question.options || [] }
+                                            )}
+                                        />
+                                    );
+                                }
 
                             default:
                                 return <div key={index}>Unknown type: {question.type}</div>;
