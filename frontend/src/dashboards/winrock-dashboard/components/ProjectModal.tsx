@@ -1,8 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import styles from "../css-modules/ProjectModal.module.css";
 import { Project } from "../../../types/Project";
 import { addProject } from "../projects/winrockDashboardService";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../firebaseConfig";
 
 interface ProjectModalProps {
     onClose: () => void;
@@ -25,6 +27,11 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
     const [showSupplierDropdownArrow, setShowSupplierDropdownArrow] = useState<boolean>(false);
     const [toggleSupplierDropdownArrow, setToggleSupplierDropdownArrow] = useState<boolean>(true);
     const [activityType, setActivityType] = useState<Project['activityType']>("Agriculture");
+    const [proposalForms, setProposalForms] = useState<{ id: string; title: string }[]>([]);
+    const [riskForms, setRiskForms] = useState<{ id: string; title: string }[]>([]);
+
+    const [selectedProposalForm, setSelectedProposalForm] = useState<string>("");
+    const [selectedRiskForm, setSelectedRiskForm] = useState<string>("");
 
     const activityTypes: Project['activityType'][] = [
         "Renewable Energy and Energy Efficiency",
@@ -32,6 +39,46 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
         "Agroforestry",
         "Animal Agriculture and Manure Management"
     ];
+
+    useEffect(() => {
+        const fetchForms = async () => {
+            try {
+                const proposalQuery = query(
+                    collection(db, "custom-project-proposal-forms"),
+                    where("published", "==", true)
+                );
+
+                const riskQuery = query(
+                    collection(db, "custom-risk-cobenefits-forms"),
+                    where("published", "==", true)
+                );
+
+                const [proposalSnap, riskSnap] = await Promise.all([
+                    getDocs(proposalQuery),
+                    getDocs(riskQuery)
+                ]);
+
+                setProposalForms(
+                    proposalSnap.docs.map(doc => ({
+                        id: doc.id,
+                        title: doc.data().title
+                    }))
+                );
+
+                setRiskForms(
+                    riskSnap.docs.map(doc => ({
+                        id: doc.id,
+                        title: doc.data().title
+                    }))
+                );
+
+            } catch (err) {
+                console.error("Error fetching forms:", err);
+            }
+        };
+
+        fetchForms();
+    }, []);
 
     const clients = Array.from(new Set(projects.map(p => p.clientName))).sort((a, b) => a.localeCompare(b));
     const suppliers = Array.from(new Set(projects.map(p => p.supplierName))).sort((a, b) => a.localeCompare(b));
@@ -225,6 +272,38 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
                         </select>
                     </div>
                     <div className={styles.fieldContainer}>
+                        <span className={styles.fieldLabel}>Proposal Form</span>
+                        <select
+                            className={styles.fieldInput}
+                            value={selectedProposalForm}
+                            onChange={(e) => setSelectedProposalForm(e.target.value)}
+                        >
+                            <option value="">Select proposal form</option>
+
+                            {proposalForms.map((form) => (
+                                <option key={form.id} value={form.id}>
+                                    {form.title}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className={styles.fieldContainer}>
+                        <span className={styles.fieldLabel}>Risk / Co-Benefits Form</span>
+                        <select
+                            className={styles.fieldInput}
+                            value={selectedRiskForm}
+                            onChange={(e) => setSelectedRiskForm(e.target.value)}
+                        >
+                            <option value="">Select risk form</option>
+
+                            {riskForms.map((form) => (
+                                <option key={form.id} value={form.id}>
+                                    {form.title}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className={styles.fieldContainer}>
                         <span className={styles.fieldLabel}>Supplier email</span>
                         <input
                             type="email"
@@ -242,7 +321,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
                         <button
                             className={styles.createButton}
                             onClick={() => {
-                                addProject(projectName.toLowerCase(), clientName, supplierName, supplierEmail, activityType);
+                                addProject(projectName.toLowerCase(), clientName, supplierName, supplierEmail, activityType, selectedProposalForm, selectedRiskForm);
                                 onClose();
                             }}
                             disabled={anyInvalidInputs()}

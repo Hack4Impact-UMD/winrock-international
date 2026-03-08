@@ -61,6 +61,8 @@ const createProject = async (
     supplierEmail: string,
     spendCategory: string,
     geography: string,
+    proposalFormID: string,
+    riskFormID: string,
     notes: string = "",
     activityType: ActivityType,
     overallStatus: OverallStatus = OverallStatus.ON_TRACK,
@@ -68,7 +70,7 @@ const createProject = async (
     startDate?: Date,
     isActive: boolean = true,
     isPinned: boolean = false,
-    isLocked: boolean = false
+    isLocked: boolean = false,
 ): Promise<Result> => {
     try {
         const docRef = doc(collection(db, "projects"));
@@ -100,6 +102,9 @@ const createProject = async (
                 isPinned,
                 isLocked,
                 lastUpdated: serverTimestamp(),
+                proposalFormID,
+                riskFormID,
+
             };
 
             tx.set(docRef, projectData);
@@ -253,7 +258,7 @@ const updateProjectField = async (
 /**
  * Adds a new project.
  */
-const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string, activityType: ActivityType): Promise<Result> => {
+const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string, activityType: ActivityType, proposalForm, riskForm): Promise<Result> => {
     try {
         await createProject(
             projectName.toLowerCase(),
@@ -262,6 +267,8 @@ const addProject = async (projectName: string, clientName: string, supplierName:
             supplierEmail,
             "-",
             "-",
+            proposalForm,
+            riskForm,
             "",
             activityType,
             OverallStatus.ON_TRACK,
