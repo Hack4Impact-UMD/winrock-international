@@ -30,4 +30,6 @@ export interface Project {
     isActive: boolean;
     isPinned: boolean;
     isLocked: boolean;
+    proposalFormId?: string;
+    risksFormId?: string;
 }
