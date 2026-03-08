@@ -5,28 +5,45 @@ interface StageActionCardProps {
   proposalFormID: string;
   riskFormID: string;
   onUploadClick?: () => void;
+  role: string;
 }
 
 const StageActionCard: React.FC<StageActionCardProps> = ({
   analysisStage,
   proposalFormID,
   riskFormID,
-  onUploadClick
+  onUploadClick,
+  role
 }) => {
   const onClick = () => {
     if (analysisStage === "Clarifying Initial Project Information") {
-      window.open(
-        `/winrock-international/view-form/proposal/${proposalFormID}`,
-        "_blank"
-      );
+      if (role === 'winrock') {
+        window.open(
+          `/winrock-international/winrock/view-form/proposal/${proposalFormID}`,
+          "_blank"
+        );
+      }
+      else {
+        window.open(
+          `/winrock-international/supplier/view-form/proposal/${proposalFormID}`,
+          "_blank"
+        );
+      }
       return;
     }
 
     if (analysisStage === "Risk & Co-benefit Assessment") {
-      window.open(
-        `/winrock-international/view-form/risk/${riskFormID}`,
-        "_blank"
-      );
+      if (role === 'winrock') {
+        window.open(
+          `/winrock-international/winrock/view-form/risk/${riskFormID}`,
+          "_blank"
+        );
+      } else {
+        window.open(
+          `/winrock-international/supplier/view-form/risk/${riskFormID}`,
+          "_blank"
+        );
+      }
       return;
     }
 
