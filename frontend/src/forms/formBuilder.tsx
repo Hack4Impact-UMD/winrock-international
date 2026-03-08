@@ -76,6 +76,7 @@ const FormBuilder = () => {
     const [showOptions, setShowOptions] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
     const { formType: urlFormType, id } = useParams<{ formType: string; id: string }>();
+    const MANDATORY_LABELS = new Set(MANDATORY_QUESTIONS.map(q => q.label));
 
     const elements = formType === 'proposal' ? proposalElements : riskElements || [];
     const setElements = formType === 'proposal' ? setProposalElements : setRiskElements;
@@ -101,8 +102,11 @@ const FormBuilder = () => {
                             ...q,
                             id: crypto.randomUUID(),
                         }));
-                        if (formType === 'proposal') {
-                            setProposalElements([...MANDATORY_QUESTIONS, ...loadedElements]);
+                        if (urlFormType === 'proposal') {
+                            const filteredLoaded = loadedElements.filter(
+                                (q: FormElement) => !MANDATORY_LABELS.has(q.label)
+                            );
+                            setProposalElements([...MANDATORY_QUESTIONS, ...filteredLoaded]);
                         }
                         else {
                             setRiskElements([...loadedElements]);
