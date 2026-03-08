@@ -258,7 +258,7 @@ const updateProjectField = async (
 /**
  * Adds a new project.
  */
-const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string, activityType: ActivityType, proposalForm, riskForm): Promise<Result> => {
+const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string, activityType: ActivityType, proposalForm: string, riskForm: string): Promise<Result> => {
     try {
         await createProject(
             projectName.toLowerCase(),
