@@ -8,6 +8,8 @@ import styles from './css-modules/FormDashboard.module.css';
 interface FormSummary {
     id: string;
     title: string;
+    published: boolean;
+
 }
 
 const FormDashboard = () => {
@@ -31,12 +33,15 @@ const FormDashboard = () => {
             proposalFormsRef.current = querySnapshot1.docs.map(doc => ({
                 id: doc.id,
                 title: doc.data().title,
+                published: doc.data().published ?? false,
             }));
 
             const querySnapshot2 = await getDocs(q2);
             riskFormsRef.current = querySnapshot2.docs.map(doc => ({
                 id: doc.id,
                 title: doc.data().title,
+                published: doc.data().published ?? false,
+
             }));
 
             setForms(proposalFormsRef.current);
@@ -89,7 +94,12 @@ const FormDashboard = () => {
                 <div className={styles.formList}>
                     {forms.map((form) => (
                         <div key={form.id} className={styles.formItem}>
-                            <span className={styles.formTitle}>{form.title}</span>
+                            <span className={styles.formTitle}>
+                                {form.title}
+                                {form.published && (
+                                    <span className={styles.publishedTag}>Published</span>
+                                )}
+                            </span>
                             <div className={styles.actionGroup}>
                                 <button
                                     className={styles.viewBtn}
@@ -97,7 +107,15 @@ const FormDashboard = () => {
                                 >
                                     View
                                 </button>
-                                <button className={styles.editBtn} onClick={() => navigate(`/form-builder/${activeTab}/${form.id}`)}>Edit</button>
+
+                                {!form.published && (
+                                    <button
+                                        className={styles.editBtn}
+                                        onClick={() => navigate(`/form-builder/${activeTab}/${form.id}`)}
+                                    >
+                                        Edit
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}

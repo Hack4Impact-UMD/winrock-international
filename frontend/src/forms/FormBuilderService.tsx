@@ -15,7 +15,7 @@ export interface FormSchema {
 }
 
 export const FormBuilderService = {
-    publishForm: async (title: string, questions: any[], formType: string, id?: string) => {
+    publishForm: async (title: string, questions: any[], formType: string, published: boolean, id?: string,) => {
         try {
             const collectionName = formType === 'risk'
                 ? "custom-risk-cobenefits-forms"
@@ -23,13 +23,13 @@ export const FormBuilderService = {
 
             const formPayload = {
                 title,
+                published: published,   // ✅ store at form level
                 questions: questions.map(q => ({
                     type: q.type,
                     label: q.label,
                     options: q.type === 'dropdown' ? q.options : []
                 })),
                 updatedAt: serverTimestamp(),
-                // Only set createdAt if it's a new document
                 ...(id ? {} : { createdAt: serverTimestamp() })
             };
 

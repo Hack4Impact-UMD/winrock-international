@@ -79,11 +79,23 @@ const FormBuilder = () => {
         setIsPublishing(true);
         try {
             // Pass the 'id' to the service. If ID exists, it updates; otherwise, it creates.
-            await FormBuilderService.publishForm(title, elements, formType, id);
+            await FormBuilderService.publishForm(title, elements, formType, true, id);
             alert(id ? "Form Updated Successfully!" : "Form Published Successfully!");
             navigate("/forms/dashboard");
         } catch (err) {
             alert("Error saving form.");
+        } finally {
+            setIsPublishing(false);
+        }
+    };
+    const handleSaveDraft = async () => {
+        setIsPublishing(true);
+        try {
+            await FormBuilderService.publishForm(title, elements, formType, false, id);
+            alert("Draft Saved!");
+            navigate("/forms/dashboard");
+        } catch (err) {
+            alert("Error saving draft.");
         } finally {
             setIsPublishing(false);
         }
@@ -167,9 +179,23 @@ const FormBuilder = () => {
                         <button onClick={() => setShowOptions(!showOptions)} className={styles.fab}>+</button>
                     </div>
 
-                    <button className={styles.publishBtn} onClick={handlePublish} disabled={isPublishing}>
-                        {isPublishing ? 'Publishing...' : 'Publish Form'}
-                    </button>
+                    <div className={styles.buttonRow}>
+                        <button
+                            className={styles.draftBtn}
+                            onClick={handleSaveDraft}
+                            disabled={isPublishing}
+                        >
+                            Save Draft
+                        </button>
+
+                        <button
+                            className={styles.publishBtn}
+                            onClick={handlePublish}
+                            disabled={isPublishing}
+                        >
+                            {isPublishing ? "Publishing..." : "Publish Form"}
+                        </button>
+                    </div>
                 </div>
             </main>
         </div>

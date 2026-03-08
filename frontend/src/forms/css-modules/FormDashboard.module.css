@@ -11,6 +11,13 @@
     padding: 3rem 4rem;
 }
 
+.publishedTag {
+    margin-left: 10px;
+    font-size: 0.8rem;
+    color: #28a745;
+    font-weight: 600;
+}
+
 .headerRow {
     display: flex;
     justify-content: space-between;

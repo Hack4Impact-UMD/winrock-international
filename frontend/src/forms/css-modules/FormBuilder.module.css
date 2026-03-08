@@ -19,6 +19,12 @@
     background-color: #f9fafb;
 }
 
+.buttonRow {
+    display: flex;
+    gap: 12px;
+    margin-top: 50px;
+}
+
 .formContainer {
     max-width: 900px;
     margin: 0 auto;
@@ -130,7 +136,6 @@
 }
 
 .publishBtn {
-    margin-top: 50px;
     padding: 15px 30px;
     background: #28a745;
     color: white;
@@ -138,5 +143,21 @@
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
-    width: 100%;
+    width: 50%;
+}
+
+.draftBtn {
+    padding: 15px 30px;
+    background: #005293;
+    /* Winrock blue */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 50%;
+}
+
+.draftBtn:hover {
+    background: #003f73;
 }
