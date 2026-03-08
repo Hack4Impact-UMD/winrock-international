@@ -7,12 +7,12 @@ interface CoBenefitsDropdownQuestionProps {
     options?: string[];
     controlledValues: string[];
     benefitItems?: string[];
-	onSelect: (selected: string) => void;
+    onSelect: (selected: string) => void;
     onChange: (value: string) => void;
     disabled?: boolean;
 }
 
-function CoBenefitsDropdownQuestion({ label, options=["Yes", "No", "Not Applicable"], controlledValues, benefitItems=[], onSelect, onChange, disabled = false }: CoBenefitsDropdownQuestionProps) {
+function CoBenefitsDropdownQuestion({ label, options = ["Yes", "No", "Not Applicable"], controlledValues, benefitItems = [], onSelect, onChange, disabled = false }: CoBenefitsDropdownQuestionProps) {
     return (
         <>
             <DropdownQuestion
@@ -26,9 +26,6 @@ function CoBenefitsDropdownQuestion({ label, options=["Yes", "No", "Not Applicab
 
             <div className={styles.benefitItemsContainer}>
                 <p>If Yes, please describe how and how impactful</p>
-                {benefitItems.map((item: string) =>
-                    <p key={item}>{item}</p>
-                )}
             </div>
             <TextQuestion
                 label=""

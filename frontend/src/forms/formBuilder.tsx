@@ -44,7 +44,7 @@ const MANDATORY_QUESTIONS: FormElement[] = [
             "Lao People's Rep.", "Latin Caribbean Region", "Latvia", "Lebanon",
             "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxemburg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia",
             "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique",
-            "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia, Federal States o",
+            "Mauritania", "Mauritius", "Mayotte", "Mexico", "micronesia federated states of",
             "Moldavia", "Monaco", "Mongolia", "Montenegro, Republic of", "Montserrat",
             "Morocco", "Multiple", "Myanmar", "Namibia", "Nauru",
             "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand",
@@ -198,7 +198,11 @@ const FormBuilder = () => {
 
                     {elements.map((el) => (
                         <div key={el.id} className={el.type === 'section' ? styles.sectionWrapper : styles.dropdownQuestion}>
-                            <button onClick={() => deleteElement(el.id)} className={styles.deleteBtn}>✕ Delete</button>
+                            {!["spendCategory", "geography"].includes(el.id) && (
+                                <button onClick={() => deleteElement(el.id)} className={styles.deleteBtn}>
+                                    ✕ Delete
+                                </button>
+                            )}
 
                             {el.type === 'section' ? (
                                 <div className={styles.sectionHeader}>
@@ -221,16 +225,21 @@ const FormBuilder = () => {
                                     </div>
                                     <div className={styles.dropdownContainer}>
                                         <div className={styles.dropdownButton}>
-                                            <p>{el.type === 'text' ? 'Open-ended text field preview' : 'Dropdown selection preview'}</p>
+                                            <p>{el.type === 'text' ? 'Open-ended text field preview' : <select className={styles.dropdownButton}>
+                                                {el.options?.slice(0, 5).map(opt => (
+                                                    <option key={opt}>{opt}</option>
+                                                ))}
+                                            </select>}</p>
                                         </div>
-                                        {el.type === 'dropdown' && (
-                                            <input
-                                                className={styles.description}
-                                                placeholder="Options (comma separated)..."
-                                                value={el.options?.join(', ')}
-                                                onChange={(e) => updateOptions(el.id, e.target.value)}
-                                            />
-                                        )}
+                                        {el.type === 'dropdown' &&
+                                            !["spendCategory", "geography"].includes(el.id) && (
+                                                <input
+                                                    className={styles.description}
+                                                    placeholder="Options (comma separated)..."
+                                                    value={el.options?.join(', ')}
+                                                    onChange={(e) => updateOptions(el.id, e.target.value)}
+                                                />
+                                            )}
                                     </div>
                                 </>
                             )}
