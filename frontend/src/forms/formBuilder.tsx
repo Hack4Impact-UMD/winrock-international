@@ -11,14 +11,74 @@ interface FormElement extends Omit<QuestionDefinition, 'type'> {
     type: 'text' | 'dropdown' | 'section';
 }
 
+const MANDATORY_QUESTIONS: FormElement[] = [
+    {
+        id: "spendCategory",
+        type: "dropdown",
+        label: "Spend Category",
+        options: []
+    },
+    {
+        id: "geography",
+        type: "dropdown",
+        label: "Geography",
+        options: ["Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra",
+            "Anglo Dutch Caribbean Region", "Angola", "Anguilla", "Antigua, Barbuda",
+            "Argentina", "Armenia", "Aruba", "Australia", "Austria",
+            "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
+            "Belgium", "Belize", "Belorussia", "Benin", "Bermuda",
+            "Bhutan", "Bolivia", "Bosnia", "Botswana", "Brazil",
+            "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+            "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands",
+            "Central African Rep.", "Chad", "China", "Colombia", "Comoros", "Congo", "Consolidated Congo",
+            "Cook Islands", "Costa Rica", "Croatia", "Cuba", "Curacao Bonaire",
+            "Cyprus", "Czech Republic", "Dem. Rep. of Congo", "Denmark", "Djibouti",
+            "Dominica", "Dominican Rep.", "Dubai", "East Timor", "Ecuador",
+            "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia",
+            "Ethiopia", "Faeroe Islands", "Falkland Islands (Malvinas)", "Fiji", "Finland",
+            "France", "French Guiana", "French Polynesia", "Gabon", "Gambia",
+            "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey",
+            "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia",
+            "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Ivory Coast", "Jamaica", "Japan", "Jersey",
+            "Jordan", "Kazakhstan", "Kenya", "Kosovo", "Kuwait", "Kyrgyzstan",
+            "Lao People's Rep.", "Latin Caribbean Region", "Latvia", "Lebanon",
+            "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxemburg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia",
+            "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique",
+            "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia, Federal States o",
+            "Moldavia", "Monaco", "Mongolia", "Montenegro, Republic of", "Montserrat",
+            "Morocco", "Multiple", "Myanmar", "Namibia", "Nauru",
+            "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand",
+            "Nicaragua", "Niger", "Nigeria", "North Korea", "Northern Mariana Islands",
+            "Norway", "NPPA", "NWNA", "Oman", "Pakistan", "Palau",
+            "Palestinian Auth.", "Panama", "Panama + Central America Region", "Papua New Guinea", "Paraguay",
+            "Peru", "Philippines", "Plata Region", "Poland", "Portugal",
+            "Puerto Rico", "Qatar", "Rep.of Mozambique", "Reunion", "Romania",
+            "Russia", "Rwanda", "Saint Kitts, Nevis", "Saint Lucia", "Saint Martin",
+            "Sao Tome+Principe", "Saudi Arabia", "Senegal", "Serbia, Republic of", "Seychelles",
+            "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+            "Somalia", "South Africa", "South Korea", "South of Sudan", "Spain",
+            "Sri Lanka", "St.Vincent+Gren.", "St-Pierre and Miquelon", "Sudan", "Suriname", "Swaziland",
+            "Sweden", "Switzerland", "Syrian Arab Rep.", "Taiwan", "Tajikistan",
+            "Tanzania", "Thailand", "Togo", "Trinidad+Tobago", "Tunisia",
+            "Turkey", "Turkmenistan", "Turks+Caicos isl.", "Uganda", "Ukraine",
+            "Un. Arab Emirates", "United Kingdom", "United States", "Uruguay", "US Virgin Islands",
+            "Uzbekistan", "Vatican City State", "Venezuela", "Vietnam", "Wallis and Futuna",
+            "Yemen", "Zambia", "Zimbabwe"]
+    }
+];
+
 const FormBuilder = () => {
     const navigate = useNavigate();
     const [title, setTitle] = useState("New Custom Form");
     const [formType, setFormType] = useState<string>('proposal');
-    const [elements, setElements] = useState<FormElement[]>([]);
+    const [proposalElements, setProposalElements] = useState<FormElement[]>(MANDATORY_QUESTIONS);
+    const [riskElements, setRiskElements] = useState<FormElement[]>();
     const [showOptions, setShowOptions] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
     const { formType: urlFormType, id } = useParams<{ formType: string; id: string }>();
+
+    const elements = formType === 'proposal' ? proposalElements : riskElements || [];
+    const setElements = formType === 'proposal' ? setProposalElements : setRiskElements;
 
     useEffect(() => {
         const loadExistingForm = async () => {
@@ -41,7 +101,12 @@ const FormBuilder = () => {
                             ...q,
                             id: crypto.randomUUID(),
                         }));
-                        setElements(loadedElements);
+                        if (formType === 'proposal') {
+                            setProposalElements([...MANDATORY_QUESTIONS, ...loadedElements]);
+                        }
+                        else {
+                            setRiskElements([...loadedElements]);
+                        }
                     }
                 } catch (err) {
                     console.error("Error loading form:", err);
@@ -72,6 +137,7 @@ const FormBuilder = () => {
     };
 
     const deleteElement = (id: string) => {
+        if (id === "spendCategory" || id === "geography") return;
         setElements(elements.filter(el => el.id !== id));
     };
 
