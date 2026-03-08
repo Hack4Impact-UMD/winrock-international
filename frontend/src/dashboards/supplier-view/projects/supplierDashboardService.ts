@@ -58,6 +58,8 @@ const createProject = async (
     supplierName: string,
     spendCategory: string,
     geography: string,
+    proposalFormID: string,
+    riskFormID: string,
     activityType: ActivityType,
     overallStatus: OverallStatus = OverallStatus.ON_TRACK,
     analysisStage: AnalysisStage = AnalysisStage.STAGE_1,
@@ -90,6 +92,8 @@ const createProject = async (
                 isLocked: false, // or appropriate default value
                 clientName: "", // or appropriate default value
                 notes: "", // or appropriate default value
+                proposalFormID,
+                riskFormID,
             };
 
             tx.set(docRef, newProject);
