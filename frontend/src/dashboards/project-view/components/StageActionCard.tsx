@@ -2,41 +2,35 @@ import React from 'react';
 
 interface StageActionCardProps {
   analysisStage: string;
-  projectName: string;
-  activityType: string;
+  proposalFormID: string;
+  riskFormID: string;
   onUploadClick?: () => void;
 }
 
-const StageActionCard: React.FC<StageActionCardProps> = ({ analysisStage, activityType, projectName, onUploadClick }) => {
+const StageActionCard: React.FC<StageActionCardProps> = ({
+  analysisStage,
+  proposalFormID,
+  riskFormID,
+  onUploadClick
+}) => {
   const onClick = () => {
     if (analysisStage === "Clarifying Initial Project Information") {
-      if (
-        activityType === "Agriculture" ||
-        activityType === "Agroforestry" ||
-        activityType === "Animal Agriculture and Manure Management"
-      ) {
-        window.open(`/winrock-international/forms/agriculture-proposal-form/${projectName}`, "_blank");
-      } else if (activityType === "Renewable Energy and Energy Efficiency") {
-        window.open(`/winrock-international/forms/renewable-proposal-form/${projectName}`, "_blank");
-
-      }
+      window.open(
+        `/winrock-international/view-form/proposal/${proposalFormID}`,
+        "_blank"
+      );
       return;
-    } else if (analysisStage === "Risk & Co-benefit Assessment") {
-      if (
-        activityType === "Agroforestry" ||
-        activityType === "Animal Agriculture and Manure Management"
-      ) {
-        window.open(`/winrock-international/forms/forestry-risks-form/${projectName}`, "_blank");
-      } else if (activityType === "Renewable Energy and Energy Efficiency") {
-        window.open(`/winrock-international/forms/tech-energy-risks-form/${projectName}`, "_blank");
+    }
 
-      } else if (activityType === "Agriculture") {
-        window.open(`/winrock-international/forms/regenerative-agriculture-risks-form/${projectName}`, "_blank");
-      }
+    if (analysisStage === "Risk & Co-benefit Assessment") {
+      window.open(
+        `/winrock-international/view-form/risk/${riskFormID}`,
+        "_blank"
+      );
       return;
-    } else if (analysisStage === "GHG Assessment Analysis") {
-      // No action defined for this stage yet
-      //return;
+    }
+
+    if (analysisStage === "GHG Assessment Analysis") {
       if (onUploadClick) onUploadClick();
       return;
     }

@@ -46,7 +46,7 @@ const SupplierProjectView: React.FC<ProjectViewProps> = ({ project, onBack }) =>
 
         <div className={styles.updatesPanel}>
           <ProjectUpdates updates={[]} />
-          <StageActionCard analysisStage={project.analysisStage} projectName={project.projectName.toLowerCase()} activityType={project.activityType} onUploadClick={() => setShowGHGUploadModal(true)} />
+          <StageActionCard analysisStage={project.analysisStage} proposalFormID={project.proposalFormID} riskFormID={project.riskFormID} onUploadClick={() => setShowGHGUploadModal(true)} />
           {showGHGUploadModal && (
             <AddFileLinkModal
               projectId={project.id}
