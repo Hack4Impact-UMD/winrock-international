@@ -40,7 +40,6 @@ const SupplierFormViewer = () => {
 
     const pages: Question[][] = [];
     let currentPage: Question[] = [];
-    pages.push(currentPage);
 
     const handleSave = async () => {
         if (!id || !projectID) return;
@@ -130,6 +129,7 @@ const SupplierFormViewer = () => {
             currentPage.push(q);
         }
     });
+    pages.push(currentPage);
 
     const DropDownComponent = formType === 'proposal'
         ? CoBenefitsDropdownQuestion
