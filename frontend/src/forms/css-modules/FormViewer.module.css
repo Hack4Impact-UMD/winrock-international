@@ -98,7 +98,7 @@
     background-color: #0056b3;
 }
 
-pagination button:disabled {
+.pagination button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
 }
