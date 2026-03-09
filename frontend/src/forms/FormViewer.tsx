@@ -89,11 +89,18 @@ const FormViewer = () => {
     }, [id, projectID]);
 
     useEffect(() => {
+        setLoading(true);
+        setCurrentPageIndex(0);
+        setResponses({});
+        setSaveMessage("");
 
 
 
         const fetchForm = async () => {
-            if (!id) return;
+            if (!id || !projectID) {
+                setLoading(false);
+                return;
+            }
             const collectionName = formType === 'proposal'
                 ? "custom-project-proposal-forms"
                 : "custom-risk-cobenefits-forms";

@@ -36,6 +36,8 @@ function App() {
         {/* <Route path="/form-builder" element={<FormBuilder />} /> */}
         <Route path="winrock/view-form/:formType/:projectID/:id" element={<RequireAuth><FormViewer /></RequireAuth>} />
         <Route path="supplier/view-form/:formType/:projectID/:id" element={<RequireAuth><SupplierFormViewer /></RequireAuth>} />
+        <Route path="winrock/view-form/:formType/:id" element={<RequireAuth><FormViewer /></RequireAuth>} />
+        <Route path="supplier/view-form/:formType/:id" element={<RequireAuth><SupplierFormViewer /></RequireAuth>} />
         <Route
           path="/form-builder/:formType?/:id?"
           element={<RequireAuth><FormBuilder /></RequireAuth>}
