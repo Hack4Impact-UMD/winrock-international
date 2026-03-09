@@ -5,11 +5,13 @@ import RisksDropdownQuestion from "./components/questions/RisksDropdownQuestion"
 import DropdownQuestion from "./components/questions/DropdownQuestion";
 import TextQuestion from "./components/questions/TextQuestion";
 import { db } from "../firebaseConfig";
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../dashboards/winrock-dashboard/components/Sidebar";
 import styles from "./css-modules/FormViewer.module.css";
+import { useSearchParams } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 
 interface Question {
     label: string;
@@ -27,14 +29,40 @@ interface FormStructure {
 
 const FormViewer = () => {
     const navigate = useNavigate();
-    const { formType, id } = useParams<{ formType: string; id: string }>();
+    const { formType, id, projectID } = useParams<{ formType: string; id: string; projectID: string }>();
     const [form, setForm] = useState<FormStructure | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const readOnly = true; // Prevents the 'readOnly is not defined' error
+    const [searchParams] = useSearchParams();
+    const editable = searchParams.get("editable") === "true";
+    const readOnly = !editable;
     const pages: Question[][] = [];
     let currentPage: Question[] = [];
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
+    const [responses, setResponses] = useState<Record<string, any>>({});
+    const handleSave = async () => {
+        if (!id || !projectID) return;
+
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+            console.error("No logged in user");
+            return;
+        }
+
+        const responseID = `${projectID}_${id}`;
+
+        await setDoc(doc(db, "form-responses", responseID), {
+            projectID,
+            formID: id,
+            email: user.email,
+            responses: responses,
+            updatedAt: serverTimestamp()
+        }, { merge: true });
+
+        console.log("Form saved");
+    };
 
 
 
@@ -101,8 +129,13 @@ const FormViewer = () => {
                                     <TextQuestion
                                         key={index}
                                         label={question.label}
-                                        controlledValue=""
-                                        onChange={noop}
+                                        controlledValue={responses[question.label] || ""}
+                                        onChange={(value) =>
+                                            setResponses(prev => ({
+                                                ...prev,
+                                                [question.label]: value
+                                            }))
+                                        }
                                         disabled={readOnly}
                                     />
                                 );
@@ -115,7 +148,12 @@ const FormViewer = () => {
                                             label={question.label}
                                             disabled={readOnly}
                                             controlledValue=""
-                                            onSelect={noop}
+                                            onSelect={(value) =>
+                                                setResponses(prev => ({
+                                                    ...prev,
+                                                    [question.label]: value
+                                                }))
+                                            }
                                             options={question.options || []}
                                         />
                                     );
@@ -129,7 +167,12 @@ const FormViewer = () => {
                                             disabled={readOnly}
                                             controlledValues={["", ""]}
                                             onSelect={noop}
-                                            onChange={noop}
+                                            onChange={(values) =>
+                                                setResponses(prev => ({
+                                                    ...prev,
+                                                    [question.label]: values
+                                                }))
+                                            }
                                             {...(formType === 'proposal'
                                                 ? { benefitItems: question.options || [] }
                                                 : { options: question.options || [] }
@@ -157,6 +200,11 @@ const FormViewer = () => {
                         </button>
                     )}
                 </div>
+                {editable && (
+                    <button onClick={handleSave} className={styles.saveBtn}>
+                        Save
+                    </button>
+                )}
                 {/* Floating Back Button Container */}
                 <div className={styles.footerActions}>
                     <button

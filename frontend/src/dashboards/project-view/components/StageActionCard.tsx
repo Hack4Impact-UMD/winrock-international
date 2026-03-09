@@ -6,48 +6,56 @@ interface StageActionCardProps {
   riskFormID: string;
   onUploadClick?: () => void;
   role: string;
+  projectId: string;
 }
+
+const STAGES = {
+  PROPOSAL: "Clarifying Initial Project Information",
+  RISK: "Risk & Co-benefit Assessment",
+  GHG: "GHG Assessment Analysis"
+};
 
 const StageActionCard: React.FC<StageActionCardProps> = ({
   analysisStage,
   proposalFormID,
   riskFormID,
   onUploadClick,
-  role
+  role,
+  projectId
 }) => {
   const onClick = () => {
-    if (analysisStage === "Clarifying Initial Project Information") {
+    if (analysisStage === STAGES.PROPOSAL) {
       if (role === 'winrock') {
         window.open(
-          `/winrock-international/winrock/view-form/proposal/${proposalFormID}`,
+          `/winrock-international/winrock/view-form/proposal/${projectId}/${proposalFormID}?editable=true`,
           "_blank"
         );
       }
       else {
         window.open(
-          `/winrock-international/supplier/view-form/proposal/${proposalFormID}`,
+          `/winrock-international/supplier/view-form/proposal/${projectId}/${proposalFormID}?editable=true`,
           "_blank"
         );
       }
       return;
     }
 
-    if (analysisStage === "Risk & Co-benefit Assessment") {
+    if (analysisStage === STAGES.RISK) {
       if (role === 'winrock') {
         window.open(
-          `/winrock-international/winrock/view-form/risk/${riskFormID}`,
+          `/winrock-international/winrock/view-form/risk/${projectId}/${riskFormID}?editable=true`,
           "_blank"
         );
       } else {
         window.open(
-          `/winrock-international/supplier/view-form/risk/${riskFormID}`,
+          `/winrock-international/supplier/view-form/risk/${projectId}/${riskFormID}?editable=true`,
           "_blank"
         );
       }
       return;
     }
 
-    if (analysisStage === "GHG Assessment Analysis") {
+    if (analysisStage === STAGES.GHG) {
       if (onUploadClick) onUploadClick();
       return;
     }
