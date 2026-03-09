@@ -73,22 +73,6 @@ const FormViewer = () => {
     };
 
     useEffect(() => {
-        const fetchResponses = async () => {
-            if (!id || !projectID) return;
-            const responseID = `${projectID}_${id}`;
-            try {
-                const snap = await getDoc(doc(db, "form-responses", responseID));
-                if (snap.exists()) {
-                    setResponses(snap.data().responses || {});
-                }
-            } catch (err) {
-                console.error("Error loading responses:", err);
-            }
-        };
-        fetchResponses();
-    }, [id, projectID]);
-
-    useEffect(() => {
         setLoading(true);
         setCurrentPageIndex(0);
         setResponses({});
