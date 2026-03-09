@@ -11,7 +11,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../dashboards/winrock-dashboard/components/Sidebar";
 import styles from "./css-modules/FormViewer.module.css";
 import { useSearchParams } from "react-router-dom";
-import { getAuth } from "firebase/auth";
 
 interface Question {
     label: string;
