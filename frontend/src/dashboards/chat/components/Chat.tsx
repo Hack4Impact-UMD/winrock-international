@@ -48,17 +48,16 @@ const Chat = ({ senderRole, projectId, active, projectName, supplierEmail, winro
 		if (result.success) {
 			const newMessage = result.data;
 			setMessages([...messages, newMessage]);
-		}
-		//Handle submit to notifications
-		if (senderRole === "supplier") {
-			sendNotification(projectName, supplierEmail, senderRole, winrockEmail, "winrock");
+			//Handle submit to notifications
+			if (senderRole === "supplier") {
+				sendNotification(projectName, supplierEmail, senderRole, winrockEmail, "winrock");
+
+			}
+			else {
+				sendNotification(projectName, winrockEmail, senderRole, supplierEmail, "supplier");
+			}
 
 		}
-		else {
-			sendNotification(projectName, winrockEmail, senderRole, supplierEmail, "supplier");
-		}
-
-
 	}
 
 	const capitalizeRole = (role: SenderRole): string => {
