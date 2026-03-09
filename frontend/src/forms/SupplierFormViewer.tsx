@@ -18,6 +18,7 @@ interface Question {
     type: string;
     options?: string[]; // Made optional for types like "section" or "text"
     title?: string;
+    id: string;
 }
 
 interface FormStructure {
@@ -147,25 +148,26 @@ const SupplierFormViewer = () => {
 
                 {/* Question List Area */}
                 <div className={styles.formContainer}>
-                    {form.questions.map((question, index) => {
+                    {pages[currentPageIndex]?.map((question, index) => {  // ✅ use pages[currentPageIndex]
                         const noop = () => { };
+                        const questionKey = (question as any).id || `${question.type}-${index}`; // ✅ stable key
 
                         switch (question.type) {
                             case "section":
-                                return <SectionHeader key={index} label={question.label} />;
+                                return <SectionHeader key={questionKey} label={question.label} />;
+
 
                             case "text":
                                 return (
                                     <TextQuestion
-                                        key={index}
+                                        key={questionKey}
                                         label={question.label}
-                                        controlledValue={responses[question.label] || ""}
+                                        controlledValue={responses[questionKey] || ""}
                                         onChange={(value) =>
-                                            setResponses(prev => ({ ...prev, [question.label]: value }))
+                                            setResponses(prev => ({ ...prev, [questionKey]: value }))
                                         }
                                         disabled={readOnly}
                                     />
-
                                 );
 
                             case "dropdown":
@@ -173,12 +175,12 @@ const SupplierFormViewer = () => {
                                     console.log(question.label)
                                     return (
                                         <DropdownQuestion
-                                            key={index}
+                                            key={questionKey}
                                             label={question.label}
                                             disabled={readOnly}
-                                            controlledValue={responses[question.label] || ""}
+                                            controlledValue={responses[questionKey] || ""}
                                             onSelect={(value) =>
-                                                setResponses(prev => ({ ...prev, [question.label]: value }))
+                                                setResponses(prev => ({ ...prev, [questionKey]: value }))
                                             }
                                             options={question.options || []}
                                         />
@@ -187,13 +189,17 @@ const SupplierFormViewer = () => {
                                 else {
                                     return (
                                         <DropDownComponent
-                                            key={index}
+                                            key={questionKey}
                                             label={question.label}
                                             disabled={readOnly}
-                                            controlledValues={responses[question.label] || ["", ""]}
+                                            controlledValues={
+                                                Array.isArray(responses[questionKey])
+                                                    ? responses[questionKey]
+                                                    : ["", ""]
+                                            }
                                             onSelect={noop}
                                             onChange={(values) =>
-                                                setResponses(prev => ({ ...prev, [question.label]: values }))
+                                                setResponses(prev => ({ ...prev, [questionKey]: values }))
                                             }
                                             {...(formType === 'proposal'
                                                 ? { benefitItems: question.options || [] }
@@ -204,7 +210,8 @@ const SupplierFormViewer = () => {
                                 }
 
                             default:
-                                return <div key={index}>Unknown type: {question.type}</div>;
+                                return <div key={questionKey}>Unknown type: {question.type}</div>;
+
                         }
                     })}
                 </div>

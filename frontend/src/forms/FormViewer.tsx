@@ -17,6 +17,7 @@ interface Question {
     type: string;
     options?: string[]; // Made optional for types like "section" or "text"
     title?: string;
+    id: string; // Add this!
 }
 
 interface FormStructure {
@@ -149,65 +150,66 @@ const FormViewer = () => {
 
                 {/* Question List Area */}
                 <div className={styles.formContainer}>
-                    {pages[currentPageIndex]?.map((question, index) => {
+                    {pages[currentPageIndex]?.map((question) => {
                         const noop = () => { };
+                        // Use the unique ID for state management
+                        const questionKey = question.id || question.label;
 
                         switch (question.type) {
                             case "section":
-                                return <SectionHeader key={index} label={question.label} />;
+                                return <SectionHeader key={questionKey} label={question.label} />;
 
                             case "text":
                                 return (
                                     <TextQuestion
-                                        key={index}
+                                        key={questionKey}
                                         label={question.label}
-                                        controlledValue={responses[question.label] || ""}
-
+                                        controlledValue={responses[questionKey] || ""}
                                         onChange={(value) =>
                                             setResponses(prev => ({
                                                 ...prev,
-                                                [question.label]: value
+                                                [questionKey]: value
                                             }))
                                         }
                                         disabled={readOnly}
                                     />
                                 );
+
                             case "dropdown":
                                 if (question.label.toLowerCase() === 'geography') {
-                                    console.log(question.label)
                                     return (
                                         <DropdownQuestion
-                                            key={index}
+                                            key={questionKey}
                                             label={question.label}
                                             disabled={readOnly}
-                                            controlledValue={responses[question.label] ?? ""}
+                                            // FIX: Use questionKey
+                                            controlledValue={responses[questionKey] ?? ""}
                                             onSelect={(value) =>
                                                 setResponses(prev => ({
                                                     ...prev,
-                                                    [question.label]: value
+                                                    [questionKey]: value
                                                 }))
                                             }
                                             options={question.options || []}
                                         />
                                     );
-                                }
-
-                                else {
+                                } else {
                                     return (
                                         <DropDownComponent
-                                            key={index}
+                                            key={questionKey}
                                             label={question.label}
                                             disabled={readOnly}
+                                            // FIX: Use questionKey
                                             controlledValues={
-                                                Array.isArray(responses[question.label])
-                                                    ? responses[question.label]
+                                                Array.isArray(responses[questionKey])
+                                                    ? responses[questionKey]
                                                     : ["", ""]
                                             }
                                             onSelect={noop}
                                             onChange={(values) =>
                                                 setResponses(prev => ({
                                                     ...prev,
-                                                    [question.label]: values
+                                                    [questionKey]: values
                                                 }))
                                             }
                                             {...(formType === 'proposal'
@@ -219,7 +221,7 @@ const FormViewer = () => {
                                 }
 
                             default:
-                                return <div key={index}>Unknown type: {question.type}</div>;
+                                return <div key={question.id}>Unknown type: {question.type}</div>;
                         }
                     })}
                 </div>

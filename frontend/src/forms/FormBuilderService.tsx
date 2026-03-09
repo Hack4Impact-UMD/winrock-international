@@ -27,7 +27,9 @@ export const FormBuilderService = {
                 questions: questions.map(q => ({
                     type: q.type,
                     label: q.label,
-                    options: q.type === 'dropdown' ? q.options : []
+                    options: q.type === 'dropdown' ? q.options : [],
+                    id: q.id,
+
                 })),
                 updatedAt: serverTimestamp(),
                 ...(id ? {} : { createdAt: serverTimestamp() })

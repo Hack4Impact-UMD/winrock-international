@@ -100,7 +100,7 @@ const FormBuilder = () => {
                         // Generate IDs for loaded questions since they aren't stored in Firestore
                         const loadedElements = (data.questions || []).map((q: any) => ({
                             ...q,
-                            id: crypto.randomUUID(),
+                            id: q.id || crypto.randomUUID(),
                         }));
                         if (urlFormType === 'proposal') {
                             const filteredLoaded = loadedElements.filter(

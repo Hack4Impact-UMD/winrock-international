@@ -12,33 +12,30 @@ interface CoBenefitsDropdownQuestionProps {
     disabled?: boolean;
 }
 
-function CoBenefitsDropdownQuestion({ label, options = ["Yes", "No", "Not Applicable"], controlledValues, benefitItems = [], onSelect, onChange, disabled = false }: CoBenefitsDropdownQuestionProps) {
+function CoBenefitsDropdownQuestion({ label, options = ["Yes", "No", "Not Applicable"], controlledValues, benefitItems = [], onSelect, onChange, disabled = false }) {
     return (
         <>
             <DropdownQuestion
                 label={label}
                 options={options}
                 controlledValue={controlledValues[0]}
-                onSelect={onSelect}
+                onSelect={(value) => onChange([value, controlledValues[1]])}
                 required={true}
                 disabled={disabled}
             />
-
             <div className={styles.benefitItemsContainer}>
                 <p>If Yes, please describe how and how impactful</p>
-                {benefitItems.map((item: string) =>
-                    <p key={item}>{item}</p>
-                )}
+                {benefitItems.map((item: string) => <p key={item}>{item}</p>)}
             </div>
             <TextQuestion
-                label=""
+                label="" // ← unique label to avoid key collision
                 controlledValue={controlledValues[1]}
-                onChange={onChange}
+                onChange={(value) => onChange([controlledValues[0], value])}
                 removeTopPadding={true}
                 disabled={disabled}
             />
         </>
-    )
+    );
 }
 
 export default CoBenefitsDropdownQuestion;
