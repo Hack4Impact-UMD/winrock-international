@@ -42,38 +42,29 @@ const FormViewer = () => {
     let currentPage: Question[] = [];
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [responses, setResponses] = useState<Record<string, any>>({});
+    // In handleSave — preserve supplier email, don't overwrite with admin email
     const handleSave = async () => {
         if (!id || !projectID) return;
-
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (!user) {
-            console.error("No logged in user");
-            return;
-        }
-
         const responseID = `${projectID}_${id}`;
 
         try {
+            // Fetch existing doc to preserve supplier email
+            const existingSnap = await getDoc(doc(db, "form-responses", responseID));
+            const existingData = existingSnap.exists() ? existingSnap.data() : {};
+
             await setDoc(
                 doc(db, "form-responses", responseID),
                 {
                     projectID,
                     formID: id,
-                    email: user.email,
-                    responses: responses,
+                    email: existingData.email || null, // preserve supplier email only
+                    responses,
                     updatedAt: serverTimestamp(),
                 },
                 { merge: true }
             );
-
-            console.log("Form saved");
             setSaveMessage("Form saved successfully!");
-
-            // Hide the message after 3 seconds
             setTimeout(() => setSaveMessage(""), 3000);
-
         } catch (err) {
             console.error("Error saving form:", err);
             setSaveMessage("Failed to save form. Please try again.");
@@ -81,9 +72,26 @@ const FormViewer = () => {
         }
     };
 
-
+    useEffect(() => {
+        const fetchResponses = async () => {
+            if (!id || !projectID) return;
+            const responseID = `${projectID}_${id}`;
+            try {
+                const snap = await getDoc(doc(db, "form-responses", responseID));
+                if (snap.exists()) {
+                    setResponses(snap.data().responses || {});
+                }
+            } catch (err) {
+                console.error("Error loading responses:", err);
+            }
+        };
+        fetchResponses();
+    }, [id, projectID]);
 
     useEffect(() => {
+
+
+
         const fetchForm = async () => {
             if (!id) return;
             const collectionName = formType === 'proposal'
@@ -147,6 +155,7 @@ const FormViewer = () => {
                                         key={index}
                                         label={question.label}
                                         controlledValue={responses[question.label] || ""}
+
                                         onChange={(value) =>
                                             setResponses(prev => ({
                                                 ...prev,

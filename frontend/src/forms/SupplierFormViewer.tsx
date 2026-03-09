@@ -82,6 +82,22 @@ const SupplierFormViewer = () => {
     };
 
     useEffect(() => {
+        const fetchResponses = async () => {
+            if (!id || !projectID) return;
+            const responseID = `${projectID}_${id}`;
+            try {
+                const snap = await getDoc(doc(db, "form-responses", responseID));
+                if (snap.exists()) {
+                    setResponses(snap.data().responses || {});
+                }
+            } catch (err) {
+                console.error("Error loading responses:", err);
+            }
+        };
+        fetchResponses();
+    }, [id, projectID]);
+
+    useEffect(() => {
         const fetchForm = async () => {
             if (!id) return;
             const collectionName = formType === 'proposal'
