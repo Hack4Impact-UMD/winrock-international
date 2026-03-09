@@ -32,6 +32,8 @@ const FormViewer = () => {
     const { formType, id, projectID } = useParams<{ formType: string; id: string; projectID: string }>();
     const [form, setForm] = useState<FormStructure | null>(null);
     const [loading, setLoading] = useState(true);
+    const [saveMessage, setSaveMessage] = useState(""); // Add this at the top with other state
+
 
     const [searchParams] = useSearchParams();
     const editable = searchParams.get("editable") === "true";
@@ -53,15 +55,30 @@ const FormViewer = () => {
 
         const responseID = `${projectID}_${id}`;
 
-        await setDoc(doc(db, "form-responses", responseID), {
-            projectID,
-            formID: id,
-            email: user.email,
-            responses: responses,
-            updatedAt: serverTimestamp()
-        }, { merge: true });
+        try {
+            await setDoc(
+                doc(db, "form-responses", responseID),
+                {
+                    projectID,
+                    formID: id,
+                    email: user.email,
+                    responses: responses,
+                    updatedAt: serverTimestamp(),
+                },
+                { merge: true }
+            );
 
-        console.log("Form saved");
+            console.log("Form saved");
+            setSaveMessage("Form saved successfully!");
+
+            // Hide the message after 3 seconds
+            setTimeout(() => setSaveMessage(""), 3000);
+
+        } catch (err) {
+            console.error("Error saving form:", err);
+            setSaveMessage("Failed to save form. Please try again.");
+            setTimeout(() => setSaveMessage(""), 3000);
+        }
     };
 
 
@@ -200,16 +217,18 @@ const FormViewer = () => {
                         </button>
                     )}
                 </div>
-                {editable && (
-                    <button onClick={handleSave} className={styles.saveBtn}>
-                        Save
-                    </button>
-                )}
-                {/* Floating Back Button Container */}
                 <div className={styles.footerActions}>
+                    {saveMessage && <div className={styles.saveMessage}>{saveMessage}</div>}
+
+                    {editable && (
+                        <button onClick={handleSave} className={styles.saveBtn}>
+                            Save
+                        </button>
+                    )}
+
                     <button
                         className={styles.backBtn}
-                        onClick={() => navigate('/forms/dashboard')} // Adjust path to your dashboard route
+                        onClick={() => navigate('/forms/dashboard')}
                     >
                         ← Back to Forms
                     </button>
