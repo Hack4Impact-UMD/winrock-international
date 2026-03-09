@@ -34,6 +34,7 @@ const FormViewer = () => {
     const readOnly = true; // Prevents the 'readOnly is not defined' error
     const pages: Question[][] = [];
     let currentPage: Question[] = [];
+    const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
 
 
@@ -65,6 +66,8 @@ const FormViewer = () => {
     form.questions.forEach(q => {
         if (q.type === "pageBreak") {
             pages.push(currentPage);
+            console.log("PAGES:", pages);
+            console.log("PAGE COUNT:", pages.length);
             currentPage = [];
         } else {
             currentPage.push(q);
@@ -88,7 +91,7 @@ const FormViewer = () => {
 
                 {/* Question List Area */}
                 <div className={styles.formContainer}>
-                    {form.questions.map((question, index) => {
+                    {pages[currentPageIndex]?.map((question, index) => {
                         const noop = () => { };
 
                         switch (question.type) {
@@ -105,7 +108,6 @@ const FormViewer = () => {
                                         disabled={readOnly}
                                     />
                                 );
-
                             case "dropdown":
                                 if (question.label.toLowerCase() === 'geography') {
                                     console.log(question.label)
@@ -120,6 +122,7 @@ const FormViewer = () => {
                                         />
                                     );
                                 }
+
                                 else {
                                     return (
                                         <DropDownComponent
@@ -141,6 +144,20 @@ const FormViewer = () => {
                                 return <div key={index}>Unknown type: {question.type}</div>;
                         }
                     })}
+                </div>
+                <div className={styles.pagination}>
+                    <button
+                        onClick={() => setCurrentPageIndex(p => Math.max(p - 1, 0))}
+                        disabled={currentPageIndex === 0} // Optional: disable if on first page
+                    >
+                        Previous
+                    </button>
+
+                    {currentPageIndex < pages.length - 1 && (
+                        <button onClick={() => setCurrentPageIndex(p => p + 1)}>
+                            Next
+                        </button>
+                    )}
                 </div>
                 {/* Floating Back Button Container */}
                 <div className={styles.footerActions}>
