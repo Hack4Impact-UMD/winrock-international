@@ -99,11 +99,19 @@ const FormViewer = () => {
                 : "custom-risk-cobenefits-forms";
 
             try {
-                const docRef = doc(db, collectionName, id);
-                const docSnap = await getDoc(docRef);
+                const [formSnap, responseSnap] = await Promise.all([
+                    getDoc(doc(db, collectionName, id)),
+                    getDoc(doc(db, "form-responses", `${projectID}_${id}`)),
+                ]);
 
-                if (docSnap.exists()) {
-                    setForm(docSnap.data() as FormStructure);
+                if (formSnap.exists()) {
+                    setForm(formSnap.data() as FormStructure);
+                }
+
+                if (responseSnap.exists()) {
+                    setResponses(responseSnap.data().responses ?? {});
+                } else {
+                    setResponses({});
                 }
             } catch (err) {
                 console.error("Error fetching document:", err);
@@ -111,7 +119,7 @@ const FormViewer = () => {
             setLoading(false);
         };
         fetchForm();
-    }, [id, formType]);
+    }, [id, formType, projectID]);
 
     if (loading) return <div className={styles.centeredState}>Loading form...</div>;
     if (!form) return <div className={styles.centeredState}>Form not found.</div>;
@@ -173,7 +181,7 @@ const FormViewer = () => {
                                             key={index}
                                             label={question.label}
                                             disabled={readOnly}
-                                            controlledValue=""
+                                            controlledValue={responses[question.label] ?? ""}
                                             onSelect={(value) =>
                                                 setResponses(prev => ({
                                                     ...prev,
@@ -191,7 +199,11 @@ const FormViewer = () => {
                                             key={index}
                                             label={question.label}
                                             disabled={readOnly}
-                                            controlledValues={["", ""]}
+                                            controlledValues={
+                                                Array.isArray(responses[question.label])
+                                                    ? responses[question.label]
+                                                    : ["", ""]
+                                            }
                                             onSelect={noop}
                                             onChange={(values) =>
                                                 setResponses(prev => ({
