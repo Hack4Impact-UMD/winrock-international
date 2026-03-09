@@ -103,7 +103,7 @@ const FormDashboard = () => {
                             <div className={styles.actionGroup}>
                                 <button
                                     className={styles.viewBtn}
-                                    onClick={() => navigate(`/view-form/${activeTab}/${form.id}`)}
+                                    onClick={() => navigate(`/winrock/view-form/${activeTab}/${form.id}`)}
                                 >
                                     View
                                 </button>

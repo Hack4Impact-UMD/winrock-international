@@ -32,6 +32,10 @@ const FormViewer = () => {
     const [loading, setLoading] = useState(true);
 
     const readOnly = true; // Prevents the 'readOnly is not defined' error
+    const pages: Question[][] = [];
+    let currentPage: Question[] = [];
+
+
 
     useEffect(() => {
         const fetchForm = async () => {
@@ -58,6 +62,16 @@ const FormViewer = () => {
     if (loading) return <div className={styles.centeredState}>Loading form...</div>;
     if (!form) return <div className={styles.centeredState}>Form not found.</div>;
 
+    form.questions.forEach(q => {
+        if (q.type === "pageBreak") {
+            pages.push(currentPage);
+            currentPage = [];
+        } else {
+            currentPage.push(q);
+        }
+    });
+
+    pages.push(currentPage);
     const DropDownComponent = formType === 'proposal'
         ? CoBenefitsDropdownQuestion
         : RisksDropdownQuestion;

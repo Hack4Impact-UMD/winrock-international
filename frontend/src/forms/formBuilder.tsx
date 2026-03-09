@@ -8,7 +8,7 @@ import { db } from '../firebaseConfig.js';
 
 // Define the updated type to include 'section'
 interface FormElement extends Omit<QuestionDefinition, 'type'> {
-    type: 'text' | 'dropdown' | 'section';
+    type: 'text' | 'dropdown' | 'section' | 'pageBreak';
 }
 
 const MANDATORY_QUESTIONS: FormElement[] = [
@@ -120,7 +120,7 @@ const FormBuilder = () => {
         loadExistingForm();
     }, [id, urlFormType]);
 
-    const addElement = (type: 'text' | 'dropdown' | 'section') => {
+    const addElement = (type: 'text' | 'dropdown' | 'section' | 'pageBreak') => {
         const newElement: FormElement = {
             id: crypto.randomUUID(),
             type: type,
@@ -197,53 +197,73 @@ const FormBuilder = () => {
                     </div>
 
                     {elements.map((el) => (
-                        <div key={el.id} className={el.type === 'section' ? styles.sectionWrapper : styles.dropdownQuestion}>
-                            {!["spendCategory", "geography"].includes(el.id) && (
+                        el.type === "pageBreak" ? (
+                            <div key={el.id} className={styles.pageBreak}>
+                                <div className={styles.pageBreakLine}></div>
+                                <span className={styles.pageBreakLabel}>Page Break</span>
+                                <div className={styles.pageBreakLine}></div>
+
                                 <button onClick={() => deleteElement(el.id)} className={styles.deleteBtn}>
                                     ✕ Delete
                                 </button>
-                            )}
+                            </div>
+                        ) : (
+                            <div key={el.id} className={el.type === 'section' ? styles.sectionWrapper : styles.dropdownQuestion}>
+                                {!["spendCategory", "geography"].includes(el.id) && (
+                                    <button onClick={() => deleteElement(el.id)} className={styles.deleteBtn}>
+                                        ✕ Delete
+                                    </button>
+                                )}
 
-                            {el.type === 'section' ? (
-                                <div className={styles.sectionHeader}>
-                                    <input
-                                        className={styles.label}
-                                        value={el.label}
-                                        onChange={(e) => updateLabel(el.id, e.target.value)}
-                                        style={{ background: 'transparent', border: 'none', width: '100%' }}
-                                    />
-                                </div>
-                            ) : (
-                                <>
-                                    <div className={styles.labelRow}>
+                                {el.type === 'section' ? (
+                                    <div className={styles.sectionHeader}>
                                         <input
                                             className={styles.label}
                                             value={el.label}
-                                            style={{ color: '#333', border: 'none', borderBottom: '1px dashed #ccc' }}
                                             onChange={(e) => updateLabel(el.id, e.target.value)}
+                                            style={{ background: 'transparent', border: 'none', width: '100%' }}
                                         />
                                     </div>
-                                    <div className={styles.dropdownContainer}>
-                                        <div className={styles.dropdownButton}>
-                                            <p>{el.type === 'text' ? 'Open-ended text field preview' : <select className={styles.dropdownButton}>
-                                                {el.options?.slice(0, 5).map(opt => (
-                                                    <option key={opt}>{opt}</option>
-                                                ))}
-                                            </select>}</p>
+                                ) : (
+                                    <>
+                                        <div className={styles.labelRow}>
+                                            <input
+                                                className={styles.label}
+                                                value={el.label}
+                                                style={{ color: '#333', border: 'none', borderBottom: '1px dashed #ccc' }}
+                                                onChange={(e) => updateLabel(el.id, e.target.value)}
+                                            />
                                         </div>
-                                        {el.type === 'dropdown' &&
-                                            !["spendCategory", "geography"].includes(el.id) && (
-                                                <input
-                                                    className={styles.description}
-                                                    placeholder="Options (comma separated)..."
-                                                    value={el.options?.join(', ')}
-                                                    onChange={(e) => updateOptions(el.id, e.target.value)}
-                                                />
-                                            )}
-                                    </div>
-                                </>
-                            )}
-                        </div>
+
+                                        <div className={styles.dropdownContainer}>
+                                            <div className={styles.dropdownButton}>
+                                                <p>
+                                                    {el.type === 'text'
+                                                        ? 'Open-ended text field preview'
+                                                        : (
+                                                            <select className={styles.dropdownButton}>
+                                                                {el.options?.slice(0, 5).map(opt => (
+                                                                    <option key={opt}>{opt}</option>
+                                                                ))}
+                                                            </select>
+                                                        )}
+                                                </p>
+                                            </div>
+
+                                            {el.type === 'dropdown' &&
+                                                !["spendCategory", "geography"].includes(el.id) && (
+                                                    <input
+                                                        className={styles.description}
+                                                        placeholder="Options (comma separated)..."
+                                                        value={el.options?.join(', ')}
+                                                        onChange={(e) => updateOptions(el.id, e.target.value)}
+                                                    />
+                                                )}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        )
                     ))}
 
                     {/* Expandable Menu */}
@@ -253,6 +273,7 @@ const FormBuilder = () => {
                                 <button onClick={() => addElement('section')}>+ Add Section</button>
                                 <button onClick={() => addElement('text')}>+ Text Field</button>
                                 <button onClick={() => addElement('dropdown')}>+ Dropdown</button>
+                                <button onClick={() => addElement('pageBreak')}>+ Page Break</button>
                             </div>
                         )}
                         <button onClick={() => setShowOptions(!showOptions)} className={styles.fab}>+</button>
