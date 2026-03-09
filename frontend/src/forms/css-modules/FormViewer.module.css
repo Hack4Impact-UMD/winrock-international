@@ -48,28 +48,36 @@
 }
 
 .footerActions {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
     display: flex;
-    gap: 15px;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
 }
 
 .backBtn {
-    background-color: #004a99;
-    /* Matches the Winrock blue in your screenshot */
-    color: white;
-    padding: 12px 24px;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a4b8b;
+    background-color: transparent;
+    border: 1px solid #1a4b8b;
     border-radius: 6px;
-    border: none;
-    font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s ease;
 }
 
-.backBtn:hover {
-    background-color: #003366;
+.saveBtn:hover {
+    background-color: #163e72;
+}
+
+.saveBtn {
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #1a4b8b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 .pagination {

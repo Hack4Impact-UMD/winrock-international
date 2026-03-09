@@ -7,38 +7,48 @@ interface CoBenefitsDropdownQuestionProps {
     options?: string[];
     controlledValues: string[];
     benefitItems?: string[];
-    onSelect: (selected: string) => void;
-    onChange: (value: string) => void;
+    onChange: (values: string[]) => void;
     disabled?: boolean;
 }
 
-function CoBenefitsDropdownQuestion({ label, options = ["Yes", "No", "Not Applicable"], controlledValues, benefitItems = [], onSelect, onChange, disabled = false }: CoBenefitsDropdownQuestionProps) {
+function CoBenefitsDropdownQuestion({
+    label,
+    options = ["Yes", "No", "Not Applicable"],
+    controlledValues = ["", ""],
+    benefitItems = [],
+    onChange,
+    disabled = false
+}: CoBenefitsDropdownQuestionProps) {
+
+    const [dropdownValue = "", textValue = ""] = controlledValues;
+
     return (
         <>
             <DropdownQuestion
                 label={label}
                 options={options}
-                controlledValue={controlledValues[0]}
-                onSelect={onSelect}
+                controlledValue={dropdownValue}
+                onSelect={(value) => onChange([value, textValue])}
                 required={true}
                 disabled={disabled}
             />
 
             <div className={styles.benefitItemsContainer}>
                 <p>If Yes, please describe how and how impactful</p>
-                {benefitItems.map((item: string) =>
+                {benefitItems.map((item) => (
                     <p key={item}>{item}</p>
-                )}
+                ))}
             </div>
+
             <TextQuestion
                 label=""
-                controlledValue={controlledValues[1]}
-                onChange={onChange}
+                controlledValue={textValue}
+                onChange={(value) => onChange([dropdownValue, value])}
                 removeTopPadding={true}
                 disabled={disabled}
             />
         </>
-    )
+    );
 }
 
 export default CoBenefitsDropdownQuestion;
