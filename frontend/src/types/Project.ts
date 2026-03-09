@@ -32,4 +32,6 @@ export interface Project {
     isLocked: boolean;
     proposalFormID: string;
     riskFormID: string;
+    winrockEmail: string;
+    supplierEmail: string;
 }

@@ -5,6 +5,7 @@ import { Project } from "../../../types/Project";
 import { addProject } from "../projects/winrockDashboardService";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
+import { getAuth } from "firebase/auth";
 
 interface ProjectModalProps {
     onClose: () => void;
@@ -32,6 +33,11 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
 
     const [selectedProposalForm, setSelectedProposalForm] = useState<string>("");
     const [selectedRiskForm, setSelectedRiskForm] = useState<string>("");
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const winrockEmail = user?.email ?? "";
+
 
     const activityTypes: Project['activityType'][] = [
         "Renewable Energy and Energy Efficiency",
@@ -328,7 +334,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
                                     supplierEmail,
                                     activityType,
                                     selectedProposalForm,
-                                    selectedRiskForm
+                                    selectedRiskForm,
+                                    winrockEmail
                                 );
 
                                 if (result.success) {

@@ -1,5 +1,5 @@
 import styles from "../css-modules/Chat.module.css";
-import { Message, SenderRole, sendMessage, getMessages } from "../chatUtils";
+import { Message, SenderRole, sendMessage, getMessages, sendNotification } from "../chatUtils";
 import { useEffect, useRef, useState } from "react";
 import Result from "../../../types/Result"
 
@@ -7,9 +7,12 @@ interface ChatProps {
 	senderRole: SenderRole;
 	projectId: string;
 	active: boolean;
+	projectName: string;
+	supplierEmail: string;
+	winrockEmail: string;
 }
 
-const Chat = ({ senderRole, projectId, active }: ChatProps) => {
+const Chat = ({ senderRole, projectId, active, projectName, supplierEmail, winrockEmail }: ChatProps) => {
 	const messageContainerRef = useRef<HTMLDivElement | null>(null);
 	const [loadingMessages, setLoadingMessages] = useState<boolean>(true);
 	const [messages, setMessages] = useState<Message[]>([]);
@@ -46,6 +49,16 @@ const Chat = ({ senderRole, projectId, active }: ChatProps) => {
 			const newMessage = result.data;
 			setMessages([...messages, newMessage]);
 		}
+		//Handle submit to notifications
+		if (senderRole === "supplier") {
+			sendNotification(projectName, supplierEmail, senderRole, winrockEmail, "winrock");
+
+		}
+		else {
+			sendNotification(projectName, winrockEmail, senderRole, supplierEmail, "supplier");
+		}
+
+
 	}
 
 	const capitalizeRole = (role: SenderRole): string => {
