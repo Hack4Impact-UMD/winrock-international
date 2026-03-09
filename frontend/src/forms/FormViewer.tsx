@@ -66,8 +66,6 @@ const FormViewer = () => {
     form.questions.forEach(q => {
         if (q.type === "pageBreak") {
             pages.push(currentPage);
-            console.log("PAGES:", pages);
-            console.log("PAGE COUNT:", pages.length);
             currentPage = [];
         } else {
             currentPage.push(q);

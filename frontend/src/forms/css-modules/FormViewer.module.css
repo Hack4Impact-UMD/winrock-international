@@ -97,3 +97,8 @@
 .pagination button:hover {
     background-color: #0056b3;
 }
+
+pagination button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
