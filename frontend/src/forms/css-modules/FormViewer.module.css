@@ -71,3 +71,34 @@
 .backBtn:hover {
     background-color: #003366;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    /* centers buttons horizontally */
+    gap: 16px;
+    /* space between buttons */
+    margin: 20px 0;
+    /* vertical spacing from content above/below */
+}
+
+.pagination button {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #007bff;
+    /* blue */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.pagination button:hover {
+    background-color: #0056b3;
+}
+
+.pagination button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
