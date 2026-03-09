@@ -132,7 +132,7 @@ const SupplierFormViewer = () => {
     });
     pages.push(currentPage);
 
-    const DropDownComponent = formType === 'proposal'
+    const DropDownComponent: React.ComponentType<any> = formType === 'proposal'
         ? CoBenefitsDropdownQuestion
         : RisksDropdownQuestion;
 
@@ -198,7 +198,7 @@ const SupplierFormViewer = () => {
                                                     : ["", ""]
                                             }
                                             onSelect={noop}
-                                            onChange={(values) =>
+                                            onChange={(values: string[]) =>
                                                 setResponses(prev => ({ ...prev, [questionKey]: values }))
                                             }
                                             {...(formType === 'proposal'

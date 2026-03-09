@@ -7,12 +7,11 @@ interface CoBenefitsDropdownQuestionProps {
     options?: string[];
     controlledValues: string[];
     benefitItems?: string[];
-    onSelect: (selected: string) => void;
-    onChange: (value: string) => void;
+    onChange: (values: string[]) => void;
     disabled?: boolean;
 }
 
-function CoBenefitsDropdownQuestion({ label, options = ["Yes", "No", "Not Applicable"], controlledValues, benefitItems = [], onSelect, onChange, disabled = false }) {
+function CoBenefitsDropdownQuestion({ label, options = ["Yes", "No", "Not Applicable"], controlledValues, benefitItems = [], onChange, disabled = false }: CoBenefitsDropdownQuestionProps) {
     return (
         <>
             <DropdownQuestion
@@ -28,7 +27,7 @@ function CoBenefitsDropdownQuestion({ label, options = ["Yes", "No", "Not Applic
                 {benefitItems.map((item: string) => <p key={item}>{item}</p>)}
             </div>
             <TextQuestion
-                label="" // ← unique label to avoid key collision
+                label=""
                 controlledValue={controlledValues[1]}
                 onChange={(value) => onChange([controlledValues[0], value])}
                 removeTopPadding={true}

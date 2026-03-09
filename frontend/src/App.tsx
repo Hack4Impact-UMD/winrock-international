@@ -8,10 +8,6 @@ import {
 import LoginPage from './auth/pages/LoginPage';
 import SignupPage from './auth/pages/SignupPage';
 import ForgotPasswordPage from './auth/pages/ForgotPasswordPage';
-import AgricultureProposalForm from './forms/project-proposal-forms/AgricultureProposalForm';
-import RenewableProposalForm from './forms/project-proposal-forms/RenewableProposalForm';
-import ForestryRisksForm from './forms/risks-and-co-benefit-forms/ForestryRisksForm';
-import TechEnergyRisksForm from './forms/risks-and-co-benefit-forms/TechEnergyRisksForm';
 import WinrockDashboard from './dashboards/winrock-dashboard/projects/winrockDashboard';
 import NotificationCenter from './dashboards/winrock-dashboard/notification-center/NotificationCenter';
 import PasswordChangedPage from './auth/pages/PasswordChangedPage';
@@ -20,7 +16,6 @@ import ProjectViewWrapper from './dashboards/project-view/projectViewWrapper';
 import SupplierDashboard from './dashboards/supplier-view/projects/supplierDashboard';
 import SupplierProjectViewWrapper from './dashboards/supplier-project-view/supplierProjectViewWrapper.tsx';
 import SupplierNotificationCenter from './dashboards/supplier-view/notification-center/NotificationCenter';
-import RegenAgRisksForm from './forms/risks-and-co-benefit-forms/RegenAgRisksForm';
 import RequireAuth from './auth/requireAuth.tsx';
 import FormDashboard from './forms/FormDashboard.tsx';
 import FormBuilder from './forms/formBuilder.tsx';
@@ -44,47 +39,6 @@ function App() {
         <Route
           path="/form-builder/:formType?/:id?"
           element={<RequireAuth><FormBuilder /></RequireAuth>}
-        />
-        {/* Protected forms */}
-        <Route
-          path="/forms/agriculture-proposal-form/:projectName"
-          element={
-            <RequireAuth>
-              <AgricultureProposalForm />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/forms/renewable-proposal-form/:projectName"
-          element={
-            <RequireAuth>
-              <RenewableProposalForm />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/forms/forestry-risks-form/:projectName"
-          element={
-            <RequireAuth>
-              <ForestryRisksForm />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/forms/tech-energy-risks-form/:projectName"
-          element={
-            <RequireAuth>
-              <TechEnergyRisksForm />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/forms/regenerative-agriculture-risks-form/:projectName"
-          element={
-            <RequireAuth>
-              <RegenAgRisksForm />
-            </RequireAuth>
-          }
         />
 
         {/* Protected admin routes */}
