@@ -59,6 +59,7 @@ const createProject = async (
     clientName: string,
     supplierName: string,
     supplierEmail: string,
+    winrockEmail: string,
     spendCategory: string,
     geography: string,
     proposalFormID: string,
@@ -91,6 +92,7 @@ const createProject = async (
                 clientName,
                 supplierName,
                 supplierEmail, // Include supplierEmail in the project data
+                winrockEmail,
                 spendCategory,
                 geography,
                 notes,
@@ -104,7 +106,6 @@ const createProject = async (
                 lastUpdated: serverTimestamp(),
                 proposalFormID,
                 riskFormID,
-
             };
 
             tx.set(docRef, projectData);
@@ -258,13 +259,14 @@ const updateProjectField = async (
 /**
  * Adds a new project.
  */
-const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string, activityType: ActivityType, proposalForm: string, riskForm: string): Promise<Result> => {
+const addProject = async (projectName: string, clientName: string, supplierName: string, supplierEmail: string, activityType: ActivityType, proposalForm: string, riskForm: string, winrockEmail: string): Promise<Result> => {
     try {
         await createProject(
             projectName.toLowerCase(),
             clientName,
             supplierName,
             supplierEmail,
+            winrockEmail,
             "-",
             "-",
             proposalForm,
@@ -275,7 +277,7 @@ const addProject = async (projectName: string, clientName: string, supplierName:
             AnalysisStage.STAGE_1,
             undefined,
             true,
-            false
+            false,
         );
 
         // token for supplier to join project

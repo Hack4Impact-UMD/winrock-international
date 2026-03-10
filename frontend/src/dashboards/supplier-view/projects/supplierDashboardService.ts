@@ -1,4 +1,4 @@
-import { runTransaction, FieldValue } from "firebase/firestore";
+import { FieldValue } from "firebase/firestore";
 import {
     collection,
     deleteDoc,
@@ -38,72 +38,9 @@ export enum AnalysisStage {
     STAGE_5 = "Risk & Co-benefit Assessment",
     STAGE_6 = "Complete, and Excluded",
 }
-type ProjectFirestoreWrite = Omit<Project, 'startDate' | 'lastUpdated'> & {
-    startDate: Timestamp | FieldValue;
-    lastUpdated: FieldValue;
-};
-
-type ActivityType =
-    | "Renewable Energy and Energy Efficiency"
-    | "Agriculture"
-    | "Agroforestry"
-    | "Animal Agriculture and Manure Management";
 
 
-/**
- * Saves a project into Firestore.
- */
-const createProject = async (
-    projectName: string,
-    supplierName: string,
-    spendCategory: string,
-    geography: string,
-    proposalFormID: string,
-    riskFormID: string,
-    activityType: ActivityType,
-    overallStatus: OverallStatus = OverallStatus.ON_TRACK,
-    analysisStage: AnalysisStage = AnalysisStage.STAGE_1,
-    startDate?: Date,
-    isActive: boolean = true,
-    isPinned: boolean = false
-): Promise<Result> => {
-    try {
-        const docRef = doc(db, "projects", projectName.toLowerCase());
 
-        await runTransaction(db, async (tx) => {
-            const snap = await tx.get(docRef);
-            if (snap.exists()) {
-                throw new Error("project-name-already-exists");
-            }
-
-            const newProject: ProjectFirestoreWrite = {
-                projectName,
-                supplierName,
-                spendCategory,
-                geography,
-                overallStatus,
-                analysisStage,
-                startDate: startDate ? Timestamp.fromDate(startDate) : serverTimestamp(),
-                lastUpdated: serverTimestamp(),
-                isActive,
-                isPinned,
-                id: docRef.id,
-                activityType,
-                isLocked: false, // or appropriate default value
-                clientName: "", // or appropriate default value
-                notes: "", // or appropriate default value
-                proposalFormID,
-                riskFormID,
-            };
-
-            tx.set(docRef, newProject);
-        });
-
-        return { success: true };
-    } catch (error) {
-        return handleFirebaseError(error);
-    }
-};
 function mapDocToProject(d: any): Project {
     return {
         id: d.id,
@@ -268,7 +205,6 @@ const deleteProject = async (projectName: string): Promise<Result> => {
 };
 
 export {
-    createProject,
     getProjectByName,
     getAllProjects,
     getProjectsWithFilters,

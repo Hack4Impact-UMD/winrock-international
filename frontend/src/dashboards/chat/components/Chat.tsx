@@ -1,5 +1,5 @@
 import styles from "../css-modules/Chat.module.css";
-import { Message, SenderRole, sendMessage, getMessages } from "../chatUtils";
+import { Message, SenderRole, sendMessage, getMessages, sendNotification } from "../chatUtils";
 import { useEffect, useRef, useState } from "react";
 import Result from "../../../types/Result"
 
@@ -7,9 +7,12 @@ interface ChatProps {
 	senderRole: SenderRole;
 	projectId: string;
 	active: boolean;
+	projectName: string;
+	supplierEmail: string;
+	winrockEmail: string;
 }
 
-const Chat = ({ senderRole, projectId, active }: ChatProps) => {
+const Chat = ({ senderRole, projectId, active, projectName, supplierEmail, winrockEmail }: ChatProps) => {
 	const messageContainerRef = useRef<HTMLDivElement | null>(null);
 	const [loadingMessages, setLoadingMessages] = useState<boolean>(true);
 	const [messages, setMessages] = useState<Message[]>([]);
@@ -37,14 +40,34 @@ const Chat = ({ senderRole, projectId, active }: ChatProps) => {
 	const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		const messageToSend = newMessageText.trim();
 		event.preventDefault();
-		if (!messageToSend) {
-			return;
-		}
+		if (!messageToSend) return;
+
 		setNewMessageText("");
 		const result: Result = await sendMessage(projectId, "", senderRole, messageToSend);
+
 		if (result.success) {
-			const newMessage = result.data;
-			setMessages([...messages, newMessage]);
+			setMessages((prevMessages) => [...prevMessages, result.data]);
+
+			const senderEmail = senderRole === "supplier" ? supplierEmail : winrockEmail;
+			const recipientEmail = senderRole === "supplier" ? winrockEmail : supplierEmail;
+
+			if (!senderEmail || !recipientEmail) {
+				console.error("Notification skipped: missing participant email");
+			} else {
+				const notificationResult = await sendNotification(
+					projectName,
+					senderEmail,
+					senderRole,
+					recipientEmail,
+					senderRole === "supplier" ? "winrock" : "supplier"
+				);
+
+				if (!notificationResult.success) {
+					console.error("Notification failed:", notificationResult);
+				}
+			}
+		} else {
+			console.error("sendMessage failed:", result); // add this to check
 		}
 	}
 

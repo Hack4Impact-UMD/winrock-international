@@ -9,7 +9,6 @@ import {
     getDocs,
     orderBy,
     query,
-    Timestamp,
     updateDoc,
     where
 } from "firebase/firestore";
@@ -17,14 +16,7 @@ import { db } from "../../../firebaseConfig.js";
 import Result from "../../../types/Result";
 import { batchArray } from "../../../utils/batch.js";
 import { sendEmail } from "../../../api/apiClient.js";
-
-interface Notification {
-    type: string;
-    project: string;
-    message: string;
-    date: Timestamp;
-    status: NotificationStatus;
-}
+import { Notification, NotificationType } from "../../../types/Notification.js";
 
 type NotificationStatus =
     | "unread"
@@ -50,19 +42,25 @@ type NotificationStatus =
  */
 const sendNotification = async (
     recipientIds: string[],
-    type: string,
+    type: NotificationType,
     project: string,
     message: string,
-    date?: Date,
-    status: NotificationStatus = "unread",
+    senderEmail: string,        // ← add
+    senderRole: string,         // ← add
     shouldSendEmail: boolean = true
 ): Promise<Result> => {
-    const notification: Notification = {
+
+    const notification = {
         type,
-        project,
-        message,
-        date: date ? Timestamp.fromDate(date) : Timestamp.now(),
-        status
+        projectName: project,
+        senderEmail,
+        senderRole,
+        recipientEmail: "",
+        recipientRole: "",
+        timestamp: new Date().toISOString(),
+        read: false,
+        status: "unread"
+
     };
 
     try {
@@ -84,11 +82,11 @@ const sendNotification = async (
                 const recipient = recipientDoc.data();
                 recipientNames.push(`${recipient.firstName} ${recipient.lastName}`);
                 recipientEmails.push(recipient.email);
-            
+
                 const notificationsCollection = collection(db, `users/${recipientDoc.id}/notifications`);
                 await addDoc(notificationsCollection, notification);
             }));
-    
+
             await sendEmail({
                 recipientNames,
                 recipientEmails,
@@ -101,7 +99,7 @@ const sendNotification = async (
                 return addDoc(notificationsCollection, notification);
             }));
         }
-        
+
         return { success: true };
     } catch (error) {
         return {
@@ -134,10 +132,21 @@ const getAllNotifications = async (userId: string, start: number, end: number): 
         const querySnapshot = await getDocs(allNotificationsQuery);
         const slicedDocs = querySnapshot.docs.slice(start, end);
         slicedDocs.forEach((doc) => {
-            const notification = {
-                ...doc.data(),
-                date: doc.data().date.toDate()
-            } as Notification;
+            const data = doc.data();
+
+            const notification: Notification = {
+                id: doc.id,
+                projectName: data.projectName,
+                senderEmail: data.senderEmail,
+                senderRole: data.senderRole,
+                recipientEmail: data.recipientEmail,
+                recipientRole: data.recipientRole,
+                timestamp: data.timestamp instanceof Object && "toDate" in data.timestamp
+                    ? data.timestamp.toDate().toISOString()
+                    : data.timestamp ?? "",
+                type: data.type as NotificationType,
+                read: data.read ?? false
+            };
             notifications.push(notification);
         });
 
@@ -177,10 +186,20 @@ const getUnreadNotifications = async (userId: string, start: number, end: number
         const querySnapshot = await getDocs(allNotificationsQuery);
         const slicedDocs = querySnapshot.docs.slice(start, end);
         slicedDocs.forEach((doc) => {
-            const notification = {
-                ...doc.data(),
-                date: doc.data().date.toDate()
-            } as Notification;
+            const data = doc.data();
+
+            const notification: Notification = {
+                id: doc.id,
+                projectName: data.projectName,
+                senderEmail: data.senderEmail,
+                senderRole: data.senderRole,
+                recipientEmail: data.recipientEmail,
+                recipientRole: data.recipientRole,
+                timestamp: data.timestamp instanceof Object && "toDate" in data.timestamp
+                    ? data.timestamp.toDate().toISOString()
+                    : data.timestamp ?? "", type: data.type as NotificationType,
+                read: data.read ?? false
+            };
             notifications.push(notification);
         });
 
@@ -220,10 +239,20 @@ const getReadNotifications = async (userId: string, start: number, end: number):
         const querySnapshot = await getDocs(allNotificationsQuery);
         const slicedDocs = querySnapshot.docs.slice(start, end);
         slicedDocs.forEach((doc) => {
-            const notification = {
-                ...doc.data(),
-                date: doc.data().date.toDate()
-            } as Notification;
+            const data = doc.data();
+
+            const notification: Notification = {
+                id: doc.id,
+                projectName: data.projectName,
+                senderEmail: data.senderEmail,
+                senderRole: data.senderRole,
+                recipientEmail: data.recipientEmail,
+                recipientRole: data.recipientRole,
+                timestamp: data.timestamp instanceof Object && "toDate" in data.timestamp
+                    ? data.timestamp.toDate().toISOString()
+                    : data.timestamp ?? "", type: data.type as NotificationType,
+                read: data.read ?? false
+            };
             notifications.push(notification);
         });
 
@@ -342,7 +371,7 @@ const markNotificationAsRead = async (userId: string, notificationId: string): P
         const docRef = doc(db, `users/${userId}/notifications/${notificationId}`);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
-            return { success: false, errorCode: "notification-not-found"};
+            return { success: false, errorCode: "notification-not-found" };
         }
 
         await updateDoc(docRef, { status: "read" });
@@ -371,7 +400,7 @@ const markNotificationAsUnread = async (userId: string, notificationId: string):
         const docRef = doc(db, `users/${userId}/notifications/${notificationId}`);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
-            return { success: false, errorCode: "notification-not-found"};
+            return { success: false, errorCode: "notification-not-found" };
         }
 
         await updateDoc(docRef, { status: "unread" });

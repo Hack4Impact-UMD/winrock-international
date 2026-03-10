@@ -101,7 +101,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, updates, onS
           )}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "40px", backgroundColor: "#fff", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
             <StageHeader analysisStage={viewedStage} />
-            <Chat senderRole='winrock' projectId={project.id} active={project.isActive}></Chat>
+            <Chat senderRole='winrock' projectId={project.id} active={project.isActive} projectName={project.projectName} supplierEmail={project.supplierEmail} winrockEmail={project.winrockEmail}></Chat>
           </div>
           {project.analysisStage !== finalStage && viewedStage === project.analysisStage && (
             <AdvanceStageButton
