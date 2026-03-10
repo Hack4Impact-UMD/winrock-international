@@ -6,22 +6,9 @@ import styles from "../css-modules/NotificationCenter.module.css";
 import { db } from "../../../firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { Notification, NotificationType } from "../../../types/Notification";
 
 export type NotificationTab = "Unread" | "Read" | "All";
-
-export type NotificationType = "Chat" | "Form"
-
-interface Notification {
-  projectName: string;
-  senderEmail: string;
-  senderRole: string;
-  recipientEmail: string;
-  recipientRole: string;
-  timestamp: string;
-  type: NotificationType;
-  read: boolean;
-  id: string;
-}
 
 
 const ITEMS_PER_PAGE = 10;
@@ -29,7 +16,7 @@ const ITEMS_PER_PAGE = 10;
 const NotificationCenter: React.FC = () => {
   const [tab, setTab] = useState<NotificationTab>("Unread");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const auth = getAuth(); // Get the Firebase Auth instance
@@ -50,7 +37,7 @@ const NotificationCenter: React.FC = () => {
           recipientEmail: data.recipientEmail,
           recipientRole: data.recipientRole,
           timestamp: data.timestamp.toDate().toISOString(),
-          type: data.type,
+          type: data.type as NotificationType,
           read: false, // Assuming all fetched notifications are unread; adjust as needed
           id: doc.id,
         });
@@ -85,7 +72,7 @@ const NotificationCenter: React.FC = () => {
     }
   };
 
-  const handleRowSelect = (id: number, checked: boolean) => {
+  const handleRowSelect = (id: string, checked: boolean) => {
     if (checked) {
       setSelectedRows([...selectedRows, id]);
     } else {

@@ -1,72 +1,13 @@
 import { NotificationTab } from "./NotificationCenter";
 import styles from "../css-modules/NotificationCenter.module.css";
-
-//import NotificationItem from "./NotificationItem";
-
-interface Notification {
-    id: number;
-    date: string;
-    time: string;
-    type: string;
-    project: string;
-    message: string;
-    read: boolean;
-}
-// @ts-expect-error
-const mockNotifications: Notification[] = [
-    {
-        id: 1,
-        date: "Today",
-        time: "09:00 am",
-        type: "Form",
-        project: "USAID Hamro Samman II",
-        message: "Proposal Project Form submission received.",
-        read: false,
-    },
-    {
-        id: 2,
-        date: "Yesterday",
-        time: "02:00 pm",
-        type: "Overall Stage",
-        project: "McCormick",
-        message: "Project inactive for 26 days.",
-        read: false,
-    },
-    {
-        id: 3,
-        date: "3 days ago",
-        time: "11:00 am",
-        type: "Analysis Stage",
-        project: "Nestle",
-        message: "Project updated to GHG Assessment Analysis.",
-        read: false,
-    },
-    {
-        id: 4,
-        date: "5 days ago",
-        time: "01:00 pm",
-        type: "Message",
-        project: "Kellogg",
-        message: "There has been a new update in the conversation",
-        read: true,
-    },
-    {
-        id: 5,
-        date: "04/14/2025",
-        time: "08:00am",
-        type: "Message",
-        project: "Kellogg",
-        message: "There has been a new update in the conversation",
-        read: true,
-    },
-];
+import { Notification } from "../../../types/Notification";
 
 interface NotificationListProps {
     tab: NotificationTab;
     notifications: Notification[];
-    selectedRows: number[];
+    selectedRows: string[];
     onSelectAll: (checked: boolean) => void;
-    onRowSelect: (id: number, checked: boolean) => void;
+    onRowSelect: (id: string, checked: boolean) => void;
 }
 
 const EnvelopeIcon = () => (
@@ -119,11 +60,11 @@ const NotificationList: React.FC<NotificationListProps> = ({
                                     onChange={(e) => onRowSelect(n.id, e.target.checked)}
                                 />
                             </td>
-                            <td>{n.date}</td>
-                            <td>{n.time}</td>
+                            <td>{new Date(n.timestamp).toLocaleDateString()}</td>
+                            <td>{new Date(n.timestamp).toLocaleTimeString()}</td>
                             <td>{n.type}</td>
-                            <td>{n.project}</td>
-                            <td>{n.message}</td>
+                            <td>{n.projectName}</td>
+                            <td>{n.senderEmail}</td>
                             <td>
                                 <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                     <EnvelopeIcon />
