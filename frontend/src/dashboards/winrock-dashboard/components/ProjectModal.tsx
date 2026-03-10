@@ -36,7 +36,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ onClose, projects }) => {
 
     const auth = getAuth();
     const user = auth.currentUser;
-    const winrockEmail = user?.email;
+    const winrockEmail = user?.email || '';
 
     // Early return or disable create if not authenticated
     if (!winrockEmail) {
