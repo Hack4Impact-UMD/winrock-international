@@ -13,6 +13,7 @@ export interface Message {
 }
 
 export const sendNotification = async (projectName: string, senderEmail: string, senderRole: SenderRole, recipientEmail: string, recipientRole: SenderRole): Promise<Result> => {
+	console.log("sendNotification called with:", { projectName, senderEmail, senderRole, recipientEmail, recipientRole });
 	try {
 		const newDocRef = await addDoc(collection(db, "notifications"), {
 			projectName: projectName,
@@ -24,10 +25,13 @@ export const sendNotification = async (projectName: string, senderEmail: string,
 			type: "Chat"
 		})
 		const newDocSnap = await getDoc(newDocRef);
+		console.log("DOC CREATED", newDocRef.id);
 
 		return { success: true, data: newDocSnap.data() };
 	}
 	catch (e) {
+		console.log("FAILED")
+		console.log(e)
 		return handleFirebaseError(e);
 	}
 }

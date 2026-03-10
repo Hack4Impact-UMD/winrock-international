@@ -40,23 +40,25 @@ const Chat = ({ senderRole, projectId, active, projectName, supplierEmail, winro
 	const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		const messageToSend = newMessageText.trim();
 		event.preventDefault();
-		if (!messageToSend) {
-			return;
-		}
+		if (!messageToSend) return;
+
 		setNewMessageText("");
 		const result: Result = await sendMessage(projectId, "", senderRole, messageToSend);
+
 		if (result.success) {
-			const newMessage = result.data;
-			setMessages([...messages, newMessage]);
-			//Handle submit to notifications
-			if (senderRole === "supplier") {
-				sendNotification(projectName, supplierEmail, senderRole, winrockEmail, "winrock");
+			setMessages([...messages, result.data]);
 
+			try {
+				if (senderRole === "supplier") {
+					await sendNotification(projectName, supplierEmail, senderRole, winrockEmail, "winrock");
+				} else {
+					await sendNotification(projectName, winrockEmail, senderRole, supplierEmail, "supplier");
+				}
+			} catch (e) {
+				console.error("Notification failed:", e); // so it doesn't silently fail
 			}
-			else {
-				sendNotification(projectName, winrockEmail, senderRole, supplierEmail, "supplier");
-			}
-
+		} else {
+			console.error("sendMessage failed:", result); // add this to check
 		}
 	}
 
