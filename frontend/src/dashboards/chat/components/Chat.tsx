@@ -46,7 +46,7 @@ const Chat = ({ senderRole, projectId, active, projectName, supplierEmail, winro
 		const result: Result = await sendMessage(projectId, "", senderRole, messageToSend);
 
 		if (result.success) {
-			setMessages([...messages, result.data]);
+			setMessages((prevMessages) => [...prevMessages, result.data]);
 
 			const senderEmail = senderRole === "supplier" ? supplierEmail : winrockEmail;
 			const recipientEmail = senderRole === "supplier" ? winrockEmail : supplierEmail;
