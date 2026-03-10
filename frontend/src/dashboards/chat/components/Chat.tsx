@@ -48,14 +48,23 @@ const Chat = ({ senderRole, projectId, active, projectName, supplierEmail, winro
 		if (result.success) {
 			setMessages([...messages, result.data]);
 
-			try {
-				if (senderRole === "supplier") {
-					await sendNotification(projectName, supplierEmail, senderRole, winrockEmail, "winrock");
-				} else {
-					await sendNotification(projectName, winrockEmail, senderRole, supplierEmail, "supplier");
+			const senderEmail = senderRole === "supplier" ? supplierEmail : winrockEmail;
+			const recipientEmail = senderRole === "supplier" ? winrockEmail : supplierEmail;
+
+			if (!senderEmail || !recipientEmail) {
+				console.error("Notification skipped: missing participant email");
+			} else {
+				const notificationResult = await sendNotification(
+					projectName,
+					senderEmail,
+					senderRole,
+					recipientEmail,
+					senderRole === "supplier" ? "winrock" : "supplier"
+				);
+
+				if (!notificationResult.success) {
+					console.error("Notification failed:", notificationResult);
 				}
-			} catch (e) {
-				console.error("Notification failed:", e); // so it doesn't silently fail
 			}
 		} else {
 			console.error("sendMessage failed:", result); // add this to check

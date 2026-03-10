@@ -42,15 +42,25 @@ type NotificationStatus =
  */
 const sendNotification = async (
     recipientIds: string[],
-    type: NotificationType,  // ← change from string
-
+    type: NotificationType,
     project: string,
     message: string,
+    senderEmail: string,        // ← add
+    senderRole: string,         // ← add
     shouldSendEmail: boolean = true
 ): Promise<Result> => {
+
     const notification = {
         type,
         projectName: project,
+        senderEmail,
+        senderRole,
+        recipientEmail: "",
+        recipientRole: "",
+        timestamp: new Date().toISOString(),
+        read: false,
+        status: "unread"
+
     };
 
     try {
@@ -131,7 +141,9 @@ const getAllNotifications = async (userId: string, start: number, end: number): 
                 senderRole: data.senderRole,
                 recipientEmail: data.recipientEmail,
                 recipientRole: data.recipientRole,
-                timestamp: data.timestamp.toDate().toISOString(),
+                timestamp: data.timestamp instanceof Object && "toDate" in data.timestamp
+                    ? data.timestamp.toDate().toISOString()
+                    : data.timestamp ?? "",
                 type: data.type as NotificationType,
                 read: data.read ?? false
             };
@@ -183,8 +195,9 @@ const getUnreadNotifications = async (userId: string, start: number, end: number
                 senderRole: data.senderRole,
                 recipientEmail: data.recipientEmail,
                 recipientRole: data.recipientRole,
-                timestamp: data.timestamp.toDate().toISOString(),
-                type: data.type as NotificationType,
+                timestamp: data.timestamp instanceof Object && "toDate" in data.timestamp
+                    ? data.timestamp.toDate().toISOString()
+                    : data.timestamp ?? "", type: data.type as NotificationType,
                 read: data.read ?? false
             };
             notifications.push(notification);
@@ -235,8 +248,9 @@ const getReadNotifications = async (userId: string, start: number, end: number):
                 senderRole: data.senderRole,
                 recipientEmail: data.recipientEmail,
                 recipientRole: data.recipientRole,
-                timestamp: data.timestamp.toDate().toISOString(),
-                type: data.type as NotificationType,
+                timestamp: data.timestamp instanceof Object && "toDate" in data.timestamp
+                    ? data.timestamp.toDate().toISOString()
+                    : data.timestamp ?? "", type: data.type as NotificationType,
                 read: data.read ?? false
             };
             notifications.push(notification);

@@ -24,7 +24,7 @@ const SupplierNotificationCenter: React.FC = () => {
     if (tab === "Unread") return notifications.filter((n) => !n.read);
     if (tab === "Read") return notifications.filter((n) => n.read);
     return notifications;
-  }, [tab]);
+  }, [tab, notifications]);
 
   // Pagination
   const totalItems = filteredNotifications.length;
@@ -58,10 +58,15 @@ const SupplierNotificationCenter: React.FC = () => {
         where("recipientEmail", "==", recipientEmail)
       );
       const querySnapshot = await getDocs(q);
-      const notifications = querySnapshot.docs.map(d => ({
-        id: d.id,
-        ...d.data()
-      }));
+      const notifications = querySnapshot.docs.map(d => {
+        const data = d.data();
+        return {
+          id: d.id,
+          ...data,
+          timestamp: data.timestamp?.toDate?.().toISOString?.() ?? new Date().toISOString(),
+          read: data.read ?? false
+        };
+      });
       return { success: true, data: notifications };
     } catch (e) {
       return handleFirebaseError(e);

@@ -45,11 +45,22 @@ const sendNotification = async (
     type: NotificationType,
     project: string,
     message: string,
+    senderEmail: string,        // ← add
+    senderRole: string,         // ← add
     shouldSendEmail: boolean = true
 ): Promise<Result> => {
     const notification = {
         type,
         projectName: project,
+        status: "unread",
+        senderEmail: senderEmail,
+        senderRole: senderRole,
+        recipientEmail: "", // Will be filled in when creating the notification document for each recipient
+        recipientRole: "",  // Will be filled in when creating the notification document for each recipient
+        timestamp: new Date(),
+        read: false,
+
+
     };
 
     try {
