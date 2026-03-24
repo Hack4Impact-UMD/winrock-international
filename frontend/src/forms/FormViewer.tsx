@@ -6,11 +6,13 @@ import DropdownQuestion from "./components/questions/DropdownQuestion";
 import TextQuestion from "./components/questions/TextQuestion";
 import { db } from "../firebaseConfig";
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { getAuth } from "firebase/auth";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../dashboards/winrock-dashboard/components/Sidebar";
 import styles from "./css-modules/FormViewer.module.css";
 import { useSearchParams } from "react-router-dom";
+import FormLock from "./components/FormLock";
 
 interface Question {
     label: string;
@@ -32,12 +34,21 @@ const FormViewer = () => {
     const { formType, id, projectID } = useParams<{ formType: string; id: string; projectID: string }>();
     const [form, setForm] = useState<FormStructure | null>(null);
     const [loading, setLoading] = useState(true);
-    const [saveMessage, setSaveMessage] = useState(""); // Add this at the top with other state
-
+    const [saveMessage, setSaveMessage] = useState("");
 
     const [searchParams] = useSearchParams();
     const editable = searchParams.get("editable") === "true";
-    const readOnly = !editable;
+
+    const auth = getAuth();
+    const userId = auth.currentUser?.uid || "";
+
+    const { isLocked, isLoading: lockLoading, doUnlock, LockedPopup } = FormLock({
+        projectId: projectID || "",
+        formId: id || "",
+        userId,
+    });
+
+    const readOnly = !editable || isLocked;
     const pages: Question[][] = [];
     let currentPage: Question[] = [];
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
@@ -63,6 +74,7 @@ const FormViewer = () => {
                 },
                 { merge: true }
             );
+            doUnlock();
             setSaveMessage("Form saved successfully!");
             setTimeout(() => setSaveMessage(""), 3000);
         } catch (err) {
@@ -112,7 +124,7 @@ const FormViewer = () => {
         fetchForm();
     }, [id, formType, projectID]);
 
-    if (loading) return <div className={styles.centeredState}>Loading form...</div>;
+    if (loading || lockLoading) return <div className={styles.centeredState}>Loading form...</div>;
     if (!form) return <div className={styles.centeredState}>Form not found.</div>;
 
     form.questions.forEach(q => {
@@ -131,6 +143,7 @@ const FormViewer = () => {
 
     return (
         <div className={styles.pageWrapper}>
+            {LockedPopup}
             <Sidebar currentTab="forms" />
 
             <main className={styles.mainContent}>

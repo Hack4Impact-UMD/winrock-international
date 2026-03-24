@@ -30,6 +30,8 @@ export interface Project {
     isActive: boolean;
     isPinned: boolean;
     isLocked: boolean;
+    lockedBy?: string;
+    lockedAt?: string;
     proposalFormID: string;
     riskFormID: string;
     winrockEmail: string;

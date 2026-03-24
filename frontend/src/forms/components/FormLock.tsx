@@ -1,98 +1,122 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { checkProjectLock, lockProject, unlockProject } from '../../dashboards/winrock-dashboard/projects/winrockDashboardService';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
+import { lockForm, refreshFormLock, unlockForm } from '../../dashboards/winrock-dashboard/projects/winrockDashboardService';
+
+const HEARTBEAT_INTERVAL_MS = 15_000;
 
 interface FormLockProps {
-  projectName: string;
+  projectId: string;
+  formId: string;
+  userId: string;
   onLockedAction?: () => void;
   onUnlock?: () => void;
 }
 
-const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
-  const DISABLE_LOCK = true;
-
-  if (DISABLE_LOCK) {
-    return {
-      showLockedPopup: false,
-      handleLockedAction: () => { },
-      closePopup: () => { },
-      isLocked: false,
-      isLoading: false,
-      LockedPopup: null
-    };
-  }
+const FormLock = ({ projectId, formId, userId, onLockedAction, onUnlock }: FormLockProps) => {
   const [showLockedPopup, setShowLockedPopup] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
-  // Check project lock status and attempt to lock if not locked
+  const didLockRef = useRef(false);
+  const attemptingRef = useRef(false);
+
+  const doUnlock = useCallback(() => {
+    if (projectId && formId && didLockRef.current) {
+      didLockRef.current = false;
+      unlockForm(projectId, formId, userId).catch(error => {
+        console.error('Failed to unlock form:', error);
+      });
+    }
+  }, [projectId, formId, userId]);
+
+  const attemptLock = useCallback(async () => {
+    if (!projectId || !formId || !userId || attemptingRef.current) return;
+
+    attemptingRef.current = true;
+    try {
+      const result = await lockForm(projectId, formId, userId);
+
+      if (result.success) {
+        didLockRef.current = true;
+        setIsLocked(false);
+        setShowLockedPopup(false);
+        if (onUnlock) {
+          onUnlock();
+        }
+      } else if (result.errorCode === 'form-already-locked') {
+        setIsLocked(true);
+        setShowLockedPopup(true);
+      } else {
+        console.error('Failed to lock form:', result.errorCode);
+      }
+    } catch (error) {
+      console.error('Error in form locking logic:', error);
+    } finally {
+      setIsLoading(false);
+      attemptingRef.current = false;
+    }
+  }, [projectId, formId, userId, onUnlock]);
+
+  // Initial lock attempt on mount
   useEffect(() => {
-    const checkAndLockProject = async () => {
-      if (!projectName) {
-        setIsLoading(false);
-        return;
-      }
+    if (!projectId || !formId || !userId) {
+      setIsLoading(false);
+      return;
+    }
 
-      try {
-        setIsLoading(true);
+    setIsLoading(true);
+    attemptLock();
 
-        // First check if project is already locked
-        const lockCheckResult = await checkProjectLock(projectName.toLowerCase());
-
-        if (!lockCheckResult.success) {
-          console.error('Failed to check project lock status:', lockCheckResult.errorCode);
-          setIsLoading(false);
-          return;
-        }
-
-        const { isLocked: projectIsLocked } = lockCheckResult.data as { isLocked: boolean };
-
-        if (projectIsLocked) {
-          // Project is already locked, show popup
-          setIsLocked(true);
-          setShowLockedPopup(true);
-          setIsLoading(false);
-          return;
-        }
-
-        // Project is not locked, try to lock it
-        const lockResult = await lockProject(projectName.toLowerCase());
-
-        if (!lockResult.success) {
-          if (lockResult.errorCode === 'project-already-locked') {
-            // Another user locked it between our check and lock attempt
-            setIsLocked(true);
-            setShowLockedPopup(true);
-          } else {
-            console.error('Failed to lock project:', lockResult.errorCode);
-          }
-        } else {
-          // Successfully locked the project
-          setIsLocked(false);
-          if (onUnlock) {
-            onUnlock();
-          }
-        }
-      } catch (error) {
-        console.error('Error in project locking logic:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAndLockProject();
-
-    // Cleanup function to unlock project when component unmounts
     return () => {
-      if (projectName && !isLocked) {
-        unlockProject(projectName.toLowerCase()).catch(error => {
-          console.error('Failed to unlock project on cleanup:', error);
+      doUnlock();
+    };
+  }, [projectId, formId, userId, attemptLock, doUnlock]);
+
+  // refresh lockedAt every 15s so other clients know the lock is still alive
+  useEffect(() => {
+    if (!projectId || !formId || !userId) return;
+
+    const interval = setInterval(() => {
+      if (didLockRef.current) {
+        refreshFormLock(projectId, formId, userId).catch(error => {
+          console.error('Failed to refresh form lock heartbeat:', error);
         });
       }
-    };
-  }, [projectName, onUnlock]);
+    }, HEARTBEAT_INTERVAL_MS);
 
-  // Handle locked actions (field changes, navigation, etc.)
+    return () => clearInterval(interval);
+  }, [projectId, formId, userId]);
+
+  // when the lock document changes, re-attempt if lock was released or went stale
+  useEffect(() => {
+    if (!projectId || !formId) return;
+
+    const lockDocRef = doc(db, 'form-locks', `${projectId}_${formId}`);
+
+    const unsubscribe = onSnapshot(lockDocRef, (snapshot) => {
+      const data = snapshot.data();
+
+      // if the lock was released and we don't hold it, try to acquire it
+      if ((!data || !data.isLocked) && !didLockRef.current) {
+        attemptLock();
+      }
+    });
+
+    return () => unsubscribe();
+  }, [projectId, formId, attemptLock]);
+
+  // safety - unlock on tab/browser close (best-effort)
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      doUnlock();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [doUnlock]);
+
   const handleLockedAction = () => {
     if (isLocked) {
       setShowLockedPopup(true);
@@ -102,19 +126,12 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
     }
   };
 
-  // Close popup
   const closePopup = () => {
     setShowLockedPopup(false);
   };
 
-  // Handle back to project navigation
   const handleBackToProject = () => {
-    if (projectName) {
-      navigate(`/dashboard/admin/projects/${projectName}`);
-    } else {
-      // Fallback if no projectId is provided
-      navigate('/dashboard/admin/projects');
-    }
+    window.close();
   };
 
   return {
@@ -123,6 +140,7 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
     closePopup,
     isLocked,
     isLoading,
+    doUnlock,
     LockedPopup: showLockedPopup ? (
       <div style={{
         position: 'fixed',
@@ -145,7 +163,6 @@ const FormLock = ({ projectName, onLockedAction, onUnlock }: FormLockProps) => {
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
           position: 'relative'
         }}>
-          {/* Close button */}
           <button
             onClick={closePopup}
             style={{

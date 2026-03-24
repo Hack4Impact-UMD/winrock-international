@@ -32,7 +32,7 @@ const SupplierFormViewer = () => {
     const { formType, id, projectID } = useParams<{ formType: string; id: string; projectID: string }>();
     const [form, setForm] = useState<FormStructure | null>(null);
     const [loading, setLoading] = useState(true);
-    const [saveMessage, setSaveMessage] = useState(""); // Add this at the top with other state
+    const [saveMessage, setSaveMessage] = useState("");
     const [searchParams] = useSearchParams();
     const editable = searchParams.get("editable") === "true";
     const readOnly = !editable;

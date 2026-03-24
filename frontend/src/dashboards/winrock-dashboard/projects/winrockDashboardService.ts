@@ -396,58 +396,64 @@ const deleteProject = async (projectName: string): Promise<Result> => {
         return handleFirebaseError(error);
     }
 };
+const LOCK_STALE_MS = 30_000;
 
-/**
- * Check if a project is locked for editing
+/*
+locks the form by checking firestore & acting accordingly
  */
-const checkProjectLock = async (projectName: string): Promise<Result> => {
+const lockForm = async (projectId: string, formId: string, userId: string): Promise<Result> => {
     try {
-        const projectsRef = collection(db, "projects");
-        const q = query(projectsRef, where("projectName", "==", projectName.toLowerCase()));
-        const querySnapshot = await getDocs(q);
+        const lockDocRef = doc(db, "form-locks", `${projectId}_${formId}`);
 
-        if (querySnapshot.empty) {
-            return { success: false, errorCode: "project-not-found" };
+        await runTransaction(db, async (tx) => {
+            const snap = await tx.get(lockDocRef);
+            const lockData = snap.data();
+
+            if (lockData?.isLocked && lockData?.lockedBy !== userId) {
+                // Check if the lock is stale
+                const lockedAt = lockData.lockedAt?.toMillis?.() ?? 0;
+                const now = Date.now();
+                if (now - lockedAt < LOCK_STALE_MS) {
+                    throw new Error("form-already-locked");
+                }
+                // Lock is stale — take it over
+            }
+
+            tx.set(lockDocRef, {
+                isLocked: true,
+                lockedBy: userId,
+                lockedAt: serverTimestamp(),
+                projectId,
+                formId,
+            });
+        });
+
+        return { success: true };
+    } catch (error: any) {
+        if (error?.message === "form-already-locked") {
+            return { success: false, errorCode: "form-already-locked" };
         }
-
-        // Assuming projectName is unique, take the first match
-        const projectData = querySnapshot.docs[0].data();
-        const isLocked = projectData.isLocked ?? false;
-
-        return {
-            success: true,
-            data: { isLocked },
-        };
-    } catch (error) {
         return handleFirebaseError(error);
     }
 };
 
-/**
- * Lock a project for editing (set isLocked to true)
- */
-const lockProject = async (projectName: string): Promise<Result> => {
+/*
+keeps the form locking consistent
+*/
+const refreshFormLock = async (projectId: string, formId: string, userId: string): Promise<Result> => {
     try {
-        // first get the doc ID by projectName
-        const q = query(collection(db, "projects"), where("projectName", "==", projectName.toLowerCase()));
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-            return { success: false, errorCode: "project-not-found" };
-        }
-
-        const docRef = querySnapshot.docs[0].ref; // use actual doc ref
+        const lockDocRef = doc(db, "form-locks", `${projectId}_${formId}`);
 
         await runTransaction(db, async (tx) => {
-            const snap = await tx.get(docRef);
-            const projectData = snap.data();
+            const snap = await tx.get(lockDocRef);
+            const lockData = snap.data();
 
-            if (projectData?.isLocked) {
-                throw new Error("project-already-locked");
+            if (!lockData?.isLocked || lockData?.lockedBy !== userId) {
+                return;
             }
 
-            tx.update(docRef, {
-                isLocked: true,
-                lastUpdated: serverTimestamp()
+            tx.update(lockDocRef, {
+                lockedAt: serverTimestamp(),
             });
         });
 
@@ -457,23 +463,27 @@ const lockProject = async (projectName: string): Promise<Result> => {
     }
 };
 
-/**
- * Unlock a project (set isLocked to false)
- */
-const unlockProject = async (projectName: string): Promise<Result> => {
+/*
+locks a specific form
+*/
+const unlockForm = async (projectId: string, formId: string, userId: string): Promise<Result> => {
     try {
-        const q = query(collection(db, "projects"), where("projectName", "==", projectName.toLowerCase()));
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-            return { success: false, errorCode: "project-not-found" };
-        }
-
-        const docRef = querySnapshot.docs[0].ref;
+        const lockDocRef = doc(db, "form-locks", `${projectId}_${formId}`);
 
         await runTransaction(db, async (tx) => {
-            tx.update(docRef, {
+            const snap = await tx.get(lockDocRef);
+            const lockData = snap.data();
+
+            if (lockData?.lockedBy !== userId) {
+                return;
+            }
+
+            tx.set(lockDocRef, {
                 isLocked: false,
-                lastUpdated: serverTimestamp()
+                lockedBy: null,
+                lockedAt: null,
+                projectId,
+                formId,
             });
         });
 
@@ -531,7 +541,7 @@ export {
     getProjectsWithFilters,
     updateProjectField,
     deleteProject,
-    checkProjectLock,
-    lockProject,
-    unlockProject,
+    lockForm,
+    refreshFormLock,
+    unlockForm,
 };
