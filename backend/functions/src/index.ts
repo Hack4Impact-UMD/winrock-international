@@ -1,22 +1,29 @@
-import { onCall } from "firebase-functions/v2/https";
+import { CallableRequest, HttpsError, onCall } from "firebase-functions/v2/https";
 import { withRetries } from "./utils/retryLogic";
 import {
     EMAIL_API_BATCH_LIMIT,
     isValidEmail,
-    sendEmail
+    sendEmail,
 } from "./emailService";
 import { getS3UploadUrl, getS3PublicUrl } from "./s3Service";
 import * as admin from "firebase-admin";
 
+function requireAuth<T>(fn: (req: CallableRequest) => T) {
+    return (request: CallableRequest) => {
+        if (!request.auth) throw new HttpsError("unauthenticated", "not authenticated");
+        return fn(request);
+    };
+}
+
 /**
  * Sends an email to the given recipients, with the given subject,
  * containing the given message.
- * 
+ *
  * Needs both 'recipientNames' and 'recipientEmails' as the API
  * requires "Name <name@example.com>" format. They are received
  * separately to make validation easier.
  */
-exports.sendEmail = onCall(async (request) => {
+exports.sendEmail = onCall(requireAuth(async (request) => {
     const recipientNames: string[] = request.data.recipientNames;
     const recipientEmails: string[] = request.data.recipientEmails;
     const subject: string = request.data.subject;
@@ -45,7 +52,7 @@ exports.sendEmail = onCall(async (request) => {
     } catch (error) {
         throw { reason: "email-send-failed-with-retries" };
     }
-});
+}));
 
 /**
  * Generates a presigned URL for uploading a file to S3
@@ -53,7 +60,7 @@ exports.sendEmail = onCall(async (request) => {
  * @param request.data.fileName - The name of the file to upload
  * @returns Presigned URL and S3 key
  */
-exports.getS3UploadUrl = onCall(async (request) => {
+exports.getS3UploadUrl = onCall(requireAuth(async (request) => {
     const projectId: string = request.data.projectId;
     const fileName: string = request.data.fileName;
 
@@ -68,7 +75,7 @@ exports.getS3UploadUrl = onCall(async (request) => {
         console.error("Error generating S3 upload URL:", error);
         throw { reason: "s3-url-generation-failed" };
     }
-});
+}));
 
 /**
  * Confirms an S3 upload and saves file metadata to Firestore
@@ -77,7 +84,7 @@ exports.getS3UploadUrl = onCall(async (request) => {
  * @param request.data.s3Key - The S3 key where the file was uploaded
  * @returns Success status and file metadata
  */
-exports.confirmS3Upload = onCall(async (request) => {
+exports.confirmS3Upload = onCall(requireAuth(async (request) => {
     const projectId: string = request.data.projectId;
     const fileName: string = request.data.fileName;
     const s3Key: string = request.data.s3Key;
@@ -121,4 +128,4 @@ exports.confirmS3Upload = onCall(async (request) => {
         console.error("Error confirming S3 upload:", error);
         throw { reason: "firestore-save-failed" };
     }
-});
+}));
