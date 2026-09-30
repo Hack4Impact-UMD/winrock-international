@@ -3,25 +3,27 @@ import { withRetries } from "./utils/retryLogic";
 import {
     EMAIL_API_BATCH_LIMIT,
     isValidEmail,
-    sendEmail
+    sendEmail,
 } from "./emailService";
 import { getS3UploadUrl, getS3PublicUrl } from "./s3Service";
 import * as admin from "firebase-admin";
 
-function requireAuth<T>(request: CallableRequest, fn: (req: CallableRequest) => T) {
-    if (!request.auth) throw new HttpsError("unauthenticated", "not authenticated");
-    return fn(request);
+function requireAuth<T>(fn: (req: CallableRequest) => T) {
+    return (request: CallableRequest) => {
+        if (!request.auth) throw new HttpsError("unauthenticated", "not authenticated");
+        return fn(request);
+    };
 }
 
 /**
  * Sends an email to the given recipients, with the given subject,
  * containing the given message.
- * 
+ *
  * Needs both 'recipientNames' and 'recipientEmails' as the API
  * requires "Name <name@example.com>" format. They are received
  * separately to make validation easier.
  */
-exports.sendEmail = onCall(async (request) => requireAuth(request, async () => {
+exports.sendEmail = onCall(requireAuth(async (request) => {
     const recipientNames: string[] = request.data.recipientNames;
     const recipientEmails: string[] = request.data.recipientEmails;
     const subject: string = request.data.subject;
@@ -58,7 +60,7 @@ exports.sendEmail = onCall(async (request) => requireAuth(request, async () => {
  * @param request.data.fileName - The name of the file to upload
  * @returns Presigned URL and S3 key
  */
-exports.getS3UploadUrl = onCall(async (request) => requireAuth(request, async () => {
+exports.getS3UploadUrl = onCall(requireAuth(async (request) => {
     const projectId: string = request.data.projectId;
     const fileName: string = request.data.fileName;
 
@@ -82,7 +84,7 @@ exports.getS3UploadUrl = onCall(async (request) => requireAuth(request, async ()
  * @param request.data.s3Key - The S3 key where the file was uploaded
  * @returns Success status and file metadata
  */
-exports.confirmS3Upload = onCall(async (request) => requireAuth(request, async () => {
+exports.confirmS3Upload = onCall(requireAuth(async (request) => {
     const projectId: string = request.data.projectId;
     const fileName: string = request.data.fileName;
     const s3Key: string = request.data.s3Key;
